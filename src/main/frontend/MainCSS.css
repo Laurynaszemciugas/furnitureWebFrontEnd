@@ -1,0 +1,48 @@
+vaadin-app-layout::part(drawer) {
+    padding: 0 !important;
+}
+
+vaadin-drawer-toggle {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+vaadin-app-layout::part(drawer) {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    z-index: 10 !important;
+}
+
+:host([overlay]) [part="drawer"] {
+    border: none !important;
+}
+
+
+
+vaadin-app-layout:not([drawer-opened]) .menu-button span {
+    display: none;
+}
+
+html, body {
+    background-color: green; /* Or whatever your 'base' color is */
+    margin: 0;
+    padding: 0;
+}
+
+vaadin-app-layout {
+    --vaadin-app-layout-navbar-offset-size: 0px;
+}
+vaadin-app-layout::part(navbar) {
+    box-shadow: none !important;
+    border-bottom: none !important;
+}
+
+vaadin-app-layout::part(drawer) {
+    border-right: none !important;
+}
+
+[part="content"] {
+    padding: 0 !important;
+    margin: 0 !important;
+}
