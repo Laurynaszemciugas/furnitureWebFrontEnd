@@ -5,6 +5,6 @@ import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.theme.aura.Aura;
 import com.vaadin.flow.theme.lumo.Lumo;
 
-@StyleSheet(Lumo.UTILITY_STYLESHEET)
+@StyleSheet(Lumo.STYLESHEET)
 public class Application implements AppShellConfigurator {
 }

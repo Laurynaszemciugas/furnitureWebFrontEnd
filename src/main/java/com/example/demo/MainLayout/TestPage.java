@@ -14,18 +14,23 @@ public class TestPage extends VerticalLayout {
         setPadding(false); // Removes the outer gap
         setSpacing(false); // Removes gaps between components inside this layout
         setSizeFull();
+        setAlignItems(Alignment.CENTER);
 
 
 
-        Button button = new Button("1111111111111111");
-        button.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        add(mainLayout());
 
-        VerticalLayout verticalLayout = new VerticalLayout(button);
+    }
+
+    public VerticalLayout mainLayout(){
+        VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setMaxWidth("1650px");
-        verticalLayout.getStyle().set("background-color","green");
+        verticalLayout.setHeightFull();
+        verticalLayout.getStyle().set("margin-top","20px");
 
-        add(verticalLayout);
+        verticalLayout.addClassName("island");
 
+        return verticalLayout;
     }
 
 

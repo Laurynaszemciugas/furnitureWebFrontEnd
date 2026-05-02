@@ -1,5 +1,6 @@
 package com.example.demo.MainLayout;
 
+import com.example.demo.Common.Components;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -8,20 +9,31 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.server.VaadinSession;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @CssImport("./MainCSS.css")
 public class MainLayout extends AppLayout {
 
-    public MainLayout() {
+    Components components;
+
+
+
+    public MainLayout(Components components) {
+
+        this.components = components;
+
         setPrimarySection(Section.DRAWER);
         createDrawer();
         createHeader();
+
+        getStyle().set("gap","20px");
 
     }
 
@@ -84,45 +96,42 @@ public class MainLayout extends AppLayout {
 
     private void createHeader() {
 
-        // ============= header =====================
+        // toggle button
+
+        Icon drawerStepOne = components.iconCrafter(VaadinIcon.MENU,"40px","black");
+        Icon drawerStepTwo = components.iconCrafter(VaadinIcon.ARROW_RIGHT,"40px","black");
 
         DrawerToggle toggle = new DrawerToggle();
-        toggle.getStyle()
-                .set("background-color","transparent")
-                .set("width","50px")
-                .set("border","0px");
+        toggle.getStyle().set("background", "transparent")
+                .set("border", "none")
+                .set("box-shadow", "none")
+                .set("padding", "0")
+                .set("margin", "0")
+                .set("cursor", "pointer");
 
-        toggle.setIcon(VaadinIcon.MENU.create());
+        toggle.setIcon(drawerStepOne);
 
-        toggle.setMaxWidth("70px");
+
 
         toggle.addClickListener(e->{
             if(isDrawerOpened()){
-                toggle.setIcon(VaadinIcon.MENU.create());
+                toggle.setIcon(drawerStepOne);
             }
             else{
-                toggle.setIcon(VaadinIcon.ARROW_RIGHT.create());
+                toggle.setIcon(drawerStepTwo);
             }
 
         });
 
 
-
-
-
-
-
-
-
-
-
-
+        // header stuff
 
         HorizontalLayout header = new HorizontalLayout(toggle);
-        header.setWidthFull();
-        header.setMinHeight("100px");
-        header.addClassName("header");
         header.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        header.addClassName("header-island");
+
+        header.setSizeFull();
 
         header.setSpacing(false);
         header.setPadding(false);
