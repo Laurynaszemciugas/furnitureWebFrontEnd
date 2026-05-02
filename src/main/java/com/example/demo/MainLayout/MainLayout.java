@@ -21,23 +21,40 @@ import org.springframework.stereotype.Component;
 @CssImport("./MainCSS.css")
 public class MainLayout extends AppLayout {
 
+
     Components components;
+
+    private VerticalLayout drawerSmall = new VerticalLayout();
+    private VerticalLayout drawerLarge = new VerticalLayout();
+
+
+    Button toggle = new Button("Switch scenes", e -> switchDrawer());
 
 
 
     public MainLayout(Components components) {
-
         this.components = components;
 
-        setPrimarySection(Section.DRAWER);
-        createDrawer();
-        createHeader();
+        // change the drawer size to large
+        addClassName("custom-layout-large");
 
-        getStyle().set("gap","20px");
+        setPrimarySection(Section.DRAWER);
+
+        createHeader();
+        drawerSmall = createDrawerSmall();
+        drawerLarge = createDrawerLarge();
+
+        drawerSmall.setVisible(false);
+
+
+        addToDrawer(drawerSmall, drawerLarge);
+
 
     }
 
-    private void createDrawer() {
+
+
+    private VerticalLayout createDrawerLarge() {
 
 
 
@@ -64,11 +81,12 @@ public class MainLayout extends AppLayout {
         leftSideBar.setPadding(false);
         leftSideBar.setSpacing(false);
         leftSideBar.setHeightFull();
-        leftSideBar.setWidth("250px");
+        leftSideBar.setWidthFull();
         leftSideBar.getStyle()
                 .set("background-color", "#374a75")
                 .set("box-shadow", "2px 0px 10px rgba(0,0,0,0.2)")
                 .set("border-right", "1px solid #2A3B6F");
+        leftSideBar.setAlignItems(FlexComponent.Alignment.START);
 
         Button logOut = new Button();
         logOut.addClickListener(e->{
@@ -76,21 +94,91 @@ public class MainLayout extends AppLayout {
             UI.getCurrent().getPage().reload();
         });
 
+        Button button = new Button("32423");
+        button.getStyle().set("background-color","green").set("cursor", "pointer");;
         leftSideBar.add(
-                new Button(),
-                new Button(),
-                new Button(),
-                new Button(),
-                new Button(),
-                new Button(),
+                components.mainLayoutButtons("bob","DashBoard",VaadinIcon.MENU),
+                components.mainLayoutButtons("bob","Products",VaadinIcon.MENU),
+                components.mainLayoutButtons("bob","Orders",VaadinIcon.MENU),
+                components.mainLayoutButtons("bob","Materials",VaadinIcon.MENU),
+                components.mainLayoutButtons("bob","Employees",VaadinIcon.MENU),
+                components.mainLayoutButtons("bob","Reports",VaadinIcon.MENU),
+                components.mainLayoutButtons("bob","Quick actions",VaadinIcon.MENU),
+                components.mainLayoutButtons("bob","Settings",VaadinIcon.MENU),
                 logOut);
+
+
+        leftSideBar.add(toggle);
 
         leftSideBar.getStyle().set("gap","10px");
 
         leftSideBar.getStyle().set("z-index","10");
 
-        addToDrawer(leftSideBar);
+        return leftSideBar;
     }
+
+
+    private VerticalLayout createDrawerSmall() {
+
+
+
+        Div Logo = new Div(new Span("Furniture CO"));
+        Logo.getStyle()
+                .set("background-color", "#1F2A44")
+                .set("color", "white")
+                .set("font-weight", "bold")
+                .set("font-size", "12px")
+                .set("display", "flex")
+                .set("align-items", "center")
+                .set("justify-content", "center")
+                .set("width", "100%")
+                .set("height", "100px")
+                .set("margin-bottom", "20px")
+                .set("border-bottom", "2px solid #2A3B6F");
+
+        Logo.addClickListener(e->{
+            UI.getCurrent().navigate("dashboard");
+        });
+
+        // Left Sidebar
+        VerticalLayout leftSideBar = new VerticalLayout(Logo);
+        leftSideBar.setPadding(false);
+        leftSideBar.setSpacing(false);
+        leftSideBar.setHeightFull();
+        leftSideBar.setWidthFull();
+        leftSideBar.getStyle()
+                .set("background-color", "#374a75")
+                .set("box-shadow", "2px 0px 10px rgba(0,0,0,0.2)")
+                .set("border-right", "1px solid #2A3B6F");
+        leftSideBar.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        Button logOut = new Button();
+        logOut.addClickListener(e->{
+            VaadinSession.getCurrent().close();
+            UI.getCurrent().getPage().reload();
+        });
+
+        Button button = new Button("32423");
+        button.getStyle().set("background-color","green").set("cursor", "pointer");;
+        leftSideBar.add(
+                components.mainLayoutButtonsSmall("123",VaadinIcon.MENU),
+                components.mainLayoutButtonsSmall("123",VaadinIcon.MENU),
+                components.mainLayoutButtonsSmall("123",VaadinIcon.MENU),
+                components.mainLayoutButtonsSmall("123",VaadinIcon.MENU),
+                components.mainLayoutButtonsSmall("123",VaadinIcon.MENU),
+                components.mainLayoutButtonsSmall("123",VaadinIcon.MENU),
+                components.mainLayoutButtonsSmall("123",VaadinIcon.MENU),
+                logOut);
+
+        leftSideBar.add(toggle);
+
+        leftSideBar.getStyle().set("gap","10px");
+
+        leftSideBar.getStyle().set("z-index","10");
+
+        return leftSideBar;
+    }
+
 
 
 
@@ -99,7 +187,7 @@ public class MainLayout extends AppLayout {
         // toggle button
 
         Icon drawerStepOne = components.iconCrafter(VaadinIcon.MENU,"40px","black");
-        Icon drawerStepTwo = components.iconCrafter(VaadinIcon.ARROW_RIGHT,"40px","black");
+
 
         DrawerToggle toggle = new DrawerToggle();
         toggle.getStyle().set("background", "transparent")
@@ -110,18 +198,6 @@ public class MainLayout extends AppLayout {
                 .set("cursor", "pointer");
 
         toggle.setIcon(drawerStepOne);
-
-
-
-        toggle.addClickListener(e->{
-            if(isDrawerOpened()){
-                toggle.setIcon(drawerStepOne);
-            }
-            else{
-                toggle.setIcon(drawerStepTwo);
-            }
-
-        });
 
 
         // header stuff
@@ -139,5 +215,27 @@ public class MainLayout extends AppLayout {
         addToNavbar(header);
     }
 
+    private void switchDrawer() {
+            boolean isDrawer1Visible = drawerSmall.isVisible();
+
+            if(!isDrawerOpened()){
+                setDrawerOpened(true);
+            }
+
+            // Toggle visibility
+            drawerSmall.setVisible(!isDrawer1Visible);
+            drawerLarge.setVisible(isDrawer1Visible);
+
+            // Remove old classes FIRST
+            this.removeClassName("custom-layout-large");
+            this.removeClassName("custom-layout-small");
+
+            // Apply new size
+            if (drawerSmall.isVisible()) {
+                this.addClassName("custom-layout-small");
+            } else {
+                this.addClassName("custom-layout-large");
+            }
+    }
 
 }

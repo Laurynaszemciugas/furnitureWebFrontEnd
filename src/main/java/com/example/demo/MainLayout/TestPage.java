@@ -30,6 +30,11 @@ public class TestPage extends VerticalLayout {
 
         verticalLayout.addClassName("island");
 
+        Button button = new Button("Hi");
+        button.addClassName("clean-btn");
+
+        verticalLayout.add(button);
+
         return verticalLayout;
     }
 
