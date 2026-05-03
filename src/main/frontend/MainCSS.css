@@ -7,6 +7,22 @@ html, body {
     padding: 0;
 }
 
+/* MainLayout stuff Drawer */
+
+.custom-layout-small::part(drawer),
+.custom-layout-large::part(drawer) {
+    transition: width 0.5s ease;
+}
+
+/* collapsed */
+.custom-layout-small::part(drawer) {
+    width: 80px;
+}
+
+/* expanded */
+.custom-layout-large::part(drawer) {
+    width: 250px;
+}
 
 
 
@@ -21,9 +37,7 @@ html, body {
 
 
 
-
-
-/* Inner container (you wrap your header content in this) */
+/* items css for all to use */
 .header-island {
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -53,25 +67,6 @@ html, body {
 }
 
 
-
-
-.custom-layout-small::part(drawer),
-.custom-layout-large::part(drawer) {
-    transition: width 0.5s ease;
-}
-
-/* collapsed */
-.custom-layout-small::part(drawer) {
-    width: 80px;
-}
-
-/* expanded */
-.custom-layout-large::part(drawer) {
-    width: 250px;
-}
-
-
-/* base button */
 .clean-btn {
     background: transparent;
     color: white; /* blue */
@@ -81,24 +76,87 @@ html, body {
     font-size: 19px;
     cursor: pointer;
 
+    width: 100%;
 
     transition: all 0.2s ease;
 }
 
-/* hover */
 .clean-btn:hover {
     background: rgba(26, 115, 232, 0.1);
     color: white;
 }
 
-/* click / press */
 .clean-btn:active {
     transform: scale(0.96);
     background: rgba(26, 115, 232, 0.2);
 }
 
-/* focus (keyboard accessibility) */
 .clean-btn:focus-visible {
     outline: 2px solid #1a73e8;
     outline-offset: 2px;
+}
+
+
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    position: relative;
+    overflow: hidden;
+    z-index: 10;
+}
+
+/* Title */
+.stat-title {
+    font-size: 14px;
+    color: #888;
+    font-weight: 500;
+    z-index: 10;
+}
+
+.stat-example {
+    font-size: 14px;
+    color: black;
+    font-weight: 500;
+    z-index: 10;
+}
+
+/* Value */
+.stat-value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #111;
+    z-index: 10;
+}
+
+/* Units */
+.stat-units {
+    font-size: 14px;
+    color: #666;
+    z-index: 10;
+}
+
+/* Row */
+.stat-row {
+    gap: 6px;
+    z-index: 10;
+}
+
+/* Image styling */
+.stat-image {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 80px;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.stat-description {
+    font-size: 12px;
+    color: #777;
+    margin-top: 4px;
+    z-index: 10;
 }

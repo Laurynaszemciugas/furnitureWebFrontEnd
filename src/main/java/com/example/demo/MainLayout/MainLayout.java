@@ -28,7 +28,7 @@ public class MainLayout extends AppLayout {
     private VerticalLayout drawerLarge = new VerticalLayout();
 
 
-    Button toggle = new Button("Switch scenes", e -> switchDrawer());
+
 
 
 
@@ -56,7 +56,7 @@ public class MainLayout extends AppLayout {
 
     private VerticalLayout createDrawerLarge() {
 
-
+        Button toggle = new Button("Switch scenes", e -> switchDrawer());
 
         Div Logo = new Div(new Span("Furniture CO"));
         Logo.getStyle()
@@ -120,7 +120,7 @@ public class MainLayout extends AppLayout {
 
     private VerticalLayout createDrawerSmall() {
 
-
+        Button toggle = new Button("Switch scenes", e -> switchDrawer());
 
         Div Logo = new Div(new Span("Furniture CO"));
         Logo.getStyle()
