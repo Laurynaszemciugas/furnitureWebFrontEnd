@@ -1,13 +1,13 @@
 package com.example.demo.MainLayout;
 
-import com.example.demo.Common.Components;
+import com.example.demo.Common.Common;
+import com.example.demo.ControllerModels.MainLayoutMostUsed;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -15,14 +15,13 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.server.VaadinSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 @CssImport("./MainCSS.css")
 public class MainLayout extends AppLayout {
 
 
-    Components components;
+    MainLayoutMostUsed components;
+    Common common;
 
     private VerticalLayout drawerSmall = new VerticalLayout();
     private VerticalLayout drawerLarge = new VerticalLayout();
@@ -32,8 +31,11 @@ public class MainLayout extends AppLayout {
 
 
 
-    public MainLayout(Components components) {
+    public MainLayout(
+            MainLayoutMostUsed components,
+            Common common) {
         this.components = components;
+        this.common = common;
 
         // change the drawer size to large
         addClassName("custom-layout-large");
@@ -186,7 +188,7 @@ public class MainLayout extends AppLayout {
 
         // toggle button
 
-        Icon drawerStepOne = components.iconCrafter(VaadinIcon.MENU,"40px","black");
+        Icon drawerStepOne = common.iconCrafter(VaadinIcon.MENU,"40px","black");
 
 
         DrawerToggle toggle = new DrawerToggle();

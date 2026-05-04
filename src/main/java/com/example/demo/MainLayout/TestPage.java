@@ -22,8 +22,8 @@ public class TestPage extends VerticalLayout {
     ){
         this.dbMostUsed = dbMostUsed;
 
-        setPadding(false); // Removes the outer gap
-        setSpacing(false); // Removes gaps between components inside this layout
+        setPadding(false);
+        setSpacing(false);
         setSizeFull();
         setAlignItems(Alignment.CENTER);
 

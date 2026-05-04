@@ -1,5 +1,6 @@
-package com.example.demo.Common;
+package com.example.demo.ControllerModels;
 
+import com.example.demo.Common.Common;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -7,23 +8,18 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class Components {
+public class MainLayoutMostUsed {
 
-    public Icon iconCrafter(VaadinIcon chosenIcon, String size, String color){
+    Common common;
 
-        Icon icon = chosenIcon.create();
-        icon.setSize(size);
-        icon.setColor(color);
-
-        return icon;
-
+    public MainLayoutMostUsed(Common common) {
+        this.common = common;
     }
-
 
     public Button mainLayoutButtons(String navigate, String text, VaadinIcon icon){
         Button button = new Button(text);
         button.addClassName("clean-btn");
-        button.setIcon(iconCrafter(icon,"30px","white"));
+        button.setIcon(common.iconCrafter(icon,"30px","white"));
 
 
 
@@ -34,10 +30,7 @@ public class Components {
     public Button mainLayoutButtonsSmall(String navigate, VaadinIcon icon){
         Button button = new Button();
         button.addClassName("clean-btn");
-        button.setIcon(iconCrafter(icon,"40px","white"));
-
-
-
+        button.setIcon(common.iconCrafter(icon,"40px","white"));
         return button;
 
     }
