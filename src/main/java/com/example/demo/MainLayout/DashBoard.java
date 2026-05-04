@@ -84,8 +84,6 @@ public class DashBoard extends VerticalLayout {
 
         verticalLayout.setSpacing(false);
         verticalLayout.setPadding(false);
-        verticalLayout.setMinWidth("400px");
-
 
 
         horizontalLayout.add(
@@ -113,13 +111,12 @@ public class DashBoard extends VerticalLayout {
                         "Material usage this month compared to last",
                         "310px",
                         "170px"),
+
+
                 verticalLayout
+        );
 
-
-                );
-
-
-        horizontalLayout.setFlexGrow(1,verticalLayout);
+        horizontalLayout.setFlexGrow(1, verticalLayout);
 
 
 
