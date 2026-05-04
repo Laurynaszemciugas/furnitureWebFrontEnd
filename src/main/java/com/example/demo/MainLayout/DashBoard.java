@@ -50,8 +50,6 @@ public class DashBoard extends VerticalLayout {
 
         HorizontalLayout horizontalLayout = new HorizontalLayout();
         horizontalLayout.setWidthFull();
-
-
         horizontalLayout.getStyle().set("flex-wrap","wrap");
         horizontalLayout.setJustifyContentMode(JustifyContentMode.CENTER);
 
@@ -67,26 +65,24 @@ public class DashBoard extends VerticalLayout {
 
         DashBoardEmployeeMiniInfo employeeData = new DashBoardEmployeeMiniInfo();
 
-        employeeData.setTopEmployee("John Do3333333e");
-        employeeData.setTopEmployeeProduced(1200L);
-        employeeData.setTotalPaidSalary(25000.50);
-        employeeData.setTotalUnpaidSalary(3200.75);
-        employeeData.setTotalPaidLastMonth(18000.00);
-        employeeData.setTotalUnpaidLastMonth(2100.25);
 
-        VerticalLayout verticalLayout = new VerticalLayout( employeeMiniStat(
+        HorizontalLayout employeeCard = new HorizontalLayout(employeeMiniStat(
                 "Material usage information",
                 "Screenshot 2026-04-27 001745.png",
                 employeeData,
                 "Material usage this month compared to last",
-                "420px",
+                null,
                 "170px"));
 
-        verticalLayout.setSpacing(false);
-        verticalLayout.setPadding(false);
+
+
+        employeeCard.setMaxWidth("700px");
+
+
 
 
         horizontalLayout.add(
+
                 orderCompletedMiniStats(
                         "Monthly Orders 'Completed'",
                         "Screenshot 2026-04-27 001745.png",
@@ -112,11 +108,11 @@ public class DashBoard extends VerticalLayout {
                         "310px",
                         "170px"),
 
+                employeeCard
 
-                verticalLayout
         );
 
-        horizontalLayout.setFlexGrow(1, verticalLayout);
+        horizontalLayout.setFlexGrow(1, employeeCard);
 
 
 
@@ -284,14 +280,16 @@ public class DashBoard extends VerticalLayout {
             String width,
             String height
     ) {
-        String topEmployee = "-";
+        String topEmployee = "None";
         long topEmployeeProduced = 0;
         double totalPaidThisMonth = 0.0;
         double totalUnpaidThisMonth = 0.0;
         double totalPaidLastMonth = 0.0;
         double totalUnpaidLastMonth = 0.0;
 
-        if(employeeData !=null) {
+
+
+        if(employeeData.getTopEmployee() != null) {
             topEmployee = employeeData.getTopEmployee();
             topEmployeeProduced = employeeData.getTopEmployeeProduced();
             totalPaidThisMonth = employeeData.getTotalPaidSalary();
@@ -310,20 +308,54 @@ public class DashBoard extends VerticalLayout {
 
 
 
-//        double changePercentPaid = ((double)(materialData.getTotalMaterialsUsed()  - materialData.getLastMonthTotalUsedMaterialCost() ) / materialData.getLastMonthTotalUsedMaterialCost()) * 100;
-//        double changePercentUnPaid = ((double)(materialData.getTotalMaterialsUsed()  - materialData.getLastMonthTotalUsedMaterialCost() ) / materialData.getLastMonthTotalUsedMaterialCost()) * 100;
+        double changePercentPaid = dbMostUsed.diffrenceCalculator(totalPaidThisMonth,totalPaidLastMonth);
+
+        double changePercentUnPaid =  dbMostUsed.diffrenceCalculator(totalUnpaidThisMonth,totalUnpaidLastMonth);
 
 
-//        Span trend =  dbMostUsed.spanCrafter((changePercent >= 0 ? "▲ " : "▼ ") + String.format("%.2f",Math.abs(changePercent)) + "%" ,"stat-trend");
-//
-//
+       Span trend1 =  dbMostUsed.spanCrafter((changePercentPaid >= 0 ? "▲ " : "▼ ") + String.format("%.2f",Math.abs(changePercentPaid)) + "%" ,"stat-trend");
+
+       Span s = new Span("Compared to last month");
+
+        Span s2 = new Span("Compared to last month");
+
+       HorizontalLayout trendHolder1 = dbMostUsed.doubleValueRow(trend1,s);
+        trendHolder1.setWidth("300px");
+
+
+
+
+
+        if (changePercentPaid > 0) {
+            trend1.getStyle().set("color", "red");
+        } else if (changePercentPaid < 0) {
+            trend1.getStyle().set("color", "green");
+        } else {
+            trend1.getStyle().set("color", "gray");
+        }
+
+        Span trend2 =  dbMostUsed.spanCrafter((changePercentUnPaid >= 0 ? "▲ " : "▼ ") + String.format("%.2f",Math.abs(changePercentUnPaid)) + "%" ,"stat-trend");
+
+        HorizontalLayout trendHolder2 = dbMostUsed.doubleValueRow(trend2,s2);
+        trendHolder2.setWidth("300px");
+
+
+        if (changePercentUnPaid > 0) {
+            trend2.getStyle().set("color", "red");
+        } else if (changePercentUnPaid < 0) {
+            trend2.getStyle().set("color", "green");
+        } else {
+            trend2.getStyle().set("color", "gray");
+        }
+
+        System.out.println(topEmployee);
 
         // Layout
         VerticalLayout island = new VerticalLayout(
                 dbMostUsed.spanCrafter(name,"stat-title"),
                 dbMostUsed.doubleValueRow(dbMostUsed.spanCrafter(topEmployee,"stat-value"), dbMostUsed.spanCrafter(topEmployeeProduced + " units produced","stat-unit")),
-                dbMostUsed.doubleValueRow(dbMostUsed.spanCrafter(String.valueOf(totalPaidThisMonth),"stat-example"), dbMostUsed.spanCrafter("This month paid salary Eur","stat-description")),
-                dbMostUsed.doubleValueRow(dbMostUsed.spanCrafter(String.valueOf(totalUnpaidThisMonth),"stat-example"), dbMostUsed.spanCrafter("This month unpaid salary Eur","stat-description")),
+                dbMostUsed.tripleValueRow(dbMostUsed.spanCrafter(String.valueOf(totalPaidThisMonth),"stat-example"), dbMostUsed.spanCrafter("This month paid salary Eur  ","stat-description"),trendHolder1),
+                dbMostUsed.tripleValueRow(dbMostUsed.spanCrafter(String.valueOf(totalUnpaidThisMonth),"stat-example"), dbMostUsed.spanCrafter("This month unpaid salary Eur  ","stat-description"),trendHolder2),
                 dbMostUsed.spanCrafter(description,"stat-description")
 
                 );
@@ -337,7 +369,7 @@ public class DashBoard extends VerticalLayout {
 
         island.setPadding(true);
         island.setSpacing(false);
-        island.setWidth(width);
+        island.setWidthFull();
         island.setHeight(height);
 
         return island;

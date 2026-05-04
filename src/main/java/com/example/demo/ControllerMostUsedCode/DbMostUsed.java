@@ -27,9 +27,29 @@ public class DbMostUsed {
         valueRow.setAlignItems(FlexComponent.Alignment.BASELINE);
         valueRow.addClassName("stat-row");
 
-        valueRow.setWidthFull(); // 🔥 important
+        valueRow.setWidthFull();
 
         return valueRow;
+    }
+
+    public HorizontalLayout tripleValueRow(Component component1, Component component2, Component component3){
+        HorizontalLayout valueRow = new HorizontalLayout(component1, component2, component3);
+        valueRow.setAlignItems(FlexComponent.Alignment.BASELINE);
+        valueRow.addClassName("stat-row");
+
+        valueRow.setWidthFull();
+
+        return valueRow;
+    }
+
+
+    public double diffrenceCalculator(double currentValue, double oldValue){
+
+        double value = ((currentValue - oldValue) / oldValue) * 100;
+
+
+
+        return  Math.abs(value);
     }
 
 
