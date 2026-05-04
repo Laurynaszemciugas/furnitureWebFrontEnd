@@ -1,4 +1,4 @@
-package com.example.demo.ControllerModels;
+package com.example.demo.ControllerModels.DashBoard;
 
 
 import lombok.AllArgsConstructor;
