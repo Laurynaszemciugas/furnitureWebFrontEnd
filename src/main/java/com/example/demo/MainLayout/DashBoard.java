@@ -52,9 +52,8 @@ public class DashBoard extends VerticalLayout {
     public VerticalLayout mainLayout(){
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setMaxWidth("1650px");
-        verticalLayout.setHeightFull();
-        verticalLayout.getStyle().set("margin-top","20px");
-        verticalLayout.addClassName("island");
+        verticalLayout.getStyle().set("margin-top","5px");
+        verticalLayout.addClassName("main-island");
 
 
 
@@ -453,7 +452,7 @@ public class DashBoard extends VerticalLayout {
                                 "From",
                                 common.dateCrafter(0,0,0,0,true),
                                 "To",
-                                common.dateCrafter(0,1,0,1,true)),"stat-description")));
+                                common.dateCrafter(0,1,1,0,true)),"stat-description")));
 
         graph.addClassName("island");
         graph.getStyle().set("flex-wrap","wrap");
