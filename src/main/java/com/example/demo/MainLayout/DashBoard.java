@@ -1,24 +1,36 @@
 package com.example.demo.MainLayout;
 
+import com.example.demo.Common.Common;
 import com.example.demo.ControllerModels.DashBoard.DashBoardEmployeeMiniInfo;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialUsageInfo;
 import com.example.demo.ControllerMostUsedCode.DbMostUsed;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+
+import java.time.LocalDate;
+
 
 @Route(value = "DashBoard", layout = MainLayout.class)
 public class DashBoard extends VerticalLayout {
 
     DbMostUsed dbMostUsed;
+    Common common;
 
     public DashBoard(
-            DbMostUsed dbMostUsed
+            DbMostUsed dbMostUsed,
+            Common common
     ){
         this.dbMostUsed = dbMostUsed;
+        this.common = common;
 
         setPadding(false);
         setSpacing(false);
@@ -36,10 +48,19 @@ public class DashBoard extends VerticalLayout {
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.setHeightFull();
         verticalLayout.getStyle().set("margin-top","20px");
-
         verticalLayout.addClassName("island");
 
-        verticalLayout.add(miniStats());
+        VerticalLayout activityFeed = activityFeedCrafter();
+        VerticalLayout graphHolder = graph();
+        graphHolder.setWidth("800px");
+        HorizontalLayout h = new HorizontalLayout(graphHolder, activityFeed);
+        h.setWidthFull();
+        h.setFlexGrow(1, graphHolder);
+
+        h.getStyle().set("flex-wrap","wrap");
+
+
+        verticalLayout.add(miniStats(),h);
 
         verticalLayout.setAlignItems(Alignment.CENTER);
 
@@ -67,7 +88,7 @@ public class DashBoard extends VerticalLayout {
 
 
         HorizontalLayout employeeCard = new HorizontalLayout(employeeMiniStat(
-                "Material usage information",
+                "Employee mini information",
                 "Screenshot 2026-04-27 001745.png",
                 employeeData,
                 "Material usage this month compared to last",
@@ -101,7 +122,7 @@ public class DashBoard extends VerticalLayout {
                         "310px",
                         "170px"),
                 materialUsageMiniStat(
-                        "Material cost information",
+                        "Material mini information",
                         "Screenshot 2026-04-27 001745.png",
                         materialData,
                         "Material usage this month compared to last",
@@ -121,6 +142,10 @@ public class DashBoard extends VerticalLayout {
     }
 
 
+
+    // ===================================== mini stats =====================================
+
+
     public VerticalLayout orderCompletedMiniStats(
             String name,
             String image,
@@ -132,27 +157,12 @@ public class DashBoard extends VerticalLayout {
             String height
     ) {
 
-        Image image1 = new Image(image, "Image error");
-        image1.setWidth("200px");
-        image1.getStyle().set("position","absolute")
-                .set("bottom", "0")
-                .set("right", "0")
-                .set("z-index","1");
-
-
-
-        double changePercent = ((double)(value  - previousValue ) / previousValue) * 100;
+        double changePercent = dbMostUsed.diffrenceCalculator(value, previousValue);
 
 
         Span trend =  dbMostUsed.spanCrafter((changePercent >= 0 ? "▲ " : "▼ ") + String.format("%.2f",Math.abs(changePercent)) + "%" ,"stat-trend");
 
-        if (changePercent > 0) {
-            trend.getStyle().set("color", "green");
-        } else if (changePercent < 0) {
-            trend.getStyle().set("color", "red");
-        } else {
-            trend.getStyle().set("color", "gray");
-        }
+        dbMostUsed.trendColoring("Green","Red",changePercent, trend);
 
         // Layout
         VerticalLayout island = new VerticalLayout(
@@ -226,25 +236,13 @@ public class DashBoard extends VerticalLayout {
             totalCostOfMaterialUsedLastMonth = materialData.getLastMonthTotalUsedMaterialCost();
         }
 
-        Image image1 = new Image(image, "Image error");
-        image1.setWidth("200px");
-        image1.getStyle().set("position","absolute")
-                .set("bottom", "0")
-                .set("right", "0")
-                .set("z-index","1");
 
-        double changePercent = ((double)(materialData.getTotalMaterialsUsed()  - materialData.getLastMonthTotalUsedMaterialCost() ) / materialData.getLastMonthTotalUsedMaterialCost()) * 100;
+        double changePercent = dbMostUsed.diffrenceCalculator(totalCostOfMaterialsUsedThisMonth,totalCostOfMaterialUsedLastMonth);
 
 
         Span trend =  dbMostUsed.spanCrafter((changePercent >= 0 ? "▲ " : "▼ ") + String.format("%.2f",Math.abs(changePercent)) + "%" ,"stat-trend");
 
-        if (changePercent > 0) {
-            trend.getStyle().set("color", "green");
-        } else if (changePercent < 0) {
-            trend.getStyle().set("color", "red");
-        } else {
-            trend.getStyle().set("color", "gray");
-        }
+       dbMostUsed.trendColoring("Green","Red",changePercent, trend);
 
         Span desc = new Span(description);
         desc.addClassName("stat-description");
@@ -298,57 +296,31 @@ public class DashBoard extends VerticalLayout {
             totalUnpaidLastMonth = employeeData.getTotalUnpaidLastMonth();
         }
 
-
-        Image image1 = new Image(image, "Image error");
-        image1.setWidth("200px");
-        image1.getStyle().set("position","absolute")
-                .set("bottom", "0")
-                .set("right", "0")
-                .set("z-index","1");
-
-
+        // find change according to this month and previous
 
         double changePercentPaid = dbMostUsed.diffrenceCalculator(totalPaidThisMonth,totalPaidLastMonth);
 
         double changePercentUnPaid =  dbMostUsed.diffrenceCalculator(totalUnpaidThisMonth,totalUnpaidLastMonth);
 
+        // show trent according to change
 
        Span trend1 =  dbMostUsed.spanCrafter((changePercentPaid >= 0 ? "▲ " : "▼ ") + String.format("%.2f",Math.abs(changePercentPaid)) + "%" ,"stat-trend");
 
-       Span s = new Span("Compared to last month");
+       Span trend2 =  dbMostUsed.spanCrafter((changePercentUnPaid >= 0 ? "▲ " : "▼ ") + String.format("%.2f",Math.abs(changePercentUnPaid)) + "%" ,"stat-trend");
 
-        Span s2 = new Span("Compared to last month");
 
-       HorizontalLayout trendHolder1 = dbMostUsed.doubleValueRow(trend1,s);
+       // change color according to change
+        dbMostUsed.trendColoring("red","green",changePercentPaid, trend1);
+        dbMostUsed.trendColoring("red","green",changePercentUnPaid, trend2);
+
+
+        HorizontalLayout trendHolder2 = dbMostUsed.doubleValueRow(trend2, dbMostUsed.spanCrafter("Compared to last month","stat-description"));
+        trendHolder2.setWidth("300px");
+
+        HorizontalLayout trendHolder1 = dbMostUsed.doubleValueRow(trend1,dbMostUsed.spanCrafter("Compared to last month","stat-description"));
         trendHolder1.setWidth("300px");
 
 
-
-
-
-        if (changePercentPaid > 0) {
-            trend1.getStyle().set("color", "red");
-        } else if (changePercentPaid < 0) {
-            trend1.getStyle().set("color", "green");
-        } else {
-            trend1.getStyle().set("color", "gray");
-        }
-
-        Span trend2 =  dbMostUsed.spanCrafter((changePercentUnPaid >= 0 ? "▲ " : "▼ ") + String.format("%.2f",Math.abs(changePercentUnPaid)) + "%" ,"stat-trend");
-
-        HorizontalLayout trendHolder2 = dbMostUsed.doubleValueRow(trend2,s2);
-        trendHolder2.setWidth("300px");
-
-
-        if (changePercentUnPaid > 0) {
-            trend2.getStyle().set("color", "red");
-        } else if (changePercentUnPaid < 0) {
-            trend2.getStyle().set("color", "green");
-        } else {
-            trend2.getStyle().set("color", "gray");
-        }
-
-        System.out.println(topEmployee);
 
         // Layout
         VerticalLayout island = new VerticalLayout(
@@ -377,6 +349,97 @@ public class DashBoard extends VerticalLayout {
 
 
 
+
+    // ===================================== Activity feed and the graph =====================================
+
+
+    public VerticalLayout activityFeedCrafter(){
+
+
+        VerticalLayout activityFeedHolder = new VerticalLayout(dbMostUsed.spanCrafter("Activity feed","stat-value"));
+        activityFeedHolder.addClassName("island");
+        activityFeedHolder.setMaxWidth("500px");
+        activityFeedHolder.setMaxHeight("600px");
+
+
+        HorizontalLayout buttonAtTheBottom = new HorizontalLayout(common.normalThemeButton("View All Logs", DashBoard.class, ButtonVariant.LUMO_PRIMARY));
+        buttonAtTheBottom.setWidthFull();
+        buttonAtTheBottom.setJustifyContentMode(JustifyContentMode.CENTER);
+
+
+        //fix add the action logic to add the info
+
+        VerticalLayout actionsOfTheSystems = new VerticalLayout();
+        actionsOfTheSystems.add(activityLogCrafter("Ultra 4k 178545hz asus gigabyte monitor","bob smith",5),activityLogCrafter("Ultra 4k 178545hz asus gigabyte monitor","bob smith",5),activityLogCrafter("Ultra 4k 178545hz asus gigabyte monitor","bob smith",5),activityLogCrafter("Ultra 4k 178545hz asus gigabyte monitor","bob smith",5));
+
+
+        Scroller scroller = new Scroller(actionsOfTheSystems);
+        scroller.setSizeFull();
+
+
+        activityFeedHolder.add(scroller,buttonAtTheBottom);
+
+        return  activityFeedHolder;
+    }
+
+    // log crafter for "activityFeedCrafter"
+    public HorizontalLayout activityLogCrafter(String nameOfTheUpdatedCreatedItem, String whoMadeAction, long howLongAgo){
+        HorizontalLayout iconHolder = new HorizontalLayout(common.iconCrafter(VaadinIcon.CIRCLE,"20px","green"));
+        iconHolder.getStyle().set("margin-top","5px");
+
+        // how  long ago is in minutes
+        long timePassed = howLongAgo;
+        String timeName = timePassed == 1 ? "Minute ago" : "Minutes ago";
+        if(howLongAgo >= 60){
+            timePassed = howLongAgo / 60;
+            timeName =  timePassed == 1 ? "Hour ago" : "Hours ago";
+        }
+        if(timePassed >= 24){
+            timePassed = timePassed /24;
+            timeName = timePassed == 1 ? "Day ago" : "Days ago";
+        }
+        if(timePassed >=30){
+            timePassed = timePassed / 30;
+            timeName = timePassed == 1 ? "Month ago" : "Months ago";
+        }
+        if(timePassed >= 48){
+            timePassed = timePassed / 48;
+            timeName = timePassed == 1 ? "Year ago" : "Years ago";;
+        }
+
+
+
+        VerticalLayout verticalLayout = new VerticalLayout(dbMostUsed.spanCrafterWordNoHide(nameOfTheUpdatedCreatedItem,"activityFeed-name"), dbMostUsed.spanCrafter(String.format("%s %s %d %s",whoMadeAction, "●", timePassed,timeName ),"stat-description"));
+        verticalLayout.setPadding(false);
+        verticalLayout.setSpacing(false);
+
+        HorizontalLayout activityFeedHolder = new HorizontalLayout(iconHolder,verticalLayout);
+        activityFeedHolder.addClassName("island");
+        activityFeedHolder.setWidthFull();
+
+
+        return  activityFeedHolder;
+
+    }
+
+    // grapth for smth
+    public VerticalLayout graph(){
+
+        VerticalLayout graph = new VerticalLayout(
+                dbMostUsed.doubleValueRow(
+                        dbMostUsed.spanCrafter("Current month revenue graph","stat-value"),
+                        dbMostUsed.spanCrafter(String.format("%s %s %s %s", "From",
+                                common.dateCrafter(0,0,0,0,true),"To",
+                                common.dateCrafter(0,1,0,1,true)),"stat-description")));
+
+        graph.addClassName("island");
+
+
+        return graph;
+
+
+
+    }
 
 
 
