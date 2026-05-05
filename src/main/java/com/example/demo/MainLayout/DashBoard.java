@@ -2,7 +2,9 @@ package com.example.demo.MainLayout;
 
 import com.example.demo.Common.Common;
 import com.example.demo.ControllerModels.DashBoard.DashBoardEmployeeMiniInfo;
+import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialStock;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialUsageInfo;
+import com.example.demo.ControllerModels.DashBoard.DashBoardMonthlyOrdersCompleted;
 import com.example.demo.ControllerMostUsedCode.DbMostUsed;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -43,6 +45,8 @@ public class DashBoard extends VerticalLayout {
 
     }
 
+    // main layout all stuff go here
+
     public VerticalLayout mainLayout(){
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setMaxWidth("1650px");
@@ -50,22 +54,23 @@ public class DashBoard extends VerticalLayout {
         verticalLayout.getStyle().set("margin-top","20px");
         verticalLayout.addClassName("island");
 
-        VerticalLayout activityFeed = activityFeedCrafter();
-        VerticalLayout graphHolder = graph();
-        graphHolder.setWidth("800px");
-        HorizontalLayout h = new HorizontalLayout(graphHolder, activityFeed);
-        h.setWidthFull();
-        h.setFlexGrow(1, graphHolder);
-
-        h.getStyle().set("flex-wrap","wrap");
 
 
-        verticalLayout.add(miniStats(),h);
+
+        verticalLayout.add(miniStats(),activityGraphHolder(),smth());
 
         verticalLayout.setAlignItems(Alignment.CENTER);
 
         return verticalLayout;
     }
+
+
+
+
+
+
+
+    // ===================================== mini stats =====================================
 
     public HorizontalLayout miniStats(){
 
@@ -75,18 +80,32 @@ public class DashBoard extends VerticalLayout {
         horizontalLayout.setJustifyContentMode(JustifyContentMode.CENTER);
 
 
+        // ------------------------ Monthly Orders 'Completed' first mini stat ---------------------------------
+        DashBoardMonthlyOrdersCompleted ordersCompletedCompleted = new DashBoardMonthlyOrdersCompleted();
+        ordersCompletedCompleted.setThisMonthOrders(100L);
+        ordersCompletedCompleted.setPreviousMonthOrders(200L);
+
+        // ------------------------ Material Stock 'Current' second mini stat ---------------------------------
 
 
+        DashBoardMaterialStock dashBoardMaterialStock = new DashBoardMaterialStock();
+        dashBoardMaterialStock.setLowMaterial(20);
 
+
+        // ------------------------ Material mini information third mini stat ---------------------------------
         DashBoardMaterialUsageInfo materialData = new DashBoardMaterialUsageInfo();
         materialData.setMostUsedMaterial("wood");
         materialData.setTotalMaterialsUsed(10);
         materialData.setTotalUsedMaterialCost(152.5);
         materialData.setLastMonthTotalUsedMaterialCost(12);
 
+        // ------------------------ Employee mini information fourth mini stat ---------------------------------
         DashBoardEmployeeMiniInfo employeeData = new DashBoardEmployeeMiniInfo();
 
 
+
+
+        // fourth mini stat large auto resize
         HorizontalLayout employeeCard = new HorizontalLayout(employeeMiniStat(
                 "Employee mini information",
                 "Screenshot 2026-04-27 001745.png",
@@ -94,30 +113,24 @@ public class DashBoard extends VerticalLayout {
                 "Material usage this month compared to last",
                 null,
                 "170px"));
+        employeeCard.setWidth("400px");
 
 
-
-        employeeCard.setMaxWidth("700px");
-
-
-
-
+        // all the remaining mini stats
         horizontalLayout.add(
 
                 orderCompletedMiniStats(
                         "Monthly Orders 'Completed'",
                         "Screenshot 2026-04-27 001745.png",
-                        1245,
                         "Orders",
-                        1000,
+                        ordersCompletedCompleted,
                         "Compared to last months 'Completed' orders",
                         "310px",
                         "170px"),
                 materialsStockMiniStats(
                         "Material Stock 'Current'",
                         "Screenshot 2026-04-27 001745.png",
-                        22,
-                        0,
+                        dashBoardMaterialStock,
                         "Current material stock",
                         "310px",
                         "170px"),
@@ -143,19 +156,23 @@ public class DashBoard extends VerticalLayout {
 
 
 
-    // ===================================== mini stats =====================================
-
-
     public VerticalLayout orderCompletedMiniStats(
             String name,
             String image,
-            long value,
             String units,
-            long previousValue,
+            DashBoardMonthlyOrdersCompleted ordersData,
             String description,
             String width,
             String height
     ) {
+
+        long value = 0;
+        long previousValue = 0;
+
+        if(ordersData != null) {
+            value = ordersData.getThisMonthOrders();
+            previousValue = ordersData.getPreviousMonthOrders();
+        }
 
         double changePercent = dbMostUsed.diffrenceCalculator(value, previousValue);
 
@@ -185,19 +202,21 @@ public class DashBoard extends VerticalLayout {
     public VerticalLayout materialsStockMiniStats(
             String name,
             String image,
-            long lowMaterial,
-            long noStockMaterial,
+            DashBoardMaterialStock dashBoardMaterialStock,
             String description,
             String width,
             String height
     ) {
 
-        Image image1 = new Image(image, "Image error");
-        image1.setWidth("200px");
-        image1.getStyle().set("position","absolute")
-                .set("bottom", "0")
-                .set("right", "0")
-                .set("z-index","1");
+
+        long lowMaterial = 0;
+        long noStockMaterial = 0;
+
+        if(dashBoardMaterialStock != null){
+            lowMaterial = dashBoardMaterialStock.getLowMaterial();
+            noStockMaterial = dashBoardMaterialStock.getNoStockMaterial();
+        }
+
 
         // Layout
         VerticalLayout island = new VerticalLayout(
@@ -267,7 +286,6 @@ public class DashBoard extends VerticalLayout {
 
         return island;
     }
-
 
 
     public VerticalLayout employeeMiniStat(
@@ -352,6 +370,7 @@ public class DashBoard extends VerticalLayout {
 
     // ===================================== Activity feed and the graph =====================================
 
+    // do list
 
     public VerticalLayout activityFeedCrafter(){
 
@@ -427,18 +446,111 @@ public class DashBoard extends VerticalLayout {
 
         VerticalLayout graph = new VerticalLayout(
                 dbMostUsed.doubleValueRow(
-                        dbMostUsed.spanCrafter("Current month revenue graph","stat-value"),
-                        dbMostUsed.spanCrafter(String.format("%s %s %s %s", "From",
-                                common.dateCrafter(0,0,0,0,true),"To",
+                        dbMostUsed.spanCrafterWordNoHide("Current month revenue graph","stat-value"),
+                        dbMostUsed.spanCrafterWordNoHide(String.format("%s %s %s %s",
+                                "From",
+                                common.dateCrafter(0,0,0,0,true),
+                                "To",
                                 common.dateCrafter(0,1,0,1,true)),"stat-description")));
 
         graph.addClassName("island");
+        graph.getStyle().set("flex-wrap","wrap");
 
 
         return graph;
 
 
 
+    }
+
+    // graph and the activitylog holder
+    public HorizontalLayout activityGraphHolder(){
+        VerticalLayout activityFeed = activityFeedCrafter();
+        VerticalLayout graphHolder = graph();
+        graphHolder.setWidth("800px");
+        HorizontalLayout h = new HorizontalLayout(graphHolder, activityFeed);
+        h.setWidthFull();
+        h.setFlexGrow(1, graphHolder);
+
+        h.getStyle().set("flex-wrap","wrap");
+
+        return h;
+    }
+
+
+
+    // =============================== Low/No MATERIAL top employees quickActions ======================================
+
+    public HorizontalLayout smth(){
+
+        VerticalLayout mainLayout = new VerticalLayout(dbMostUsed.spanCrafterWordNoHide("Material Low/No stock","stat-value"));
+        mainLayout.setWidth("600px");
+        mainLayout.addClassName("island");
+
+
+        // add data here from db
+        VerticalLayout material = new VerticalLayout(materialLowNoStockFeed(),materialLowNoStockFeed(),materialLowNoStockFeed(),materialLowNoStockFeed());
+
+        // scroller that takes material as data from materialLowNoStockFeed
+        Scroller scroller = new Scroller(material);
+        scroller.setSizeFull();
+        scroller.setHeight("400px");
+
+        // simple button in the middle
+        HorizontalLayout buttonAtTheBottom = new HorizontalLayout(common.normalThemeButton("View All Material", DashBoard.class, ButtonVariant.LUMO_PRIMARY));
+        buttonAtTheBottom.setWidthFull();
+        buttonAtTheBottom.setJustifyContentMode(JustifyContentMode.CENTER);
+
+        // add remainin stuff to the main layout of the low no material layout
+        mainLayout.add(scroller,buttonAtTheBottom);
+
+
+
+
+
+
+
+
+
+
+        VerticalLayout activityFeed = new VerticalLayout(dbMostUsed.spanCrafterWordNoHide("Top employees","stat-value"));
+        activityFeed.addClassName("island");
+        activityFeed.setWidth("600px");
+
+        VerticalLayout s = new VerticalLayout(dbMostUsed.spanCrafterWordNoHide("Quick actions","stat-value"));
+        s.addClassName("island");
+        s.setWidth("300px");
+        s.setMaxWidth("600px");
+
+
+
+        HorizontalLayout h = new HorizontalLayout(mainLayout, activityFeed,s);
+        h.setWidthFull();
+        h.setFlexGrow(1, s);
+
+        h.getStyle().set("flex-wrap","wrap");
+
+        return  h;
+
+    }
+
+    public HorizontalLayout materialLowNoStockFeed(){
+        HorizontalLayout iconHolder = new HorizontalLayout(common.iconCrafter(VaadinIcon.CIRCLE,"20px","blue"));
+        iconHolder.getStyle().set("margin-top","5px");
+
+        VerticalLayout e = new VerticalLayout(
+                dbMostUsed.tripleValueRow(dbMostUsed.spanCrafterWordNoHide("Wood","activityFeed-name"),dbMostUsed.spanCrafterWordNoHide(" - ","activityFeed-name"),dbMostUsed.spanCrafterWordNoHide("5 units","stat-example")),
+                dbMostUsed.tripleValueRow(dbMostUsed.spanCrafterWordNoHide("Current stock - 10","stat-title"),dbMostUsed.spanCrafterWordNoHide("● Min treshold - 25 ","stat-title"),dbMostUsed.spanCrafterWordNoHide("● Peace cost - 10 eur ","stat-title"))
+        );
+        e.setWidthFull();
+        e.setPadding(false);
+        e.setSpacing(false);
+
+        HorizontalLayout h12 = new HorizontalLayout(iconHolder,e);
+        h12.addClassName("island");
+        h12.setWidthFull();
+
+        return  h12;
     }
 
 
