@@ -25,6 +25,30 @@ html, body {
 }
 
 
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f7faff; /* very light */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #3b82f6; /* clean blue */
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #2563eb; /* slightly darker */
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #3b82f6 #f7faff;
+}
+
 
 
 
@@ -36,6 +60,10 @@ html, body {
 vaadin-button {
   cursor: pointer;
 }
+
+
+
+
 
 
 

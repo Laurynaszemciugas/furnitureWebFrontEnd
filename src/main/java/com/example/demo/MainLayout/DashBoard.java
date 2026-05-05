@@ -11,12 +11,14 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.signals.Signal;
 
 import java.time.LocalDate;
 
@@ -113,7 +115,7 @@ public class DashBoard extends VerticalLayout {
                 "Material usage this month compared to last",
                 null,
                 "170px"));
-        employeeCard.setWidth("400px");
+        employeeCard.setMaxWidth("700px");
 
 
         // all the remaining mini stats
@@ -467,7 +469,7 @@ public class DashBoard extends VerticalLayout {
     public HorizontalLayout activityGraphHolder(){
         VerticalLayout activityFeed = activityFeedCrafter();
         VerticalLayout graphHolder = graph();
-        graphHolder.setWidth("800px");
+        graphHolder.setWidth("400px");
         HorizontalLayout h = new HorizontalLayout(graphHolder, activityFeed);
         h.setWidthFull();
         h.setFlexGrow(1, graphHolder);
@@ -506,6 +508,27 @@ public class DashBoard extends VerticalLayout {
 
 
 
+        VerticalLayout mainLayout2 = new VerticalLayout(dbMostUsed.spanCrafterWordNoHide("Top employees","stat-value"));
+        mainLayout2.setWidth("600px");
+        mainLayout2.addClassName("island");
+
+
+        // add data here from db
+        VerticalLayout material2 = new VerticalLayout(topEmployeeFeed(),topEmployeeFeed(),topEmployeeFeed(),topEmployeeFeed());
+
+        // scroller that takes material as data from materialLowNoStockFeed
+        Scroller scroller2 = new Scroller(material2);
+        scroller2.setSizeFull();
+        scroller2.setHeight("400px");
+
+        // simple button in the middle
+        HorizontalLayout buttonAtTheBottom2 = new HorizontalLayout(common.normalThemeButton("View All Employee", DashBoard.class, ButtonVariant.LUMO_PRIMARY));
+        buttonAtTheBottom2.setWidthFull();
+        buttonAtTheBottom2.setJustifyContentMode(JustifyContentMode.CENTER);
+
+        // add remainin stuff to the main layout of the low no material layout
+        mainLayout2.add(scroller2,buttonAtTheBottom2);
+
 
 
 
@@ -518,13 +541,14 @@ public class DashBoard extends VerticalLayout {
         activityFeed.setWidth("600px");
 
         VerticalLayout s = new VerticalLayout(dbMostUsed.spanCrafterWordNoHide("Quick actions","stat-value"));
+        s.add(new Button("132"),new Button("132"),new Button("132"),new Button("132"));
         s.addClassName("island");
-        s.setWidth("300px");
+        s.setWidth("200px");
         s.setMaxWidth("600px");
 
 
 
-        HorizontalLayout h = new HorizontalLayout(mainLayout, activityFeed,s);
+        HorizontalLayout h = new HorizontalLayout(mainLayout, mainLayout2,s);
         h.setWidthFull();
         h.setFlexGrow(1, s);
 
@@ -534,12 +558,16 @@ public class DashBoard extends VerticalLayout {
 
     }
 
+
+
+
+    // material feed crafter
     public HorizontalLayout materialLowNoStockFeed(){
         HorizontalLayout iconHolder = new HorizontalLayout(common.iconCrafter(VaadinIcon.CIRCLE,"20px","blue"));
         iconHolder.getStyle().set("margin-top","5px");
 
         VerticalLayout e = new VerticalLayout(
-                dbMostUsed.tripleValueRow(dbMostUsed.spanCrafterWordNoHide("Wood","activityFeed-name"),dbMostUsed.spanCrafterWordNoHide(" - ","activityFeed-name"),dbMostUsed.spanCrafterWordNoHide("5 units","stat-example")),
+                dbMostUsed.tripleValueRow(dbMostUsed.spanCrafterWordNoHide("Wood","activityFeed-name"),dbMostUsed.spanCrafterWordNoHide(" - ","activityFeed-name"),dbMostUsed.spanCrafterWordNoHide("5 units left","stat-example")),
                 dbMostUsed.tripleValueRow(dbMostUsed.spanCrafterWordNoHide("Current stock - 10","stat-title"),dbMostUsed.spanCrafterWordNoHide("● Min treshold - 25 ","stat-title"),dbMostUsed.spanCrafterWordNoHide("● Peace cost - 10 eur ","stat-title"))
         );
         e.setWidthFull();
@@ -547,6 +575,36 @@ public class DashBoard extends VerticalLayout {
         e.setSpacing(false);
 
         HorizontalLayout h12 = new HorizontalLayout(iconHolder,e);
+        h12.addClassName("island");
+        h12.setWidthFull();
+
+        return  h12;
+    }
+
+
+
+
+
+    // employee feed crafter
+    public HorizontalLayout topEmployeeFeed(){
+        HorizontalLayout iconHolder = new HorizontalLayout(common.iconCrafter(VaadinIcon.CIRCLE,"20px","blue"));
+        iconHolder.getStyle().set("margin-top","5px");
+
+        Image image =new Image("Screenshot 2026-04-27 001745.png","user image");
+        image.setWidth("60px");
+        image.setHeight("60px");
+        image.getStyle().set("border-radius","30px");
+
+
+        VerticalLayout e = new VerticalLayout(
+                dbMostUsed.tripleValueRow(dbMostUsed.spanCrafterWordNoHide("Josh Smith","activityFeed-name"),dbMostUsed.spanCrafterWordNoHide(" - ","activityFeed-name"),dbMostUsed.spanCrafterWordNoHide("5 units produced","stat-example")),
+                dbMostUsed.doubleValueRow(dbMostUsed.spanCrafterWordNoHide("Hourly salary - 25 Eur","stat-title"),dbMostUsed.spanCrafterWordNoHide("● Hours worked - 256 ","stat-title"))
+        );
+        e.setWidthFull();
+        e.setPadding(false);
+        e.setSpacing(false);
+
+        HorizontalLayout h12 = new HorizontalLayout(image,e);
         h12.addClassName("island");
         h12.setWidthFull();
 
