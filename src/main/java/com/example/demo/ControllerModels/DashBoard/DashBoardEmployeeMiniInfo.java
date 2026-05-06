@@ -18,4 +18,16 @@ public class DashBoardEmployeeMiniInfo {
     double totalPaidLastMonth;
     double totalUnpaidLastMonth;
 
+
+
+    public boolean isEmpty() {
+        return topEmployee == null
+                && topEmployeeProduced == 0
+                && totalPaidSalary == 0
+                && totalUnpaidSalary == 0
+                && totalPaidLastMonth == 0
+                && totalUnpaidLastMonth == 0;
+    }
+
+
 }

@@ -15,4 +15,8 @@ public class DashBoardMonthlyOrdersCompleted {
     private long thisMonthOrders;
     private long previousMonthOrders;
 
+    public boolean isEmpty() {
+        return thisMonthOrders == 0 && previousMonthOrders == 0;
+    }
+
 }

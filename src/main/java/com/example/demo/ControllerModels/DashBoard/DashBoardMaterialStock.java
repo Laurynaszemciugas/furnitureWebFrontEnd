@@ -16,5 +16,8 @@ public class DashBoardMaterialStock {
     private long lowMaterial;
     private long noStockMaterial;
 
+    public boolean isEmpty() {
+        return lowMaterial == 0L && noStockMaterial == 0L;
+    }
 
 }

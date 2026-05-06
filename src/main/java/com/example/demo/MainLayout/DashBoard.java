@@ -6,6 +6,8 @@ import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialStock;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialUsageInfo;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMonthlyOrdersCompleted;
 import com.example.demo.ControllerMostUsedCode.DbMostUsed;
+import com.example.demo.chart;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
@@ -17,6 +19,8 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.signals.Signal;
 
@@ -24,26 +28,76 @@ import java.time.LocalDate;
 
 
 @Route(value = "DashBoard", layout = MainLayout.class)
-public class DashBoard extends VerticalLayout {
+public class DashBoard extends VerticalLayout implements BeforeEnterObserver {
 
     DbMostUsed dbMostUsed;
     Common common;
 
+
+    //test
+
+    chart chart;
+
+
+
+    DashBoardMonthlyOrdersCompleted ordersCompletedCompleted = new DashBoardMonthlyOrdersCompleted();
+    DashBoardMaterialStock dashBoardMaterialStock = new DashBoardMaterialStock();
+    DashBoardMaterialUsageInfo materialData = new DashBoardMaterialUsageInfo();
+    DashBoardEmployeeMiniInfo employeeData = new DashBoardEmployeeMiniInfo();
+
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+
+
+    }
+
+
+
     public DashBoard(
             DbMostUsed dbMostUsed,
-            Common common
+            Common common,
+            chart chart
     ){
         this.dbMostUsed = dbMostUsed;
         this.common = common;
+        this.chart = chart;
 
         setPadding(false);
         setSpacing(false);
         setSizeFull();
         setAlignItems(Alignment.CENTER);
 
-
-
+        loadData();
         add(mainLayout());
+
+    }
+
+
+
+
+    public void loadData(){
+        System.out.println(ordersCompletedCompleted);
+
+        // ------------------------ Monthly Orders 'Completed' first mini stat ---------------------------------
+        ordersCompletedCompleted.setThisMonthOrders(100L);
+        ordersCompletedCompleted.setPreviousMonthOrders(200L);
+
+        // ------------------------ Material Stock 'Current' second mini stat ---------------------------------
+
+
+
+        dashBoardMaterialStock.setLowMaterial(20);
+
+        // ------------------------ Material mini information third mini stat ---------------------------------
+        materialData.setMostUsedMaterial("wood");
+        materialData.setTotalMaterialsUsed(10);
+        materialData.setTotalUsedMaterialCost(152.5);
+        materialData.setLastMonthTotalUsedMaterialCost(12);
+
+        // ------------------------ Employee mini information fourth mini stat ---------------------------------
+
+
 
     }
 
@@ -81,27 +135,7 @@ public class DashBoard extends VerticalLayout {
         horizontalLayout.setJustifyContentMode(JustifyContentMode.CENTER);
 
 
-        // ------------------------ Monthly Orders 'Completed' first mini stat ---------------------------------
-        DashBoardMonthlyOrdersCompleted ordersCompletedCompleted = new DashBoardMonthlyOrdersCompleted();
-        ordersCompletedCompleted.setThisMonthOrders(100L);
-        ordersCompletedCompleted.setPreviousMonthOrders(200L);
 
-        // ------------------------ Material Stock 'Current' second mini stat ---------------------------------
-
-
-        DashBoardMaterialStock dashBoardMaterialStock = new DashBoardMaterialStock();
-        dashBoardMaterialStock.setLowMaterial(20);
-
-
-        // ------------------------ Material mini information third mini stat ---------------------------------
-        DashBoardMaterialUsageInfo materialData = new DashBoardMaterialUsageInfo();
-        materialData.setMostUsedMaterial("wood");
-        materialData.setTotalMaterialsUsed(10);
-        materialData.setTotalUsedMaterialCost(152.5);
-        materialData.setLastMonthTotalUsedMaterialCost(12);
-
-        // ------------------------ Employee mini information fourth mini stat ---------------------------------
-        DashBoardEmployeeMiniInfo employeeData = new DashBoardEmployeeMiniInfo();
 
 
 
@@ -167,26 +201,26 @@ public class DashBoard extends VerticalLayout {
             String height
     ) {
 
-        long value = 0;
-        long previousValue = 0;
+        boolean empty = (ordersData == null || ordersData.isEmpty());
 
-        if(ordersData != null) {
-            value = ordersData.getThisMonthOrders();
-            previousValue = ordersData.getPreviousMonthOrders();
+        long value = empty ? 0 : ordersData.getThisMonthOrders();
+        long previousValue = empty ? 0 : ordersData.getPreviousMonthOrders();
+
+
+        double changePercent = empty ? 0 : dbMostUsed.diffrenceCalculator(value, previousValue);
+
+
+        Span trend = dbMostUsed.spanCrafter(empty ? "▲ 0.00%" :  (changePercent >= 0 ? "▲ " : "▼ ") + String.format("%.2f",Math.abs(changePercent)) + "%","stat-trend");
+
+        if(!empty) {
+            dbMostUsed.trendColoring("Green", "Red", changePercent, trend);
         }
-
-        double changePercent = dbMostUsed.diffrenceCalculator(value, previousValue);
-
-
-        Span trend =  dbMostUsed.spanCrafter((changePercent >= 0 ? "▲ " : "▼ ") + String.format("%.2f",Math.abs(changePercent)) + "%" ,"stat-trend");
-
-        dbMostUsed.trendColoring("Green","Red",changePercent, trend);
 
         // Layout
         VerticalLayout island = new VerticalLayout(
                 dbMostUsed.spanCrafter(name,"stat-title"),
-                dbMostUsed.doubleValueRow(dbMostUsed.spanCrafter(String.valueOf(value),"stat-value"), dbMostUsed.spanCrafter(units,"stat-units")),
-                dbMostUsed.doubleValueRow(dbMostUsed.spanCrafter("Last Month " + previousValue,"stat-example"), dbMostUsed.spanCrafter(units,"stat-units")),
+                dbMostUsed.doubleValueRow(dbMostUsed.spanCrafter(empty ? "No data" : String.valueOf(value),"stat-value"), dbMostUsed.spanCrafter(units,"stat-units")),
+                dbMostUsed.doubleValueRow(dbMostUsed.spanCrafter(empty ? "No data": "Last Month " + previousValue,"stat-example"), dbMostUsed.spanCrafter(units,"stat-units")),
                 trend,
                 dbMostUsed.spanCrafter(description,"stat-description"));
         island.addClassName("stat-card");
@@ -213,7 +247,7 @@ public class DashBoard extends VerticalLayout {
         long lowMaterial = 0;
         long noStockMaterial = 0;
 
-        if(dashBoardMaterialStock != null){
+        if(dashBoardMaterialStock != null && !dashBoardMaterialStock.isEmpty()){
             lowMaterial = dashBoardMaterialStock.getLowMaterial();
             noStockMaterial = dashBoardMaterialStock.getNoStockMaterial();
         }
@@ -249,7 +283,7 @@ public class DashBoard extends VerticalLayout {
         double totalCostOfMaterialsUsedThisMonth = 0;
         double totalCostOfMaterialUsedLastMonth = 0.0;
 
-        if(materialData !=null) {
+        if(materialData !=null && !materialData.isEmpty()) {
             mostUsedMaterial = materialData.getMostUsedMaterial();
             totalMaterialUsageCount = materialData.getTotalMaterialsUsed();
             totalCostOfMaterialsUsedThisMonth = materialData.getTotalUsedMaterialCost();
@@ -297,7 +331,7 @@ public class DashBoard extends VerticalLayout {
             String width,
             String height
     ) {
-        String topEmployee = "None";
+        String topEmployee = "-";
         long topEmployeeProduced = 0;
         double totalPaidThisMonth = 0.0;
         double totalUnpaidThisMonth = 0.0;
@@ -306,7 +340,7 @@ public class DashBoard extends VerticalLayout {
 
 
 
-        if(employeeData.getTopEmployee() != null) {
+        if(employeeData != null && !employeeData.isEmpty()) {
             topEmployee = employeeData.getTopEmployee();
             topEmployeeProduced = employeeData.getTopEmployeeProduced();
             totalPaidThisMonth = employeeData.getTotalPaidSalary();
@@ -382,7 +416,7 @@ public class DashBoard extends VerticalLayout {
         activityFeedHolder.setMaxHeight("600px");
 
 
-        HorizontalLayout buttonAtTheBottom = new HorizontalLayout(common.normalThemeButton("View All Logs", DashBoard.class, ButtonVariant.LUMO_PRIMARY));
+        HorizontalLayout buttonAtTheBottom = new HorizontalLayout(common.normalThemeButton("View All Logs", "s", ButtonVariant.LUMO_PRIMARY));
         buttonAtTheBottom.setWidthFull();
         buttonAtTheBottom.setJustifyContentMode(JustifyContentMode.CENTER);
 
@@ -454,6 +488,8 @@ public class DashBoard extends VerticalLayout {
                                 "To",
                                 common.dateCrafter(0,1,1,0,true)),"stat-description")));
 
+        graph.add(chart.ChartTest());
+
         graph.addClassName("island");
         graph.getStyle().set("flex-wrap","wrap");
 
@@ -498,7 +534,7 @@ public class DashBoard extends VerticalLayout {
         scroller.setHeight("400px");
 
         // simple button in the middle
-        HorizontalLayout buttonAtTheBottom = new HorizontalLayout(common.normalThemeButton("View All Material", DashBoard.class, ButtonVariant.LUMO_PRIMARY));
+        HorizontalLayout buttonAtTheBottom = new HorizontalLayout(common.normalThemeButton("View All Material", "s", ButtonVariant.LUMO_PRIMARY));
         buttonAtTheBottom.setWidthFull();
         buttonAtTheBottom.setJustifyContentMode(JustifyContentMode.CENTER);
 
@@ -521,7 +557,7 @@ public class DashBoard extends VerticalLayout {
         scroller2.setHeight("400px");
 
         // simple button in the middle
-        HorizontalLayout buttonAtTheBottom2 = new HorizontalLayout(common.normalThemeButton("View All Employee", DashBoard.class, ButtonVariant.LUMO_PRIMARY));
+        HorizontalLayout buttonAtTheBottom2 = new HorizontalLayout(common.normalThemeButton("View All Employee", "s", ButtonVariant.LUMO_PRIMARY));
         buttonAtTheBottom2.setWidthFull();
         buttonAtTheBottom2.setJustifyContentMode(JustifyContentMode.CENTER);
 
@@ -540,10 +576,15 @@ public class DashBoard extends VerticalLayout {
         activityFeed.setWidth("600px");
 
         VerticalLayout s = new VerticalLayout(dbMostUsed.spanCrafterWordNoHide("Quick actions","stat-value"));
-        s.add(new Button("132"),new Button("132"),new Button("132"),new Button("132"));
         s.addClassName("island");
         s.setWidth("200px");
         s.setMaxWidth("600px");
+
+        VerticalLayout ss = new VerticalLayout(common.normalThemeButtonWithSize("DashBoard", "dashboard",ButtonVariant.ERROR,"90%",""));
+        ss.setSizeFull();
+        ss.setAlignItems(Alignment.CENTER);
+
+        s.add(ss);
 
 
 

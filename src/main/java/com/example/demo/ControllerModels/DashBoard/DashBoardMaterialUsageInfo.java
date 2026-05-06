@@ -18,5 +18,11 @@ public class DashBoardMaterialUsageInfo {
     private double totalUsedMaterialCost;
     private double lastMonthTotalUsedMaterialCost;
 
+    public boolean isEmpty() {
+        return mostUsedMaterial == null
+                && totalMaterialsUsed == 0
+                && totalUsedMaterialCost == 0.0
+                && lastMonthTotalUsedMaterialCost == 0.0;
+    }
 
 }

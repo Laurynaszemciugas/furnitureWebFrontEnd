@@ -23,9 +23,20 @@ public class Common {
 
     }
 
-    public Button normalThemeButton(String text, Class className , ButtonVariant buttonVariant){
+    public Button normalThemeButton(String text, String className , ButtonVariant buttonVariant){
         Button button = new Button(text, e-> UI.getCurrent().navigate(className));
         button.addThemeVariants(buttonVariant);
+
+        return button;
+    }
+
+    public Button normalThemeButtonWithSize(String text, String className , ButtonVariant buttonVariant, String width, String height){
+        Button button = new Button(text, e-> UI.getCurrent().navigate(className));
+        button.addThemeVariants(buttonVariant);
+
+
+        button.setWidth(width);
+        button.setHeight(height);
 
         return button;
     }
@@ -69,5 +80,13 @@ public class Common {
         return date;
 
     }
+
+
+    public boolean checkIfUserConnected() {
+        boolean loggedIn = false; // replace with real auth check
+
+        return loggedIn;
+    }
+
 
 }
