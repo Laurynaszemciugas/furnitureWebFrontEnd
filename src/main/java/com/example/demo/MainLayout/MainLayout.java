@@ -95,8 +95,8 @@ public class MainLayout extends AppLayout {
         Button button = new Button("32423");
         button.getStyle().set("background-color","green").set("cursor", "pointer");;
         leftSideBar.add(
-                common.normalButtons("bob","DashBoard",VaadinIcon.MENU),
-                common.normalButtons("bob","Products",VaadinIcon.MENU),
+                common.normalButtons("DashBoard","DashBoard",VaadinIcon.MENU),
+                common.normalButtons("test2","test2",VaadinIcon.MENU),
                 common.normalButtons("bob","Orders",VaadinIcon.MENU),
                 common.normalButtons("bob","Materials",VaadinIcon.MENU),
                 common.normalButtons("bob","Employees",VaadinIcon.MENU),

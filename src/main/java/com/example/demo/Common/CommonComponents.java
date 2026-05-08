@@ -4,6 +4,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
@@ -11,6 +12,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,6 +21,35 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class CommonComponents {
 
+
+
+    // components like icons images buttonns spans ect
+
+    public Image imageCrafter(String imageUrl, String width, String height, String borderRadius){
+        Image image = new Image(imageUrl, "image error");
+        image.setWidth(width);
+        image.setHeight(height);
+        image.getStyle().set("border-radius",borderRadius);
+        return image;
+    }
+
+    public Div spaceFiller(){
+        Div spacer = new Div();
+        spacer.getStyle().set("flex-grow", "1");
+
+        return spacer;
+    }
+
+
+
+    public TextField textFieldCrafter(String placeHolder, String topText){
+
+        TextField textField = new TextField(topText);
+        textField.setPlaceholder(placeHolder);
+
+        return  textField;
+
+    }
 
 
     public Icon iconCrafter(VaadinIcon chosenIcon, String size, String color){
@@ -30,25 +61,6 @@ public class CommonComponents {
         return icon;
 
     }
-
-    public Button normalThemeButton(String text, String className , ButtonVariant buttonVariant){
-        Button button = new Button(text, e-> UI.getCurrent().navigate(className));
-        button.addThemeVariants(buttonVariant);
-
-        return button;
-    }
-
-    public Button normalThemeButtonWithSize(String text, String className , ButtonVariant buttonVariant, String width, String height){
-        Button button = new Button(text, e-> UI.getCurrent().navigate(className));
-        button.addThemeVariants(buttonVariant);
-
-
-        button.setWidth(width);
-        button.setHeight(height);
-
-        return button;
-    }
-
 
     public Span spanCrafter(String text, String addClassName){
         Span span = new Span(text);
@@ -75,6 +87,67 @@ public class CommonComponents {
         return span;
     }
 
+    public Button buttonThemeAndIcon(String text, String navigate , ButtonVariant buttonVariant, VaadinIcon icon, String iconColor){
+        Button button = new Button(text, e-> UI.getCurrent().navigate(navigate));
+        button.addThemeVariants(buttonVariant);
+        button.setIcon(iconCrafter(icon,"25px",iconColor));
+
+        return button;
+    }
+
+    public Button normalThemeButton(String text, String navigate , ButtonVariant buttonVariant){
+        Button button = new Button(text, e-> UI.getCurrent().navigate(navigate));
+        button.addThemeVariants(buttonVariant);
+
+        return button;
+    }
+
+    public Button normalButtonNoNavigate(String text , String addclass){
+        Button button = new Button(text);
+        button.addClassName(addclass);
+
+        return button;
+    }
+
+    public Button normalThemeButtonWithSize(String text, String navigate , ButtonVariant buttonVariant, String width, String height){
+        Button button = new Button(text, e-> UI.getCurrent().navigate(navigate));
+        button.addThemeVariants(buttonVariant);
+
+
+        button.setWidth(width);
+        button.setHeight(height);
+
+        return button;
+    }
+
+    public Button normalButtons(String navigate, String text, VaadinIcon icon){
+        Button button = new Button(text);
+        button.addClassName("clean-btn");
+        button.setIcon(iconCrafter(icon,"30px","white"));
+
+        button.addClickListener(e->{
+            UI.getCurrent().navigate(navigate);
+        });
+
+
+
+        return button;
+
+    }
+
+    public Button smallIconButtons(String navigate, VaadinIcon icon, String color){
+        Button button = new Button();
+        button.addClassName("clean-btn");
+        button.setIcon(iconCrafter(icon,"40px",color));
+        return button;
+
+    }
+
+
+
+
+// layouts for components
+
 
     public HorizontalLayout doubleValueRow(Component component1, Component component2){
         HorizontalLayout valueRow = new HorizontalLayout(component1, component2);
@@ -97,24 +170,10 @@ public class CommonComponents {
     }
 
 
-    public Button normalButtons(String navigate, String text, VaadinIcon icon){
-        Button button = new Button(text);
-        button.addClassName("clean-btn");
-        button.setIcon(iconCrafter(icon,"30px","white"));
 
 
 
-        return button;
-
-    }
-
-    public Button smallIconButtons(String navigate, VaadinIcon icon, String color){
-        Button button = new Button();
-        button.addClassName("clean-btn");
-        button.setIcon(iconCrafter(icon,"40px",color));
-        return button;
-
-    }
+    // simple no data layout
 
     public VerticalLayout noDataFound(){
 

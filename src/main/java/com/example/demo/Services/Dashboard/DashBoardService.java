@@ -1,9 +1,11 @@
-package com.example.demo.Services.DashBoard;
+package com.example.demo.Services.Dashboard;
 
 
 import com.example.demo.ControllerModels.DashBoard.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,47 +89,72 @@ public class DashBoardService {
 
         topEmployeesModelList.add(
                 new TopEmployeesModel(
-                        "images/profile6.png",
+                        "Screenshot 2026-04-27 001745.png",
                         "Lucas Anderson",
                         1560L,
-                        4450.90,
-                        190L
+                        2,
+                        190L,
+                        1
                 )
         );
 
         topEmployeesModelList.add(
                 new TopEmployeesModel(
-                        "images/profile7.png",
+                        "Screenshot 2026-04-27 001745.png",
                         "Olivia Martinez",
                         1340L,
-                        3890.40,
+                        24,
                         176L
+                        ,123
                 )
         );
 
         topEmployeesModelList.add(
                 new TopEmployeesModel(
-                        "images/profile8.png",
+                        "Screenshot 2026-04-27 001745.png",
                         "Ethan Thomas",
                         920L,
-                        2800.00,
-                        158L
+                        10,
+                        158L,
+                        23
                 )
         );
 
         topEmployeesModelList.add(
                 new TopEmployeesModel(
-                        "images/profile9.png",
+                        "Screenshot 2026-04-27 001745.png",
                         "Sophia White",
                         1685L,
-                        4720.35,
-                        198L
+                        22,
+                        198L,
+                        44
                 )
         );
 
         return topEmployeesModelList;
     }
 
+    public List<String> quickActionList(){
+        List<String> list = new ArrayList<>();
+
+        list.add("DashBoard");
+        list.add("Products");
+        list.add("Add New Order");
+
+        return list;
+    }
+
+
+    public List<DashBoardGraphData> dashBoardGraphDataList(){
+
+        List<DashBoardGraphData> list = new ArrayList<>();
+        list.add(new DashBoardGraphData("2025-12-10",45));
+        list.add(new DashBoardGraphData("2025-02-10",100));
+        list.add(new DashBoardGraphData("2025-12-10",45));
+
+        return list;
+
+    }
 
     public DashBoardPageData loadDashboardData(){
         DashBoardPageData data = new DashBoardPageData();
@@ -135,8 +162,13 @@ public class DashBoardService {
         data.setMiniStatTwo(loadMaterialStockMiniStatSecond());
         data.setMiniStatThree(loadMaterialDataMiniStatThree());
         data.setMiniStatFour(loadEmployeeDataMiniStatFourth());
+        data.setGraphData(dashBoardGraphDataList());
         data.setLoadActivityList(loadActivityList());
         data.setLoadMaterialLowNoStock(loadMaterialLowNoStock());
+        data.setLoadTopEmployees(loadTopEmployees());
+        data.setLoadQuickActions(quickActionList());
+
+        data.setCreatedAt(LocalDateTime.now());
 
         return data;
     }

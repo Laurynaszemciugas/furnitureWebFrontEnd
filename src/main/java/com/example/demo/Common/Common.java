@@ -91,7 +91,6 @@ public class Common {
         double wasValue = toDouble(was);
 
 
-        System.out.println(nowValue + " " + wasValue + " " + changePercent);
 
         if (changePercent > 0 && nowValue > wasValue) {
             trend.getStyle().set("color", moreThanZeroColor);

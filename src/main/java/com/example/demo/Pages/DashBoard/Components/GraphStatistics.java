@@ -1,10 +1,13 @@
-package com.example.demo.pages.DashBoard;
+package com.example.demo.Pages.DashBoard.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.chart;
+import com.example.demo.ChartsGraphs.DashBoard.DashBoardCharts;
+import com.example.demo.ControllerModels.DashBoard.DashBoardGraphData;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class GraphStatistics {
@@ -12,10 +15,10 @@ public class GraphStatistics {
     CommonComponents commonComponents;
     Common common;
 
-    chart chart;
+    DashBoardCharts chart;
 
 
-    public GraphStatistics(CommonComponents commonComponents, Common common,chart chart) {
+    public GraphStatistics(CommonComponents commonComponents, Common common, DashBoardCharts chart) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.chart = chart;
@@ -23,7 +26,7 @@ public class GraphStatistics {
 
 
     // grapth for smth
-    public VerticalLayout graph(){
+    public VerticalLayout graph(List<DashBoardGraphData> list){
 
         VerticalLayout graph = new VerticalLayout(
                 commonComponents.doubleValueRow(
@@ -34,7 +37,7 @@ public class GraphStatistics {
                                 "To",
                                 common.dateCrafter(0,1,1,0,true)),"stat-description")));
 
-        graph.add(chart.ChartTest());
+        graph.add(chart.ChartTest(list));
 
         graph.addClassName("island");
         graph.getStyle().set("flex-wrap","wrap");

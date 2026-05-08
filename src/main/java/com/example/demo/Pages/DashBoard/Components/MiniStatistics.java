@@ -1,4 +1,4 @@
-package com.example.demo.pages.DashBoard;
+package com.example.demo.Pages.DashBoard.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -48,7 +48,6 @@ public class MiniStatistics {
                 null,
                 "170px"));
         employeeCard.setMaxWidth("700px");
-
 
         // all the remaining mini stats
         horizontalLayout.add(

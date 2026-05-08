@@ -15,8 +15,9 @@ public class TopEmployeesModel {
     private String profilePicUrl;
     private String name;
     private long unitsProduced;
-    private double salary;
-    private long hoursWorked;
+    private double hourlySalary;
+    private long hoursWorkedTotal;
+    private long hoursWorkedThisMonth;
 
 
 }

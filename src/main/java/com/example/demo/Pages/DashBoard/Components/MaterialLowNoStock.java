@@ -1,4 +1,4 @@
-package com.example.demo.pages.DashBoard;
+package com.example.demo.Pages.DashBoard.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;

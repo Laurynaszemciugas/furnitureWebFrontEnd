@@ -162,6 +162,13 @@ vaadin-button {
     z-index: 10;
 }
 
+/*Layout settings*/
+
+.layout-flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 /* Title */
 .stat-title {
     font-size: 14px;
@@ -249,7 +256,6 @@ vaadin-button {
     text-transform: uppercase;
     letter-spacing: 0.6px;
     line-height: 1;
-    margin-left: 6px;
 }
 
 .stock-in {
@@ -265,4 +271,57 @@ vaadin-button {
 .stock-out {
     background: #ef4444;
     color: white;
+}
+
+.pagination-button {
+    background-color: #1e88e5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+
+    width: 25px;
+    height: 25px;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: background-color 0.15s ease,
+                transform 0.1s ease;
+}
+
+
+/* Hover */
+.pagination-button:hover {
+    background-color: #1976d2;
+}
+
+/* Active page */
+.pagination-button-active {
+    background-color: #1565c0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+
+    width: 25px;
+    height: 25px;
+
+    border-radius: 10px;
+
+
+    font-size: 14px;
+    font-weight: 600;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
 }

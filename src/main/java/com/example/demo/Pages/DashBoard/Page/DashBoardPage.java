@@ -1,28 +1,21 @@
-package com.example.demo.pages.DashBoard;
+package com.example.demo.Pages.DashBoard.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.DashBoard.*;
+import com.example.demo.ControllerModels.DashBoard.DashBoardPageData;
 import com.example.demo.MainLayout.MainLayout;
-import com.example.demo.Services.DashBoard.DashBoardService;
-import com.example.demo.chart;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.VaadinIcon;
+import com.example.demo.Pages.DashBoard.Components.*;
+import com.example.demo.Services.Dashboard.DashBoardService;
+import com.example.demo.ChartsGraphs.DashBoard.DashBoardCharts;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 @Route(value = "DashBoard", layout = MainLayout.class)
-public class DashBoard extends VerticalLayout implements BeforeEnterObserver {
+public class DashBoardPage extends VerticalLayout implements BeforeEnterObserver {
 
     CommonComponents commonComponents;
     Common common;
@@ -38,14 +31,10 @@ public class DashBoard extends VerticalLayout implements BeforeEnterObserver {
     MaterialLowNoStock materialLowNoStock;
     QuickAction quickAction;
 
-
-    //test
-
-    chart chart;
+    DashBoardCharts chart;
 
 
     DashBoardPageData data = new DashBoardPageData();
-
 
 
 
@@ -53,7 +42,14 @@ public class DashBoard extends VerticalLayout implements BeforeEnterObserver {
     public void beforeEnter(BeforeEnterEvent event) {
 
         removeAll();
-        data = dashBoardService.loadDashboardData();
+        if(data == null || data.isDataStale()){
+            data = dashBoardService.loadDashboardData();
+            }
+
+        else{
+            System.out.println("data good");
+        }
+
 
         add(mainLayout());
 
@@ -61,7 +57,7 @@ public class DashBoard extends VerticalLayout implements BeforeEnterObserver {
 
 
 
-    public DashBoard(
+    public DashBoardPage(
             CommonComponents commonComponents,
             Common common,
             DashBoardService dashBoardService,
@@ -71,7 +67,7 @@ public class DashBoard extends VerticalLayout implements BeforeEnterObserver {
             TopEmployees topEmployees,
             MaterialLowNoStock materialLowNoStock,
             QuickAction quickAction,
-            chart chart
+            DashBoardCharts chart
     ){
         this.commonComponents = commonComponents;
         this.common = common;
@@ -124,7 +120,7 @@ public class DashBoard extends VerticalLayout implements BeforeEnterObserver {
     // graph and the activitylog holder
     public HorizontalLayout activityGraphHolder(){
         VerticalLayout activityFeed2 = activityFeed.activityFeedCrafter(data.getLoadActivityList());
-        VerticalLayout graphHolder = graphStatistics.graph();
+        VerticalLayout graphHolder = graphStatistics.graph(data.getGraphData());
         graphHolder.setWidth("400px");
         HorizontalLayout h = new HorizontalLayout(graphHolder, activityFeed2);
         h.setWidthFull();
@@ -142,10 +138,10 @@ public class DashBoard extends VerticalLayout implements BeforeEnterObserver {
     public HorizontalLayout topEmployeMaterialQuickAction(){
 
 
-        VerticalLayout quick = quickAction.quickActionButtons();
+        VerticalLayout quick = quickAction.quickActionButtons(data.getLoadQuickActions());
 
 
-        HorizontalLayout h = new HorizontalLayout(materialLowNoStock.materialLowNoStock(data.getLoadMaterialLowNoStock()), topEmployees.topEmployees(), quick);
+        HorizontalLayout h = new HorizontalLayout(materialLowNoStock.materialLowNoStock(data.getLoadMaterialLowNoStock()), topEmployees.topEmployees(data.getLoadTopEmployees()), quick);
         h.setWidthFull();
         h.setFlexGrow(1, quick);
 
