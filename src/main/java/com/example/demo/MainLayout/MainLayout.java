@@ -1,7 +1,6 @@
 package com.example.demo.MainLayout;
 
-import com.example.demo.Common.Common;
-import com.example.demo.ControllerMostUsedCode.MainLayoutMostUsed;
+import com.example.demo.Common.CommonComponents;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -20,8 +19,7 @@ import com.vaadin.flow.server.VaadinSession;
 public class MainLayout extends AppLayout {
 
 
-    MainLayoutMostUsed components;
-    Common common;
+    CommonComponents common;
 
     private VerticalLayout drawerSmall = new VerticalLayout();
     private VerticalLayout drawerLarge = new VerticalLayout();
@@ -32,9 +30,7 @@ public class MainLayout extends AppLayout {
 
 
     public MainLayout(
-            MainLayoutMostUsed components,
-            Common common) {
-        this.components = components;
+            CommonComponents common) {
         this.common = common;
 
         // change the drawer size to large
@@ -99,14 +95,14 @@ public class MainLayout extends AppLayout {
         Button button = new Button("32423");
         button.getStyle().set("background-color","green").set("cursor", "pointer");;
         leftSideBar.add(
-                components.mainLayoutButtons("bob","DashBoard",VaadinIcon.MENU),
-                components.mainLayoutButtons("bob","Products",VaadinIcon.MENU),
-                components.mainLayoutButtons("bob","Orders",VaadinIcon.MENU),
-                components.mainLayoutButtons("bob","Materials",VaadinIcon.MENU),
-                components.mainLayoutButtons("bob","Employees",VaadinIcon.MENU),
-                components.mainLayoutButtons("bob","Reports",VaadinIcon.MENU),
-                components.mainLayoutButtons("bob","Quick actions",VaadinIcon.MENU),
-                components.mainLayoutButtons("bob","Settings",VaadinIcon.MENU),
+                common.normalButtons("bob","DashBoard",VaadinIcon.MENU),
+                common.normalButtons("bob","Products",VaadinIcon.MENU),
+                common.normalButtons("bob","Orders",VaadinIcon.MENU),
+                common.normalButtons("bob","Materials",VaadinIcon.MENU),
+                common.normalButtons("bob","Employees",VaadinIcon.MENU),
+                common.normalButtons("bob","Reports",VaadinIcon.MENU),
+                common.normalButtons("bob","Quick actions",VaadinIcon.MENU),
+                common.normalButtons("bob","Settings",VaadinIcon.MENU),
                 logOut);
 
 
@@ -163,13 +159,13 @@ public class MainLayout extends AppLayout {
         Button button = new Button("32423");
         button.getStyle().set("background-color","green").set("cursor", "pointer");;
         leftSideBar.add(
-                components.mainLayoutButtonsSmall("123",VaadinIcon.MENU),
-                components.mainLayoutButtonsSmall("123",VaadinIcon.MENU),
-                components.mainLayoutButtonsSmall("123",VaadinIcon.MENU),
-                components.mainLayoutButtonsSmall("123",VaadinIcon.MENU),
-                components.mainLayoutButtonsSmall("123",VaadinIcon.MENU),
-                components.mainLayoutButtonsSmall("123",VaadinIcon.MENU),
-                components.mainLayoutButtonsSmall("123",VaadinIcon.MENU),
+                common.smallIconButtons("123",VaadinIcon.MENU,"white"),
+                common.smallIconButtons("123",VaadinIcon.MENU,"white"),
+                common.smallIconButtons("123",VaadinIcon.MENU,"white"),
+                common.smallIconButtons("123",VaadinIcon.MENU,"white"),
+                common.smallIconButtons("123",VaadinIcon.MENU,"white"),
+                common.smallIconButtons("123",VaadinIcon.MENU,"white"),
+                common.smallIconButtons("123",VaadinIcon.MENU,"white"),
                 logOut);
 
         leftSideBar.add(toggle);

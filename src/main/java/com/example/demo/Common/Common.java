@@ -1,10 +1,6 @@
 package com.example.demo.Common;
 
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.html.Span;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,34 +8,6 @@ import java.time.format.DateTimeFormatter;
 
 @Service
 public class Common {
-
-    public Icon iconCrafter(VaadinIcon chosenIcon, String size, String color){
-
-        Icon icon = chosenIcon.create();
-        icon.setSize(size);
-        icon.setColor(color);
-
-        return icon;
-
-    }
-
-    public Button normalThemeButton(String text, String className , ButtonVariant buttonVariant){
-        Button button = new Button(text, e-> UI.getCurrent().navigate(className));
-        button.addThemeVariants(buttonVariant);
-
-        return button;
-    }
-
-    public Button normalThemeButtonWithSize(String text, String className , ButtonVariant buttonVariant, String width, String height){
-        Button button = new Button(text, e-> UI.getCurrent().navigate(className));
-        button.addThemeVariants(buttonVariant);
-
-
-        button.setWidth(width);
-        button.setHeight(height);
-
-        return button;
-    }
 
 
     public String dateFormatter(LocalDate date, String yyyymmdd){
@@ -86,6 +54,63 @@ public class Common {
         boolean loggedIn = false; // replace with real auth check
 
         return loggedIn;
+    }
+
+
+    public double diffrenceCalculator(double currentValue, double oldValue){
+
+
+        double value = 0 ;
+
+        if(oldValue == 0 || currentValue == 0) {
+            value = 0.0;
+        }
+        else{
+            value = ((currentValue - oldValue) / oldValue) * 100;
+        }
+
+        if(currentValue == 0.0 && oldValue == 0.0){
+            value = 0.0;
+        }
+
+
+        return  value;
+    }
+
+
+    public void trendColoring(
+            String moreThanZeroColor,
+            String lessThanZeroColor,
+            Object now,
+            Object was,
+            double changePercent,
+            Span trend
+    ) {
+
+        double nowValue = toDouble(now);
+        double wasValue = toDouble(was);
+
+
+        System.out.println(nowValue + " " + wasValue + " " + changePercent);
+
+        if (changePercent > 0 && nowValue > wasValue) {
+            trend.getStyle().set("color", moreThanZeroColor);
+        } else if (changePercent < 0 && nowValue < wasValue) {
+            trend.getStyle().set("color", lessThanZeroColor);
+        } else {
+            trend.getStyle().set("color", "gray");
+        }
+    }
+
+
+    private double toDouble(Object value) {
+        if (value == null) return 0.0;
+
+        if (value instanceof Number number) {
+            return number.doubleValue();
+        }
+
+        return 0.0;
     }
 
 
