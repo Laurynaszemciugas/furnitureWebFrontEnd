@@ -1,4 +1,4 @@
-package com.example.demo.Pages.DashBoard.Page;
+package com.example.demo.Pages.Products;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -15,9 +15,6 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Route(value = "test2", layout = MainLayout.class)
 public class ProductsPage extends VerticalLayout implements BeforeEnterObserver {
 
@@ -26,11 +23,17 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     Common common;
     ProductService productService;
 
+    testThePlagi test;
 
-    public ProductsPage(CommonComponents commonComponents, Common common, ProductService productService) {
+
+
+
+
+    public ProductsPage(CommonComponents commonComponents, Common common, ProductService productService,testThePlagi test) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.productService = productService;
+        this.test = test;
 
         setPadding(false);
         setSpacing(false);
@@ -55,7 +58,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         verticalLayout.getStyle().set("margin-top", "5px");
         verticalLayout.addClassName("main-island");
 
-        verticalLayout.add(briefPageExplanation(),filters(),productsMain());
+        verticalLayout.add(briefPageExplanation(),filters(),productsMain(), test.buttonHolder());
 
         return verticalLayout;
     }
