@@ -4,6 +4,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
@@ -102,6 +103,13 @@ public class CommonComponents {
         return button;
     }
 
+    public Button normalThemeButtonNoNavigate(String text , ButtonVariant buttonVariant){
+        Button button = new Button(text);
+        button.addThemeVariants(buttonVariant);
+
+        return button;
+    }
+
     public Button normalButtonNoNavigate(String text , String addclass){
         Button button = new Button(text);
         button.addClassName(addclass);
@@ -142,6 +150,16 @@ public class CommonComponents {
         return button;
 
     }
+
+    public HorizontalLayout biefPageExplanation(String title){
+        HorizontalLayout explanation = new HorizontalLayout(
+                spanCrafterWordNoHide(title,"stat-value")
+
+        );
+
+        return  explanation;
+    }
+
 
 
 

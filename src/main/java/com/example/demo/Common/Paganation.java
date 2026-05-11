@@ -1,19 +1,25 @@
-package com.example.demo.Pages.Products;
+package com.example.demo.Common;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.LongConsumer;
 
-@Service
-public class testThePlagi {
+public class Paganation {
 
     List<Button> buttonList = new ArrayList<>();
-    int currentPage = 1;
-    int totalPages = 15;
+    long currentPage = 1;
+    long totalPages = 15;
 
+    private LongConsumer onPageChange;
+
+
+    public void setOnPageChange(LongConsumer onPageChange) {
+        this.onPageChange = onPageChange;
+    }
 
     public Button buttonCrafter(int number){
 
@@ -26,6 +32,10 @@ public class testThePlagi {
         button.addClickListener(e->{
             currentPage = Integer.parseInt(button.getText());
             paganationButtons();
+
+
+            onPageChange.accept(currentPage);
+
         });
 
 
@@ -44,12 +54,17 @@ public class testThePlagi {
 
     public HorizontalLayout buttonHolder(){
 
+
+        // make this class know the total pages long
+
         HorizontalLayout horizontalLayout = new HorizontalLayout();
         horizontalLayout.setWidthFull();
+        horizontalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
 
         for(int i = 1; i <= totalPages; i++){
             horizontalLayout.add(buttonCrafter(i));
+
 
         }
 
@@ -88,6 +103,15 @@ public class testThePlagi {
 
         }
 
+    }
+
+    public void setTotalPages(long pages){
+         totalPages = pages;
+    }
+
+    public void updateUIFromExternal(long page) {
+        this.currentPage = page;
+            paganationButtons();
     }
 
 }
