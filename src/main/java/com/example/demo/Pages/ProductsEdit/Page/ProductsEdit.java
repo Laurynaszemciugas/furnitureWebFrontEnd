@@ -48,14 +48,12 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
 
     public ProductsEdit(CommonComponents commonComponents,
                         Common common,
-                        ProductEditService productEditService,
-                        ProductEditRightSideFields productEditRightSideFields,
-                        ProductEditImage productEditImage) {
+                        ProductEditService productEditService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.productEditService = productEditService;
-        this.productEditRightSideFields = productEditRightSideFields;
-        this.productEditImage = productEditImage;
+        this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common);
+        this.productEditImage = new ProductEditImage(commonComponents,common);
 
 
         setPadding(false);
@@ -90,7 +88,7 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
         //verticalLayout.addClassName("main-island");
 
         productEditImage.setListConsumer(e->{
-            System.out.println(e);
+            //System.out.println(e);
         });
 
         verticalLayout.add(briefPageExplanation(), joinImagesInfo());

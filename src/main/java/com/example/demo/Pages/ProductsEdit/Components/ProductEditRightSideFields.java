@@ -16,6 +16,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -32,8 +33,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-@UIScope
+
 public class ProductEditRightSideFields {
 
     CommonComponents commonComponents;
@@ -58,12 +58,14 @@ public class ProductEditRightSideFields {
     private ComboBox<Category> category = new ComboBox<>("Category");
     private ComboBox<Tags> tags = new ComboBox<>("Tags");
 
+
     private ComboBox<Status> status = new ComboBox<>("Status");
     private ComboBox<Visibility> visibility = new ComboBox<>("Visibility");
 
     List<ListMaterialGrid> listMaterialGrids = new ArrayList<>();
     Grid<ListMaterialGrid> productFeedModelGrid = new Grid<>(ListMaterialGrid.class,false);
 
+    List<Tags> tagss = new ArrayList<>();
 
 
     public ProductEditRightSideFields(CommonComponents commonComponents,
@@ -80,6 +82,8 @@ public class ProductEditRightSideFields {
         VerticalLayout v =new VerticalLayout();
         v.setWidth("700px");
         v.addClassName("island");
+
+        tagss.add(Tags.Door);
 
         FormLayout basicInfo = new FormLayout();
 
@@ -112,6 +116,25 @@ public class ProductEditRightSideFields {
         tagsSelected.setSpacing(false);
         tagsSelected.setPadding(false);
 
+        if(!tagss.isEmpty()) {
+            for (var s : tagss) {
+                tagsSelected.add(tagCrafter(s));
+            }
+        }
+
+        tags.setItems(Tags.Door,Tags.Modern,Tags.LivingRoom);
+
+        tags.addValueChangeListener(e->{
+            if(!tagss.contains(e.getValue()) && !tagss.isEmpty()) {
+                tagss.add(e.getValue());
+                tagsSelected.add(tagCrafter(e.getValue()));
+            }
+            else{
+                System.out.println("that exists");
+            }
+            System.out.println(tagss);
+            });
+
         FormLayout categoryTags = new FormLayout();
         categoryTags.add(category,tags);
 
@@ -138,6 +161,7 @@ public class ProductEditRightSideFields {
         Button save = new Button("Save");
         buttonSave.add(save);
 
+        productFeedModelGrid.removeAllColumns();
 
         v.add(
                 commonComponents.spanCrafterWordNoHide("Actions","activityFeed-name"),
@@ -181,6 +205,14 @@ public class ProductEditRightSideFields {
 
 
         return v;
+    }
+
+
+    public Span tagCrafter(Tags tags){
+
+        Span span = commonComponents.spanCrafterWordNoHide(tags.toString(),"tag-badge");
+
+        return span;
     }
 
 

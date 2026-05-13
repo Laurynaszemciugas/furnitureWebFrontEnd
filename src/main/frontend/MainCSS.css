@@ -245,6 +245,19 @@ vaadin-button {
     margin-left: 6px;
 }
 
+.tag-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
+    background-color: #3b82f6;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    margin-left: 6px;
+}
+
 /* Material css in stock no stock low stock */
 
 .stock-badge {

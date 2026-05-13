@@ -4,8 +4,11 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Common.ImagesData;
 import com.example.demo.Enums.ImageLogic;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
@@ -21,8 +24,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-@Service
-@UIScope
+
 public class ProductEditImage {
 
     CommonComponents commonComponents;
@@ -31,14 +33,22 @@ public class ProductEditImage {
 
 
 
-    boolean mainFound = false;
+    // set mainfound image boolean value to make only one main image
+    boolean mainFound;
 
+    // main image component
     Image mainImage = new Image("No_picture.png", "Product image");
 
-
+    // all images saved here
     List<ImagesData> imagesDataList = new ArrayList<>();
+
+    List<ImagesData> newUploadedImages = new ArrayList<>();
+
+    // mini images nonMain go here
     VerticalLayout feedLayout = new VerticalLayout();
 
+
+    // just a tripwire that says to controller hey i got updlaoded
     Consumer<List<ImagesData>> listConsumer;
 
 
@@ -51,7 +61,10 @@ public class ProductEditImage {
 
         mainFound = false;
 
+
     }
+
+
 
 
     public void setListConsumer(Consumer<List<ImagesData>> listConsumer){
@@ -59,6 +72,7 @@ public class ProductEditImage {
     }
 
     public HorizontalLayout images(List<ImagesData> list) {
+
 
 
         HorizontalLayout holder = new HorizontalLayout();
@@ -102,7 +116,9 @@ public class ProductEditImage {
 
 
         if(!list.isEmpty()) {
+            mainFound = true;
             imagesDataList.addAll(list);
+
             addExistingImages();
         }
 
@@ -118,10 +134,10 @@ public class ProductEditImage {
         for(var s : imagesDataList){
             if(s.getImageLogic() == ImageLogic.Main){
                 mainImage.setSrc(s.getImageUrl());
-                feedLayout.add(createImage(s.getImageUrl(),s.getUuId()));
+                feedLayout.add(createImage(s.getImageData(), s.getImageType(), s.getUuId(),s.getImageUrl()));
             }
             else{
-                feedLayout.add(createImage(s.getImageUrl(),s.getUuId()));
+                feedLayout.add(createImage(s.getImageData(), s.getImageType(), s.getUuId(),s.getImageUrl()));
             }
         }
     }
@@ -144,7 +160,7 @@ public class ProductEditImage {
                     imagesData.setImageName(fileName);
                     imagesData.setImageUrl("none");
                     imagesData.setImageType(mimeType);
-                    if(!mainFound && !mainImage.getSrc().isEmpty()) {
+                    if(!mainFound) {
                         imagesData.setImageLogic(ImageLogic.Main);
                         mainFound = true;
                     }
@@ -153,7 +169,7 @@ public class ProductEditImage {
                     }
                     imagesData.setImageData(data);
 
-                    imagesDataList.add(imagesData);
+                    newUploadedImages.add(imagesData);
 
                 });
 
@@ -167,21 +183,27 @@ public class ProductEditImage {
 
 
         upload.addAllFinishedListener(e->{
-            for(var s : imagesDataList) {
+            for(var s : newUploadedImages) {
 
                 if(s.getImageLogic() == ImageLogic.Main) {
                     if (s.getImageData() != null) {
                         String base64 = java.util.Base64.getEncoder().encodeToString(s.getImageData());
                         String src = "data:" + s.getImageType() + ";base64," + base64;
                         mainImage.setSrc(src);
-                        feedLayout.add(createImageFromBytes(s.getImageData(), s.getImageType(), s.getUuId()));
+                        feedLayout.add(createImage(s.getImageData(), s.getImageType(), s.getUuId(),s.getImageUrl()));
                     }
                 }
                 else{
-                    feedLayout.add(createImageFromBytes(s.getImageData(),s.getImageType(),s.getUuId()));
+                    feedLayout.add(createImage(s.getImageData(),s.getImageType(),s.getUuId(),s.getImageUrl()));
                 }
             }
 
+            // add new data to list
+            imagesDataList.addAll(newUploadedImages);
+            // clear list to avoid dublicates
+            newUploadedImages.clear();
+
+            // send data that user put stuff in the uploads
             listConsumer.accept(imagesDataList);
         });
 
@@ -192,14 +214,33 @@ public class ProductEditImage {
     }
 
 
-    // create images from bytes
-    private Image createImageFromBytes(byte[] data, String mimeType, String id) {
+    // create images from bytes if it doesnt exist it new from user
+    private VerticalLayout createImage(byte[] data, String mimeType, String id, String url) {
 
 
 
-        String base64 = java.util.Base64.getEncoder().encodeToString(data);
+        Button mainSelected = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.PRIMARY, VaadinIcon.TRASH,"White");
+        mainSelected.getStyle().set("position","absolute").set("bottom","0").set("right","2px");
+        mainSelected.setVisible(false);
 
-        String src = "data:" + mimeType + ";base64," + base64;
+
+        VerticalLayout verticalLayout = new VerticalLayout();
+        verticalLayout.setWidthFull();
+        verticalLayout.setSpacing(false);
+        verticalLayout.setPadding(false);
+        verticalLayout.getStyle().set("position","relative");
+
+
+        String src = "";
+        String base64 = "";
+
+        if(data !=null) {
+            base64 = java.util.Base64.getEncoder().encodeToString(data);
+            src = "data:" + mimeType + ";base64," + base64;
+        }
+        else{
+            src = url;
+        }
 
         Image image = new Image(src, "uploaded image");
         image.setWidthFull();
@@ -208,8 +249,10 @@ public class ProductEditImage {
                 .set("border-radius", "10px");
 
 
+        String finalSrc = src;
+
         image.addClickListener(e->{
-           String currentImage = src;
+           String currentImage = finalSrc;
 
            for(var s : imagesDataList){
                if(s.getImageLogic() == ImageLogic.Main){
@@ -217,45 +260,77 @@ public class ProductEditImage {
                }
                if(s.getUuId().equalsIgnoreCase(id)){
                    s.setImageLogic(ImageLogic.Main);
+
                }
 
            }
+            for(var s : imagesDataList){
+                System.out.println(s.getImageName() + " " + s.getImageLogic());
+            }
 
             mainImage.setSrc(currentImage);
 
 
+
+
         });
 
-        return image;
+        verticalLayout.add(mainSelected);
+
+        image.addSingleClickListener(e->{
+           mainSelected.setVisible(false);
+        });
+        image.addDoubleClickListener(e->{
+            mainSelected.setVisible(true);
+        });
+
+
+        mainSelected.addClickListener(e->{
+            verticalLayout.setVisible(false);
+
+            handleRemoveOfImageView(id);
+        });
+
+
+        verticalLayout.add(image);
+
+        return verticalLayout;
     }
 
+    public void handleRemoveOfImageView(String id){
+        imagesDataList.removeIf(imageData -> imageData.getUuId().equalsIgnoreCase(id));
 
-    private Image createImage(String url,String id) {
-
-
-
-
-
-        Image image = new Image(url, "uploaded image");
-        image.setWidthFull();
-        image.setHeight("120px");
-        image.getStyle()
-                .set("border-radius", "10px");
-
-        image.addClickListener(e -> {
-            for(var s : imagesDataList){
-                if(s.getImageLogic() == ImageLogic.Main){
-                    s.setImageLogic(ImageLogic.NonMain);
-                }
-                if(s.getUuId().equalsIgnoreCase(id)){
-                    s.setImageLogic(ImageLogic.Main);
+        if(!imagesDataList.isEmpty()) {
+            boolean mainExists = false;
+            for (var s : imagesDataList) {
+                if (s.getImageLogic() == ImageLogic.Main) {
+                    mainExists = true;
                 }
             }
-            mainImage.setSrc(url);
-        });
+            System.out.println(mainExists);
 
 
-        return image;
+
+            if (mainExists == false) {
+                imagesDataList.get(0).setImageLogic(ImageLogic.Main);
+                if (imagesDataList.get(0).getImageData() == null) {
+                    mainImage.setSrc(imagesDataList.get(0).getImageUrl());
+                }
+                else {
+                    String base64 = java.util.Base64.getEncoder().encodeToString(imagesDataList.get(0).getImageData());
+                    String src = "data:" + imagesDataList.get(0).getImageType() + ";base64," + base64;
+                    mainImage.setSrc(src);
+                }
+
+            }
+
+
+        }
+        else{
+            mainImage.setSrc("No_picture.png");
+        }
+
+
     }
 
 
