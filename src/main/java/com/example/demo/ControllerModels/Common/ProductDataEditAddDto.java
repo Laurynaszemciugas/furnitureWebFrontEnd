@@ -1,7 +1,5 @@
-package com.example.demo.ControllerModels.ProductEdit;
+package com.example.demo.ControllerModels.Common;
 
-import com.example.demo.ControllerModels.Common.GridMaterials;
-import com.example.demo.ControllerModels.Common.ImagesData;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Status;
 import com.example.demo.Enums.Tags;
@@ -17,7 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductEditDto {
+public class ProductDataEditAddDto {
 
 
     private List<ImagesData> images;
@@ -27,13 +25,14 @@ public class ProductEditDto {
     private double price;
     private double discount;
     private double materialCost;
-    private long stockQuantity;
-    private long lowStockThreshold;
+    private Long stockQuantity;
+    private Long lowStockThreshold;
     private Category category;
     private List<Tags> tags;
     private Status status;
     private Visibility visibility;
     private List<GridMaterials> materials;
+    private List<ExtraDetails> extraDetails;
 
 
 

@@ -2,16 +2,14 @@ package com.example.demo.Pages.ProductsEdit.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.Common.GridMaterials;
+import com.example.demo.ControllerModels.Common.ExtraDetails;
+import com.example.demo.ControllerModels.Common.ListExtraDetailsGrid;
 import com.example.demo.ControllerModels.Common.ListMaterialGrid;
-import com.example.demo.ControllerModels.ProductEdit.ProductEditDto;
-import com.example.demo.ControllerModels.Products.ProductFeedModel;
+import com.example.demo.ControllerModels.Common.ProductDataEditAddDto;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Status;
 import com.example.demo.Enums.Tags;
 import com.example.demo.Enums.Visibility;
-import com.example.demo.Pages.ProductsEdit.Page.ProductsEdit;
-import com.example.demo.Services.ProductEditService.ProductEditService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -27,12 +25,10 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.provider.ListDataProvider;
-import com.vaadin.flow.spring.annotation.UIScope;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 
 public class ProductEditRightSideFields {
@@ -42,8 +38,8 @@ public class ProductEditRightSideFields {
 
 
 
-    private Binder<ProductEditDto> binder =
-            new Binder<>(ProductEditDto.class);
+    private Binder<ProductDataEditAddDto> binder =
+            new Binder<>(ProductDataEditAddDto.class);
 
     private TextField productName = new TextField("Product name");
     private TextField sku = new TextField("SKU");
@@ -63,10 +59,23 @@ public class ProductEditRightSideFields {
     private ComboBox<Status> status = new ComboBox<>("Status");
     private ComboBox<Visibility> visibility = new ComboBox<>("Visibility");
 
+    List<ListExtraDetailsGrid> listExtraDetailsGrids = new ArrayList<>();
+    Grid<ListExtraDetailsGrid> extraDetailsGrid = new Grid<>(ListExtraDetailsGrid.class,false);
+
+
     List<ListMaterialGrid> listMaterialGrids = new ArrayList<>();
     Grid<ListMaterialGrid> productFeedModelGrid = new Grid<>(ListMaterialGrid.class,false);
 
     List<Tags> tagss = new ArrayList<>();
+
+
+    // send message that info is ready
+    Consumer<ProductDataEditAddDto> consumer;
+
+
+    public void setConsumer (Consumer<ProductDataEditAddDto> consumer){
+        this.consumer = consumer;
+    }
 
 
     public ProductEditRightSideFields(CommonComponents commonComponents,
@@ -78,41 +87,63 @@ public class ProductEditRightSideFields {
 
     }
 
-    public void loadData(ProductEditDto productEditDto){
+    public void loadData(ProductDataEditAddDto productEditDto){
 
 
+        // SET ITEMS (These are usually safe as Enums are static)
         category.setItems(Category.values());
         tags.setItems(Tags.values());
         status.setItems(Status.values());
         visibility.setItems(Visibility.values());
 
+// TEXT FIELDS (Require "" instead of null)
+        productName.setValue(productEditDto.getProductName() == null ? "" : productEditDto.getProductName());
+        sku.setValue(productEditDto.getSku() == null ? "" : productEditDto.getSku());
+        description.setValue(productEditDto.getDescription() == null ? "" : productEditDto.getDescription());
 
-
-        productName.setValue(productEditDto.getProductName());
-        sku.setValue(productEditDto.getSku());
-        description.setValue(productEditDto.getDescription());
+// NUMBER FIELDS (Can take null, but safer to check)
         price.setValue(productEditDto.getPrice());
         discount.setValue(productEditDto.getDiscount());
         materialCost.setValue(productEditDto.getMaterialCost());
-        stockQuantity.setValue((double) productEditDto.getStockQuantity());
-        lowThreshold.setValue((double) productEditDto.getLowStockThreshold());
-        category.setValue(productEditDto.getCategory());
 
-        tags.setValue(productEditDto.getTags().get(0));
+// CASTING NUMBERS (Crucial to check null before casting to double/long)
+        stockQuantity.setValue(productEditDto.getStockQuantity() != null ? (double) productEditDto.getStockQuantity() : 0.0);
+        lowThreshold.setValue(productEditDto.getLowStockThreshold() != null ? (double) productEditDto.getLowStockThreshold() : 0.0);
+
+// COMBOBOX / ENUMS (Can take null)
+        category.setValue(productEditDto.getCategory());
         status.setValue(productEditDto.getStatus());
         visibility.setValue(productEditDto.getVisibility());
 
-        for(var s : productEditDto.getMaterials()){
-            System.out.println(s.getMaterialName());
-            listMaterialGrids.add(new ListMaterialGrid(comboBoxMaterial(s.getMaterialName()),quantityField(Math.toIntExact(s.getAmountUsed())),unitField(s.getUnit())));
+// TAGS (Special case: check if the list is null or empty before getting index 0)
+        if (productEditDto.getTags() != null && !productEditDto.getTags().isEmpty()) {
+            tags.setValue(productEditDto.getTags().get(0));
+        } else {
+            tags.setValue(null); // Or tags.setValue(null);
         }
 
-        productFeedModelGrid.setItems(listMaterialGrids);
+
+        if(productEditDto.getExtraDetails() != null && !productEditDto.getExtraDetails().isEmpty()) {
+            for (var s : productEditDto.getExtraDetails()) {
+                listExtraDetailsGrids.add(new ListExtraDetailsGrid(specName(s.getSpecName()), specDescription(s.getSpecDescription())));
+            }
+            upgradeExtraDetailsGrid();
+        }
+
+        if(productEditDto.getMaterials() != null &&  !productEditDto.getMaterials().isEmpty()) {
+            for (var s : productEditDto.getMaterials()) {
+                listMaterialGrids.add(new ListMaterialGrid(comboBoxMaterial(s.getMaterialName()), quantityField(Math.toIntExact(s.getAmountUsed())), unitField(s.getUnit())));
+            }
+            upgradeMaterialGrid();
+        }
+
+
+
 
     }
 
 
-    public VerticalLayout rightSide(ProductEditDto productEditDtos){
+    public VerticalLayout rightSide(ProductDataEditAddDto productEditDtos){
 
         loadData(productEditDtos);
 
@@ -153,7 +184,7 @@ public class ProductEditRightSideFields {
         tagsSelected.setSpacing(false);
         tagsSelected.setPadding(false);
 
-        if(!productEditDtos.getTags().isEmpty()) {
+        if( productEditDtos.getTags() != null && !productEditDtos.getTags().isEmpty()) {
             for (var s : productEditDtos.getTags()) {
                 tagsSelected.add(tagCrafter(s));
             }
@@ -187,15 +218,26 @@ public class ProductEditRightSideFields {
 
             listMaterialGrids.add(new ListMaterialGrid(comboBoxMaterial(""),quantityField(0),unitField("")));
             System.out.println(listMaterialGrids);
-            updateGrid();
+            upgradeMaterialGrid();
+
+        });
+
+
+        Button addNewDetail = commonComponents.normalThemeButtonNoNavigate("Add Detail", ButtonVariant.LUMO_PRIMARY);
+
+        addNewDetail.addClickListener(e->{
+
+            listExtraDetailsGrids.add(new ListExtraDetailsGrid(specName(""),specDescription("")));
+            upgradeExtraDetailsGrid();
 
         });
 
         HorizontalLayout buttonSave = new HorizontalLayout();
         buttonSave.setWidthFull();
-        buttonSave.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-        Button save = new Button("Save");
-        buttonSave.add(save);
+        Button save = commonComponents.normalThemeButtonNoNavigate("Save",ButtonVariant.LUMO_PRIMARY);
+        Button clear = commonComponents.normalThemeButtonNoNavigate("Clear",ButtonVariant.LUMO_PRIMARY);
+        clear.addClassName("clear-button");
+        buttonSave.add(save,clear);
 
         productFeedModelGrid.removeAllColumns();
 
@@ -204,6 +246,9 @@ public class ProductEditRightSideFields {
                 buttonSave,
                 commonComponents.spanCrafterWordNoHide("Basic information","activityFeed-name"),
                 basicInfo,
+                commonComponents.spanCrafterWordNoHide("Spefication","activityFeed-name"),
+                extraDetailsGridCrafter(),
+                addNewDetail,
                 commonComponents.spanCrafterWordNoHide("Pricing & Inventory","activityFeed-name"),
                 pricingInventoryOne,
                 pricingInventoryTwo,
@@ -214,7 +259,7 @@ public class ProductEditRightSideFields {
                 commonComponents.spanCrafterWordNoHide("Product Status","activityFeed-name"),
                 productStatus,
                 commonComponents.spanCrafterWordNoHide("Required Materials","activityFeed-name"),
-                girdCrafter(),
+                materialGridCrafter(),
                 addNewMaterial
 
 
@@ -222,25 +267,29 @@ public class ProductEditRightSideFields {
 
 
 
+        saveDate(save);
+
+
+
+        return v;
+    }
+
+    public void saveDate(Button save){
         save.addClickListener(e -> {
 
-            ProductEditDto dto = new ProductEditDto();
+            ProductDataEditAddDto dto = new ProductDataEditAddDto();
 
             if (binder.writeBeanIfValid(dto)) {
 
                 System.out.println(dto.getProductName());
                 System.out.println(dto.getPrice());
 
-                // productEditService.save(dto);
+                consumer.accept(dto);
 
             } else {
                 System.out.println("Validation failed");
             }
         });
-
-
-
-        return v;
     }
 
 
@@ -252,8 +301,9 @@ public class ProductEditRightSideFields {
     }
 
 
+    // gird crafters
 
-    public Grid<ListMaterialGrid> girdCrafter(){
+    public Grid<ListMaterialGrid> materialGridCrafter(){
 
         productFeedModelGrid.addComponentColumn(ListMaterialGrid::getMaterial)
                 .setHeader("Material").setAutoWidth(true);
@@ -276,7 +326,7 @@ public class ProductEditRightSideFields {
 
             remove.addClickListener(e->{
                 listMaterialGrids.remove(row);
-                updateGrid();
+                upgradeMaterialGrid();
             });
 
 
@@ -288,11 +338,47 @@ public class ProductEditRightSideFields {
 
     }
 
+    public Grid<ListExtraDetailsGrid> extraDetailsGridCrafter(){
 
-    // update grid
+        extraDetailsGrid.addComponentColumn(ListExtraDetailsGrid::getSpecName)
+                .setHeader("Specficiation name").setAutoWidth(true);
 
-    public void updateGrid(){
+        extraDetailsGrid.addComponentColumn(ListExtraDetailsGrid::getSpecDescription)
+                .setHeader("Specification description").setAutoWidth(true);
+
+        extraDetailsGrid.addComponentColumn(row ->{
+
+            Button remove = commonComponents.buttonThemeAndIconNoNavigate("",ButtonVariant.PRIMARY,VaadinIcon.TRASH,"White");
+
+            HorizontalLayout h = new HorizontalLayout();
+            h.setWidthFull();
+            h.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+            h.add(remove);
+
+
+            remove.addClickListener(e->{
+                listExtraDetailsGrids.remove(row);
+                upgradeExtraDetailsGrid();
+            });
+
+
+            return h;
+
+        }).setHeader("Actions").setAutoWidth(true);
+
+        return extraDetailsGrid;
+
+    }
+
+
+    // update grids
+
+    public void upgradeMaterialGrid(){
         productFeedModelGrid.setItems(listMaterialGrids);
+    }
+
+    public void upgradeExtraDetailsGrid(){
+        extraDetailsGrid.setItems(listExtraDetailsGrids);
     }
 
 
@@ -331,7 +417,25 @@ public class ProductEditRightSideFields {
     }
 
 
+    // components for extra details grid
+    public TextField specName(String name){
+        TextField textField = new TextField();
+        textField.setValue(name);
+        textField.setPlaceholder("Material");
+        return textField;
+    }
 
+    public TextArea specDescription(String name){
+        TextArea textArea = new TextArea();
+        textArea.setValue(name);
+        textArea.setPlaceholder("Wool");
+        textArea.setWidthFull();
+        return textArea;
+    }
+
+
+
+    // binder for textfield checks
     private void bindFields() {
 
         // PRODUCT NAME
@@ -341,8 +445,8 @@ public class ProductEditRightSideFields {
                         value -> value.length() >= 3,
                         "Minimum 3 characters"
                 )
-                .bind(ProductEditDto::getProductName,
-                        ProductEditDto::setProductName);
+                .bind(ProductDataEditAddDto::getProductName,
+                        ProductDataEditAddDto::setProductName);
 
 
         // SKU
@@ -352,8 +456,8 @@ public class ProductEditRightSideFields {
                         value -> value.length() >= 2,
                         "SKU too short"
                 )
-                .bind(ProductEditDto::getSku,
-                        ProductEditDto::setSku);
+                .bind(ProductDataEditAddDto::getSku,
+                        ProductDataEditAddDto::setSku);
 
 
         // DESCRIPTION
@@ -363,8 +467,8 @@ public class ProductEditRightSideFields {
                         value -> value.length() >= 10,
                         "Description too short"
                 )
-                .bind(ProductEditDto::getDescription,
-                        ProductEditDto::setDescription);
+                .bind(ProductDataEditAddDto::getDescription,
+                        ProductDataEditAddDto::setDescription);
 
 
         // PRICE
@@ -374,8 +478,8 @@ public class ProductEditRightSideFields {
                         value -> value >= 0,
                         "Price must be positive"
                 )
-                .bind(ProductEditDto::getPrice,
-                        ProductEditDto::setPrice);
+                .bind(ProductDataEditAddDto::getPrice,
+                        ProductDataEditAddDto::setPrice);
 
 
         // DISCOUNT
@@ -384,16 +488,16 @@ public class ProductEditRightSideFields {
                         value -> value == null || (value >= 0 && value <= 100),
                         "Discount must be between 0 and 100"
                 )
-                .bind(ProductEditDto::getDiscount,
-                        ProductEditDto::setDiscount);
+                .bind(ProductDataEditAddDto::getDiscount,
+                        ProductDataEditAddDto::setDiscount);
 
 
         // MATERIAL COST
         binder.forField(materialCost)
                 .withValidator(value -> value == null || value >= 0,
                         "Must be positive")
-                .bind(ProductEditDto::getMaterialCost,
-                        ProductEditDto::setMaterialCost);
+                .bind(ProductDataEditAddDto::getMaterialCost,
+                        ProductDataEditAddDto::setMaterialCost);
 
 
         // STOCK QUANTITY
@@ -407,8 +511,8 @@ public class ProductEditRightSideFields {
                         value -> value >= 0,
                         "Stock cannot be negative"
                 )
-                .bind(ProductEditDto::getStockQuantity,
-                        ProductEditDto::setStockQuantity);
+                .bind(ProductDataEditAddDto::getStockQuantity,
+                        ProductDataEditAddDto::setStockQuantity);
 
 
         // LOW STOCK THRESHOLD
@@ -422,15 +526,15 @@ public class ProductEditRightSideFields {
                         value -> value >= 0,
                         "Threshold cannot be negative"
                 )
-                .bind(ProductEditDto::getLowStockThreshold,
-                        ProductEditDto::setLowStockThreshold);
+                .bind(ProductDataEditAddDto::getLowStockThreshold,
+                        ProductDataEditAddDto::setLowStockThreshold);
 
 
         // CATEGORY
         binder.forField(category)
                 .asRequired("Category required")
-                .bind(ProductEditDto::getCategory,
-                        ProductEditDto::setCategory);
+                .bind(ProductDataEditAddDto::getCategory,
+                        ProductDataEditAddDto::setCategory);
 
 
         // TAGS
@@ -440,22 +544,22 @@ public class ProductEditRightSideFields {
                         tag -> List.of(tag),
                         list -> list != null && !list.isEmpty() ? list.get(0) : null
                 )
-                .bind(ProductEditDto::getTags,
-                        ProductEditDto::setTags);
+                .bind(ProductDataEditAddDto::getTags,
+                        ProductDataEditAddDto::setTags);
 
 
         // STATUS
         binder.forField(status)
                 .asRequired("Status required")
-                .bind(ProductEditDto::getStatus,
-                        ProductEditDto::setStatus);
+                .bind(ProductDataEditAddDto::getStatus,
+                        ProductDataEditAddDto::setStatus);
 
 
         // VISIBILITY
         binder.forField(visibility)
                 .asRequired("Visibility required")
-                .bind(ProductEditDto::getVisibility,
-                        ProductEditDto::setVisibility);
+                .bind(ProductDataEditAddDto::getVisibility,
+                        ProductDataEditAddDto::setVisibility);
     }
 
 

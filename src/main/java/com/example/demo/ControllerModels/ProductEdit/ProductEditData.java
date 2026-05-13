@@ -1,5 +1,6 @@
 package com.example.demo.ControllerModels.ProductEdit;
 
+import com.example.demo.ControllerModels.Common.ProductDataEditAddDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.time.temporal.ChronoUnit;
 @NoArgsConstructor
 public class ProductEditData {
 
-    private ProductEditDto productEditDto;
+    private ProductDataEditAddDto productEditDto;
 
 
     LocalDateTime createdAt;

@@ -1,23 +1,23 @@
 package com.example.demo.Services.ProductEditService;
 
+import com.example.demo.ControllerModels.Common.ExtraDetails;
 import com.example.demo.ControllerModels.Common.GridMaterials;
 import com.example.demo.ControllerModels.Common.ImagesData;
-import com.example.demo.ControllerModels.ProductEdit.ProductEditDto;
+import com.example.demo.ControllerModels.Common.ProductDataEditAddDto;
 import com.example.demo.Enums.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.LongStream;
 
 @Service
 public class ProductEditService {
 
-    public ProductEditDto productEditDtoLoad(){
+    public ProductDataEditAddDto productEditDtoLoad(){
 
-        ProductEditDto productEditDto = new ProductEditDto();
+        ProductDataEditAddDto productEditDto = new ProductDataEditAddDto();
 
-        List<ProductEditDto> productData = new ArrayList<>();
+        List<ProductDataEditAddDto> productData = new ArrayList<>();
 
         List<ImagesData> list = new ArrayList<>();
         list.add(new ImagesData(null,"13","image","dataNotFound.png","yes", ImageLogic.Main,null));
@@ -31,8 +31,8 @@ public class ProductEditService {
         productEditDto.setPrice(65.23);
         productEditDto.setDiscount(0);
         productEditDto.setMaterialCost(0);
-        productEditDto.setStockQuantity(10);
-        productEditDto.setLowStockThreshold(50);
+        productEditDto.setStockQuantity(10L);
+        productEditDto.setLowStockThreshold(50L);
         productEditDto.setCategory(Category.Furniture);
         List<Tags> tags = new ArrayList<>();
         tags.add(Tags.Door);
@@ -40,6 +40,12 @@ public class ProductEditService {
         productEditDto.setTags(tags);
         productEditDto.setStatus(Status.Enabled);
         productEditDto.setVisibility(Visibility.Visible);
+
+        List<ExtraDetails> extraDetails = new ArrayList<>();
+        extraDetails.add(new ExtraDetails(null,"Color","red"));
+        productEditDto.setExtraDetails(extraDetails);
+
+
         List<GridMaterials> gridMaterials = new ArrayList<>();
         gridMaterials.add(new GridMaterials(1,"Wood",25,"Planks"));
         productEditDto.setMaterials(gridMaterials);

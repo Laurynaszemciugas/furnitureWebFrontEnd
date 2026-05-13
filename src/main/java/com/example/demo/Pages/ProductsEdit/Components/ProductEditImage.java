@@ -3,7 +3,7 @@ package com.example.demo.Pages.ProductsEdit.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Common.ImagesData;
-import com.example.demo.ControllerModels.ProductEdit.ProductEditDto;
+import com.example.demo.ControllerModels.Common.ProductDataEditAddDto;
 import com.example.demo.Enums.ImageLogic;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -17,8 +17,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.server.streams.InMemoryUploadHandler;
 import com.vaadin.flow.server.streams.UploadHandler;
-import com.vaadin.flow.spring.annotation.UIScope;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +70,17 @@ public class ProductEditImage {
         this.listConsumer = listConsumer;
     }
 
-    public HorizontalLayout images(ProductEditDto productEditDtos) {
+
+    public void loadData(ProductDataEditAddDto productEditDto){
+        if(productEditDto.getImages() != null && !productEditDto.getImages().isEmpty()) {
+            mainFound = true;
+            imagesDataList.addAll(productEditDto.getImages());
+
+            addExistingImages();
+        }
+    }
+
+    public HorizontalLayout images(ProductDataEditAddDto productEditDtos) {
 
 
 
@@ -96,7 +104,7 @@ public class ProductEditImage {
 
 
         mainImage.setWidthFull();
-        mainImage.setHeight("450px");
+        mainImage.setMaxHeight("450px");
         mainImage.getStyle()
                 .set("border-radius", "10px");
 
@@ -116,13 +124,8 @@ public class ProductEditImage {
         scroller.addClassName("island");
 
 
-        if(!productEditDtos.getImages().isEmpty()) {
-            mainFound = true;
-            imagesDataList.addAll(productEditDtos.getImages());
 
-            addExistingImages();
-        }
-
+        loadData(productEditDtos);
 
 
         holder.add(imageHolder,scroller);
@@ -175,6 +178,7 @@ public class ProductEditImage {
                 });
 
         Upload upload = new Upload(inMemoryHandler);
+        upload.setWidthFull();
 
         upload.setAcceptedFileTypes("image/png", ".png");
 

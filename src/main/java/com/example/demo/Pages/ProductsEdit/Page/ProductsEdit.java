@@ -91,6 +91,10 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
             //System.out.println(e);
         });
 
+        productEditRightSideFields.setConsumer(e->{
+            System.out.println("yes");
+        });
+
         verticalLayout.add(briefPageExplanation(), joinImagesInfo());
 
         return verticalLayout;
