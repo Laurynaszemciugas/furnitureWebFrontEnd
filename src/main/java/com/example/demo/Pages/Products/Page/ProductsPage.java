@@ -44,17 +44,16 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     public ProductsPage(CommonComponents commonComponents,
                         Common common,
                         ProductService productService,
-                        ProductPageBriefExplanation productPageBriefExplanation,
-                        ProductPageFilters productPageFilters,
-                        ProductPageProductFeed productPageProductFeed) {
+                        ProductPageBriefExplanation productPageBriefExplanation
+                        ) {
 
 
         this.commonComponents = commonComponents;
         this.common = common;
         this.productService = productService;
         this.productPageBriefExplanation = productPageBriefExplanation;
-        this.productPageFilters = productPageFilters;
-        this.productPageProductFeed = productPageProductFeed;
+        this.productPageFilters = new ProductPageFilters(commonComponents,common);
+        this.productPageProductFeed = new ProductPageProductFeed(commonComponents,common);
 
 
         this.paganation = new Paganation();

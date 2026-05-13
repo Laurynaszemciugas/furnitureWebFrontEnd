@@ -105,7 +105,7 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
 
         HorizontalLayout images = productEditImage.images(productEditService.productEditDtoLoad());
         Div holder = new Div(images,productEditImage.uploadStuff());
-        VerticalLayout fields = productEditRightSideFields.rightSide();
+        VerticalLayout fields = productEditRightSideFields.rightSide(productEditService.productEditDtoLoad());
 
         h.add(holder,fields);
         h.expand(fields);

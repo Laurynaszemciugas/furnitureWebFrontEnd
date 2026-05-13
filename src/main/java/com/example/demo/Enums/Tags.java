@@ -4,6 +4,6 @@ public enum Tags {
 
     Modern,
     LivingRoom,
-    Door
+    Door,
 
 }

@@ -2,6 +2,7 @@ package com.example.demo.Pages.ProductsEdit.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.Common.GridMaterials;
 import com.example.demo.ControllerModels.Common.ListMaterialGrid;
 import com.example.demo.ControllerModels.ProductEdit.ProductEditDto;
 import com.example.demo.ControllerModels.Products.ProductFeedModel;
@@ -77,13 +78,49 @@ public class ProductEditRightSideFields {
 
     }
 
+    public void loadData(ProductEditDto productEditDto){
 
-    public VerticalLayout rightSide(){
+
+        category.setItems(Category.values());
+        tags.setItems(Tags.values());
+        status.setItems(Status.values());
+        visibility.setItems(Visibility.values());
+
+
+
+        productName.setValue(productEditDto.getProductName());
+        sku.setValue(productEditDto.getSku());
+        description.setValue(productEditDto.getDescription());
+        price.setValue(productEditDto.getPrice());
+        discount.setValue(productEditDto.getDiscount());
+        materialCost.setValue(productEditDto.getMaterialCost());
+        stockQuantity.setValue((double) productEditDto.getStockQuantity());
+        lowThreshold.setValue((double) productEditDto.getLowStockThreshold());
+        category.setValue(productEditDto.getCategory());
+
+        tags.setValue(productEditDto.getTags().get(0));
+        status.setValue(productEditDto.getStatus());
+        visibility.setValue(productEditDto.getVisibility());
+
+        for(var s : productEditDto.getMaterials()){
+            System.out.println(s.getMaterialName());
+            listMaterialGrids.add(new ListMaterialGrid(comboBoxMaterial(s.getMaterialName()),quantityField(Math.toIntExact(s.getAmountUsed())),unitField(s.getUnit())));
+        }
+
+        productFeedModelGrid.setItems(listMaterialGrids);
+
+    }
+
+
+    public VerticalLayout rightSide(ProductEditDto productEditDtos){
+
+        loadData(productEditDtos);
+
+
         VerticalLayout v =new VerticalLayout();
         v.setWidth("700px");
         v.addClassName("island");
 
-        tagss.add(Tags.Door);
 
         FormLayout basicInfo = new FormLayout();
 
@@ -116,13 +153,12 @@ public class ProductEditRightSideFields {
         tagsSelected.setSpacing(false);
         tagsSelected.setPadding(false);
 
-        if(!tagss.isEmpty()) {
-            for (var s : tagss) {
+        if(!productEditDtos.getTags().isEmpty()) {
+            for (var s : productEditDtos.getTags()) {
                 tagsSelected.add(tagCrafter(s));
             }
         }
 
-        tags.setItems(Tags.Door,Tags.Modern,Tags.LivingRoom);
 
         tags.addValueChangeListener(e->{
             if(!tagss.contains(e.getValue()) && !tagss.isEmpty()) {
@@ -264,24 +300,29 @@ public class ProductEditRightSideFields {
 
     public ComboBox<String> comboBoxMaterial(String chosenValue) {
         ComboBox<String> materials = new ComboBox<>();
+        materials.setItems("yes");
+        materials.setValue(chosenValue);
         return materials;
     }
 
     public IntegerField quantityField(int chosenValue) {
         IntegerField quantity = new IntegerField();
+
         quantity.setStepButtonsVisible(true);
         quantity.setValue(1);
         quantity.setMin(0);
         quantity.setMax(100);
         quantity.setStep(1);
+        quantity.setValue(chosenValue);
 
         return quantity;
     }
 
     public ComboBox<String> unitField(String chosenValue) {
         ComboBox<String> unit = new ComboBox<>();
+
         unit.setItems("Planks", "Pieces");
-        unit.setValue("Auto");
+        unit.setValue(chosenValue);
         unit.setEnabled(false);
 
 
@@ -397,9 +438,7 @@ public class ProductEditRightSideFields {
                 .asRequired("Tag required")
                 .withConverter(
                         tag -> List.of(tag),
-                        list -> list != null && !list.isEmpty()
-                                ? list.get(0)
-                                : null
+                        list -> list != null && !list.isEmpty() ? list.get(0) : null
                 )
                 .bind(ProductEditDto::getTags,
                         ProductEditDto::setTags);

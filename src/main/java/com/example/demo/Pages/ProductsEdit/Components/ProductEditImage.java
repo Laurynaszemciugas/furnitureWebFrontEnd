@@ -3,6 +3,7 @@ package com.example.demo.Pages.ProductsEdit.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Common.ImagesData;
+import com.example.demo.ControllerModels.ProductEdit.ProductEditDto;
 import com.example.demo.Enums.ImageLogic;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -71,7 +72,7 @@ public class ProductEditImage {
         this.listConsumer = listConsumer;
     }
 
-    public HorizontalLayout images(List<ImagesData> list) {
+    public HorizontalLayout images(ProductEditDto productEditDtos) {
 
 
 
@@ -115,9 +116,9 @@ public class ProductEditImage {
         scroller.addClassName("island");
 
 
-        if(!list.isEmpty()) {
+        if(!productEditDtos.getImages().isEmpty()) {
             mainFound = true;
-            imagesDataList.addAll(list);
+            imagesDataList.addAll(productEditDtos.getImages());
 
             addExistingImages();
         }

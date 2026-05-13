@@ -11,8 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.function.Consumer;
 
-@Service
-@UIScope
+
 public class ProductPageFilters {
 
     CommonComponents commonComponents;
