@@ -1,0 +1,34 @@
+package com.example.demo.ControllerModels.ProductEdit;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class ProductEditData {
+
+    private ProductEditDto productEditDto;
+
+
+    LocalDateTime createdAt;
+
+    public boolean isDataStale(){
+
+        if (createdAt == null) {
+            return true;
+        }
+
+
+        long minutes = ChronoUnit.MINUTES.between(createdAt, LocalDateTime.now());
+
+        return minutes > 1;
+    }
+
+}

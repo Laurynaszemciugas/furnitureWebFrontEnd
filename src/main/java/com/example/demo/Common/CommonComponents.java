@@ -96,6 +96,14 @@ public class CommonComponents {
         return button;
     }
 
+    public Button buttonThemeAndIconNoNavigate(String text , ButtonVariant buttonVariant, VaadinIcon icon, String iconColor){
+        Button button = new Button(text);
+        button.addThemeVariants(buttonVariant);
+        button.setIcon(iconCrafter(icon,"25px",iconColor));
+
+        return button;
+    }
+
     public Button normalThemeButton(String text, String navigate , ButtonVariant buttonVariant){
         Button button = new Button(text, e-> UI.getCurrent().navigate(navigate));
         button.addThemeVariants(buttonVariant);
