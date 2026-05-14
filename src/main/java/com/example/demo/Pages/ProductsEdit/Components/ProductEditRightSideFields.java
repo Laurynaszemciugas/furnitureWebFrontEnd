@@ -10,6 +10,7 @@ import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Status;
 import com.example.demo.Enums.Tags;
 import com.example.demo.Enums.Visibility;
+import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -17,6 +18,8 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -72,6 +75,7 @@ public class ProductEditRightSideFields {
     // send message that info is ready
     Consumer<ProductDataEditAddDto> consumer;
 
+    HorizontalLayout tagsSelected = new HorizontalLayout();
 
     public void setConsumer (Consumer<ProductDataEditAddDto> consumer){
         this.consumer = consumer;
@@ -118,6 +122,7 @@ public class ProductEditRightSideFields {
 // TAGS (Special case: check if the list is null or empty before getting index 0)
         if (productEditDto.getTags() != null && !productEditDto.getTags().isEmpty()) {
             tags.setValue(productEditDto.getTags().get(0));
+            tagss.addAll(productEditDto.getTags());
         } else {
             tags.setValue(null); // Or tags.setValue(null);
         }
@@ -136,6 +141,8 @@ public class ProductEditRightSideFields {
             }
             upgradeMaterialGrid();
         }
+
+        updateSelectedTags(productEditDto);
 
 
 
@@ -178,28 +185,37 @@ public class ProductEditRightSideFields {
         pricingInventoryTwo.add(stockQuantity, lowThreshold);
 
 
-        HorizontalLayout tagsSelected = new HorizontalLayout();
+
         tagsSelected.setWidthFull();
         tagsSelected.addClassName("island");
         tagsSelected.setSpacing(false);
         tagsSelected.setPadding(false);
 
-        if( productEditDtos.getTags() != null && !productEditDtos.getTags().isEmpty()) {
-            for (var s : productEditDtos.getTags()) {
-                tagsSelected.add(tagCrafter(s));
-            }
-        }
+
 
 
         tags.addValueChangeListener(e->{
-            if(!tagss.contains(e.getValue()) && !tagss.isEmpty()) {
+
+            if (!e.isFromClient()) {
+                return;
+            }
+
+            if(!tagss.contains(e.getValue()) && e.getValue() != null ) {
                 tagss.add(e.getValue());
                 tagsSelected.add(tagCrafter(e.getValue()));
+
+                commonComponents.showNotification(String.format("%s - '%s' %s","Tag",e.getValue(),"added"),
+                        3000,
+                        Notification.Position.BOTTOM_CENTER,
+                        NotificationVariant.LUMO_SUCCESS);
             }
             else{
-                System.out.println("that exists");
+                commonComponents.showNotification(String.format("%s - '%s' %s","Tag",e.getValue(),"already exists"),
+                        3000,
+                        Notification.Position.BOTTOM_CENTER,
+                        NotificationVariant.LUMO_WARNING);
             }
-            System.out.println(tagss);
+
             });
 
         FormLayout categoryTags = new FormLayout();
@@ -268,10 +284,39 @@ public class ProductEditRightSideFields {
 
 
         saveDate(save);
+        clearData(clear);
 
 
 
         return v;
+    }
+
+    public void clearData(Button clear){
+
+        clear.addClickListener(e->{
+            productName.clear();
+            sku.clear();
+            description.clear();
+            status.clear();
+            price.clear();
+            materialCost.clear();
+            stockQuantity.clear();
+            lowThreshold.clear();
+            category.clear();
+            tags.clear();
+            visibility.clear();
+
+            listMaterialGrids.clear();
+            listExtraDetailsGrids.clear();
+
+            upgradeExtraDetailsGrid();
+            upgradeMaterialGrid();
+
+            removeTags();
+
+        });
+
+
     }
 
     public void saveDate(Button save){
@@ -292,12 +337,55 @@ public class ProductEditRightSideFields {
         });
     }
 
+    // tag crafter
 
-    public Span tagCrafter(Tags tags){
+    public HorizontalLayout tagCrafter(Tags newTag) {
 
-        Span span = commonComponents.spanCrafterWordNoHide(tags.toString(),"tag-badge");
+        HorizontalLayout layout = new HorizontalLayout();
 
-        return span;
+
+
+        layout.addClassName("tag-badge");
+
+        layout.setPadding(false);
+        layout.setSpacing(true);
+        layout.setAlignItems(FlexComponent.Alignment.CENTER);
+
+
+
+        Span span = commonComponents.spanCrafterWordNoHide(
+                newTag != null ? newTag.toString() : "",
+                "none"
+        );
+
+        Button removeButton = new Button(VaadinIcon.CLOSE_SMALL.create());
+        removeButton.addClassName("remove-button");
+
+        removeButton.addClickListener(e->{
+           tagss.removeIf(tags1 -> tags1.equals(newTag));
+
+           tags.setValue(!tagss.isEmpty() ? tagss.get(0) : null);
+
+           layout.getParent().ifPresent(parent ->{
+               ((HasComponents) parent).remove(layout);
+           });
+
+            commonComponents.showNotification(String.format("%s - '%s' %s","Tag",newTag.toString(),"removed"),
+                    3000,
+                    Notification.Position.BOTTOM_CENTER,
+                    NotificationVariant.LUMO_SUCCESS);
+        });
+
+
+
+        removeButton.setMinWidth("30px");
+        removeButton.setHeight("30px");
+
+        layout.add(span, removeButton);
+
+
+
+        return layout;
     }
 
 
@@ -371,7 +459,7 @@ public class ProductEditRightSideFields {
     }
 
 
-    // update grids
+    // update
 
     public void upgradeMaterialGrid(){
         productFeedModelGrid.setItems(listMaterialGrids);
@@ -381,6 +469,25 @@ public class ProductEditRightSideFields {
         extraDetailsGrid.setItems(listExtraDetailsGrids);
     }
 
+    public void updateSelectedTags(ProductDataEditAddDto productEditDtos){
+
+        tagsSelected.removeAll();
+
+        if( productEditDtos.getTags() != null && !productEditDtos.getTags().isEmpty()) {
+            for (var s : productEditDtos.getTags()) {
+                tagsSelected.add(tagCrafter(s));
+            }
+        }
+    }
+
+    public void removeTags(){
+
+        tagsSelected.removeAll();
+        tags.clear();
+        tagss.clear();
+
+
+    }
 
     // material stuff components
 
