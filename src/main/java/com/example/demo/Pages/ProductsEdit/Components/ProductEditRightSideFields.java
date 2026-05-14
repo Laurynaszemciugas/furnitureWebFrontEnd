@@ -36,6 +36,7 @@ public class ProductEditRightSideFields {
     CommonComponents commonComponents;
     Common common;
 
+    List<String> items = new ArrayList<>();
 
 
     private Binder<ProductDataEditAddDto> binder =
@@ -85,6 +86,8 @@ public class ProductEditRightSideFields {
         this.common = common;
 
         bindFields();
+        items.add("Wood");
+        items.add("Nails");
 
     }
 
@@ -318,6 +321,7 @@ public class ProductEditRightSideFields {
     public void saveDate(Button save, ProductDataEditAddDto productDataEditAddDto){
         save.addClickListener(e -> {
 
+
             productDataEditAddDto.setProductName(productName.getValue());
             productDataEditAddDto.setSku(sku.getValue());
             productDataEditAddDto.setDescription(description.getValue());
@@ -336,18 +340,10 @@ public class ProductEditRightSideFields {
 
             List<GridMaterials> materials = new ArrayList<>();
             for(var s : listMaterialGrids){
-                String materialName = "";
-                Long amountUsed = 0l;
-                String materialUnit = "";
-                if(s.getMaterial() instanceof TextField tf){
-                    materialName = tf.getValue();
-                }
-                if(s.getAmountOfMaterial() instanceof NumberField nb){
-                    amountUsed = nb.getValue().longValue();
-                }
-                if(s.getUnit() instanceof TextField tf){
-                    materialUnit = tf.getValue();
-                }
+                String materialName = s.getMaterial().getValue();
+                Long amountUsed = Long.valueOf(s.getAmountOfMaterial().getValue());
+                String materialUnit = s.getUnit().getValue();
+
 
                 materials.add(new GridMaterials(s.getId(),materialName,amountUsed,s.getUnitPrice(),materialUnit));
             }
@@ -546,10 +542,16 @@ public class ProductEditRightSideFields {
     // material stuff components
 
     public ComboBox<String> comboBoxMaterial(String chosenValue) {
+
+
+
         ComboBox<String> materials = new ComboBox<>();
-        materials.setItems("Wood","Nails");
-        if(chosenValue != null) {
+        materials.addClassName("no-gray-disabled");
+        materials.setItems(items);
+
+        if(!chosenValue.equalsIgnoreCase("")) {
             materials.setValue(chosenValue);
+            materials.setEnabled(false);
         }
 
         materials.addValueChangeListener(e->{
@@ -577,7 +579,22 @@ public class ProductEditRightSideFields {
                         NotificationVariant.LUMO_SUCCESS);
                 materials.setValue(e.getValue());
 
+                System.out.println("here");
+                for(var s : listMaterialGrids){
+                    if(s.getMaterial() instanceof ComboBox<?> cb){
+                        System.out.println(cb.getValue());
+
+                        s.setNameForCompare((String) cb.getValue());
+                    }
+                }
+                materials.setEnabled(false);
+
+
             }
+
+
+
+
 
         });
         return materials;

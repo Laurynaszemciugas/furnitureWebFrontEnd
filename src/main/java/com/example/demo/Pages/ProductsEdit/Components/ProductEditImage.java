@@ -104,7 +104,7 @@ public class ProductEditImage {
 
 
         mainImage.setWidthFull();
-        mainImage.setMaxHeight("450px");
+        mainImage.setHeight("450px");
         mainImage.getStyle()
                 .set("border-radius", "10px");
 
@@ -192,8 +192,7 @@ public class ProductEditImage {
 
                 if(s.getImageLogic() == ImageLogic.Main) {
                     if (s.getImageData() != null) {
-                        String base64 = java.util.Base64.getEncoder().encodeToString(s.getImageData());
-                        String src = "data:" + s.getImageType() + ";base64," + base64;
+                        String src = common.imageMaker(s.getImageData(),s.getImageType());
                         mainImage.setSrc(src);
                         feedLayout.add(createImage(s.getImageData(), s.getImageType(), s.getUuId(),s.getImageUrl()));
                     }
@@ -237,11 +236,9 @@ public class ProductEditImage {
 
 
         String src = "";
-        String base64 = "";
 
         if(data !=null) {
-            base64 = java.util.Base64.getEncoder().encodeToString(data);
-            src = "data:" + mimeType + ";base64," + base64;
+            src = common.imageMaker(data,mimeType);
         }
         else{
             src = url;
@@ -322,8 +319,7 @@ public class ProductEditImage {
                     mainImage.setSrc(imagesDataList.get(0).getImageUrl());
                 }
                 else {
-                    String base64 = java.util.Base64.getEncoder().encodeToString(imagesDataList.get(0).getImageData());
-                    String src = "data:" + imagesDataList.get(0).getImageType() + ";base64," + base64;
+                    String src = common.imageMaker(imagesDataList.get(0).getImageData(),imagesDataList.get(0).getImageType());
                     mainImage.setSrc(src);
                 }
 

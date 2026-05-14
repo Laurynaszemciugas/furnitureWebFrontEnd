@@ -62,6 +62,14 @@ body {
 
 
 
+.no-gray-disabled {
+    /* Sets the text of the value inside the box to pure black */
+    --vaadin-input-field-disabled-value-color: #2d2d2d;
+
+    /* Keeps the background exactly as dark as it was */
+
+}
+
 
 
 

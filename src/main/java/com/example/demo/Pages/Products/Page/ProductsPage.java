@@ -78,6 +78,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
         if(data == null || data.isDataStale()){
             data = productService.loadDashboardData();
+            System.out.println(data.getProductFeedModelList());
         }
 
         else{

@@ -1,6 +1,8 @@
 package com.example.demo.ControllerModels.Common;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.component.textfield.TextField;
 import lombok.*;
 
 
@@ -12,7 +14,7 @@ import lombok.*;
 public class ListExtraDetailsGrid {
 
     private Long id;
-    private Component specName;
-    private Component specDescription;
+    private TextField specName;
+    private TextArea specDescription;
 
 }

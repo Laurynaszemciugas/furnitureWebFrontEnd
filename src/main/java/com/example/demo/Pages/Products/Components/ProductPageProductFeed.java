@@ -33,13 +33,14 @@ public class ProductPageProductFeed {
 
     public HorizontalLayout productsMain(List<ProductFeedModel> productFeedModelList){
 
-        productFeedModelList.clear();
         boolean empty = productFeedModelList.isEmpty();
 
         HorizontalLayout verticalLayout = new HorizontalLayout();
         verticalLayout.setWidthFull();
         verticalLayout.addClassName("layout-flex");
         verticalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+        System.out.println(productFeedModelList);
 
         if(empty){
             verticalLayout.add(commonComponents.noDataFound());

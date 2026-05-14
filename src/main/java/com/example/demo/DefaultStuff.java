@@ -31,6 +31,12 @@ public class DefaultStuff extends VerticalLayout {
         verticalLayout.setPadding(false);
         verticalLayout.setSpacing(false);
         accordion.add("Common Questions",verticalLayout);
+
+        Span question2 = commonComponents.spanCrafterWordNoHide("How to remove image ?","activityFeed-name");
+        Span explanation2 = commonComponents.spanCrafterWordNoHide("If you want to remove an image from products just double click on the smaller picture then the small delete button will appear after pressing that button the image will be deleted from the list","stat-example");
+
+
+
         accordion.close();
 
         add(accordion);

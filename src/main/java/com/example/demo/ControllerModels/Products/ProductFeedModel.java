@@ -1,10 +1,7 @@
 package com.example.demo.ControllerModels.Products;
 
 import com.example.demo.Enums.ProductCategory;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -13,6 +10,7 @@ import java.time.temporal.ChronoUnit;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class ProductFeedModel {
 
     private long id;

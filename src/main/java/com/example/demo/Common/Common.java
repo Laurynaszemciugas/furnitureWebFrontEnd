@@ -112,5 +112,13 @@ public class Common {
         return 0.0;
     }
 
+    public String imageMaker(byte[] data, String mimeType){
+
+        String base64 = java.util.Base64.getEncoder().encodeToString(data);
+        String source = "data:" + mimeType + ";base64," + base64;
+
+        return  source;
+    }
+
 
 }
