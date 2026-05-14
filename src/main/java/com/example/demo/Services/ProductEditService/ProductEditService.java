@@ -47,7 +47,7 @@ public class ProductEditService {
 
 
         List<GridMaterials> gridMaterials = new ArrayList<>();
-        gridMaterials.add(new GridMaterials(1,"Wood",25,"Planks"));
+        gridMaterials.add(new GridMaterials(1l,"Wood",25l,25.5,"Planks"));
         productEditDto.setMaterials(gridMaterials);
 
 

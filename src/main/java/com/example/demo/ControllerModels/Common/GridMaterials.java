@@ -1,19 +1,23 @@
 package com.example.demo.ControllerModels.Common;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class GridMaterials {
 
-    private long id;
+    private Long id;
     private String materialName;
-    private long amountUsed;
+    private Long amountUsed;
+    private double unitPrice;
     private String unit;
 
 }

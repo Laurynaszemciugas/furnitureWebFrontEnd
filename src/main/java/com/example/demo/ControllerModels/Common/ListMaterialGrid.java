@@ -14,9 +14,12 @@ import lombok.*;
 public class ListMaterialGrid {
 
 
+    private Long id;
+    private String nameForCompare;
     private Component material;
     private Component amountOfMaterial;
     private Component unit;
+    private  double unitPrice;
 
 
 

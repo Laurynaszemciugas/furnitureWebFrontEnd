@@ -11,6 +11,7 @@ import lombok.*;
 @ToString
 public class ListExtraDetailsGrid {
 
+    private Long id;
     private Component specName;
     private Component specDescription;
 

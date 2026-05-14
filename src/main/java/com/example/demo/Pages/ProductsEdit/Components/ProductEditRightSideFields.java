@@ -2,10 +2,7 @@ package com.example.demo.Pages.ProductsEdit.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.Common.ExtraDetails;
-import com.example.demo.ControllerModels.Common.ListExtraDetailsGrid;
-import com.example.demo.ControllerModels.Common.ListMaterialGrid;
-import com.example.demo.ControllerModels.Common.ProductDataEditAddDto;
+import com.example.demo.ControllerModels.Common.*;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Status;
 import com.example.demo.Enums.Tags;
@@ -130,15 +127,14 @@ public class ProductEditRightSideFields {
 
         if(productEditDto.getExtraDetails() != null && !productEditDto.getExtraDetails().isEmpty()) {
             for (var s : productEditDto.getExtraDetails()) {
-                listExtraDetailsGrids.add(new ListExtraDetailsGrid(specName(s.getSpecName()), specDescription(s.getSpecDescription())));
+                listExtraDetailsGrids.add(new ListExtraDetailsGrid(s.getId(),specName(s.getSpecName()), specDescription(s.getSpecDescription())));
             }
             upgradeExtraDetailsGrid();
         }
 
         if(productEditDto.getMaterials() != null &&  !productEditDto.getMaterials().isEmpty()) {
-            for (var s : productEditDto.getMaterials()) {
-                listMaterialGrids.add(new ListMaterialGrid(comboBoxMaterial(s.getMaterialName()), quantityField(Math.toIntExact(s.getAmountUsed())), unitField(s.getUnit())));
-            }
+            for(var s : productEditDto.getMaterials())
+                listMaterialGrids.add(new ListMaterialGrid(s.getId(),s.getMaterialName(),comboBoxMaterial(s.getMaterialName()),quantityField(s.getAmountUsed()),unitField(s.getUnit()),s.getUnitPrice()));
             upgradeMaterialGrid();
         }
 
@@ -232,7 +228,7 @@ public class ProductEditRightSideFields {
 
         addNewMaterial.addClickListener(e->{
 
-            listMaterialGrids.add(new ListMaterialGrid(comboBoxMaterial(""),quantityField(0),unitField("")));
+            listMaterialGrids.add(new ListMaterialGrid(null,"",comboBoxMaterial(""),quantityField(0l),unitField(""),0));
             System.out.println(listMaterialGrids);
             upgradeMaterialGrid();
 
@@ -243,7 +239,7 @@ public class ProductEditRightSideFields {
 
         addNewDetail.addClickListener(e->{
 
-            listExtraDetailsGrids.add(new ListExtraDetailsGrid(specName(""),specDescription("")));
+            listExtraDetailsGrids.add(new ListExtraDetailsGrid(null,specName(""),specDescription("")));
             upgradeExtraDetailsGrid();
 
         });
@@ -283,7 +279,7 @@ public class ProductEditRightSideFields {
 
 
 
-        saveDate(save);
+        saveDate(save,productEditDtos);
         clearData(clear);
 
 
@@ -319,17 +315,76 @@ public class ProductEditRightSideFields {
 
     }
 
-    public void saveDate(Button save){
+    public void saveDate(Button save, ProductDataEditAddDto productDataEditAddDto){
         save.addClickListener(e -> {
 
-            ProductDataEditAddDto dto = new ProductDataEditAddDto();
+            productDataEditAddDto.setProductName(productName.getValue());
+            productDataEditAddDto.setSku(sku.getValue());
+            productDataEditAddDto.setDescription(description.getValue());
+            productDataEditAddDto.setPrice(price.getValue());
+            productDataEditAddDto.setDiscount(discount.getValue());
+            productDataEditAddDto.setMaterialCost(materialCost.getValue());
+            productDataEditAddDto.setStockQuantity(stockQuantity.getValue().longValue());
+            productDataEditAddDto.setLowStockThreshold(lowThreshold.getValue().longValue());
+            productDataEditAddDto.setCategory(category.getValue());
+            productDataEditAddDto.setTags(tagss);
+            productDataEditAddDto.setStatus(status.getValue());
+            productDataEditAddDto.setVisibility(visibility.getValue());
 
-            if (binder.writeBeanIfValid(dto)) {
 
-                System.out.println(dto.getProductName());
-                System.out.println(dto.getPrice());
 
-                consumer.accept(dto);
+
+            List<GridMaterials> materials = new ArrayList<>();
+            for(var s : listMaterialGrids){
+                String materialName = "";
+                Long amountUsed = 0l;
+                String materialUnit = "";
+                if(s.getMaterial() instanceof TextField tf){
+                    materialName = tf.getValue();
+                }
+                if(s.getAmountOfMaterial() instanceof NumberField nb){
+                    amountUsed = nb.getValue().longValue();
+                }
+                if(s.getUnit() instanceof TextField tf){
+                    materialUnit = tf.getValue();
+                }
+
+                materials.add(new GridMaterials(s.getId(),materialName,amountUsed,s.getUnitPrice(),materialUnit));
+            }
+
+            productDataEditAddDto.setMaterials(materials);
+
+
+            List<ExtraDetails> extraDetails = new ArrayList<>();
+            for(var s : listExtraDetailsGrids){
+                String specName = "";
+                String specDescrption = "";
+                if(s.getSpecName() instanceof TextField tf){
+                    specName = tf.getValue();
+                }
+                if(s.getSpecDescription() instanceof TextArea ta){
+                    specDescrption = ta.getValue();
+                }
+
+                extraDetails.add(new ExtraDetails(s.getId(),specName,specDescrption));
+            }
+
+            productDataEditAddDto.setMaterials(materials);
+
+            productDataEditAddDto.setExtraDetails(extraDetails);
+
+
+
+
+
+            if (binder.writeBeanIfValid(productDataEditAddDto)) {
+
+                System.out.println(productDataEditAddDto.getProductName());
+                System.out.println(productDataEditAddDto.getPrice());
+
+                System.out.println(productDataEditAddDto.getExtraDetails());
+
+                consumer.accept(productDataEditAddDto);
 
             } else {
                 System.out.println("Validation failed");
@@ -393,14 +448,12 @@ public class ProductEditRightSideFields {
 
     public Grid<ListMaterialGrid> materialGridCrafter(){
 
-        productFeedModelGrid.addComponentColumn(ListMaterialGrid::getMaterial)
-                .setHeader("Material").setAutoWidth(true);
 
-        productFeedModelGrid.addComponentColumn(ListMaterialGrid::getAmountOfMaterial)
-                .setHeader("Amount of material").setAutoWidth(true);
+        productFeedModelGrid.addComponentColumn(ListMaterialGrid::getMaterial).setHeader("Material").setAutoWidth(true);
 
-        productFeedModelGrid.addComponentColumn(ListMaterialGrid::getUnit)
-                .setHeader("Unit").setAutoWidth(true);
+        productFeedModelGrid.addComponentColumn(ListMaterialGrid::getAmountOfMaterial).setHeader("Amount of material").setAutoWidth(true);
+
+        productFeedModelGrid.addComponentColumn(ListMaterialGrid::getUnit).setHeader("Unit").setAutoWidth(true);
 
         productFeedModelGrid.addComponentColumn(row ->{
 
@@ -423,6 +476,7 @@ public class ProductEditRightSideFields {
         }).setHeader("Actions").setAutoWidth(true);
 
         return productFeedModelGrid;
+
 
     }
 
@@ -493,12 +547,43 @@ public class ProductEditRightSideFields {
 
     public ComboBox<String> comboBoxMaterial(String chosenValue) {
         ComboBox<String> materials = new ComboBox<>();
-        materials.setItems("yes");
-        materials.setValue(chosenValue);
+        materials.setItems("Wood","Nails");
+        if(chosenValue != null) {
+            materials.setValue(chosenValue);
+        }
+
+        materials.addValueChangeListener(e->{
+
+
+
+
+
+            boolean exits = listMaterialGrids.stream().anyMatch(item -> item.getNameForCompare().equalsIgnoreCase(e.getValue()));
+            boolean fromClient = e.isFromClient();
+
+            if(exits && fromClient){
+                commonComponents.showNotification(String.format("%s - '%s' %s","Material",e.getValue(),"exists dublicates are not allowed"),
+                        3000,
+                        Notification.Position.BOTTOM_CENTER,
+                        NotificationVariant.LUMO_WARNING);
+
+                materials.clear();
+            }
+            if(!exits && fromClient) {
+
+                commonComponents.showNotification(String.format("%s - '%s' %s", "Material", e.getValue(), "added succesfully"),
+                        3000,
+                        Notification.Position.BOTTOM_CENTER,
+                        NotificationVariant.LUMO_SUCCESS);
+                materials.setValue(e.getValue());
+
+            }
+
+        });
         return materials;
     }
 
-    public IntegerField quantityField(int chosenValue) {
+    public IntegerField quantityField(Long chosenValue) {
         IntegerField quantity = new IntegerField();
 
         quantity.setStepButtonsVisible(true);
@@ -506,7 +591,7 @@ public class ProductEditRightSideFields {
         quantity.setMin(0);
         quantity.setMax(100);
         quantity.setStep(1);
-        quantity.setValue(chosenValue);
+        quantity.setValue(chosenValue.intValue());
 
         return quantity;
     }
