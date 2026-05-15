@@ -1,9 +1,9 @@
 package com.example.demo.Services.ProductEditService;
 
 import com.example.demo.ControllerModels.Common.ExtraDetails;
-import com.example.demo.ControllerModels.Common.GridMaterials;
+import com.example.demo.ControllerModels.Common.Materials;
 import com.example.demo.ControllerModels.Common.ImagesData;
-import com.example.demo.ControllerModels.Common.ProductDataEditAddDto;
+import com.example.demo.ControllerModels.Common.ProductData;
 import com.example.demo.Enums.*;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +13,11 @@ import java.util.List;
 @Service
 public class ProductEditService {
 
-    public ProductDataEditAddDto productEditDtoLoad(){
+    public ProductData productEditDtoLoad(){
 
-        ProductDataEditAddDto productEditDto = new ProductDataEditAddDto();
+        ProductData productEditDto = new ProductData();
 
-        List<ProductDataEditAddDto> productData = new ArrayList<>();
+        List<ProductData> productData = new ArrayList<>();
 
         List<ImagesData> list = new ArrayList<>();
         list.add(new ImagesData(null,"13","image","dataNotFound.png","yes", ImageLogic.Main,null));
@@ -46,8 +46,8 @@ public class ProductEditService {
         productEditDto.setExtraDetails(extraDetails);
 
 
-        List<GridMaterials> gridMaterials = new ArrayList<>();
-        gridMaterials.add(new GridMaterials(1l,"Wood",25l,25.5,"Planks"));
+        List<Materials> gridMaterials = new ArrayList<>();
+        gridMaterials.add(new Materials(1l,"Wood",25l,25.5,"Planks"));
         productEditDto.setMaterials(gridMaterials);
 
 

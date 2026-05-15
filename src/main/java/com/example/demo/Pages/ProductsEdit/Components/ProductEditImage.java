@@ -3,7 +3,7 @@ package com.example.demo.Pages.ProductsEdit.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Common.ImagesData;
-import com.example.demo.ControllerModels.Common.ProductDataEditAddDto;
+import com.example.demo.ControllerModels.Common.ProductData;
 import com.example.demo.Enums.ImageLogic;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -71,7 +71,7 @@ public class ProductEditImage {
     }
 
 
-    public void loadData(ProductDataEditAddDto productEditDto){
+    public void loadData(ProductData productEditDto){
         if(productEditDto.getImages() != null && !productEditDto.getImages().isEmpty()) {
             mainFound = true;
             imagesDataList.addAll(productEditDto.getImages());
@@ -80,7 +80,7 @@ public class ProductEditImage {
         }
     }
 
-    public HorizontalLayout images(ProductDataEditAddDto productEditDtos) {
+    public HorizontalLayout images(ProductData productEditDtos) {
 
 
 
@@ -206,6 +206,8 @@ public class ProductEditImage {
             imagesDataList.addAll(newUploadedImages);
             // clear list to avoid dublicates
             newUploadedImages.clear();
+
+
 
             // send data that user put stuff in the uploads
             listConsumer.accept(imagesDataList);

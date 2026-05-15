@@ -7,6 +7,7 @@ import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Status;
 import com.example.demo.Enums.Tags;
 import com.example.demo.Enums.Visibility;
+import com.example.demo.Pages.CommonComponents.ProductAddEditGrids;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -35,12 +36,15 @@ public class ProductEditRightSideFields {
 
     CommonComponents commonComponents;
     Common common;
+    ProductAddEditGrids productAddEditGrids;
+
+    ProductEditImage productEditImage;
 
     List<String> items = new ArrayList<>();
 
 
-    private Binder<ProductDataEditAddDto> binder =
-            new Binder<>(ProductDataEditAddDto.class);
+    private Binder<ProductData> binder =
+            new Binder<>(ProductData.class);
 
     private TextField productName = new TextField("Product name");
     private TextField sku = new TextField("SKU");
@@ -71,12 +75,23 @@ public class ProductEditRightSideFields {
 
 
     // send message that info is ready
-    Consumer<ProductDataEditAddDto> consumer;
+    Consumer<ProductData> consumer;
 
     HorizontalLayout tagsSelected = new HorizontalLayout();
 
-    public void setConsumer (Consumer<ProductDataEditAddDto> consumer){
+    public void setConsumer (Consumer<ProductData> consumer){
         this.consumer = consumer;
+    }
+
+
+    // set consumer so it could react this is due to because in controller new is used
+    public void setProductEditImage(ProductEditImage productEditImage) {
+        this.productEditImage = productEditImage;
+        if (this.productEditImage != null) {
+            this.productEditImage.setListConsumer(list -> {
+                System.out.println("1234");
+            });
+        }
     }
 
 
@@ -84,14 +99,19 @@ public class ProductEditRightSideFields {
                         Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.productAddEditGrids = new ProductAddEditGrids(commonComponents,common);
 
         bindFields();
         items.add("Wood");
         items.add("Nails");
 
+
+
     }
 
-    public void loadData(ProductDataEditAddDto productEditDto){
+
+
+    public void loadData(ProductData productEditDto){
 
 
         // SET ITEMS (These are usually safe as Enums are static)
@@ -149,7 +169,7 @@ public class ProductEditRightSideFields {
     }
 
 
-    public VerticalLayout rightSide(ProductDataEditAddDto productEditDtos){
+    public VerticalLayout rightSide(ProductData productEditDtos){
 
         loadData(productEditDtos);
 
@@ -274,7 +294,7 @@ public class ProductEditRightSideFields {
                 commonComponents.spanCrafterWordNoHide("Product Status","activityFeed-name"),
                 productStatus,
                 commonComponents.spanCrafterWordNoHide("Required Materials","activityFeed-name"),
-                materialGridCrafter(),
+                productAddEditGrids.materialGridCrafter(productFeedModelGrid,listMaterialGrids),
                 addNewMaterial
 
 
@@ -318,8 +338,12 @@ public class ProductEditRightSideFields {
 
     }
 
-    public void saveDate(Button save, ProductDataEditAddDto productDataEditAddDto){
+    public void saveDate(Button save, ProductData productDataEditAddDto){
+
+
+
         save.addClickListener(e -> {
+
 
 
             productDataEditAddDto.setProductName(productName.getValue());
@@ -338,17 +362,16 @@ public class ProductEditRightSideFields {
 
 
 
-            List<GridMaterials> materials = new ArrayList<>();
+            List<Materials> materials = new ArrayList<>();
             for(var s : listMaterialGrids){
                 String materialName = s.getMaterial().getValue();
                 Long amountUsed = Long.valueOf(s.getAmountOfMaterial().getValue());
                 String materialUnit = s.getUnit().getValue();
 
 
-                materials.add(new GridMaterials(s.getId(),materialName,amountUsed,s.getUnitPrice(),materialUnit));
+                materials.add(new Materials(s.getId(),materialName,amountUsed,s.getUnitPrice(),materialUnit));
             }
 
-            productDataEditAddDto.setMaterials(materials);
 
 
             List<ExtraDetails> extraDetails = new ArrayList<>();
@@ -370,6 +393,7 @@ public class ProductEditRightSideFields {
             productDataEditAddDto.setExtraDetails(extraDetails);
 
 
+            System.out.println(productDataEditAddDto.getMaterials());
 
 
 
@@ -440,7 +464,7 @@ public class ProductEditRightSideFields {
     }
 
 
-    // gird crafters
+    // grid crafters
 
     public Grid<ListMaterialGrid> materialGridCrafter(){
 
@@ -519,7 +543,7 @@ public class ProductEditRightSideFields {
         extraDetailsGrid.setItems(listExtraDetailsGrids);
     }
 
-    public void updateSelectedTags(ProductDataEditAddDto productEditDtos){
+    public void updateSelectedTags(ProductData productEditDtos){
 
         tagsSelected.removeAll();
 
@@ -555,10 +579,6 @@ public class ProductEditRightSideFields {
         }
 
         materials.addValueChangeListener(e->{
-
-
-
-
 
             boolean exits = listMaterialGrids.stream().anyMatch(item -> item.getNameForCompare().equalsIgnoreCase(e.getValue()));
             boolean fromClient = e.isFromClient();
@@ -654,8 +674,8 @@ public class ProductEditRightSideFields {
                         value -> value.length() >= 3,
                         "Minimum 3 characters"
                 )
-                .bind(ProductDataEditAddDto::getProductName,
-                        ProductDataEditAddDto::setProductName);
+                .bind(ProductData::getProductName,
+                        ProductData::setProductName);
 
 
         // SKU
@@ -665,8 +685,8 @@ public class ProductEditRightSideFields {
                         value -> value.length() >= 2,
                         "SKU too short"
                 )
-                .bind(ProductDataEditAddDto::getSku,
-                        ProductDataEditAddDto::setSku);
+                .bind(ProductData::getSku,
+                        ProductData::setSku);
 
 
         // DESCRIPTION
@@ -676,8 +696,8 @@ public class ProductEditRightSideFields {
                         value -> value.length() >= 10,
                         "Description too short"
                 )
-                .bind(ProductDataEditAddDto::getDescription,
-                        ProductDataEditAddDto::setDescription);
+                .bind(ProductData::getDescription,
+                        ProductData::setDescription);
 
 
         // PRICE
@@ -687,8 +707,8 @@ public class ProductEditRightSideFields {
                         value -> value >= 0,
                         "Price must be positive"
                 )
-                .bind(ProductDataEditAddDto::getPrice,
-                        ProductDataEditAddDto::setPrice);
+                .bind(ProductData::getPrice,
+                        ProductData::setPrice);
 
 
         // DISCOUNT
@@ -697,16 +717,16 @@ public class ProductEditRightSideFields {
                         value -> value == null || (value >= 0 && value <= 100),
                         "Discount must be between 0 and 100"
                 )
-                .bind(ProductDataEditAddDto::getDiscount,
-                        ProductDataEditAddDto::setDiscount);
+                .bind(ProductData::getDiscount,
+                        ProductData::setDiscount);
 
 
         // MATERIAL COST
         binder.forField(materialCost)
                 .withValidator(value -> value == null || value >= 0,
                         "Must be positive")
-                .bind(ProductDataEditAddDto::getMaterialCost,
-                        ProductDataEditAddDto::setMaterialCost);
+                .bind(ProductData::getMaterialCost,
+                        ProductData::setMaterialCost);
 
 
         // STOCK QUANTITY
@@ -720,8 +740,8 @@ public class ProductEditRightSideFields {
                         value -> value >= 0,
                         "Stock cannot be negative"
                 )
-                .bind(ProductDataEditAddDto::getStockQuantity,
-                        ProductDataEditAddDto::setStockQuantity);
+                .bind(ProductData::getStockQuantity,
+                        ProductData::setStockQuantity);
 
 
         // LOW STOCK THRESHOLD
@@ -735,15 +755,15 @@ public class ProductEditRightSideFields {
                         value -> value >= 0,
                         "Threshold cannot be negative"
                 )
-                .bind(ProductDataEditAddDto::getLowStockThreshold,
-                        ProductDataEditAddDto::setLowStockThreshold);
+                .bind(ProductData::getLowStockThreshold,
+                        ProductData::setLowStockThreshold);
 
 
         // CATEGORY
         binder.forField(category)
                 .asRequired("Category required")
-                .bind(ProductDataEditAddDto::getCategory,
-                        ProductDataEditAddDto::setCategory);
+                .bind(ProductData::getCategory,
+                        ProductData::setCategory);
 
 
         // TAGS
@@ -753,22 +773,22 @@ public class ProductEditRightSideFields {
                         tag -> List.of(tag),
                         list -> list != null && !list.isEmpty() ? list.get(0) : null
                 )
-                .bind(ProductDataEditAddDto::getTags,
-                        ProductDataEditAddDto::setTags);
+                .bind(ProductData::getTags,
+                        ProductData::setTags);
 
 
         // STATUS
         binder.forField(status)
                 .asRequired("Status required")
-                .bind(ProductDataEditAddDto::getStatus,
-                        ProductDataEditAddDto::setStatus);
+                .bind(ProductData::getStatus,
+                        ProductData::setStatus);
 
 
         // VISIBILITY
         binder.forField(visibility)
                 .asRequired("Visibility required")
-                .bind(ProductDataEditAddDto::getVisibility,
-                        ProductDataEditAddDto::setVisibility);
+                .bind(ProductData::getVisibility,
+                        ProductData::setVisibility);
     }
 
 

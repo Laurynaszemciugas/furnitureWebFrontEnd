@@ -5,6 +5,7 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Products.ProductFeedModel;
 import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.Pages.CommonComponents.ProductAddEditGrids;
 import com.example.demo.Pages.ProductsEdit.Components.ProductEditImage;
 import com.example.demo.Pages.ProductsEdit.Components.ProductEditRightSideFields;
 import com.example.demo.Services.ProductEditService.ProductEditService;
@@ -45,7 +46,6 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
 
 
 
-
     public ProductsEdit(CommonComponents commonComponents,
                         Common common,
                         ProductEditService productEditService) {
@@ -55,6 +55,7 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
         this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common);
         this.productEditImage = new ProductEditImage(commonComponents,common);
 
+        this.productEditRightSideFields.setProductEditImage(this.productEditImage);
 
         setPadding(false);
         setSpacing(false);
@@ -87,9 +88,9 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
         verticalLayout.getStyle().set("margin-top", "5px");
         //verticalLayout.addClassName("main-island");
 
-        productEditImage.setListConsumer(e->{
-            //System.out.println(e);
-        });
+//        productEditImage.setListConsumer(e->{
+//            System.out.println("ąęčė");
+//        });
 
         productEditRightSideFields.setConsumer(e->{
             System.out.println("yes");

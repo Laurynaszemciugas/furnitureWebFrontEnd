@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductDataEditAddDto {
+public class ProductData {
 
 
     private List<ImagesData> images;
@@ -31,7 +31,7 @@ public class ProductDataEditAddDto {
     private List<Tags> tags;
     private Status status;
     private Visibility visibility;
-    private List<GridMaterials> materials;
+    private List<Materials> materials;
     private List<ExtraDetails> extraDetails;
 
 
