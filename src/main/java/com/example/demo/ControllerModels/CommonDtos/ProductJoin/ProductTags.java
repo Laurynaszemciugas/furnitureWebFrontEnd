@@ -1,8 +1,12 @@
-package com.example.demo.ControllerModels.CommonDtos;
+package com.example.demo.ControllerModels.CommonDtos.ProductJoin;
 
+
+import com.example.demo.ControllerModels.CommonDtos.Product;
+import com.example.demo.Enums.Tags;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.apache.catalina.User;
 
 import java.time.LocalDateTime;
 
@@ -10,13 +14,13 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExtraDetails {
+public class ProductTags {
 
     private Long id;
-    private String specName;
-    private String specDescription;
     @JsonIgnore
     private Product product;
+
+    private Tags tags;
 
     private User user;
 

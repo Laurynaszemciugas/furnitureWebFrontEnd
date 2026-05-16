@@ -232,7 +232,7 @@ public class MiniStatistics {
         double totalUnpaidLastMonth = 0.0;
 
 
-        boolean empty = (employeeData == null || employeeData.isEmpty());
+        boolean empty = (employeeData == null);
 
             topEmployee =  empty ? "No data" :employeeData.getTopEmployee();
             topEmployeeProduced = empty ? 0 :employeeData.getTopEmployeeProduced();

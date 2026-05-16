@@ -4,9 +4,11 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Common.*;
 import com.example.demo.ControllerModels.CommonDtos.ExtraDetails;
+import com.example.demo.ControllerModels.CommonDtos.ImagesData;
 import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.ControllerModels.CommonDtos.Product;
-import com.example.demo.ControllerModels.CommonDtos.ProductMaterials;
+import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
+import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductTags;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Status;
 import com.example.demo.Enums.Tags;
@@ -32,6 +34,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -83,6 +86,8 @@ public class ProductEditRightSideFields {
 
     HorizontalLayout tagsSelected = new HorizontalLayout();
 
+    List<ImagesData> newImages = null;
+
     public void setConsumer (Consumer<Product> consumer){
         this.consumer = consumer;
     }
@@ -93,7 +98,8 @@ public class ProductEditRightSideFields {
         this.productEditImage = productEditImage;
         if (this.productEditImage != null) {
             this.productEditImage.setListConsumer(list -> {
-                System.out.println("1234");
+                newImages = new ArrayList<>();
+                newImages.addAll(list);
             });
         }
     }
@@ -145,8 +151,10 @@ public class ProductEditRightSideFields {
 
 // TAGS (Special case: check if the list is null or empty before getting index 0)
         if (productEditDto.getTags() != null && !productEditDto.getTags().isEmpty()) {
-            tags.setValue(productEditDto.getTags().get(0));
-            tagss.addAll(productEditDto.getTags());
+            tags.setValue(productEditDto.getTags().get(0).getTags());
+            for(var s : productEditDto.getTags()) {
+                tagss.addAll(Collections.singleton(s.getTags()));
+            }
         } else {
             tags.setValue(null); // Or tags.setValue(null);
         }
@@ -159,11 +167,11 @@ public class ProductEditRightSideFields {
             upgradeExtraDetailsGrid();
         }
 
-        if(productEditDto.getMaterials() != null &&  !productEditDto.getMaterials().isEmpty()) {
-            for(var s : productEditDto.getMaterials())
-                listMaterialGrids.add(new ListMaterialGrid(s.getId(),s.getMaterialName(),comboBoxMaterial(s.getMaterialName()),quantityField(s.getAmountUsed()),unitField(s.getMaterials().getUnit()),s.getUnitPrice()));
-            upgradeMaterialGrid();
-        }
+//        if(productEditDto.getMaterials() != null &&  !productEditDto.getMaterials().isEmpty()) {
+//            for(var s : productEditDto.getMaterials())
+//                listMaterialGrids.add(new ListMaterialGrid(s.getId(),s.getMaterialName(),comboBoxMaterial(s.getMaterialName()),quantityField(s.getAmountUsed()),unitField(s.getMaterials().getUnit()),s.getUnitPrice()));
+//            upgradeMaterialGrid();
+//        }
 
         updateSelectedTags(productEditDto);
 
@@ -287,6 +295,7 @@ public class ProductEditRightSideFields {
                 basicInfo,
                 commonComponents.spanCrafterWordNoHide("Spefication","activityFeed-name"),
                 grids.extraDetailsGridCrafter(listExtraDetailsGrids,extraDetailsGrid),
+                addNewDetail,
                 commonComponents.spanCrafterWordNoHide("Pricing & Inventory","activityFeed-name"),
                 pricingInventoryOne,
                 pricingInventoryTwo,
@@ -341,74 +350,110 @@ public class ProductEditRightSideFields {
 
     }
 
-    public void saveDate(Button save, Product productDataEditAddDto){
+    public void saveDate(Button save, Product product){
 
 
 
         save.addClickListener(e -> {
 
 
+            if (binder.writeBeanIfValid(product)) {
 
-            productDataEditAddDto.setProductName(productName.getValue());
-            productDataEditAddDto.setSku(sku.getValue());
-            productDataEditAddDto.setDescription(description.getValue());
-            productDataEditAddDto.setPrice(price.getValue());
-            productDataEditAddDto.setDiscount(discount.getValue());
-            productDataEditAddDto.setMaterialCost(materialCost.getValue());
-            productDataEditAddDto.setStockQuantity(stockQuantity.getValue().longValue());
-            productDataEditAddDto.setLowStockThreshold(lowThreshold.getValue().longValue());
-            productDataEditAddDto.setCategory(category.getValue());
-            productDataEditAddDto.setTags(tagss);
-            productDataEditAddDto.setStatus(status.getValue());
-            productDataEditAddDto.setVisibility(visibility.getValue());
-
-
+            product.setProductName(productName.getValue());
+            product.setSku(sku.getValue());
+            product.setDescription(description.getValue());
+            product.setPrice(price.getValue());
+            product.setDiscount(discount.getValue());
+            product.setMaterialCost(materialCost.getValue());
+            product.setStockQuantity(stockQuantity.getValue().longValue());
+            product.setLowStockThreshold(lowThreshold.getValue().longValue());
+            product.setCategory(category.getValue());
+            product.setStatus(status.getValue());
+            product.setVisibility(visibility.getValue());
 
 
-            List<ProductMaterials> materials = new ArrayList<>();
-            Materials materials1 =new Materials();
-            for(var s : listMaterialGrids){
-                String materialName = s.getMaterial().getValue();
-                Long amountUsed = Long.valueOf(s.getAmountOfMaterial().getValue());
-                String materialUnit = s.getUnit().getValue();
+
+            // get tags
+            List<ProductTags> productTags = new ArrayList<>();
+            for(var s : tagss) {
+                ProductTags allTags = new ProductTags();
+                allTags.setProduct(product);
+                allTags.setUser(null);
+                allTags.setTags(s);
+                productTags.add(allTags);
+            }
+            product.setTags(productTags);
 
 
-                materials.add(new ProductMaterials(s.getId(),materialName,amountUsed,s.getUnitPrice(),materials1,productDataEditAddDto));
+            //get images
+
+            if(newImages !=null){
+                product.setImages(newImages);
+
             }
 
+            // get materials
+            List<ProductMaterials> materials = new ArrayList<>();
+            for(var s : listMaterialGrids){
 
+                ProductMaterials productMaterials = new ProductMaterials();
+                productMaterials.setProduct(product);
+                productMaterials.setUser(null);
+                productMaterials.setMaterials(null);
+                productMaterials.setNameForRefrence(s.getMaterial().getValue());
+                productMaterials.setAmountUsed(Long.valueOf(s.getAmountOfMaterial().getValue()));
 
+                materials.add(productMaterials);
+            }
+            product.setMaterials(materials);
+
+            // get extra details
             List<ExtraDetails> extraDetails = new ArrayList<>();
             for(var s : listExtraDetailsGrids){
-                String specName = "";
-                String specDescrption = "";
-                if(s.getSpecName() instanceof TextField tf){
-                    specName = tf.getValue();
-                }
-                if(s.getSpecDescription() instanceof TextArea ta){
-                    specDescrption = ta.getValue();
-                }
-
-                extraDetails.add(new ExtraDetails(s.getId(),specName,specDescrption));
+                ExtraDetails details = new ExtraDetails();
+                details.setProduct(product);
+                details.setSpecName(s.getSpecName().getValue());
+                details.setSpecDescription(s.getSpecDescription().getValue());
+                details.setUser(null);
+                extraDetails.add(details);
             }
-
-            productDataEditAddDto.setMaterials(materials);
-
-            productDataEditAddDto.setExtraDetails(extraDetails);
-
-
-            System.out.println(productDataEditAddDto.getMaterials());
+            product.setExtraDetails(extraDetails);
 
 
 
-            if (binder.writeBeanIfValid(productDataEditAddDto)) {
 
-                System.out.println(productDataEditAddDto.getProductName());
-                System.out.println(productDataEditAddDto.getPrice());
 
-                System.out.println(productDataEditAddDto.getExtraDetails());
 
-                consumer.accept(productDataEditAddDto);
+
+
+
+                System.out.println("hereeeeeeeeeeeee");
+                for(var s : listExtraDetailsGrids){
+                    System.out.println(s.getSpecName().getValue());
+                }
+
+
+                System.out.println("Tags");
+                for(var s : product.getTags()){
+                    System.out.println(s.getTags());
+                }
+
+                System.out.println("Materials");
+                for(var s : product.getMaterials()){
+                    System.out.println(s.getNameForRefrence());
+                }
+
+                System.out.println();
+                System.out.println("images");
+                for(var s : product.getImages()){
+                    System.out.println(s.getImageName());
+                }
+
+                for(var s : product.getMaterials()){
+                    System.out.println("material 12234444444444444444");
+                    System.out.println(s.getNameForRefrence());
+                }
+                consumer.accept(product);
 
             } else {
                 System.out.println("Validation failed");
@@ -553,7 +598,7 @@ public class ProductEditRightSideFields {
 
         if( productEditDtos.getTags() != null && !productEditDtos.getTags().isEmpty()) {
             for (var s : productEditDtos.getTags()) {
-                tagsSelected.add(tagCrafter(s));
+                tagsSelected.add(tagCrafter(s.getTags()));
             }
         }
     }
@@ -770,15 +815,15 @@ public class ProductEditRightSideFields {
                         Product::setCategory);
 
 
-        // TAGS
-        binder.forField(tags)
-                .asRequired("Tag required")
-                .withConverter(
-                        tag -> List.of(tag),
-                        list -> list != null && !list.isEmpty() ? list.get(0) : null
-                )
-                .bind(Product::getTags,
-                        Product::setTags);
+//        // TAGS
+//        binder.forField(tags)
+//                .asRequired("Tag required")
+//                .withConverter(
+//                        tag -> List.of(tag),
+//                        list -> list != null && !list.isEmpty() ? list.get(0) : null
+//                )
+//                .bind(Product::getTags,
+//                        Product::setTags);
 
 
         // STATUS

@@ -1,14 +1,16 @@
 package com.example.demo.ControllerModels.CommonDtos;
 
+
+
+import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
+import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductTags;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Status;
-import com.example.demo.Enums.Tags;
 import com.example.demo.Enums.Visibility;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -17,8 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Product {
 
-
-    private List<ImagesData> images;
+    private Long id;
     private String productName;
     private String sku;
     private String description;
@@ -28,13 +29,22 @@ public class Product {
     private Long stockQuantity;
     private Long lowStockThreshold;
     private Category category;
-    private List<Tags> tags;
     private Status status;
     private Visibility visibility;
-    private List<ProductMaterials> materials;
-    private List<ExtraDetails> extraDetails;
-    private List<ProductComments> comments;
 
+    private List<ProductTags> tags = new ArrayList<>();
+
+    private List<ImagesData> images = new ArrayList<>();
+
+    private List<ProductMaterials> materials = new ArrayList<>();
+
+    private List<ExtraDetails> extraDetails = new ArrayList<>();
+
+    private List<Comments> comments= new ArrayList<>();
+
+    private User user;
+
+    private LocalDateTime created;
 
 
 

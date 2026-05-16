@@ -10,11 +10,13 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExtraDetails {
+public class Comments {
 
     private Long id;
-    private String specName;
-    private String specDescription;
+    private String commenter;
+    private String comment;
+    private Long review;
+
     @JsonIgnore
     private Product product;
 

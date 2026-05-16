@@ -1,10 +1,11 @@
 package com.example.demo.ControllerModels.CommonDtos;
 
+
 import com.example.demo.Enums.Enabled;
 import com.example.demo.Enums.Stock;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -22,6 +23,8 @@ public class Materials {
     private double materialWeight;
     private double unitPrice;
     private String unit;
-    private LocalDate createdAt;
+    private User user;
+
+    private LocalDateTime created;
 
 }
