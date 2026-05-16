@@ -1,4 +1,4 @@
-package com.example.demo.ControllerModels.Common;
+package com.example.demo.ControllerModels.CommonDtos;
 
 import lombok.*;
 
@@ -12,5 +12,6 @@ public class ExtraDetails {
     private Long id;
     private String specName;
     private String specDescription;
+
 
 }

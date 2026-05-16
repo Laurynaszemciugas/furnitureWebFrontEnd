@@ -1,4 +1,4 @@
-package com.example.demo.ControllerModels.Common;
+package com.example.demo.ControllerModels.CommonDtos;
 
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Status;
@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductData {
+public class Product {
 
 
     private List<ImagesData> images;
@@ -31,8 +31,9 @@ public class ProductData {
     private List<Tags> tags;
     private Status status;
     private Visibility visibility;
-    private List<Materials> materials;
+    private List<ProductMaterials> materials;
     private List<ExtraDetails> extraDetails;
+    private List<ProductComments> comments;
 
 
 

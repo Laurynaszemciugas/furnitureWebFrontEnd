@@ -2,8 +2,8 @@ package com.example.demo.Pages.ProductsEdit.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.Common.ImagesData;
-import com.example.demo.ControllerModels.Common.ProductData;
+import com.example.demo.ControllerModels.CommonDtos.ImagesData;
+import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.Enums.ImageLogic;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -71,7 +71,7 @@ public class ProductEditImage {
     }
 
 
-    public void loadData(ProductData productEditDto){
+    public void loadData(Product productEditDto){
         if(productEditDto.getImages() != null && !productEditDto.getImages().isEmpty()) {
             mainFound = true;
             imagesDataList.addAll(productEditDto.getImages());
@@ -80,7 +80,7 @@ public class ProductEditImage {
         }
     }
 
-    public HorizontalLayout images(ProductData productEditDtos) {
+    public HorizontalLayout images(Product productEditDtos) {
 
 
 

@@ -1,4 +1,4 @@
-package com.example.demo.ControllerModels.Common;
+package com.example.demo.ControllerModels.CommonDtos;
 
 import com.example.demo.Enums.ImageLogic;
 import lombok.*;

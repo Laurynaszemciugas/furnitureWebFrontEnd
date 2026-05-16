@@ -14,7 +14,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import java.util.List;
 
 
-public class ProductAddEditGrids {
+public class Grids {
 
 
     CommonComponents commonComponents;
@@ -23,7 +23,7 @@ public class ProductAddEditGrids {
 
 
 
-    public ProductAddEditGrids(CommonComponents commonComponents, Common common) {
+    public Grids(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
     }

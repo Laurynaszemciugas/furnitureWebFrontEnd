@@ -3,33 +3,18 @@ package com.example.demo.Pages.ProductsEdit.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.Products.ProductFeedModel;
 import com.example.demo.MainLayout.MainLayout;
-import com.example.demo.Pages.CommonComponents.ProductAddEditGrids;
 import com.example.demo.Pages.ProductsEdit.Components.ProductEditImage;
 import com.example.demo.Pages.ProductsEdit.Components.ProductEditRightSideFields;
 import com.example.demo.Services.ProductEditService.ProductEditService;
-import com.example.demo.Services.Products.ProductService;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextArea;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Route(value = "ProductsEdit", layout = MainLayout.class)
 public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver {

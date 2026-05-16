@@ -3,11 +3,15 @@ package com.example.demo.Pages.ProductsEdit.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Common.*;
+import com.example.demo.ControllerModels.CommonDtos.ExtraDetails;
+import com.example.demo.ControllerModels.CommonDtos.Materials;
+import com.example.demo.ControllerModels.CommonDtos.Product;
+import com.example.demo.ControllerModels.CommonDtos.ProductMaterials;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Status;
 import com.example.demo.Enums.Tags;
 import com.example.demo.Enums.Visibility;
-import com.example.demo.Pages.CommonComponents.ProductAddEditGrids;
+import com.example.demo.Pages.CommonComponents.Grids;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -36,15 +40,15 @@ public class ProductEditRightSideFields {
 
     CommonComponents commonComponents;
     Common common;
-    ProductAddEditGrids productAddEditGrids;
+    Grids grids;
 
     ProductEditImage productEditImage;
 
     List<String> items = new ArrayList<>();
 
 
-    private Binder<ProductData> binder =
-            new Binder<>(ProductData.class);
+    private Binder<Product> binder =
+            new Binder<>(Product.class);
 
     private TextField productName = new TextField("Product name");
     private TextField sku = new TextField("SKU");
@@ -75,11 +79,11 @@ public class ProductEditRightSideFields {
 
 
     // send message that info is ready
-    Consumer<ProductData> consumer;
+    Consumer<Product> consumer;
 
     HorizontalLayout tagsSelected = new HorizontalLayout();
 
-    public void setConsumer (Consumer<ProductData> consumer){
+    public void setConsumer (Consumer<Product> consumer){
         this.consumer = consumer;
     }
 
@@ -99,7 +103,7 @@ public class ProductEditRightSideFields {
                         Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
-        this.productAddEditGrids = new ProductAddEditGrids(commonComponents,common);
+        this.grids = new Grids(commonComponents,common);
 
         bindFields();
         items.add("Wood");
@@ -111,7 +115,7 @@ public class ProductEditRightSideFields {
 
 
 
-    public void loadData(ProductData productEditDto){
+    public void loadData(Product productEditDto){
 
 
         // SET ITEMS (These are usually safe as Enums are static)
@@ -157,7 +161,7 @@ public class ProductEditRightSideFields {
 
         if(productEditDto.getMaterials() != null &&  !productEditDto.getMaterials().isEmpty()) {
             for(var s : productEditDto.getMaterials())
-                listMaterialGrids.add(new ListMaterialGrid(s.getId(),s.getMaterialName(),comboBoxMaterial(s.getMaterialName()),quantityField(s.getAmountUsed()),unitField(s.getUnit()),s.getUnitPrice()));
+                listMaterialGrids.add(new ListMaterialGrid(s.getId(),s.getMaterialName(),comboBoxMaterial(s.getMaterialName()),quantityField(s.getAmountUsed()),unitField(s.getMaterials().getUnit()),s.getUnitPrice()));
             upgradeMaterialGrid();
         }
 
@@ -169,7 +173,7 @@ public class ProductEditRightSideFields {
     }
 
 
-    public VerticalLayout rightSide(ProductData productEditDtos){
+    public VerticalLayout rightSide(Product productEditDtos){
 
         loadData(productEditDtos);
 
@@ -282,8 +286,7 @@ public class ProductEditRightSideFields {
                 commonComponents.spanCrafterWordNoHide("Basic information","activityFeed-name"),
                 basicInfo,
                 commonComponents.spanCrafterWordNoHide("Spefication","activityFeed-name"),
-                extraDetailsGridCrafter(),
-                addNewDetail,
+                grids.extraDetailsGridCrafter(listExtraDetailsGrids,extraDetailsGrid),
                 commonComponents.spanCrafterWordNoHide("Pricing & Inventory","activityFeed-name"),
                 pricingInventoryOne,
                 pricingInventoryTwo,
@@ -294,7 +297,7 @@ public class ProductEditRightSideFields {
                 commonComponents.spanCrafterWordNoHide("Product Status","activityFeed-name"),
                 productStatus,
                 commonComponents.spanCrafterWordNoHide("Required Materials","activityFeed-name"),
-                productAddEditGrids.materialGridCrafter(productFeedModelGrid,listMaterialGrids),
+                grids.materialGridCrafter(productFeedModelGrid,listMaterialGrids),
                 addNewMaterial
 
 
@@ -338,7 +341,7 @@ public class ProductEditRightSideFields {
 
     }
 
-    public void saveDate(Button save, ProductData productDataEditAddDto){
+    public void saveDate(Button save, Product productDataEditAddDto){
 
 
 
@@ -362,14 +365,15 @@ public class ProductEditRightSideFields {
 
 
 
-            List<Materials> materials = new ArrayList<>();
+            List<ProductMaterials> materials = new ArrayList<>();
+            Materials materials1 =new Materials();
             for(var s : listMaterialGrids){
                 String materialName = s.getMaterial().getValue();
                 Long amountUsed = Long.valueOf(s.getAmountOfMaterial().getValue());
                 String materialUnit = s.getUnit().getValue();
 
 
-                materials.add(new Materials(s.getId(),materialName,amountUsed,s.getUnitPrice(),materialUnit));
+                materials.add(new ProductMaterials(s.getId(),materialName,amountUsed,s.getUnitPrice(),materials1,productDataEditAddDto));
             }
 
 
@@ -543,7 +547,7 @@ public class ProductEditRightSideFields {
         extraDetailsGrid.setItems(listExtraDetailsGrids);
     }
 
-    public void updateSelectedTags(ProductData productEditDtos){
+    public void updateSelectedTags(Product productEditDtos){
 
         tagsSelected.removeAll();
 
@@ -674,8 +678,8 @@ public class ProductEditRightSideFields {
                         value -> value.length() >= 3,
                         "Minimum 3 characters"
                 )
-                .bind(ProductData::getProductName,
-                        ProductData::setProductName);
+                .bind(Product::getProductName,
+                        Product::setProductName);
 
 
         // SKU
@@ -685,8 +689,8 @@ public class ProductEditRightSideFields {
                         value -> value.length() >= 2,
                         "SKU too short"
                 )
-                .bind(ProductData::getSku,
-                        ProductData::setSku);
+                .bind(Product::getSku,
+                        Product::setSku);
 
 
         // DESCRIPTION
@@ -696,8 +700,8 @@ public class ProductEditRightSideFields {
                         value -> value.length() >= 10,
                         "Description too short"
                 )
-                .bind(ProductData::getDescription,
-                        ProductData::setDescription);
+                .bind(Product::getDescription,
+                        Product::setDescription);
 
 
         // PRICE
@@ -707,8 +711,8 @@ public class ProductEditRightSideFields {
                         value -> value >= 0,
                         "Price must be positive"
                 )
-                .bind(ProductData::getPrice,
-                        ProductData::setPrice);
+                .bind(Product::getPrice,
+                        Product::setPrice);
 
 
         // DISCOUNT
@@ -717,16 +721,16 @@ public class ProductEditRightSideFields {
                         value -> value == null || (value >= 0 && value <= 100),
                         "Discount must be between 0 and 100"
                 )
-                .bind(ProductData::getDiscount,
-                        ProductData::setDiscount);
+                .bind(Product::getDiscount,
+                        Product::setDiscount);
 
 
         // MATERIAL COST
         binder.forField(materialCost)
                 .withValidator(value -> value == null || value >= 0,
                         "Must be positive")
-                .bind(ProductData::getMaterialCost,
-                        ProductData::setMaterialCost);
+                .bind(Product::getMaterialCost,
+                        Product::setMaterialCost);
 
 
         // STOCK QUANTITY
@@ -740,8 +744,8 @@ public class ProductEditRightSideFields {
                         value -> value >= 0,
                         "Stock cannot be negative"
                 )
-                .bind(ProductData::getStockQuantity,
-                        ProductData::setStockQuantity);
+                .bind(Product::getStockQuantity,
+                        Product::setStockQuantity);
 
 
         // LOW STOCK THRESHOLD
@@ -755,15 +759,15 @@ public class ProductEditRightSideFields {
                         value -> value >= 0,
                         "Threshold cannot be negative"
                 )
-                .bind(ProductData::getLowStockThreshold,
-                        ProductData::setLowStockThreshold);
+                .bind(Product::getLowStockThreshold,
+                        Product::setLowStockThreshold);
 
 
         // CATEGORY
         binder.forField(category)
                 .asRequired("Category required")
-                .bind(ProductData::getCategory,
-                        ProductData::setCategory);
+                .bind(Product::getCategory,
+                        Product::setCategory);
 
 
         // TAGS
@@ -773,22 +777,22 @@ public class ProductEditRightSideFields {
                         tag -> List.of(tag),
                         list -> list != null && !list.isEmpty() ? list.get(0) : null
                 )
-                .bind(ProductData::getTags,
-                        ProductData::setTags);
+                .bind(Product::getTags,
+                        Product::setTags);
 
 
         // STATUS
         binder.forField(status)
                 .asRequired("Status required")
-                .bind(ProductData::getStatus,
-                        ProductData::setStatus);
+                .bind(Product::getStatus,
+                        Product::setStatus);
 
 
         // VISIBILITY
         binder.forField(visibility)
                 .asRequired("Visibility required")
-                .bind(ProductData::getVisibility,
-                        ProductData::setVisibility);
+                .bind(Product::getVisibility,
+                        Product::setVisibility);
     }
 
 
