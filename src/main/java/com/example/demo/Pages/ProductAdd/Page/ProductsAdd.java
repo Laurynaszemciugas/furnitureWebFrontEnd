@@ -11,6 +11,7 @@ import com.example.demo.ServerCall.ProductAdd.ProductAddCall;
 import com.example.demo.Services.ProductAdd.ProductAddService;
 import com.example.demo.Services.ProductEditService.ProductEditService;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -111,7 +112,7 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
         Product sharedProductInstance = productAddService.productAddDtoLoad();
 
         HorizontalLayout images = productEditImage.images(sharedProductInstance);
-        Div holder = new Div(images,productEditImage.uploadStuff());
+        Div holder = new Div(images,productEditImage.uploadStuff(),commentsHolder());
         VerticalLayout fields = productEditRightSideFields.rightSide(sharedProductInstance);
 
         h.add(holder,fields);
@@ -122,10 +123,17 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
     }
 
 
+    public HorizontalLayout commentsHolder(){
+        HorizontalLayout h = new HorizontalLayout();
+        h.getStyle().set("background-color","Red");
+        h.setWidthFull();
+        h.setHeight("300px");
+        return h;
+    }
 
 
     public HorizontalLayout briefPageExplanation(){
-        HorizontalLayout left = commonComponents.biefPageExplanation("Edit product");
+        HorizontalLayout left = commonComponents.biefPageExplanation("Add a new product");
         left.setWidthFull();
 
         return left;

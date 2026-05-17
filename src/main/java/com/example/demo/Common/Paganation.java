@@ -6,18 +6,19 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 
 public class Paganation {
 
     List<Button> buttonList = new ArrayList<>();
-    long currentPage = 1;
-    long totalPages = 15;
+    int currentPage = 1;
+    int totalPages = 15;
 
-    private LongConsumer onPageChange;
+    private IntConsumer onPageChange;
 
 
-    public void setOnPageChange(LongConsumer onPageChange) {
+    public void setOnPageChange(IntConsumer onPageChange) {
         this.onPageChange = onPageChange;
     }
 
@@ -52,10 +53,12 @@ public class Paganation {
 
     }
 
-    public HorizontalLayout buttonHolder(){
+    public HorizontalLayout buttonHolder(int size){
 
 
         // make this class know the total pages long
+        buttonList.clear();
+        totalPages = size;
 
         HorizontalLayout horizontalLayout = new HorizontalLayout();
         horizontalLayout.setWidthFull();
@@ -105,11 +108,11 @@ public class Paganation {
 
     }
 
-    public void setTotalPages(long pages){
+    public void setTotalPages(int pages){
          totalPages = pages;
     }
 
-    public void updateUIFromExternal(long page) {
+    public void updateUIFromExternal(int page) {
         this.currentPage = page;
             paganationButtons();
     }

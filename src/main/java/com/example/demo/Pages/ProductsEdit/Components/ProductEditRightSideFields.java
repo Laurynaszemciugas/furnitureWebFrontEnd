@@ -5,10 +5,9 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Common.*;
 import com.example.demo.ControllerModels.CommonDtos.ExtraDetails;
 import com.example.demo.ControllerModels.CommonDtos.ImagesData;
-import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
-import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductTags;
+import com.example.demo.ControllerModels.CommonDtos.ProductTags;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Status;
 import com.example.demo.Enums.Tags;
@@ -388,6 +387,9 @@ public class ProductEditRightSideFields {
             //get images
 
             if(newImages !=null){
+                for(var s : newImages){
+                    s.setImageUrl(common.imageMaker(s.getImageData(),s.getImageType()));
+                }
                 product.setImages(newImages);
 
             }
@@ -419,41 +421,8 @@ public class ProductEditRightSideFields {
             }
             product.setExtraDetails(extraDetails);
 
-
-
-
-
-
-
-
-
-                System.out.println("hereeeeeeeeeeeee");
-                for(var s : listExtraDetailsGrids){
-                    System.out.println(s.getSpecName().getValue());
-                }
-
-
-                System.out.println("Tags");
-                for(var s : product.getTags()){
-                    System.out.println(s.getTags());
-                }
-
-                System.out.println("Materials");
-                for(var s : product.getMaterials()){
-                    System.out.println(s.getNameForRefrence());
-                }
-
-                System.out.println();
-                System.out.println("images");
-                for(var s : product.getImages()){
-                    System.out.println(s.getImageName());
-                }
-
-                for(var s : product.getMaterials()){
-                    System.out.println("material 12234444444444444444");
-                    System.out.println(s.getNameForRefrence());
-                }
-                consumer.accept(product);
+            //trigger trip wire
+            consumer.accept(product);
 
             } else {
                 System.out.println("Validation failed");
@@ -510,75 +479,6 @@ public class ProductEditRightSideFields {
 
 
         return layout;
-    }
-
-
-    // grid crafters
-
-    public Grid<ListMaterialGrid> materialGridCrafter(){
-
-
-        productFeedModelGrid.addComponentColumn(ListMaterialGrid::getMaterial).setHeader("Material").setAutoWidth(true);
-
-        productFeedModelGrid.addComponentColumn(ListMaterialGrid::getAmountOfMaterial).setHeader("Amount of material").setAutoWidth(true);
-
-        productFeedModelGrid.addComponentColumn(ListMaterialGrid::getUnit).setHeader("Unit").setAutoWidth(true);
-
-        productFeedModelGrid.addComponentColumn(row ->{
-
-            Button remove = commonComponents.buttonThemeAndIconNoNavigate("",ButtonVariant.PRIMARY,VaadinIcon.TRASH,"White");
-
-            HorizontalLayout h = new HorizontalLayout();
-            h.setWidthFull();
-            h.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-            h.add(remove);
-
-
-            remove.addClickListener(e->{
-                listMaterialGrids.remove(row);
-                upgradeMaterialGrid();
-            });
-
-
-            return h;
-
-        }).setHeader("Actions").setAutoWidth(true);
-
-        return productFeedModelGrid;
-
-
-    }
-
-    public Grid<ListExtraDetailsGrid> extraDetailsGridCrafter(){
-
-        extraDetailsGrid.addComponentColumn(ListExtraDetailsGrid::getSpecName)
-                .setHeader("Specficiation name").setAutoWidth(true);
-
-        extraDetailsGrid.addComponentColumn(ListExtraDetailsGrid::getSpecDescription)
-                .setHeader("Specification description").setAutoWidth(true);
-
-        extraDetailsGrid.addComponentColumn(row ->{
-
-            Button remove = commonComponents.buttonThemeAndIconNoNavigate("",ButtonVariant.PRIMARY,VaadinIcon.TRASH,"White");
-
-            HorizontalLayout h = new HorizontalLayout();
-            h.setWidthFull();
-            h.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-            h.add(remove);
-
-
-            remove.addClickListener(e->{
-                listExtraDetailsGrids.remove(row);
-                upgradeExtraDetailsGrid();
-            });
-
-
-            return h;
-
-        }).setHeader("Actions").setAutoWidth(true);
-
-        return extraDetailsGrid;
-
     }
 
 

@@ -2,6 +2,7 @@ package com.example.demo.Pages.Products.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Stock;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -19,7 +20,7 @@ public class ProductPageFilters {
 
     Consumer<Stock> stockConsumer;
 
-    Consumer<String> type;
+    Consumer<Category> type;
 
     Consumer<String> clearFilters;
 
@@ -33,7 +34,7 @@ public class ProductPageFilters {
         this.stockConsumer = stockConsumer;
     }
 
-    public void consumerType(Consumer<String> type){
+    public void consumerType(Consumer<Category> type){
         this.type = type;
     }
 
@@ -52,8 +53,8 @@ public class ProductPageFilters {
         Button lowStock = commonComponents.normalButtonNoNavigate(Stock.Low_Stock.getDisplayName(), "S");
         Button noStock = commonComponents.normalButtonNoNavigate(Stock.No_Stock.getDisplayName(), "S");
 
-        ComboBox<String> types = new ComboBox<>();
-        types.setItems("bob");
+        ComboBox<Category> types = new ComboBox<>();
+        types.setItems(Category.values());
 
 
         Button clear = commonComponents.normalButtonNoNavigate("Clear filters","s");

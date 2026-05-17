@@ -1,5 +1,6 @@
 package com.example.demo.ControllerModels.Products;
 
+import com.example.demo.Enums.Category;
 import com.example.demo.Enums.ProductCategory;
 import lombok.*;
 
@@ -10,18 +11,13 @@ import java.time.temporal.ChronoUnit;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class ProductFeedModel {
 
-    private long id;
-    private String mainImageUrl;
+    private Long id;
+    private String imageUrl;
     private String productName;
-    private ProductCategory productCategory;
+    private Category category;
     private double price;
-    private long unitsLeft;
-    private long minTreshold;
-
-
-
-
+    private Long stockQuantity;
+    private Long lowStockThreshold;
 }

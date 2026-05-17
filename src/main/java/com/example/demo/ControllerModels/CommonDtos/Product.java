@@ -3,7 +3,6 @@ package com.example.demo.ControllerModels.CommonDtos;
 
 
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
-import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductTags;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Status;
 import com.example.demo.Enums.Visibility;

@@ -4,6 +4,8 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.DashBoard.DashBoardPageData;
 import com.example.demo.ControllerModels.Products.ProductPageData;
+import com.example.demo.Enums.Category;
+import com.example.demo.Enums.Stock;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Common.Paganation;
 import com.example.demo.Pages.Products.Components.ProductPageBriefExplanation;
@@ -15,7 +17,10 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
+import lombok.SneakyThrows;
 
+import java.io.IOException;
+import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 
 @Route(value = "test2", layout = MainLayout.class)
@@ -33,9 +38,11 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     ProductPageProductFeed productPageProductFeed;
 
 
-    private LongConsumer longConsumer;
+    private IntConsumer longConsumer;
 
-
+    private Stock stockChoise = Stock.ALL;
+    private Category categoryChoise = Category.ALL;
+    private int pageChoise = 1;
 
     ProductPageData data = new ProductPageData();
 
@@ -71,13 +78,14 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     }
 
 
+    @SneakyThrows
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
 
         removeAll();
 
         if(data == null || data.isDataStale()){
-            data = productService.loadDashboardData();
+            data = productService.loadDashboardData(Stock.ALL, Category.ALL,1,20);
             System.out.println(data.getProductFeedModelList());
         }
 
@@ -86,9 +94,9 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         }
 
 
-//        long page = 10;
+//        long page = 15;
 //
-//        longConsumer.accept(page);
+//        longConsumer.accept(15);
 
 
 
@@ -103,27 +111,62 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         verticalLayout.getStyle().set("margin-top", "5px");
         verticalLayout.addClassName("main-island");
 
-        paganation.setOnPageChange(page -> {
-            System.out.println("Page changed to: " + page);
 
-        });
 
         productPageFilters.consumerStock(stock -> {
-            System.out.println(stock);
+
+            this.stockChoise = stock;
+
+//            verticalLayout.removeAll();
+//            verticalLayout.add(productPageBriefExplanation.briefPageExplanation(),
+//                    productPageFilters.filters(),
+//                    productPageProductFeed.productsMain(data.getProductFeedModelList()),
+//                    paganation.buttonHolder(5));
         });
 
+
         productPageFilters.consumerType(e->{
-            System.out.println(e);
+
+            this.categoryChoise = e;
+
+            verticalLayout.removeAll();
+            try {
+                verticalLayout.add(productPageBriefExplanation.briefPageExplanation(),
+                        productPageFilters.filters(),
+                        productPageProductFeed.productsMain(productService.loadProductFeedModel(Stock.ALL,categoryChoise,pageChoise,20)),
+                        paganation.buttonHolder(5));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+
+        });
+
+        paganation.setOnPageChange(page -> {
+
+            this.pageChoise = page;
+
+//            verticalLayout.removeAll();
+//            verticalLayout.add(productPageBriefExplanation.briefPageExplanation(),
+//                    productPageFilters.filters(),
+//                    paganation.buttonHolder(5));
+
+
         });
 
         productPageFilters.consumerClear(e->{
-            System.out.println("clearing time");
+            verticalLayout.removeAll();
+            verticalLayout.add(productPageBriefExplanation.briefPageExplanation(),
+                    productPageFilters.filters(),
+                    productPageProductFeed.productsMain(data.getProductFeedModelList()),
+                    paganation.buttonHolder(5));
         });
 
         verticalLayout.add(productPageBriefExplanation.briefPageExplanation(),
                 productPageFilters.filters(),
                 productPageProductFeed.productsMain(data.getProductFeedModelList()),
-                paganation.buttonHolder());
+                paganation.buttonHolder(5));
 
         return verticalLayout;
     }

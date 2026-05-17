@@ -3,6 +3,7 @@ package com.example.demo.Pages.Products.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Products.ProductFeedModel;
+import com.example.demo.Enums.Category;
 import com.example.demo.Enums.ProductCategory;
 import com.example.demo.Enums.Stock;
 import com.example.demo.Services.Products.ProductService;
@@ -22,6 +23,8 @@ import java.util.List;
 public class ProductPageProductFeed {
 
 
+    HorizontalLayout verticalLayout = new HorizontalLayout();
+
     CommonComponents commonComponents;
     Common common;
 
@@ -33,9 +36,11 @@ public class ProductPageProductFeed {
 
     public HorizontalLayout productsMain(List<ProductFeedModel> productFeedModelList){
 
+        verticalLayout.removeAll();
+
         boolean empty = productFeedModelList.isEmpty();
 
-        HorizontalLayout verticalLayout = new HorizontalLayout();
+        verticalLayout = new HorizontalLayout();
         verticalLayout.setWidthFull();
         verticalLayout.addClassName("layout-flex");
         verticalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
@@ -47,7 +52,7 @@ public class ProductPageProductFeed {
         }
         else{
             for(var s : productFeedModelList){
-                verticalLayout.add(productFeed(s.getId(),s.getMainImageUrl(),s.getProductName(),s.getProductCategory(),s.getPrice(),s.getUnitsLeft(),s.getMinTreshold()));
+                verticalLayout.add(productFeed(s.getId(),s.getImageUrl(),s.getProductName(),s.getCategory(),s.getPrice(),s.getStockQuantity(),s.getLowStockThreshold()));
             }
         }
 
@@ -64,7 +69,7 @@ public class ProductPageProductFeed {
 
 
 
-    public VerticalLayout productFeed(long id, String mainImageUrl, String productName, ProductCategory productCategory, double price, long unitsLeft, long minTreshold){
+    public VerticalLayout productFeed(long id, String mainImageUrl, String productName, Category productCategory, double price, long unitsLeft, long minTreshold){
         VerticalLayout product = new VerticalLayout();
         product.addClassName("island");
         product.getStyle().set("flex", "1 1 302px");
