@@ -7,6 +7,7 @@ import com.example.demo.Enums.Category;
 import com.example.demo.Enums.ProductCategory;
 import com.example.demo.Enums.Stock;
 import com.example.demo.Services.Products.ProductService;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -76,7 +77,7 @@ public class ProductPageProductFeed {
         product.getStyle().set("max-width", "620px");
         product.getStyle().set("min-width", "302px");
         product.getStyle().set("position","relative");
-        product.setHeight("380px");
+        product.setHeight("400px");
 
         product.setSpacing(false);
 
@@ -89,13 +90,16 @@ public class ProductPageProductFeed {
 
         Button editShortCut = commonComponents.smallIconButtons("1", VaadinIcon.PENCIL,"black");
         editShortCut.addClickListener(e->{
+
+            UI.getCurrent().navigate("ProductsEdit/"+ id);
+
         });
 
         HorizontalLayout editData = new HorizontalLayout(editShortCut);
         editData.getStyle().set("position","absolute").set("bottom","2px").set("right","2px").set("z-index","10");
 
         product.add(
-                commonComponents.imageCrafter(mainImageUrl,"100%","150px","10px"),
+                commonComponents.imageCrafter(mainImageUrl,"100%","220px","10px"),
                 commonComponents.spanCrafterWordNoHide(productName,"activityFeed-name"),
                 commonComponents.spanCrafter(productCategory.getDisplayName(),"stat-title"),
                 productPrice,

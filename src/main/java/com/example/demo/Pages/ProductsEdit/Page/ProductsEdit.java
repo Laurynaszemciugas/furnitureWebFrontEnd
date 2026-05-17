@@ -16,7 +16,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
-@Route(value = "ProductsEdit", layout = MainLayout.class)
+@Route(value = "ProductsEdit/:id", layout = MainLayout.class)
 public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver {
 
 
@@ -59,7 +59,9 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
 
         removeAll();
 
+        int id = Integer.parseInt(beforeEnterEvent.getRouteParameters().get("id").orElse(null));
 
+        System.out.println(id);
 
 
 

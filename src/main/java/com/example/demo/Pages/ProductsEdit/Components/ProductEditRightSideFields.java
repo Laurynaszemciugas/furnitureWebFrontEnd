@@ -166,11 +166,11 @@ public class ProductEditRightSideFields {
             upgradeExtraDetailsGrid();
         }
 
-//        if(productEditDto.getMaterials() != null &&  !productEditDto.getMaterials().isEmpty()) {
-//            for(var s : productEditDto.getMaterials())
-//                listMaterialGrids.add(new ListMaterialGrid(s.getId(),s.getMaterialName(),comboBoxMaterial(s.getMaterialName()),quantityField(s.getAmountUsed()),unitField(s.getMaterials().getUnit()),s.getUnitPrice()));
-//            upgradeMaterialGrid();
-//        }
+        if(productEditDto.getMaterials() != null &&  !productEditDto.getMaterials().isEmpty()) {
+            for(var s : productEditDto.getMaterials())
+                listMaterialGrids.add(new ListMaterialGrid(s.getId(),s.getNameForRefrence(),comboBoxMaterial(s.getNameForRefrence()),quantityField(s.getAmountUsed()),unitField("no idea"),s.getUnitPrice()));
+            upgradeMaterialGrid();
+        }
 
         updateSelectedTags(productEditDto);
 

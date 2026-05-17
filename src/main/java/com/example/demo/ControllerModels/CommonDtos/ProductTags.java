@@ -19,7 +19,7 @@ public class ProductTags {
     private Product product;
 
     private Tags tags;
-
+    @JsonIgnore
     private User user;
 
     private LocalDateTime created;

@@ -3,6 +3,7 @@ package com.example.demo.ControllerModels.CommonDtos;
 
 import com.example.demo.Enums.Enabled;
 import com.example.demo.Enums.Stock;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ public class Materials {
     private double materialWeight;
     private double unitPrice;
     private String unit;
+    @JsonIgnore
     private User user;
 
     private LocalDateTime created;

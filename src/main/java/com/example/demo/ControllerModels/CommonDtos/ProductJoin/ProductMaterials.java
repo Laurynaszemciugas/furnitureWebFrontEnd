@@ -23,7 +23,7 @@ public class ProductMaterials {
     private Materials materials;
     @JsonIgnore
     private Product product;
-
+    @JsonIgnore
     private User user;
 
     private LocalDateTime created;

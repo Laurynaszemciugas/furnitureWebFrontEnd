@@ -23,27 +23,35 @@ import java.io.IOException;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 
-@Route(value = "test2", layout = MainLayout.class)
+@Route(value = "Products/:page?", layout = MainLayout.class)
 public class ProductsPage extends VerticalLayout implements BeforeEnterObserver {
 
 
+    // extra stuff classes
     CommonComponents commonComponents;
     Common common;
     ProductService productService;
     Paganation paganation;
 
 
+    // all stuff that make this page
     ProductPageBriefExplanation productPageBriefExplanation;
     ProductPageFilters productPageFilters;
     ProductPageProductFeed productPageProductFeed;
 
 
+    // call to pagannation
     private IntConsumer longConsumer;
+
+    // main layout
+    VerticalLayout verticalLayout = new VerticalLayout();
 
     private Stock stockChoise = Stock.ALL;
     private Category categoryChoise = Category.ALL;
     private int pageChoise = 1;
 
+
+    // page data
     ProductPageData data = new ProductPageData();
 
 
@@ -84,8 +92,11 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
         removeAll();
 
+
+
+
         if(data == null || data.isDataStale()){
-            data = productService.loadDashboardData(Stock.ALL, Category.ALL,1,20);
+            data = productService.loadProductData(Stock.ALL, Category.ALL,1,20);
             System.out.println(data.getProductFeedModelList());
         }
 
@@ -94,9 +105,19 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         }
 
 
-//        long page = 15;
-//
-//        longConsumer.accept(15);
+        int page = Integer.parseInt(beforeEnterEvent.getRouteParameters().get("page").orElse(null));
+
+
+        if(page > 1) {
+            this.pageChoise = page;
+            updateView(verticalLayout);
+            longConsumer.accept(page);
+        }
+
+
+        else if(page == 1){
+            loadData(verticalLayout);
+        }
 
 
 
@@ -106,7 +127,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     }
 
     public VerticalLayout mainLayout() {
-        VerticalLayout verticalLayout = new VerticalLayout();
+
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top", "5px");
         verticalLayout.addClassName("main-island");
@@ -117,11 +138,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
             this.stockChoise = stock;
 
-//            verticalLayout.removeAll();
-//            verticalLayout.add(productPageBriefExplanation.briefPageExplanation(),
-//                    productPageFilters.filters(),
-//                    productPageProductFeed.productsMain(data.getProductFeedModelList()),
-//                    paganation.buttonHolder(5));
+            updateView(verticalLayout);
         });
 
 
@@ -129,46 +146,64 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
             this.categoryChoise = e;
 
-            verticalLayout.removeAll();
-            try {
-                verticalLayout.add(productPageBriefExplanation.briefPageExplanation(),
-                        productPageFilters.filters(),
-                        productPageProductFeed.productsMain(productService.loadProductFeedModel(Stock.ALL,categoryChoise,pageChoise,20)),
-                        paganation.buttonHolder(5));
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
+            updateView(verticalLayout);
 
         });
 
         paganation.setOnPageChange(page -> {
 
             this.pageChoise = page;
+            updateView(verticalLayout);
 
-//            verticalLayout.removeAll();
-//            verticalLayout.add(productPageBriefExplanation.briefPageExplanation(),
-//                    productPageFilters.filters(),
-//                    paganation.buttonHolder(5));
 
 
         });
 
         productPageFilters.consumerClear(e->{
             verticalLayout.removeAll();
-            verticalLayout.add(productPageBriefExplanation.briefPageExplanation(),
-                    productPageFilters.filters(),
-                    productPageProductFeed.productsMain(data.getProductFeedModelList()),
-                    paganation.buttonHolder(5));
+                verticalLayout.add(productPageBriefExplanation.briefPageExplanation(),
+                        productPageFilters.filters(),
+                        productPageProductFeed.productsMain(data.getProductFeedModelList()),
+                        paganation.buttonHolder(Math.toIntExact(productService.loadProductPageCount())));
+
         });
 
+
+
+
+
+
+
+
+        return verticalLayout;
+    }
+
+    public void loadData(VerticalLayout verticalLayout){
+        verticalLayout.removeAll();
         verticalLayout.add(productPageBriefExplanation.briefPageExplanation(),
                 productPageFilters.filters(),
                 productPageProductFeed.productsMain(data.getProductFeedModelList()),
-                paganation.buttonHolder(5));
+                paganation.buttonHolder(Math.toIntExact(productService.loadProductPageCount())));
+    }
 
-        return verticalLayout;
+    public void updateView(VerticalLayout verticalLayout){
+
+
+
+
+
+
+        verticalLayout.removeAll();
+        try {
+            verticalLayout.add(productPageBriefExplanation.briefPageExplanation(),
+                    productPageFilters.filters(),
+                    productPageProductFeed.productsMain(productService.loadProductFeedModel(stockChoise,categoryChoise,pageChoise,20)),
+                    paganation.buttonHolder(Math.toIntExact(productService.loadProductPageCount())));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

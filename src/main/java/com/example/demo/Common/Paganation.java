@@ -108,13 +108,11 @@ public class Paganation {
 
     }
 
-    public void setTotalPages(int pages){
-         totalPages = pages;
-    }
-
     public void updateUIFromExternal(int page) {
         this.currentPage = page;
+        if(!buttonList.isEmpty()){
             paganationButtons();
+        }
     }
 
 }

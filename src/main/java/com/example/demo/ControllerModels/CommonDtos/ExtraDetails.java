@@ -18,6 +18,7 @@ public class ExtraDetails {
     @JsonIgnore
     private Product product;
 
+    @JsonIgnore
     private User user;
 
     private LocalDateTime created;

@@ -24,7 +24,7 @@ public class ImagesData {
     private byte[] imageData;
     @JsonIgnore
     private Product product;
-
+    @JsonIgnore
     private User user;
 
     private LocalDateTime created;

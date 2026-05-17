@@ -135,15 +135,15 @@ public class ProductEditImage {
     }
 
     public void addExistingImages(){
-//        for(var s : imagesDataList){
-//            if(s.getImageLogic() == ImageLogic.Main){
-//                mainImage.setSrc(s.getImageUrl());
-//                feedLayout.add(createImage(s.getImageData(), s.getImageType(), s.getUuId(),s.getImageUrl()));
-//            }
-//            else{
-//                feedLayout.add(createImage(s.getImageData(), s.getImageType(), s.getUuId(),s.getImageUrl()));
-//            }
-//        }
+        for(var s : imagesDataList){
+            if(s.getImageLogic() == ImageLogic.Main){
+                mainImage.setSrc(s.getImageUrl());
+                feedLayout.add(createImage(s.getImageData(), s.getImageType(), s.getUuId(),s.getImageUrl()));
+            }
+            else{
+                feedLayout.add(createImage(s.getImageData(), s.getImageType(), s.getUuId(),s.getImageUrl()));
+            }
+        }
     }
 
 
