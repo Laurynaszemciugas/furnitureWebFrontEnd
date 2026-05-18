@@ -1,4 +1,4 @@
-package com.example.demo.Pages.ProductsEdit.Components;
+package com.example.demo.Pages.CommonComponents;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -12,7 +12,8 @@ import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Status;
 import com.example.demo.Enums.Tags;
 import com.example.demo.Enums.Visibility;
-import com.example.demo.Pages.CommonComponents.Grids;
+import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
+import com.example.demo.ServerDBCall.ProductEdit.ProductEdItCall;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -31,6 +32,7 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import lombok.SneakyThrows;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,11 +44,13 @@ public class ProductEditRightSideFields {
 
     CommonComponents commonComponents;
     Common common;
+    CommonCalls commonCalls;
     Grids grids;
+
+    ProductEdItCall productEdItCall;
 
     ProductEditImage productEditImage;
 
-    List<String> items = new ArrayList<>();
 
 
     private Binder<Product> binder =
@@ -92,33 +96,33 @@ public class ProductEditRightSideFields {
     }
 
 
-    // set consumer so it could react this is due to because in controller new is used
-    public void setProductEditImage(ProductEditImage productEditImage) {
-        this.productEditImage = productEditImage;
-        if (this.productEditImage != null) {
-            this.productEditImage.setListConsumer(list -> {
-                newImages = new ArrayList<>();
-                newImages.addAll(list);
-            });
-        }
-    }
+
 
 
     public ProductEditRightSideFields(CommonComponents commonComponents,
-                        Common common) {
+                        Common common, CommonCalls commonCalls) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.commonCalls = commonCalls;
         this.grids = new Grids(commonComponents,common);
 
         bindFields();
-        items.add("Wood");
-        items.add("Nails");
 
 
 
     }
 
-
+    // set consumer so it could react this is due to because in controller new not used
+    public void setProductEditImage(ProductEditImage productEditImage) {
+         this.productEditImage = productEditImage;
+        if (this.productEditImage != null) {
+            productEditImage.setListConsumer(list -> {
+                newImages = new ArrayList<>();
+                newImages.addAll(list);
+                System.out.println("new images");
+            });
+        }
+    }
 
     public void loadData(Product productEditDto){
 
@@ -513,13 +517,14 @@ public class ProductEditRightSideFields {
 
     // material stuff components
 
+    @SneakyThrows
     public ComboBox<String> comboBoxMaterial(String chosenValue) {
 
 
 
         ComboBox<String> materials = new ComboBox<>();
         materials.addClassName("no-gray-disabled");
-        materials.setItems(items);
+        materials.setItems(commonCalls.getMaterialNames());
 
         if(!chosenValue.equalsIgnoreCase("")) {
             materials.setValue(chosenValue);

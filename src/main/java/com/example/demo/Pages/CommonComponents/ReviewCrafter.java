@@ -1,11 +1,8 @@
-package com.example.demo.Pages.ProductsEdit.Components;
+package com.example.demo.Pages.CommonComponents;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.CommonDtos.Comments;
-import com.example.demo.ControllerModels.CommonDtos.Product;
-import com.example.demo.ControllerModels.CommonDtos.User;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -52,6 +49,9 @@ public class ReviewCrafter {
 
         return h;
     }
+
+
+
 
     public VerticalLayout commentCrafter(String comenter, String comment, double review){
 

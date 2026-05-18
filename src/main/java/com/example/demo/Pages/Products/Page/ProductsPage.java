@@ -53,7 +53,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     private Stock stockChoise = Stock.ALL;
     private Category categoryChoise = Category.ALL;
     private int pageChoise = 1;
-    private String promtChoise;
+    private String promtChoise = "ALL";
 
 
     // page data

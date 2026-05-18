@@ -13,10 +13,14 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Collections;
 import java.util.List;
 
 @Service
 public class ProductEdItCall {
+
+    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTEzOTMxNCwiZXhwIjoxNzc5MTc1MzE0fQ.hbCDaJA8wc-EyTpcUXCnTI3rUXVxya5tPAG384OQ7hg";
+
 
     public Product getProductAccordingToId(Long id) throws IOException, InterruptedException {
 
@@ -48,6 +52,44 @@ public class ProductEdItCall {
                 new TypeReference<Product>() {}
         );
     }
+
+    public void updateProductEdit(Product product) throws IOException, InterruptedException {
+
+        HttpClient client = HttpClient.newHttpClient();
+        ObjectMapper mapper = new ObjectMapper();
+
+        String json = mapper.writeValueAsString(product);
+
+
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/product/editProduct"))
+                .header("Authorization","Bearer " + JWT)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = client.send(
+                request,
+                HttpResponse.BodyHandlers.ofString()
+        );
+
+        if (response.statusCode() != 200) {
+            System.err.println("Backend Request Failed! Status Code: " + response.statusCode());
+            System.err.println("Backend Response Body: " + response.body());
+            throw new RuntimeException("Backend responded with error status: " + response.statusCode());
+        }
+
+        System.out.println(response.body());
+
+    }
+
+
+
+
+
+
+
 
 
 }

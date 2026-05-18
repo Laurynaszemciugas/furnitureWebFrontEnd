@@ -5,9 +5,10 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.MainLayout.MainLayout;
-import com.example.demo.Pages.ProductsEdit.Components.ProductEditImage;
-import com.example.demo.Pages.ProductsEdit.Components.ProductEditRightSideFields;
-import com.example.demo.Pages.ProductsEdit.Components.ReviewCrafter;
+import com.example.demo.Pages.CommonComponents.ProductEditImage;
+import com.example.demo.Pages.CommonComponents.ProductEditRightSideFields;
+import com.example.demo.Pages.CommonComponents.ReviewCrafter;
+import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.example.demo.Services.ProductEditService.ProductEditService;
 
 import com.vaadin.flow.component.html.Div;
@@ -26,6 +27,7 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
     CommonComponents commonComponents;
     Common common;
     ProductEditService productEditService;
+    CommonCalls commonCalls;
 
     ProductEditRightSideFields productEditRightSideFields;
     ProductEditImage productEditImage;
@@ -38,11 +40,13 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
 
     public ProductsEdit(CommonComponents commonComponents,
                         Common common,
+                        CommonCalls commonCalls,
                         ProductEditService productEditService) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.commonCalls = commonCalls;
         this.productEditService = productEditService;
-        this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common);
+        this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonCalls);
         this.productEditImage = new ProductEditImage(commonComponents,common);
         this.reviewCrafter = new ReviewCrafter(commonComponents,common);
 
@@ -84,7 +88,9 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
         productEditRightSideFields.setConsumer(e->{
 
 
+            System.out.println("Edit time");
 
+            productEditService.updateProductEdit(e);
 
 
         });
@@ -104,7 +110,8 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
         Product product = productEditService.productEditDtoLoad(Long.valueOf(productId));
 
         HorizontalLayout images = productEditImage.images(product);
-        Div holder = new Div(images,productEditImage.uploadStuff(),reviewCrafter.commentsHolder(product.getComments()));
+        Div holder = new Div(images,productEditImage.uploadStuff(),
+                reviewCrafter.commentsHolder(product.getComments()));
         VerticalLayout fields = productEditRightSideFields.rightSide(product);
 
         h.add(holder,fields);

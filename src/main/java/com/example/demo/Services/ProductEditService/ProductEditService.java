@@ -26,9 +26,15 @@ public class ProductEditService {
 
         Product productEditDto = productEdItCall.getProductAccordingToId(id);
 
-
-
         return  productEditDto;
+
+    }
+
+
+    @SneakyThrows
+    public void updateProductEdit(Product product){
+
+        productEdItCall.updateProductEdit(product);
 
     }
 

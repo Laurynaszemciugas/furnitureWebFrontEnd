@@ -1,4 +1,4 @@
-package com.example.demo.Pages.ProductsEdit.Components;
+package com.example.demo.Pages.CommonComponents;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -48,8 +48,7 @@ public class ProductEditImage {
 
 
     // just a tripwire that says to controller hey i got updlaoded
-    Consumer<List<ImagesData>> listConsumer;
-
+    private Consumer<List<ImagesData>> listConsumer = list -> {};
 
 
 
@@ -210,7 +209,7 @@ public class ProductEditImage {
 
 
             // send data that user put stuff in the uploads
-            listConsumer.accept(imagesDataList);
+                listConsumer.accept(imagesDataList);
         });
 
 
