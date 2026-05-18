@@ -3,9 +3,11 @@ package com.example.demo.Pages.ProductsEdit.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.ProductsEdit.Components.ProductEditImage;
 import com.example.demo.Pages.ProductsEdit.Components.ProductEditRightSideFields;
+import com.example.demo.Pages.ProductsEdit.Components.ReviewCrafter;
 import com.example.demo.Services.ProductEditService.ProductEditService;
 
 import com.vaadin.flow.component.html.Div;
@@ -27,7 +29,10 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
 
     ProductEditRightSideFields productEditRightSideFields;
     ProductEditImage productEditImage;
+    ReviewCrafter reviewCrafter;
 
+
+    int productId = 0;
 
 
 
@@ -39,6 +44,7 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
         this.productEditService = productEditService;
         this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common);
         this.productEditImage = new ProductEditImage(commonComponents,common);
+        this.reviewCrafter = new ReviewCrafter(commonComponents,common);
 
         this.productEditRightSideFields.setProductEditImage(this.productEditImage);
 
@@ -61,7 +67,7 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
 
         int id = Integer.parseInt(beforeEnterEvent.getRouteParameters().get("id").orElse(null));
 
-        System.out.println(id);
+        this.productId = id;
 
 
 
@@ -76,7 +82,11 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
 
 
         productEditRightSideFields.setConsumer(e->{
-            System.out.println("yes");
+
+
+
+
+
         });
 
         verticalLayout.add(briefPageExplanation(), joinImagesInfo());
@@ -91,9 +101,11 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
         h.addClassName("island");
         h.getStyle().set("flex-wrap","wrap");
 
-        HorizontalLayout images = productEditImage.images(productEditService.productEditDtoLoad());
-        Div holder = new Div(images,productEditImage.uploadStuff());
-        VerticalLayout fields = productEditRightSideFields.rightSide(productEditService.productEditDtoLoad());
+        Product product = productEditService.productEditDtoLoad(Long.valueOf(productId));
+
+        HorizontalLayout images = productEditImage.images(product);
+        Div holder = new Div(images,productEditImage.uploadStuff(),reviewCrafter.commentsHolder(product.getComments()));
+        VerticalLayout fields = productEditRightSideFields.rightSide(product);
 
         h.add(holder,fields);
         h.expand(fields);

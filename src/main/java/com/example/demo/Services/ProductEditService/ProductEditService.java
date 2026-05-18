@@ -22,9 +22,9 @@ public class ProductEditService {
     }
 
     @SneakyThrows
-    public Product productEditDtoLoad(){
+    public Product productEditDtoLoad(Long id){
 
-        Product productEditDto = productEdItCall.getProductAccordingToId(5l);
+        Product productEditDto = productEdItCall.getProductAccordingToId(id);
 
 
 

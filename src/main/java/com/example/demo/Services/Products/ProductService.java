@@ -24,18 +24,21 @@ public class ProductService {
     }
 
 
-    public List<ProductFeedModel> loadProductFeedModel(Stock stock, Category category, int page, int size) throws IOException, InterruptedException {
+
+    // good for specific data need
+    public List<ProductFeedModel> loadProductFeedModel(Stock stock, Category category,String prompt, int page, int size) throws IOException, InterruptedException {
 
         page = page -1;
 
-        return productsCall.getAllProducts(stock, category,page,size);
+        return productsCall.getAllProducts(stock, category,prompt,page,size);
     }
 
 
-    public ProductPageData loadProductData(Stock stock, Category category, int page, int size) throws IOException, InterruptedException {
+    // good for default but there is only one record
+    public ProductPageData loadProductData(Stock stock, Category category,String prompt, int page, int size) throws IOException, InterruptedException {
 
         ProductPageData productPageData = new ProductPageData();
-            productPageData.setProductFeedModelList(loadProductFeedModel(stock,category,page,size));
+            productPageData.setProductFeedModelList(loadProductFeedModel(stock,category,prompt,page,size));
 
         productPageData.setCreatedAt(LocalDateTime.now());
 

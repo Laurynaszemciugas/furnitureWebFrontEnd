@@ -6,15 +6,20 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Service;
-@Service
-@UIScope
+
+import java.util.function.Consumer;
+
 public class ProductPageBriefExplanation {
 
 
     CommonComponents commonComponents;
     Common common;
+
+
+    Consumer<String> filterConsumer;
 
     public ProductPageBriefExplanation(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
@@ -22,12 +27,23 @@ public class ProductPageBriefExplanation {
     }
 
 
+    public void setFilterConsumer( Consumer<String> filterConsumer){
+        this.filterConsumer = filterConsumer;
+    }
+
+
 
     public HorizontalLayout briefPageExplanation(){
         HorizontalLayout left = commonComponents.biefPageExplanation("Inventory management");
 
+        TextField search = commonComponents.textFieldCrafter("Search products...","");
+
+        search.addValueChangeListener(e->{
+           filterConsumer.accept(e.getValue());
+        });
+
         HorizontalLayout right =new HorizontalLayout(
-                commonComponents.textFieldCrafter("Search products...",""),
+                search,
                 commonComponents.buttonThemeAndIcon("Add new product","", ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White")
         );
         right.addClassName("layout-flex");

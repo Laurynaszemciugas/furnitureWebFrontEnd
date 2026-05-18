@@ -18,16 +18,17 @@ import java.util.List;
 public class ProductsCall {
 
 
-    public List<ProductFeedModel> getAllProducts(Stock stock, Category category, int page, int size) throws IOException, InterruptedException {
+    public List<ProductFeedModel> getAllProducts(Stock stock, Category category,String prompt, int page, int size) throws IOException, InterruptedException {
 
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
 
 
         String url = String.format(
-                "http://localhost:8080/api/product/getProducts/%s/%s/%d/%d",
+                "http://localhost:8080/api/product/getProducts/%s/%s/%s/%d/%d",
                 stock,
                 category,
+                prompt,
                 page,
                 size
         );

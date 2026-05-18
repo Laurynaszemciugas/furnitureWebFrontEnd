@@ -29,7 +29,14 @@ public class CommonComponents {
     // components like icons images buttonns spans ect
 
     public Image imageCrafter(String imageUrl, String width, String height, String borderRadius){
-        Image image = new Image(imageUrl, "image error");
+        String src = "" ;
+        if(imageUrl !=null){
+            src = imageUrl;
+        }
+        else{
+            src = "No_picture.png";
+;        }
+        Image image = new Image(src, "image error");
         image.setWidth(width);
         image.setHeight(height);
         image.getStyle().set("border-radius",borderRadius);

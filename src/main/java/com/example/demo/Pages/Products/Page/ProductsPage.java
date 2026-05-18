@@ -13,6 +13,9 @@ import com.example.demo.Pages.Products.Components.ProductPageFilters;
 import com.example.demo.Pages.Products.Components.ProductPageProductFeed;
 import com.example.demo.Services.Products.ProductService;
 
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -45,10 +48,12 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
     // main layout
     VerticalLayout verticalLayout = new VerticalLayout();
+    VerticalLayout filterHolder = new VerticalLayout();
 
     private Stock stockChoise = Stock.ALL;
     private Category categoryChoise = Category.ALL;
     private int pageChoise = 1;
+    private String promtChoise;
 
 
     // page data
@@ -58,15 +63,13 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
     public ProductsPage(CommonComponents commonComponents,
                         Common common,
-                        ProductService productService,
-                        ProductPageBriefExplanation productPageBriefExplanation
-                        ) {
+                        ProductService productService) {
 
 
         this.commonComponents = commonComponents;
         this.common = common;
         this.productService = productService;
-        this.productPageBriefExplanation = productPageBriefExplanation;
+        this.productPageBriefExplanation = new ProductPageBriefExplanation(commonComponents,common);
         this.productPageFilters = new ProductPageFilters(commonComponents,common);
         this.productPageProductFeed = new ProductPageProductFeed(commonComponents,common);
 
@@ -80,6 +83,10 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
 
         this.longConsumer = paganation::updateUIFromExternal;
+
+        filterHolder.add(
+                productPageBriefExplanation.briefPageExplanation(),
+                productPageFilters.filters());
 
 
 
@@ -96,7 +103,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
 
         if(data == null || data.isDataStale()){
-            data = productService.loadProductData(Stock.ALL, Category.ALL,1,20);
+            data = productService.loadProductData(Stock.ALL, Category.ALL,"ALL",1,20);
             System.out.println(data.getProductFeedModelList());
         }
 
@@ -133,6 +140,13 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         verticalLayout.addClassName("main-island");
 
 
+        productPageBriefExplanation.setFilterConsumer(promt->{
+            this.promtChoise = promt;
+            if(promt.equalsIgnoreCase("")){
+                this.promtChoise = "ALL";
+            }
+            updateView(verticalLayout);
+        });
 
         productPageFilters.consumerStock(stock -> {
 
@@ -152,12 +166,14 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
         paganation.setOnPageChange(page -> {
 
+
             this.pageChoise = page;
             updateView(verticalLayout);
 
 
 
         });
+
 
         productPageFilters.consumerClear(e->{
             verticalLayout.removeAll();
@@ -178,26 +194,31 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         return verticalLayout;
     }
 
+    //get default data
     public void loadData(VerticalLayout verticalLayout){
         verticalLayout.removeAll();
-        verticalLayout.add(productPageBriefExplanation.briefPageExplanation(),
-                productPageFilters.filters(),
+        verticalLayout.add(
+                filterHolder,
                 productPageProductFeed.productsMain(data.getProductFeedModelList()),
                 paganation.buttonHolder(Math.toIntExact(productService.loadProductPageCount())));
     }
 
+
+    // updata data according to filters
     public void updateView(VerticalLayout verticalLayout){
 
 
-
-
-
+        commonComponents.showNotification(String.format("Filters - Stock: '%s' Category: '%s' Prompt: '%s' Page: '%d'",
+                stockChoise.getDisplayName(),
+                categoryChoise.getDisplayName(),
+                promtChoise, pageChoise),
+                6000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
 
         verticalLayout.removeAll();
         try {
-            verticalLayout.add(productPageBriefExplanation.briefPageExplanation(),
-                    productPageFilters.filters(),
-                    productPageProductFeed.productsMain(productService.loadProductFeedModel(stockChoise,categoryChoise,pageChoise,20)),
+            verticalLayout.add(
+                    filterHolder,
+                    productPageProductFeed.productsMain(productService.loadProductFeedModel(stockChoise,categoryChoise,promtChoise,pageChoise,20)),
                     paganation.buttonHolder(Math.toIntExact(productService.loadProductPageCount())));
         } catch (IOException e) {
             throw new RuntimeException(e);

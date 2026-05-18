@@ -123,39 +123,33 @@ public class ProductEditRightSideFields {
     public void loadData(Product productEditDto){
 
 
-        // SET ITEMS (These are usually safe as Enums are static)
         category.setItems(Category.values());
         tags.setItems(Tags.values());
         status.setItems(Status.values());
         visibility.setItems(Visibility.values());
 
-// TEXT FIELDS (Require "" instead of null)
         productName.setValue(productEditDto.getProductName() == null ? "" : productEditDto.getProductName());
         sku.setValue(productEditDto.getSku() == null ? "" : productEditDto.getSku());
         description.setValue(productEditDto.getDescription() == null ? "" : productEditDto.getDescription());
 
-// NUMBER FIELDS (Can take null, but safer to check)
         price.setValue(productEditDto.getPrice());
         discount.setValue(productEditDto.getDiscount());
         materialCost.setValue(productEditDto.getMaterialCost());
 
-// CASTING NUMBERS (Crucial to check null before casting to double/long)
         stockQuantity.setValue(productEditDto.getStockQuantity() != null ? (double) productEditDto.getStockQuantity() : 0.0);
         lowThreshold.setValue(productEditDto.getLowStockThreshold() != null ? (double) productEditDto.getLowStockThreshold() : 0.0);
 
-// COMBOBOX / ENUMS (Can take null)
         category.setValue(productEditDto.getCategory());
         status.setValue(productEditDto.getStatus());
         visibility.setValue(productEditDto.getVisibility());
 
-// TAGS (Special case: check if the list is null or empty before getting index 0)
         if (productEditDto.getTags() != null && !productEditDto.getTags().isEmpty()) {
             tags.setValue(productEditDto.getTags().get(0).getTags());
             for(var s : productEditDto.getTags()) {
                 tagss.addAll(Collections.singleton(s.getTags()));
             }
         } else {
-            tags.setValue(null); // Or tags.setValue(null);
+            tags.setValue(null);
         }
 
 
@@ -168,7 +162,12 @@ public class ProductEditRightSideFields {
 
         if(productEditDto.getMaterials() != null &&  !productEditDto.getMaterials().isEmpty()) {
             for(var s : productEditDto.getMaterials())
-                listMaterialGrids.add(new ListMaterialGrid(s.getId(),s.getNameForRefrence(),comboBoxMaterial(s.getNameForRefrence()),quantityField(s.getAmountUsed()),unitField("no idea"),s.getUnitPrice()));
+                listMaterialGrids.add(new ListMaterialGrid(s.getId(),
+                        s.getNameForRefrence(),
+                        comboBoxMaterial(s.getNameForRefrence()),
+                        quantityField(s.getAmountUsed()),
+                        unitField("no idea"),
+                        s.getUnitPrice()));
             upgradeMaterialGrid();
         }
 

@@ -49,15 +49,15 @@ public class ProductPageFilters {
 
     public HorizontalLayout filters(){
 
-        Button inStock = commonComponents.normalButtonNoNavigate(Stock.In_Stock.getDisplayName(), "S");
-        Button lowStock = commonComponents.normalButtonNoNavigate(Stock.Low_Stock.getDisplayName(), "S");
-        Button noStock = commonComponents.normalButtonNoNavigate(Stock.No_Stock.getDisplayName(), "S");
+        Button inStock = commonComponents.normalButtonNoNavigate(Stock.In_Stock.getDisplayName(), "stock-in");
+        Button lowStock = commonComponents.normalButtonNoNavigate(Stock.Low_Stock.getDisplayName(), "stock-low");
+        Button noStock = commonComponents.normalButtonNoNavigate(Stock.No_Stock.getDisplayName(), "stock-out");
 
         ComboBox<Category> types = new ComboBox<>();
         types.setItems(Category.values());
 
 
-        Button clear = commonComponents.normalButtonNoNavigate("Clear filters","s");
+        Button clear = commonComponents.normalButtonNoNavigate("Clear filters","clear-button");
 
         inStock.addClickListener(e->{
             stockConsumer.accept(Stock.In_Stock);

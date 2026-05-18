@@ -3,13 +3,18 @@ package com.example.demo.Pages.ProductAdd.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.CommonDtos.Comments;
 import com.example.demo.ControllerModels.CommonDtos.Product;
+import com.example.demo.ControllerModels.CommonDtos.User;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.ProductsEdit.Components.ProductEditImage;
 import com.example.demo.Pages.ProductsEdit.Components.ProductEditRightSideFields;
+import com.example.demo.Pages.ProductsEdit.Components.ReviewCrafter;
 import com.example.demo.ServerDBCall.ProductAdd.ProductAddCall;
 import com.example.demo.Services.ProductAdd.ProductAddService;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -17,6 +22,9 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Route(value = "ProductsAdd", layout = MainLayout.class)
 public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
@@ -30,6 +38,7 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
 
     ProductEditRightSideFields productEditRightSideFields;
     ProductEditImage productEditImage;
+    ReviewCrafter reviewCrafter;
 
 
 
@@ -46,6 +55,7 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
 
         this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common);
         this.productEditImage = new ProductEditImage(commonComponents,common);
+        this.reviewCrafter = new ReviewCrafter(commonComponents,common);
 
         this.productEditRightSideFields.setProductEditImage(this.productEditImage);
 
@@ -67,9 +77,6 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
         removeAll();
 
 
-
-
-
         add(mainLayout());
 
     }
@@ -78,14 +85,8 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top", "5px");
-        //verticalLayout.addClassName("main-island");
-
-//        productEditImage.setListConsumer(e->{
-//            System.out.println("ąęčė");
-//        });
 
         productEditRightSideFields.setConsumer(e->{
-            System.out.println("heeeeeeeeeeeeeeeeeeeeee");
             try {
                 productAddCall.addNewOrder(e);
             } catch (IOException ex) {
@@ -110,7 +111,7 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
         Product sharedProductInstance = productAddService.productAddDtoLoad();
 
         HorizontalLayout images = productEditImage.images(sharedProductInstance);
-        Div holder = new Div(images,productEditImage.uploadStuff(),commentsHolder());
+        Div holder = new Div(images,productEditImage.uploadStuff(),reviewCrafter.commentsHolder(sharedProductInstance.getComments()));
         VerticalLayout fields = productEditRightSideFields.rightSide(sharedProductInstance);
 
         h.add(holder,fields);
@@ -121,13 +122,8 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
     }
 
 
-    public HorizontalLayout commentsHolder(){
-        HorizontalLayout h = new HorizontalLayout();
-        h.getStyle().set("background-color","Red");
-        h.setWidthFull();
-        h.setHeight("300px");
-        return h;
-    }
+
+
 
 
     public HorizontalLayout briefPageExplanation(){
