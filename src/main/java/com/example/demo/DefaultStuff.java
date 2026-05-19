@@ -39,6 +39,26 @@ public class DefaultStuff extends VerticalLayout {
 
         accordion.close();
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         add(accordion);
     }
 

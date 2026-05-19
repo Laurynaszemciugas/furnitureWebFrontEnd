@@ -3,11 +3,8 @@ package com.example.demo.Pages.CommonComponents;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Common.*;
-import com.example.demo.ControllerModels.CommonDtos.ExtraDetails;
-import com.example.demo.ControllerModels.CommonDtos.ImagesData;
-import com.example.demo.ControllerModels.CommonDtos.Product;
+import com.example.demo.ControllerModels.CommonDtos.*;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
-import com.example.demo.ControllerModels.CommonDtos.ProductTags;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Status;
 import com.example.demo.Enums.Tags;
@@ -34,6 +31,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import lombok.SneakyThrows;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -165,13 +163,14 @@ public class ProductEditRightSideFields {
         }
 
         if(productEditDto.getMaterials() != null &&  !productEditDto.getMaterials().isEmpty()) {
-            for(var s : productEditDto.getMaterials())
+            for(var s : productEditDto.getMaterials()) {
                 listMaterialGrids.add(new ListMaterialGrid(s.getId(),
                         s.getNameForRefrence(),
                         comboBoxMaterial(s.getNameForRefrence()),
                         quantityField(s.getAmountUsed()),
-                        unitField("no idea"),
-                        s.getUnitPrice()));
+                        unitField(s.getMaterials().getUnit()),
+                        s.getMaterials().getUnitPrice()));
+            }
             upgradeMaterialGrid();
         }
 
@@ -266,7 +265,6 @@ public class ProductEditRightSideFields {
         addNewMaterial.addClickListener(e->{
 
             listMaterialGrids.add(new ListMaterialGrid(null,"",comboBoxMaterial(""),quantityField(0l),unitField(""),0));
-            System.out.println(listMaterialGrids);
             upgradeMaterialGrid();
 
         });
@@ -555,12 +553,32 @@ public class ProductEditRightSideFields {
                 System.out.println("here");
                 for(var s : listMaterialGrids){
                     if(s.getMaterial() instanceof ComboBox<?> cb){
-                        System.out.println(cb.getValue());
-
                         s.setNameForCompare((String) cb.getValue());
+
                     }
                 }
                 materials.setEnabled(false);
+
+                System.out.println(e.getValue());
+                for(var s : listMaterialGrids){
+
+                    if(s.getNameForCompare().equalsIgnoreCase(e.getValue())){
+                        try {
+                            Materials materialData = commonCalls.getMaterialDataAccordingToName(e.getValue());
+                            s.getUnit().setValue(materialData.getUnit());
+                            s.setUnitPrice(materialData.getUnitPrice());
+                            System.out.println(s.getUnitPrice());
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        } catch (InterruptedException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+
+                }
+
+                System.out.println("hopefully new values >????????");
+                System.out.println(listMaterialGrids);
 
 
             }
@@ -582,6 +600,31 @@ public class ProductEditRightSideFields {
         quantity.setMax(100);
         quantity.setStep(1);
         quantity.setValue(chosenValue.intValue());
+
+        quantity.addValueChangeListener(e->{
+
+            List<ProductMaterials> productMaterials = new ArrayList<>();
+
+            for(var s : listMaterialGrids){
+                ProductMaterials materials = new ProductMaterials();
+                materials.setNameForRefrence(s.getNameForCompare());
+                materials.setAmountUsed(Long.valueOf(s.getAmountOfMaterial().getValue()));
+
+                productMaterials.add(materials);
+
+            }
+
+            try {
+                materialCost.setValue(commonCalls.getEstimatedMaterialPrice(productMaterials));
+
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+
+        });
+
 
         return quantity;
     }

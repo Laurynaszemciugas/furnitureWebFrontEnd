@@ -3,6 +3,7 @@ package com.example.demo.ServerDBCall.ProductPage;
 import com.example.demo.ControllerModels.Products.ProductFeedModel;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Stock;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
@@ -16,6 +17,8 @@ import java.util.List;
 
 @Service
 public class ProductsCall {
+
+    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTE5MzA4NCwiZXhwIjoxNzc5MjI5MDg0fQ.2PvpBNymzCtqbY3bGyeSb0gmYTbOloMHXnQoypUe2iA";
 
 
     public List<ProductFeedModel> getAllProducts(Stock stock, Category category,String prompt, int page, int size) throws IOException, InterruptedException {
