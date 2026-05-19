@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 public class CommonCalls {
-    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTE5MzA4NCwiZXhwIjoxNzc5MjI5MDg0fQ.2PvpBNymzCtqbY3bGyeSb0gmYTbOloMHXnQoypUe2iA";
+    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTIzMTQxMiwiZXhwIjoxNzc5MjY3NDEyfQ.gKsCwWqu4emUKYHf1FjON1JCu9oNcXZ7qpjH09lK7DM";
 
     public List<String> getMaterialNames() throws IOException, InterruptedException {
 
@@ -43,6 +43,8 @@ public class CommonCalls {
             throw new RuntimeException("Backend responded with error status: " + response.statusCode());
         }
 
+
+        System.out.println(response.body());
 
         return mapper.readValue(
                 response.body(),
@@ -114,6 +116,38 @@ public class CommonCalls {
                 response.body(),
                 new TypeReference<Materials>() {}
         );
+    }
+
+
+    public String checkIfMaterialsAreInStock(List<ProductMaterials> productMaterials) throws IOException, InterruptedException {
+
+        HttpClient client = HttpClient.newHttpClient();
+        ObjectMapper mapper = new ObjectMapper();
+
+        String json = mapper.writeValueAsString(productMaterials);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/material/checkIfMaterialsAmountIsInStock"))
+                .header("Authorization","Bearer " + JWT)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = client.send(
+                request,
+                HttpResponse.BodyHandlers.ofString()
+        );
+
+        if (response.statusCode() != 200) {
+            System.err.println("Backend Request Failed! Status Code: " + response.statusCode());
+            System.err.println("Backend Response Body: " + response.body());
+            throw new RuntimeException("Backend responded with error status: " + response.statusCode());
+        }
+
+        System.out.println(response.body());
+
+        return response.body();
+
     }
 
 

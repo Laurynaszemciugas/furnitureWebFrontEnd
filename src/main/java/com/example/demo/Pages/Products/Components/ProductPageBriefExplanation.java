@@ -44,7 +44,7 @@ public class ProductPageBriefExplanation {
 
         HorizontalLayout right =new HorizontalLayout(
                 search,
-                commonComponents.buttonThemeAndIcon("Add new product","", ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White")
+                commonComponents.buttonThemeAndIcon("Add new product","ProductsAdd", ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White")
         );
         right.addClassName("layout-flex");
 

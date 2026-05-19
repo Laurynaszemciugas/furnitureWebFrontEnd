@@ -12,9 +12,11 @@ import com.example.demo.Enums.Visibility;
 import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.example.demo.ServerDBCall.ProductEdit.ProductEdItCall;
 import com.vaadin.flow.component.HasComponents;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
@@ -81,6 +83,10 @@ public class ProductEditRightSideFields {
 
     List<Tags> tagss = new ArrayList<>();
 
+    List<String> materialNames = new ArrayList<>();
+
+    Button addNewMaterial;
+
 
     // send message that info is ready
     Consumer<Product> consumer;
@@ -97,15 +103,16 @@ public class ProductEditRightSideFields {
 
 
 
+    @SneakyThrows
     public ProductEditRightSideFields(CommonComponents commonComponents,
-                        Common common, CommonCalls commonCalls) {
+                                      Common common, CommonCalls commonCalls) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.commonCalls = commonCalls;
         this.grids = new Grids(commonComponents,common);
 
         bindFields();
-
+        materialNames.addAll(commonCalls.getMaterialNames());
 
 
     }
@@ -117,7 +124,6 @@ public class ProductEditRightSideFields {
             productEditImage.setListConsumer(list -> {
                 newImages = new ArrayList<>();
                 newImages.addAll(list);
-                System.out.println("new images");
             });
         }
     }
@@ -169,7 +175,8 @@ public class ProductEditRightSideFields {
                         comboBoxMaterial(s.getNameForRefrence()),
                         quantityField(s.getAmountUsed()),
                         unitField(s.getMaterials().getUnit()),
-                        s.getMaterials().getUnitPrice()));
+                        s.getMaterials().getUnitPrice(),
+                        s.getMaterials().getInStock()));
             }
             upgradeMaterialGrid();
         }
@@ -260,12 +267,13 @@ public class ProductEditRightSideFields {
         productStatus.add(status,visibility);
 
 
-        Button addNewMaterial = commonComponents.normalThemeButtonNoNavigate("Add Material", ButtonVariant.LUMO_PRIMARY);
+        addNewMaterial = commonComponents.normalThemeButtonNoNavigate("Add Material", ButtonVariant.LUMO_PRIMARY);
 
         addNewMaterial.addClickListener(e->{
-
-            listMaterialGrids.add(new ListMaterialGrid(null,"",comboBoxMaterial(""),quantityField(0l),unitField(""),0));
+            addNewMaterial.setEnabled(false);
+            listMaterialGrids.add(new ListMaterialGrid(null,"",comboBoxMaterial(""),quantityField(0l),unitField(""),0,0l));
             upgradeMaterialGrid();
+
 
         });
 
@@ -388,6 +396,7 @@ public class ProductEditRightSideFields {
             //get images
 
             if(newImages !=null){
+                System.out.println("changing pictures");
                 for(var s : newImages){
                     s.setImageUrl(common.imageMaker(s.getImageData(),s.getImageType()));
                 }
@@ -410,7 +419,10 @@ public class ProductEditRightSideFields {
             }
             product.setMaterials(materials);
 
-            // get extra details
+
+
+
+                // get extra details
             List<ExtraDetails> extraDetails = new ArrayList<>();
             for(var s : listExtraDetailsGrids){
                 ExtraDetails details = new ExtraDetails();
@@ -422,13 +434,66 @@ public class ProductEditRightSideFields {
             }
             product.setExtraDetails(extraDetails);
 
-            //trigger trip wire
-            consumer.accept(product);
+
+
+                boolean dataCorrect;
+                String errorMessage;
+                //trigger trip wire
+                try {
+                    errorMessage = commonCalls.checkIfMaterialsAreInStock(materials);
+                    dataCorrect = errorMessage.equalsIgnoreCase("");
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                if(!dataCorrect) {
+                    showDialog(product,errorMessage);
+                }
+                else {
+                    consumer.accept(product);
+                    UI.getCurrent().navigate("Products/1");
+                }
 
             } else {
                 System.out.println("Validation failed");
             }
         });
+    }
+
+
+
+    public void showDialog(Product product,String error){
+        ConfirmDialog dialog = new ConfirmDialog();
+
+        dialog.setHeader("Warning");
+
+        VerticalLayout content = new VerticalLayout();
+        content.setSpacing(false);
+        content.setPadding(false);
+
+        Span line = new Span("• " + error);
+        line.getStyle().set("color", "red");
+        content.add(line);
+
+        dialog.setCancelable(true);   // gives "Cancel"
+        dialog.setConfirmText("Continue");
+        dialog.setCancelText("Go back");
+
+
+        dialog.addConfirmListener(event -> {
+            consumer.accept(product);
+            UI.getCurrent().navigate("Products/1");
+        });
+
+        dialog.addCancelListener(event -> {
+            // user clicked "Cancel"
+        });
+
+        dialog.add(content);
+
+        dialog.open();
     }
 
     // tag crafter
@@ -522,7 +587,7 @@ public class ProductEditRightSideFields {
 
         ComboBox<String> materials = new ComboBox<>();
         materials.addClassName("no-gray-disabled");
-        materials.setItems(commonCalls.getMaterialNames());
+        materials.setItems(materialNames);
 
         if(!chosenValue.equalsIgnoreCase("")) {
             materials.setValue(chosenValue);
@@ -551,44 +616,58 @@ public class ProductEditRightSideFields {
                 materials.setValue(e.getValue());
 
                 System.out.println("here");
-                for(var s : listMaterialGrids){
-                    if(s.getMaterial() instanceof ComboBox<?> cb){
-                        s.setNameForCompare((String) cb.getValue());
-
+                for(var s : listMaterialGrids) {
+                    if(s.getNameForCompare().equalsIgnoreCase("")) {
+                        s.setNameForCompare(e.getValue());
                     }
+
                 }
+
+
                 materials.setEnabled(false);
+                addNewMaterial.setEnabled(true);
 
                 System.out.println(e.getValue());
-                for(var s : listMaterialGrids){
 
-                    if(s.getNameForCompare().equalsIgnoreCase(e.getValue())){
-                        try {
-                            Materials materialData = commonCalls.getMaterialDataAccordingToName(e.getValue());
-                            s.getUnit().setValue(materialData.getUnit());
-                            s.setUnitPrice(materialData.getUnitPrice());
-                            System.out.println(s.getUnitPrice());
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        } catch (InterruptedException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                    }
+
+
+
 
                 }
+
+                upgradeMaterialGrid();
 
                 System.out.println("hopefully new values >????????");
                 System.out.println(listMaterialGrids);
 
 
-            }
-
+            extendDataOfTheDataMaterial(e.getValue());
 
 
 
 
         });
         return materials;
+    }
+
+
+    public void extendDataOfTheDataMaterial(String name){
+        for(var s : listMaterialGrids) {
+            if(s.getNameForCompare().equalsIgnoreCase(name)) {
+                try {
+                    Materials materialData = commonCalls.getMaterialDataAccordingToName(name);
+                    s.getUnit().setValue(materialData.getUnit());
+                    s.setUnitPrice(materialData.getUnitPrice());
+                    s.setStockLevel(materialData.getInStock());
+                    System.out.println(s.getUnitPrice());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+
+                }
+            }
+        }
     }
 
     public IntegerField quantityField(Long chosenValue) {
@@ -615,13 +694,15 @@ public class ProductEditRightSideFields {
             }
 
             try {
-                materialCost.setValue(commonCalls.getEstimatedMaterialPrice(productMaterials));
+                materialCost.setValue(Double.valueOf(String.format("%.2f",commonCalls.getEstimatedMaterialPrice(productMaterials))));
 
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
+
+            upgradeMaterialGrid();
 
         });
 
@@ -631,7 +712,7 @@ public class ProductEditRightSideFields {
 
     public ComboBox<String> unitField(String chosenValue) {
         ComboBox<String> unit = new ComboBox<>();
-
+        unit.addClassName("no-gray-disabled");
         unit.setItems("Planks", "Pieces");
         unit.setValue(chosenValue);
         unit.setEnabled(false);

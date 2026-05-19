@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class ProductEdItCall {
 
-    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTE5MzA4NCwiZXhwIjoxNzc5MjI5MDg0fQ.2PvpBNymzCtqbY3bGyeSb0gmYTbOloMHXnQoypUe2iA";
+    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTIzMTQxMiwiZXhwIjoxNzc5MjY3NDEyfQ.gKsCwWqu4emUKYHf1FjON1JCu9oNcXZ7qpjH09lK7DM";
 
 
 
@@ -35,6 +35,7 @@ public class ProductEdItCall {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Accept", "application/json")
+                .header("Authorization","Bearer " + JWT)
                 .GET()
                 .build();
 

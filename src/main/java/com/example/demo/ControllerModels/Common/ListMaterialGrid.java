@@ -20,7 +20,8 @@ public class ListMaterialGrid {
     private ComboBox<String> material;
     private IntegerField amountOfMaterial;
     private ComboBox<String> unit;
-    private  double unitPrice;
+    private double unitPrice;
+    private Long stockLevel;
 
 
 

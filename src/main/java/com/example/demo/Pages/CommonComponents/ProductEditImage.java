@@ -207,7 +207,6 @@ public class ProductEditImage {
             newUploadedImages.clear();
 
 
-
             // send data that user put stuff in the uploads
                 listConsumer.accept(imagesDataList);
         });
@@ -267,9 +266,10 @@ public class ProductEditImage {
                }
 
            }
-            for(var s : imagesDataList){
-                System.out.println(s.getImageName() + " " + s.getImageLogic());
-            }
+
+
+
+
 
             mainImage.setSrc(currentImage);
 
@@ -292,6 +292,7 @@ public class ProductEditImage {
             verticalLayout.setVisible(false);
 
             handleRemoveOfImageView(id);
+
         });
 
 
@@ -302,6 +303,12 @@ public class ProductEditImage {
 
     public void handleRemoveOfImageView(String id){
         imagesDataList.removeIf(imageData -> imageData.getUuId().equalsIgnoreCase(id));
+
+
+        System.out.println("after removing");
+        for(var s : imagesDataList){
+            System.out.println(s.getImageName() + " " + s.getImageLogic());
+        }
 
         if(!imagesDataList.isEmpty()) {
             boolean mainExists = false;
@@ -331,7 +338,7 @@ public class ProductEditImage {
         else{
             mainImage.setSrc("No_picture.png");
         }
-
+        listConsumer.accept(imagesDataList);
 
     }
 

@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 public class ProductAddCall {
 
-    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTEzOTMxNCwiZXhwIjoxNzc5MTc1MzE0fQ.hbCDaJA8wc-EyTpcUXCnTI3rUXVxya5tPAG384OQ7hg";
+    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTIzMTQxMiwiZXhwIjoxNzc5MjY3NDEyfQ.gKsCwWqu4emUKYHf1FjON1JCu9oNcXZ7qpjH09lK7DM";
 
     public void addNewOrder(Product product) throws IOException, InterruptedException {
 

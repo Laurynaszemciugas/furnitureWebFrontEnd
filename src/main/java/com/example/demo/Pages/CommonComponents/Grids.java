@@ -47,9 +47,11 @@ public class Grids {
                     ComboBox<String> material = row.getMaterial();
                     material.setWidthFull();
 
-                    Span span = commonComponents.spanCrafterWordNoHide(String.format("%s %.2f"," Unit cost:",row.getUnitPrice()),"stat-title");
+                    Span totalCost = commonComponents.spanCrafterWordNoHide(String.format("%s %.2f"," Unit cost:",row.getUnitPrice()),"stat-title");
 
-                    v.add(material,span);
+                    Span inStock = commonComponents.spanCrafterWordNoHide(String.format("%s %d"," Total stock left:",row.getStockLevel()),"stat-title");
+
+                    v.add(material,totalCost,inStock);
 
                     return v;
                 })
@@ -69,6 +71,7 @@ public class Grids {
                     double price = row.getUnitPrice()*row.getAmountOfMaterial().getValue();
                     Span span = commonComponents.spanCrafterWordNoHide(String.format("%s %.2f"," Total cost:",price),"stat-title");
 
+
                     v.add(integerField,span);
 
                     return v;
@@ -77,7 +80,24 @@ public class Grids {
                 .setAutoWidth(true);
 
 
-        productFeedModelGrid.addComponentColumn(ListMaterialGrid::getUnit).setHeader("Unit").setAutoWidth(true);
+
+        productFeedModelGrid.addComponentColumn(row -> {
+
+                    VerticalLayout v = new VerticalLayout();
+                    v.setWidthFull();
+
+                    ComboBox<String> integerField = row.getUnit();
+                    integerField.setWidthFull();
+                    Span span = commonComponents.spanCrafterWordNoHide("Units are set automatically","stat-title");
+
+                    v.add(integerField,span);
+
+                    return v;
+                })
+                .setHeader("Unit")
+                .setAutoWidth(true);
+
+
 
         productFeedModelGrid.addComponentColumn(row ->{
 

@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 public class ProductsCall {
 
-    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTE5MzA4NCwiZXhwIjoxNzc5MjI5MDg0fQ.2PvpBNymzCtqbY3bGyeSb0gmYTbOloMHXnQoypUe2iA";
+    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTIzMTQxMiwiZXhwIjoxNzc5MjY3NDEyfQ.gKsCwWqu4emUKYHf1FjON1JCu9oNcXZ7qpjH09lK7DM";
 
 
     public List<ProductFeedModel> getAllProducts(Stock stock, Category category,String prompt, int page, int size) throws IOException, InterruptedException {
@@ -40,6 +40,7 @@ public class ProductsCall {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Accept", "application/json")
+                .header("Authorization","Bearer " + JWT)
                 .GET()
                 .build();
 
@@ -69,6 +70,7 @@ public class ProductsCall {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/api/product/getProductsPageCount"))
                 .header("Accept", "application/json")
+                .header("Authorization","Bearer " + JWT)
                 .GET()
                 .build();
 
