@@ -449,26 +449,8 @@ public class ProductEditRightSideFields {
             product.setExtraDetails(extraDetails);
 
 
+            checkIfDataCorrect(materials,product);
 
-                boolean dataCorrect;
-                String errorMessage;
-                //trigger trip wire
-                try {
-                    errorMessage = commonCalls.checkIfMaterialsAreInStock(materials);
-                    dataCorrect = errorMessage.equalsIgnoreCase("");
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
-
-                if(!dataCorrect) {
-                    showDialog(product,errorMessage);
-                }
-                else {
-                    consumer.accept(product);
-                    UI.getCurrent().navigate("Products/1");
-                }
 
             } else {
                 System.out.println("Validation failed");
@@ -477,8 +459,48 @@ public class ProductEditRightSideFields {
     }
 
 
+    public void checkIfDataCorrect(List<ProductMaterials> materials,Product product){
 
-    public void showDialog(Product product,String error){
+        int errorCount = 0;
+
+        boolean dataCorrect;
+        String errorMessage;
+
+        try {
+            errorMessage = commonCalls.checkIfMaterialsAreInStock(materials);
+            dataCorrect = errorMessage.equalsIgnoreCase("");
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
+        boolean imageError = (newImages == null || newImages.isEmpty());
+
+        if(!dataCorrect){
+            errorCount++;
+        }
+        if(imageError){
+            errorCount++;
+        }
+
+        System.out.println(errorCount + " erors");
+        if(!dataCorrect || imageError) {
+            if(!dataCorrect) {
+                    showDialog(errorMessage,product,errorCount);
+            }
+            if(imageError){
+                    showNoImageError(product,errorCount);
+            }
+        }
+        else {
+            consumer.accept(product);
+            UI.getCurrent().navigate("Products/1");
+        }
+    }
+
+
+
+    public void showDialog(String error,Product product, int errorCount){
         ConfirmDialog dialog = new ConfirmDialog();
 
         dialog.setHeader("Warning");
@@ -497,12 +519,48 @@ public class ProductEditRightSideFields {
 
 
         dialog.addConfirmListener(event -> {
-            consumer.accept(product);
-            UI.getCurrent().navigate("Products/1");
+            if(errorCount == 2) {
+                consumer.accept(product);
+                UI.getCurrent().navigate("Products/1");
+            }
         });
 
         dialog.addCancelListener(event -> {
-            // user clicked "Cancel"
+        });
+
+        dialog.add(content);
+
+        dialog.open();
+    }
+
+
+    public void showNoImageError(Product product, int errorCount){
+        ConfirmDialog dialog = new ConfirmDialog();
+
+        dialog.setHeader("No images error");
+
+        VerticalLayout content = new VerticalLayout();
+        content.setSpacing(false);
+        content.setPadding(false);
+
+        Span line = new Span("• " + "No images are selected please add some images to your product");
+        line.getStyle().set("color", "red");
+        content.add(line);
+
+        dialog.setCancelable(true);   // gives "Cancel"
+        dialog.setConfirmText("Continue");
+        dialog.setCancelText("Go back");
+
+
+        dialog.addConfirmListener(event -> {
+            if(errorCount == 1) {
+
+                consumer.accept(product);
+                UI.getCurrent().navigate("Products/1");
+            }
+        });
+
+        dialog.addCancelListener(event -> {
         });
 
         dialog.add(content);
@@ -593,11 +651,7 @@ public class ProductEditRightSideFields {
     }
 
     // material stuff components
-
-
-
-
-
+    
     // binder for textfield checks
     private void bindFields() {
 

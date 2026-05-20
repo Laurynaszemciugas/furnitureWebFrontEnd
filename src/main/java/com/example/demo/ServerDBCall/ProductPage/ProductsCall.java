@@ -3,6 +3,7 @@ package com.example.demo.ServerDBCall.ProductPage;
 import com.example.demo.ControllerModels.Products.ProductFeedModel;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Stock;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.type.TypeReference;
@@ -86,6 +87,36 @@ public class ProductsCall {
         }
 
         return Long.valueOf(response.body());
+
+    }
+
+    @SneakyThrows
+    public String removeProduct(Long id){
+
+        HttpClient client = HttpClient.newHttpClient();
+        ObjectMapper mapper = new ObjectMapper();
+
+        String json = mapper.writeValueAsString(id);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/product/removeProduct"))
+                .header("Content-Type", "application/json")
+                .header("Authorization","Bearer " + JWT)
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = client.send(
+                request,
+                HttpResponse.BodyHandlers.ofString()
+        );
+
+        if (response.statusCode() != 200) {
+            System.err.println("Backend Request Failed! Status Code: " + response.statusCode());
+            System.err.println("Backend Response Body: " + response.body());
+            throw new RuntimeException("Backend responded with error status: " + response.statusCode());
+        }
+
+        return response.body();
 
     }
 

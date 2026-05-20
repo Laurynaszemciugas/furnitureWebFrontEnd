@@ -82,7 +82,6 @@ public class MaterialAndDetails {
                         NotificationVariant.LUMO_SUCCESS);
                 materials.setValue(e.getValue());
 
-                System.out.println("here");
                 for(var s : listMaterialGrids) {
                     if(s.getNameForCompare().equalsIgnoreCase("")) {
                         s.setNameForCompare(e.getValue());

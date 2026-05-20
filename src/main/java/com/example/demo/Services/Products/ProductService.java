@@ -52,5 +52,10 @@ public class ProductService {
     }
 
 
+    public String removeProductById(Long id){
+        return  productsCall.removeProduct(id);
+    }
+
+
 
 }

@@ -2,23 +2,30 @@ package com.example.demo.Pages.Products.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.ControllerModels.Products.ProductFeedModel;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.ProductCategory;
 import com.example.demo.Enums.Stock;
+import com.example.demo.ServerDBCall.ProductPage.ProductsCall;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+import java.util.function.Consumer;
 
 
 public class ProductPageProductFeed {
@@ -28,10 +35,20 @@ public class ProductPageProductFeed {
 
     CommonComponents commonComponents;
     Common common;
+    ProductService productService;
 
-    public ProductPageProductFeed(CommonComponents commonComponents, Common common) {
+    Consumer<String> updateRequired;
+
+    public ProductPageProductFeed(CommonComponents commonComponents,
+                                  Common common,
+                                  ProductService productService) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.productService = productService;
+    }
+
+    public void setUpdateRequired(Consumer<String> updateRequired){
+        this.updateRequired = updateRequired;
     }
 
 
@@ -88,15 +105,53 @@ public class ProductPageProductFeed {
         Span productPrice = commonComponents.spanCrafterWordNoHide(String.format("%.2f %s",price,"Eur"),"activityFeed-name");
         productPrice.getStyle().set("margin-top","10px");
 
-        Button editShortCut = commonComponents.smallIconButtons("1", VaadinIcon.PENCIL,"black");
-        editShortCut.addClickListener(e->{
 
+
+        // ========================================== buttons ===============================================================
+        Button editShortCut = commonComponents.smallIconButtonsNoNavigate(VaadinIcon.EDIT,"black");
+        editShortCut.addClickListener(e->{
             UI.getCurrent().navigate("ProductsEdit/"+ id);
+        });
+
+        Button removeProduct = commonComponents.smallIconButtonsNoNavigate(VaadinIcon.TRASH,"red");
+        removeProduct.addClickListener(e->{
+            deleteConfirmation(productName,id);
+
 
         });
 
-        HorizontalLayout editData = new HorizontalLayout(editShortCut);
-        editData.getStyle().set("position","absolute").set("bottom","2px").set("right","2px").set("z-index","10");
+
+
+        HorizontalLayout actionHolder = new HorizontalLayout(removeProduct,editShortCut);
+
+
+        VerticalLayout div = new VerticalLayout(
+                commonComponents.spanCrafterWordNoHide(productName,"stat-example"),
+                commonComponents.spanCrafterWordNoHide("Actions","stat-example"),
+                actionHolder);
+
+        div.setAlignItems(FlexComponent.Alignment.CENTER);
+        div.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        div.setWidth("80%");
+
+        div.getStyle()
+                .set("position", "absolute")
+                .set("top", "50%")
+                .set("left", "50%")
+                .set("z-index", "10");
+        div.addClassName("overlay-layout");
+
+
+        product.getElement().addEventListener("mouseenter", e -> {
+            div.addClassName("show");
+        });
+
+
+        product.getElement().addEventListener("mouseleave", e -> {
+            div.removeClassName("show");
+
+        });
+
 
         product.add(
                 commonComponents.imageCrafter(mainImageUrl,"100%","220px","10px"),
@@ -104,7 +159,7 @@ public class ProductPageProductFeed {
                 commonComponents.spanCrafter(productCategory.getDisplayName(),"stat-title"),
                 productPrice,
                 commonComponents.doubleValueRow(stockLevel, commonComponents.spanCrafter(String.format("%d %s",unitsLeft, "Units"),"stat-title")),
-                editData
+                div
 
 
         );
@@ -112,6 +167,50 @@ public class ProductPageProductFeed {
 
 
         return product;
+    }
+
+
+    public void deleteConfirmation(String productName, Long id){
+        ConfirmDialog dialog = new ConfirmDialog();
+
+        dialog.setHeader("Warning");
+
+        VerticalLayout content = new VerticalLayout();
+        content.setSpacing(false);
+        content.setPadding(false);
+
+        Span line = new Span(String.format("%s '%s' %s", "Please enter ", productName.toUpperCase(), "to remove a product"));
+        line.getStyle().set("color", "red");
+
+        TextField confirmName = new TextField("Enter product name");
+
+        content.add(line,confirmName);
+
+
+
+        dialog.setCancelable(true);
+        dialog.setConfirmText("Remove");
+        dialog.setCancelText("Go back");
+
+
+        dialog.addConfirmListener(event -> {
+            if(confirmName.getValue().equals(productName.toUpperCase())) {
+                productService.removeProductById(id);
+                commonComponents.showNotification("Product" + productName + " removed", 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
+                updateRequired.accept("need update");
+                UI.getCurrent().getPage().reload();
+            }
+            else{
+                commonComponents.showNotification("Product was not removed verification failed ", 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.ERROR);
+            }
+        });
+
+        dialog.addCancelListener(event -> {
+        });
+
+        dialog.add(content);
+
+        dialog.open();
     }
 
     public void colorSpan(long unitsLeft, long minTreshold, Span stockLevel){

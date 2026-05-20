@@ -168,6 +168,14 @@ public class CommonComponents {
 
     }
 
+    public Button smallIconButtonsNoNavigate(VaadinIcon icon, String color){
+        Button button = new Button();
+        button.getStyle().set("background-color","transparent");
+        button.setIcon(iconCrafter(icon,"40px",color));
+        return button;
+
+    }
+
     public HorizontalLayout biefPageExplanation(String title){
         HorizontalLayout explanation = new HorizontalLayout(
                 spanCrafterWordNoHide(title,"stat-value")

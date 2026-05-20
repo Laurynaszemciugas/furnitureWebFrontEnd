@@ -71,7 +71,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         this.productService = productService;
         this.productPageBriefExplanation = new ProductPageBriefExplanation(commonComponents,common);
         this.productPageFilters = new ProductPageFilters(commonComponents,common);
-        this.productPageProductFeed = new ProductPageProductFeed(commonComponents,common);
+        this.productPageProductFeed = new ProductPageProductFeed(commonComponents,common,productService);
 
 
         this.paganation = new Paganation();
@@ -91,6 +91,9 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
 
     }
+
+
+
 
 
     @SneakyThrows
@@ -130,8 +133,8 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
         add(mainLayout());
 
-
     }
+
 
     public VerticalLayout mainLayout() {
 
@@ -184,7 +187,13 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
         });
 
-
+        productPageProductFeed.setUpdateRequired(e->{
+            verticalLayout.removeAll();
+            verticalLayout.add(productPageBriefExplanation.briefPageExplanation(),
+                    productPageFilters.filters(),
+                    productPageProductFeed.productsMain(data.getProductFeedModelList()),
+                    paganation.buttonHolder(Math.toIntExact(productService.loadProductPageCount())));
+        });
 
 
 
