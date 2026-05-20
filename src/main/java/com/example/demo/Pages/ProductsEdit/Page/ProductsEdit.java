@@ -5,9 +5,9 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.MainLayout.MainLayout;
-import com.example.demo.Pages.CommonComponents.ProductEditImage;
-import com.example.demo.Pages.CommonComponents.ProductEditRightSideFields;
-import com.example.demo.Pages.CommonComponents.ReviewCrafter;
+import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ProductEditImage;
+import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Main.ProductEditRightSideFields;
+import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ReviewCrafter;
 import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.example.demo.Services.ProductEditService.ProductEditService;
 

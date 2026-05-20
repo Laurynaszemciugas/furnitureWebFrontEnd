@@ -1,4 +1,4 @@
-package com.example.demo.Pages.CommonComponents;
+package com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;

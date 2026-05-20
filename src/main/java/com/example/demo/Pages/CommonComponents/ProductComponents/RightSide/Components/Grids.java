@@ -1,4 +1,4 @@
-package com.example.demo.Pages.CommonComponents;
+package com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -14,7 +14,6 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
-import com.vaadin.flow.component.textfield.TextField;
 
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class Grids {
 
     // grid crafters
 
-    public Grid<ListMaterialGrid> materialGridCrafter(Grid<ListMaterialGrid> productFeedModelGrid, List<ListMaterialGrid> listMaterialGrids){
+    public Grid<ListMaterialGrid> materialGridCrafter(Grid<ListMaterialGrid> productFeedModelGrid, List<ListMaterialGrid> listMaterialGrids, Button addNewMaterial){
 
 
         productFeedModelGrid.addComponentColumn(row -> {
@@ -112,6 +111,9 @@ public class Grids {
             remove.addClickListener(e->{
                 listMaterialGrids.remove(row);
                 upgradeMaterialGrid(productFeedModelGrid,listMaterialGrids);
+                if(!addNewMaterial.isEnabled()){
+                    addNewMaterial.setEnabled(true);
+                }
             });
 
 

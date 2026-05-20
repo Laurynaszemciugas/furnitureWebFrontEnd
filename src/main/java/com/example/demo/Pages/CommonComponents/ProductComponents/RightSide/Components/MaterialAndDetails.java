@@ -1,0 +1,213 @@
+package com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components;
+
+import com.example.demo.Common.Common;
+import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.Common.ListMaterialGrid;
+import com.example.demo.ControllerModels.CommonDtos.Materials;
+import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
+import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.NumberField;
+import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.component.textfield.TextField;
+import lombok.SneakyThrows;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MaterialAndDetails {
+
+
+    CommonComponents commonComponents;
+    Common common;
+    CommonCalls commonCalls;
+    Grids grids;
+
+    List<String> materialNames = new ArrayList<>();
+
+
+    @SneakyThrows
+    public MaterialAndDetails(CommonComponents commonComponents, Common common,CommonCalls commonCalls,Grids grids) {
+        this.commonComponents = commonComponents;
+        this.common = common;
+        this.commonCalls = commonCalls;
+        this.grids = grids;
+        materialNames.addAll(commonCalls.getMaterialNames());
+    }
+
+
+
+
+    @SneakyThrows
+    public ComboBox<String> comboBoxMaterial(String chosenValue,
+                                             List<ListMaterialGrid> listMaterialGrids,
+                                             Grid<ListMaterialGrid> productFeedModelGrid,
+                                             Button addNewMaterial) {
+
+
+
+        ComboBox<String> materials = new ComboBox<>();
+        materials.addClassName("no-gray-disabled");
+        materials.setItems(materialNames);
+
+        if(!chosenValue.equalsIgnoreCase("")) {
+            materials.setValue(chosenValue);
+            materials.setEnabled(false);
+        }
+
+        materials.addValueChangeListener(e->{
+
+            boolean exits = listMaterialGrids.stream().anyMatch(item -> item.getNameForCompare().equalsIgnoreCase(e.getValue()));
+            boolean fromClient = e.isFromClient();
+
+            if(exits && fromClient){
+                commonComponents.showNotification(String.format("%s - '%s' %s","Material",e.getValue(),"exists dublicates are not allowed"),
+                        3000,
+                        Notification.Position.BOTTOM_CENTER,
+                        NotificationVariant.LUMO_WARNING);
+
+                materials.clear();
+            }
+            if(!exits && fromClient) {
+
+                commonComponents.showNotification(String.format("%s - '%s' %s", "Material", e.getValue(), "added succesfully"),
+                        3000,
+                        Notification.Position.BOTTOM_CENTER,
+                        NotificationVariant.LUMO_SUCCESS);
+                materials.setValue(e.getValue());
+
+                System.out.println("here");
+                for(var s : listMaterialGrids) {
+                    if(s.getNameForCompare().equalsIgnoreCase("")) {
+                        s.setNameForCompare(e.getValue());
+                    }
+
+                }
+
+
+                materials.setEnabled(false);
+                addNewMaterial.setEnabled(true);
+
+                System.out.println(e.getValue());
+
+
+
+
+
+            }
+
+            grids.upgradeMaterialGrid(productFeedModelGrid,listMaterialGrids);
+
+            System.out.println("hopefully new values >????????");
+            System.out.println(listMaterialGrids);
+
+
+            extendDataOfTheDataMaterial(e.getValue(),listMaterialGrids);
+
+
+
+
+        });
+        return materials;
+    }
+
+
+    public void extendDataOfTheDataMaterial(String name,List<ListMaterialGrid> listMaterialGrids){
+        for(var s : listMaterialGrids) {
+            if(s.getNameForCompare().equalsIgnoreCase(name)) {
+                try {
+                    Materials materialData = commonCalls.getMaterialDataAccordingToName(name);
+                    s.getUnit().setValue(materialData.getUnit());
+                    s.setUnitPrice(materialData.getUnitPrice());
+                    s.setStockLevel(materialData.getInStock());
+                    System.out.println(s.getUnitPrice());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+
+                }
+            }
+        }
+    }
+
+    public IntegerField quantityField(Long chosenValue,
+                                      List<ListMaterialGrid> listMaterialGrids,
+                                      Grid<ListMaterialGrid> productFeedModelGrid,
+                                      NumberField materialCost) {
+        IntegerField quantity = new IntegerField();
+
+        quantity.setStepButtonsVisible(true);
+        quantity.setValue(1);
+        quantity.setMin(0);
+        quantity.setMax(100);
+        quantity.setStep(1);
+        quantity.setValue(chosenValue.intValue());
+
+        quantity.addValueChangeListener(e->{
+
+            List<ProductMaterials> productMaterials = new ArrayList<>();
+
+            for(var s : listMaterialGrids){
+                ProductMaterials materials = new ProductMaterials();
+                materials.setNameForRefrence(s.getNameForCompare());
+                materials.setAmountUsed(Long.valueOf(s.getAmountOfMaterial().getValue()));
+
+                productMaterials.add(materials);
+
+            }
+
+            try {
+                materialCost.setValue(Double.valueOf(String.format("%.2f",commonCalls.getEstimatedMaterialPrice(productMaterials))));
+
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            grids.upgradeMaterialGrid(productFeedModelGrid,listMaterialGrids);
+
+        });
+
+
+        return quantity;
+    }
+
+    public ComboBox<String> unitField(String chosenValue) {
+        ComboBox<String> unit = new ComboBox<>();
+        unit.addClassName("no-gray-disabled");
+        unit.setItems("Planks", "Pieces");
+        unit.setValue(chosenValue);
+        unit.setEnabled(false);
+
+
+
+        return unit;
+    }
+
+
+    // components for extra details grid
+    public TextField specName(String name){
+        TextField textField = new TextField();
+        textField.setValue(name);
+        textField.setPlaceholder("Material");
+        return textField;
+    }
+
+    public TextArea specDescription(String name){
+        TextArea textArea = new TextArea();
+        textArea.setValue(name);
+        textArea.setPlaceholder("Wool");
+        textArea.setWidthFull();
+        return textArea;
+    }
+
+
+}
