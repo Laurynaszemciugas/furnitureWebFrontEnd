@@ -10,6 +10,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 
@@ -23,6 +24,8 @@ public class ProductPageFilters {
     Consumer<Category> type;
 
     Consumer<String> clearFilters;
+
+    Consumer<String> allStockConsumer;
 
     public ProductPageFilters(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
@@ -42,16 +45,30 @@ public class ProductPageFilters {
         this.clearFilters = clearFilters;
     }
 
-
+    public void consumerAllStock(Consumer<String> allStockConsumer){
+        this.allStockConsumer = allStockConsumer;
+    }
 
 
 
 
     public HorizontalLayout filters(){
 
-        Button inStock = commonComponents.normalButtonNoNavigate(Stock.In_Stock.getDisplayName(), "stock-in");
-        Button lowStock = commonComponents.normalButtonNoNavigate(Stock.Low_Stock.getDisplayName(), "stock-low");
-        Button noStock = commonComponents.normalButtonNoNavigate(Stock.No_Stock.getDisplayName(), "stock-out");
+        Button allStock = commonComponents.normalButtonNoNavigate(Stock.ALL.getDisplayName(), "transparent-button");
+        allStock.addClassName("active");
+        Button inStock = commonComponents.normalButtonNoNavigate(Stock.In_Stock.getDisplayName(), "transparent-button");
+        Button lowStock = commonComponents.normalButtonNoNavigate(Stock.Low_Stock.getDisplayName(), "transparent-button");
+        Button noStock = commonComponents.normalButtonNoNavigate(Stock.No_Stock.getDisplayName(), "transparent-button");
+
+        List<Button> buttons = List.of(allStock,inStock,lowStock,noStock);
+
+
+        for(var s : buttons){
+            s.addClickListener(e->{
+                buttons.forEach(button -> button.removeClassName("active"));
+               s.addClassName("active");
+            });
+        }
 
         ComboBox<Category> types = new ComboBox<>();
         types.setItems(Category.values());
@@ -80,10 +97,15 @@ public class ProductPageFilters {
             clearFilters.accept("");
         });
 
+        allStock.addClickListener(e->{
+            allStockConsumer.accept("");
+        });
+
 
 
 
         HorizontalLayout horizontalLayout = new HorizontalLayout(
+                allStock,
                 inStock,
                 lowStock,
                 noStock,
@@ -93,6 +115,7 @@ public class ProductPageFilters {
 
         );
         horizontalLayout.setWidthFull();
+        horizontalLayout.addClassName("layout-flex");
 
 
         return horizontalLayout;

@@ -52,10 +52,11 @@ public class CommonComponents {
 
 
 
-    public TextField textFieldCrafter(String placeHolder, String topText){
+    public TextField textFieldCrafter(String placeHolder, String topText, VaadinIcon icon){
 
         TextField textField = new TextField(topText);
         textField.setPlaceholder(placeHolder);
+        textField.setPrefixComponent(icon.create());
 
         return  textField;
 

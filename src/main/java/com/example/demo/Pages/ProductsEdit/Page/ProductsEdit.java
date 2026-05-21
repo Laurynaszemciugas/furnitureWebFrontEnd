@@ -11,6 +11,7 @@ import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Compo
 import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.example.demo.Services.ProductEditService.ProductEditService;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -113,6 +114,9 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
         h.getStyle().set("flex-wrap","wrap");
 
         Product product = productEditService.productEditDtoLoad(Long.valueOf(productId));
+        if(product == null){
+            UI.getCurrent().navigate("make a no page found page");
+        }
 
         HorizontalLayout images = productEditImage.images(product);
         Div holder = new Div(images,productEditImage.uploadStuff(),

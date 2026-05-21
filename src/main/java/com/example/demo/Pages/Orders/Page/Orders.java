@@ -2,12 +2,21 @@ package com.example.demo.Pages.Orders.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.MainLayout.MainLayout;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Route(value = "Orders", layout = MainLayout.class)
 public class Orders extends VerticalLayout implements BeforeEnterObserver {
@@ -42,10 +51,95 @@ public class Orders extends VerticalLayout implements BeforeEnterObserver {
         verticalLayout.getStyle().set("margin-top", "5px");
         verticalLayout.addClassName("main-island");
 
-        verticalLayout.add(briefExplanation());
+        verticalLayout.add(
+                briefExplanation(),
+                leftAndRightSideHolder());
 
         return verticalLayout;
     }
+
+
+    public VerticalLayout leftSideTheListOfOrders(){
+        VerticalLayout leftSide = new VerticalLayout();
+        leftSide.addClassName("island");
+
+        HorizontalLayout nameOfGrids = new HorizontalLayout();
+        nameOfGrids.setWidthFull();
+        nameOfGrids.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        nameOfGrids.add(
+                commonComponents.spanCrafterWordNoHide("Orders List","activityFeed-name"),
+                commonComponents.textFieldCrafter("Search orders..","", VaadinIcon.SEARCH)
+        );
+
+        Button allButton = commonComponents.normalButtonNoNavigate("All", "transparent-button");
+        allButton.addClassName("active");
+        Button pendingButton = commonComponents.normalButtonNoNavigate("Pending", "transparent-button");
+        Button inProgressButton = commonComponents.normalButtonNoNavigate("In Progress", "transparent-button");
+        Button finishedButton = commonComponents.normalButtonNoNavigate("Finished", "transparent-button");
+
+        List<Button> buttons = List.of(allButton,pendingButton,inProgressButton,finishedButton);
+
+        for(var s : buttons){
+
+            s.addClickListener(e->{
+                buttons.forEach(b-> b.removeClassName("active"));
+                s.addClassName("active");
+            });
+
+        }
+
+
+
+
+        HorizontalLayout buttonsHolder = new HorizontalLayout();
+        buttonsHolder.add(
+                allButton,
+                pendingButton,
+                inProgressButton,
+                finishedButton
+
+        );
+
+        leftSide.add(
+                nameOfGrids,
+                buttonsHolder
+
+        );
+
+
+        return leftSide;
+    }
+
+    public VerticalLayout rightSideOrderInfo(){
+        VerticalLayout RightSide = new VerticalLayout();
+        RightSide.addClassName("island");
+
+
+        return RightSide;
+    }
+
+    public HorizontalLayout leftAndRightSideHolder(){
+        HorizontalLayout sidesHolder = new HorizontalLayout();
+        sidesHolder.setWidthFull();
+        sidesHolder.addClassName("layout-flex");
+
+        VerticalLayout left = leftSideTheListOfOrders();
+        VerticalLayout right = rightSideOrderInfo();
+
+        // LEFT SIDE
+        left.setWidth("740px");
+
+        // RIGHT SIDE
+        right.setMaxWidth("700px");
+
+        sidesHolder.add(left, right);
+        sidesHolder.expand(left);
+
+
+
+        return sidesHolder;
+    }
+
 
     public VerticalLayout briefExplanation(){
         VerticalLayout v = new VerticalLayout();

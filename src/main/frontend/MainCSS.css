@@ -423,3 +423,27 @@ vaadin-button {
     opacity: 0.9;
     transform: translate(-50%, -50%) scale(1);
 }
+
+.transparent-button {
+    background: transparent;
+    color: black;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 10px 16px;
+    cursor: pointer;
+
+    color: gray;
+
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.2s ease;
+}
+
+.transparent-button:hover {
+    border-bottom-color: #3b82f6;
+}
+
+.transparent-button.active {
+        color: #3b82f6;
+        border-bottom-color: #3b82f6;
+}

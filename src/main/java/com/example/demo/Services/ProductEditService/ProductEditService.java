@@ -26,7 +26,13 @@ public class ProductEditService {
 
         Product productEditDto = productEdItCall.getProductAccordingToId(id);
 
-        return  productEditDto;
+        if(productEditDto!=null){
+            return  productEditDto;
+        }
+
+        return null;
+
+
 
     }
 

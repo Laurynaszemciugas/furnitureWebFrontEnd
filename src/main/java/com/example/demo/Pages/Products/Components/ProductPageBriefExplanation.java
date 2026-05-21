@@ -36,7 +36,7 @@ public class ProductPageBriefExplanation {
     public HorizontalLayout briefPageExplanation(){
         HorizontalLayout left = commonComponents.biefPageExplanation("Inventory management");
 
-        TextField search = commonComponents.textFieldCrafter("Search products...","");
+        TextField search = commonComponents.textFieldCrafter("Search products...","",VaadinIcon.SEARCH);
 
         search.addValueChangeListener(e->{
            filterConsumer.accept(e.getValue());

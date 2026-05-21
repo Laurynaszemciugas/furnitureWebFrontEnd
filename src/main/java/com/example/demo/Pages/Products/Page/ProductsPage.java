@@ -90,6 +90,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
 
 
+
     }
 
 
@@ -167,6 +168,11 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
         });
 
+        productPageFilters.consumerAllStock(e->{
+            this.stockChoise = Stock.ALL;
+            updateView(verticalLayout);
+        });
+
         paganation.setOnPageChange(page -> {
 
 
@@ -179,21 +185,23 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
 
         productPageFilters.consumerClear(e->{
-            verticalLayout.removeAll();
-                verticalLayout.add(productPageBriefExplanation.briefPageExplanation(),
-                        productPageFilters.filters(),
-                        productPageProductFeed.productsMain(data.getProductFeedModelList()),
-                        paganation.buttonHolder(Math.toIntExact(productService.loadProductPageCount())));
+
+            stockChoise = Stock.ALL;
+            categoryChoise = Category.ALL;
+            promtChoise = "ALL";
+
+
+            filterHolder.removeAll();
+            filterHolder.add(
+                    productPageBriefExplanation.briefPageExplanation(),
+                    productPageFilters.filters());
+
+            loadData(verticalLayout);
+
 
         });
 
-        productPageProductFeed.setUpdateRequired(e->{
-            verticalLayout.removeAll();
-            verticalLayout.add(productPageBriefExplanation.briefPageExplanation(),
-                    productPageFilters.filters(),
-                    productPageProductFeed.productsMain(data.getProductFeedModelList()),
-                    paganation.buttonHolder(Math.toIntExact(productService.loadProductPageCount())));
-        });
+
 
 
 

@@ -47,7 +47,7 @@ public class MiniStatistics {
                 "Material usage this month compared to last",
                 null,
                 "170px"));
-        employeeCard.setMaxWidth("700px");
+        employeeCard.setMaxWidth("720px");
 
         // all the remaining mini stats
         horizontalLayout.add(
@@ -58,21 +58,21 @@ public class MiniStatistics {
                         "Orders",
                         ordersCompletedCompleted,
                         "Compared to last months 'Completed' orders",
-                        "310px",
+                        "280px",
                         "170px"),
                 materialsStockMiniStats(
                         "Material Stock 'Current'",
                         "Screenshot 2026-04-27 001745.png",
                         dashBoardMaterialStock,
                         "Current material stock",
-                        "310px",
+                        "280px",
                         "170px"),
                 materialUsageMiniStat(
                         "Material mini information",
                         "Screenshot 2026-04-27 001745.png",
                         materialData,
                         "Material usage this month compared to last",
-                        "310px",
+                        "280px",
                         "170px"),
 
                 employeeCard
