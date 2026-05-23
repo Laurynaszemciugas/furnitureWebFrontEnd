@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 public class ProductsCall {
 
-    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTM5OTk0MSwiZXhwIjoxNzc5NDM1OTQxfQ.xwN40cyto-iHV3SOFYVn9rBvMlt8Z2tvYjJAC5dUbxU";
+    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTQ5MjI1OSwiZXhwIjoxNzc5NTI4MjU5fQ.zVQHA1aHtiUCClaKW3Taa_K_C47sgS1rjRus6KOIXNc";
 
 
     public List<ProductFeedModel> getAllProducts(Stock stock, Category category,String prompt, int page, int size) throws IOException, InterruptedException {

@@ -3,6 +3,7 @@ package com.example.demo.ServerDBCall.CommonCalls;
 import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
 import com.example.demo.ControllerModels.Products.ProductFeedModel;
+import com.example.demo.DTOS.ComboBoxMaterial;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.type.TypeReference;
@@ -18,9 +19,9 @@ import java.util.List;
 
 @Service
 public class CommonCalls {
-    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTM5OTk0MSwiZXhwIjoxNzc5NDM1OTQxfQ.xwN40cyto-iHV3SOFYVn9rBvMlt8Z2tvYjJAC5dUbxU";
+    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTQ5MjI1OSwiZXhwIjoxNzc5NTI4MjU5fQ.zVQHA1aHtiUCClaKW3Taa_K_C47sgS1rjRus6KOIXNc";
 
-    public List<String> getMaterialNames() throws IOException, InterruptedException {
+    public List<ComboBoxMaterial> getMaterialNames() throws IOException, InterruptedException {
 
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
@@ -48,7 +49,7 @@ public class CommonCalls {
 
         return mapper.readValue(
                 response.body(),
-                new TypeReference<List<String>>() {}
+                new TypeReference<List<ComboBoxMaterial>>() {}
         );
     }
 
@@ -87,16 +88,18 @@ public class CommonCalls {
     }
 
 
-    public Materials getMaterialDataAccordingToName(String name) throws IOException, InterruptedException {
+    public Materials getMaterialDataAccordingToName(Long id) throws IOException, InterruptedException {
 
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
+
+        String json = mapper.writeValueAsString(id);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/api/material/getMaterialDataAccordingToName"))
                 .header("Authorization","Bearer " + JWT)
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(name))
+                .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
         HttpResponse<String> response = client.send(

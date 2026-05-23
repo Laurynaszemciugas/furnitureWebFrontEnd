@@ -1,6 +1,7 @@
 package com.example.demo.ControllerModels.Common;
 
 
+import com.example.demo.DTOS.ComboBoxMaterial;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.textfield.IntegerField;
@@ -17,7 +18,7 @@ public class ListMaterialGrid {
 
     private Long id;
     private String nameForCompare;
-    private ComboBox<String> material;
+    private ComboBox<ComboBoxMaterial> material;
     private IntegerField amountOfMaterial;
     private ComboBox<String> unit;
     private double unitPrice;

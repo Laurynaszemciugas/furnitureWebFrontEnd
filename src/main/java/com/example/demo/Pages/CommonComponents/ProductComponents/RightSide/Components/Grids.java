@@ -4,6 +4,7 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Common.ListExtraDetailsGrid;
 import com.example.demo.ControllerModels.Common.ListMaterialGrid;
+import com.example.demo.DTOS.ComboBoxMaterial;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -43,7 +44,7 @@ public class Grids {
                     VerticalLayout v = new VerticalLayout();
                     v.setWidthFull();
 
-                    ComboBox<String> material = row.getMaterial();
+                    ComboBox<ComboBoxMaterial> material = row.getMaterial();
                     material.setWidthFull();
 
                     Span totalCost = commonComponents.spanCrafterWordNoHide(String.format("%s %.2f"," Unit cost:",row.getUnitPrice()),"stat-title");

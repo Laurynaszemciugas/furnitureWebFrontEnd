@@ -5,6 +5,7 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Common.ListMaterialGrid;
 import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
+import com.example.demo.DTOS.ComboBoxMaterial;
 import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -29,7 +30,7 @@ public class MaterialAndDetails {
     CommonCalls commonCalls;
     Grids grids;
 
-    List<String> materialNames = new ArrayList<>();
+    List<ComboBoxMaterial> materialNames = new ArrayList<>();
 
 
     @SneakyThrows
@@ -45,38 +46,52 @@ public class MaterialAndDetails {
 
 
     @SneakyThrows
-    public ComboBox<String> comboBoxMaterial(String chosenValue,
-                                             List<ListMaterialGrid> listMaterialGrids,
-                                             Grid<ListMaterialGrid> productFeedModelGrid,
-                                             Button addNewMaterial) {
+    public ComboBox<ComboBoxMaterial> comboBoxMaterial(String chosenValue,
+                                                       List<ListMaterialGrid> listMaterialGrids,
+                                                       Grid<ListMaterialGrid> productFeedModelGrid,
+                                                       Button addNewMaterial) {
 
 
 
-        ComboBox<String> materials = new ComboBox<>();
+        ComboBox<ComboBoxMaterial> materials = new ComboBox<>();
         materials.addClassName("no-gray-disabled");
         materials.setItems(materialNames);
+        materials.setItemLabelGenerator(ComboBoxMaterial::getMaterialName);
 
         if(!chosenValue.equalsIgnoreCase("")) {
-            materials.setValue(chosenValue);
+            for(var s : materialNames){
+                if(s.getMaterialName().equalsIgnoreCase(chosenValue)){
+                    materials.setValue(s);
+                }
+            }
+
             materials.setEnabled(false);
         }
 
         materials.addValueChangeListener(e->{
 
-            boolean exits = listMaterialGrids.stream().anyMatch(item -> item.getNameForCompare().equalsIgnoreCase(e.getValue()));
+            ComboBoxMaterial selected = e.getValue();
+
+            if (selected == null) {
+                return;
+            }
+
+            boolean exits = listMaterialGrids.stream().anyMatch(item -> item.getNameForCompare().equalsIgnoreCase(e.getValue().getMaterialName()));
             boolean fromClient = e.isFromClient();
 
+
             if(exits && fromClient){
-                commonComponents.showNotification(String.format("%s - '%s' %s","Material",e.getValue(),"exists dublicates are not allowed"),
+                commonComponents.showNotification(String.format("%s - '%s' %s","Material",e.getValue().getMaterialName(),"exists dublicates are not allowed"),
                         3000,
                         Notification.Position.BOTTOM_CENTER,
                         NotificationVariant.LUMO_WARNING);
 
-                materials.clear();
+                materials.setValue(null);
+                return;
             }
             if(!exits && fromClient) {
 
-                commonComponents.showNotification(String.format("%s - '%s' %s", "Material", e.getValue(), "added succesfully"),
+                commonComponents.showNotification(String.format("%s - '%s' %s", "Material", e.getValue().getMaterialName(), "added succesfully"),
                         3000,
                         Notification.Position.BOTTOM_CENTER,
                         NotificationVariant.LUMO_SUCCESS);
@@ -84,7 +99,8 @@ public class MaterialAndDetails {
 
                 for(var s : listMaterialGrids) {
                     if(s.getNameForCompare().equalsIgnoreCase("")) {
-                        s.setNameForCompare(e.getValue());
+                        s.setNameForCompare(e.getValue().getMaterialName());
+                        s.setId(e.getValue().getId());
                     }
 
                 }
@@ -107,7 +123,7 @@ public class MaterialAndDetails {
             System.out.println(listMaterialGrids);
 
 
-            extendDataOfTheDataMaterial(e.getValue(),listMaterialGrids);
+            extendDataOfTheDataMaterial(e.getValue().getId(),listMaterialGrids);
 
 
 
@@ -117,11 +133,11 @@ public class MaterialAndDetails {
     }
 
 
-    public void extendDataOfTheDataMaterial(String name,List<ListMaterialGrid> listMaterialGrids){
+    public void extendDataOfTheDataMaterial(Long id,List<ListMaterialGrid> listMaterialGrids){
         for(var s : listMaterialGrids) {
-            if(s.getNameForCompare().equalsIgnoreCase(name)) {
+            if(s.getId() == id) {
                 try {
-                    Materials materialData = commonCalls.getMaterialDataAccordingToName(name);
+                    Materials materialData = commonCalls.getMaterialDataAccordingToName(id);
                     s.getUnit().setValue(materialData.getUnit());
                     s.setUnitPrice(materialData.getUnitPrice());
                     s.setStockLevel(materialData.getInStock());
@@ -155,6 +171,7 @@ public class MaterialAndDetails {
 
             for(var s : listMaterialGrids){
                 ProductMaterials materials = new ProductMaterials();
+                materials.setId(s.getId());
                 materials.setNameForRefrence(s.getNameForCompare());
                 materials.setAmountUsed(Long.valueOf(s.getAmountOfMaterial().getValue()));
 

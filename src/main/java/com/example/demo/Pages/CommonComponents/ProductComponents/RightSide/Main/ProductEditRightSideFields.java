@@ -330,7 +330,8 @@ public class ProductEditRightSideFields {
 
         if(productEditDto.getMaterials() != null &&  !productEditDto.getMaterials().isEmpty()) {
             for(var s : productEditDto.getMaterials()) {
-                listMaterialGrids.add(new ListMaterialGrid(s.getId(),
+                listMaterialGrids.add(new ListMaterialGrid(
+                        s.getMaterials().getId(),
                         s.getNameForRefrence(),
                         materialAndDetails.comboBoxMaterial(s.getNameForRefrence(),listMaterialGrids,productFeedModelGrid,addNewMaterial),
                         materialAndDetails.quantityField(s.getAmountUsed(),listMaterialGrids,productFeedModelGrid,materialCost),
@@ -423,10 +424,11 @@ public class ProductEditRightSideFields {
             for(var s : listMaterialGrids){
 
                 ProductMaterials productMaterials = new ProductMaterials();
+                productMaterials.setId(s.getMaterial().getValue().getId());
                 productMaterials.setProduct(product);
                 productMaterials.setUser(null);
                 productMaterials.setMaterials(null);
-                productMaterials.setNameForRefrence(s.getMaterial().getValue());
+                productMaterials.setNameForRefrence(s.getMaterial().getValue().getMaterialName());
                 productMaterials.setAmountUsed(Long.valueOf(s.getAmountOfMaterial().getValue()));
 
                 materials.add(productMaterials);
