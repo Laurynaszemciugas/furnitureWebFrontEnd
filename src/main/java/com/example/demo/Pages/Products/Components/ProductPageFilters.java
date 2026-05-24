@@ -4,8 +4,11 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Stock;
+import com.example.demo.Enums.Visibility;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Service;
@@ -60,6 +63,8 @@ public class ProductPageFilters {
         Button lowStock = commonComponents.normalButtonNoNavigate(Stock.Low_Stock.getDisplayName(), "transparent-button");
         Button noStock = commonComponents.normalButtonNoNavigate(Stock.No_Stock.getDisplayName(), "transparent-button");
 
+        Button showMoreFilters = commonComponents.smallIconButtonsNoNavigate(VaadinIcon.FILTER,"grey");
+
         List<Button> buttons = List.of(allStock,inStock,lowStock,noStock);
 
 
@@ -70,8 +75,19 @@ public class ProductPageFilters {
             });
         }
 
-        ComboBox<Category> types = new ComboBox<>();
+        ComboBox<Category> types = new ComboBox<>("Categorys");
         types.setItems(Category.values());
+
+        ComboBox<Visibility> visibilityComboBox = new ComboBox<>("Visibility");
+        visibilityComboBox.setItems(Visibility.values());
+
+
+        // dialog test
+
+        Dialog dialog = new Dialog();
+        dialog.add(types,visibilityComboBox);
+
+        showMoreFilters.addClickListener(e-> dialog.open());
 
 
         Button clear = commonComponents.normalButtonNoNavigate("Clear filters","clear-button");
@@ -109,12 +125,13 @@ public class ProductPageFilters {
                 inStock,
                 lowStock,
                 noStock,
-                types,
-                clear
+                clear,
+                showMoreFilters
 
 
         );
         horizontalLayout.setWidthFull();
+        //horizontalLayout.getStyle().set("background-color","Red");
         horizontalLayout.addClassName("layout-flex");
 
 

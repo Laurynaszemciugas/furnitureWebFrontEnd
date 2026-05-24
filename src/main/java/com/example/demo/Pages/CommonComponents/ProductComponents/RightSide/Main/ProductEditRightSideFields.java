@@ -288,6 +288,7 @@ public class ProductEditRightSideFields {
     public void loadData(Product productEditDto){
 
 
+
         category.setItems(Category.values());
         tags.setItems(Tags.values());
         status.setItems(Status.values());

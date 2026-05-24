@@ -1,11 +1,8 @@
 package com.example.demo.ControllerModels.CommonDtos.OrderJoin;
 
 import com.example.demo.ControllerModels.CommonDtos.Product;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.apache.catalina.User;
+import com.example.demo.ControllerModels.CommonDtos.User;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,12 +11,13 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class OrderProducts {
 
     private Long id;
     private Product product;
     private Long amountOfProduct;
+    private Double cost;
     private LocalDateTime created;
-    private User user;
 
 }

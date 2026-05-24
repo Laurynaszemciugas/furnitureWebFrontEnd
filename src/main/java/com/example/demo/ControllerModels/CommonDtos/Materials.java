@@ -2,6 +2,7 @@ package com.example.demo.ControllerModels.CommonDtos;
 
 
 import com.example.demo.Enums.Enabled;
+import com.example.demo.Enums.EnabledDisabled;
 import com.example.demo.Enums.Stock;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -24,6 +25,7 @@ public class Materials {
     private double materialWeight;
     private double unitPrice;
     private String unit;
+    private EnabledDisabled enabledDisabled;
     @JsonIgnore
     private User user;
 

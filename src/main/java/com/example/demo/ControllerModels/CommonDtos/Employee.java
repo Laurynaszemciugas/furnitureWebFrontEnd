@@ -1,9 +1,8 @@
 package com.example.demo.ControllerModels.CommonDtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.demo.Enums.EmployeeCategory;
+import com.example.demo.Enums.EnabledDisabled;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -11,13 +10,18 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Employee {
 
     private Long id;
     private Double hourlyRate;
     private Long productsFinished;
-    private String Role;
-
+    private String name;
+    private String lastName;
+    private String fullName;
+    private String gmail;
+    private EnabledDisabled enabledDisabled;
+    private EmployeeCategory employeeCategory;
     private User user;
     private LocalDateTime created;
 

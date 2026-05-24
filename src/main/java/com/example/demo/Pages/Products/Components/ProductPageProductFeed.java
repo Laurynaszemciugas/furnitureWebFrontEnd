@@ -195,9 +195,9 @@ public class ProductPageProductFeed {
 
         dialog.addConfirmListener(event -> {
             if(confirmName.getValue().equals(productName.toUpperCase())) {
-                productService.removeProductById(id);
-                commonComponents.showNotification("Product" + productName + " removed", 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
-                updateRequired.accept("need update");
+                String message = productService.removeProductById(id);
+                commonComponents.showNotification("Product" + productName + " " + message, 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
+                //updateRequired.accept("need update");
                 UI.getCurrent().getPage().reload();
             }
             else{
