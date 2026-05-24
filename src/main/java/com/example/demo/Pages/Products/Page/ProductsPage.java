@@ -6,6 +6,7 @@ import com.example.demo.ControllerModels.DashBoard.DashBoardPageData;
 import com.example.demo.ControllerModels.Products.ProductPageData;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Stock;
+import com.example.demo.Enums.Visibility;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Common.Paganation;
 import com.example.demo.Pages.Products.Components.ProductPageBriefExplanation;
@@ -13,6 +14,7 @@ import com.example.demo.Pages.Products.Components.ProductPageFilters;
 import com.example.demo.Pages.Products.Components.ProductPageProductFeed;
 import com.example.demo.Services.Products.ProductService;
 
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -54,6 +56,9 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     private Category categoryChoise = Category.ALL;
     private int pageChoise = 1;
     private String promtChoise = "ALL";
+    private Visibility visibilityChoise = Visibility.Visible;
+
+    private int totalPages = 0;
 
 
     // page data
@@ -91,6 +96,8 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
 
 
+        totalPages = Math.toIntExact(productService.loadProductPageCount(stockChoise,categoryChoise,promtChoise,visibilityChoise));
+
     }
 
 
@@ -107,7 +114,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
 
         if(data == null || data.isDataStale()){
-            data = productService.loadProductData(Stock.ALL, Category.ALL,"ALL",1,20);
+            data = productService.loadProductData(Stock.ALL, Category.ALL,"ALL",Visibility.Visible,1,20);
             System.out.println(data.getProductFeedModelList());
         }
 
@@ -142,7 +149,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top", "5px");
         verticalLayout.addClassName("main-island");
-
+        verticalLayout.getStyle().set("position","relative");
 
         productPageBriefExplanation.setFilterConsumer(promt->{
             this.promtChoise = promt;
@@ -183,12 +190,18 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
         });
 
+        productPageFilters.setVisibilityConsumer(e->{
+            this.visibilityChoise = e;
+            updateView(verticalLayout);
+        });
+
 
         productPageFilters.consumerClear(e->{
 
             stockChoise = Stock.ALL;
             categoryChoise = Category.ALL;
             promtChoise = "ALL";
+            visibilityChoise = Visibility.Visible;
 
 
             filterHolder.removeAll();
@@ -217,13 +230,17 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         verticalLayout.add(
                 filterHolder,
                 productPageProductFeed.productsMain(data.getProductFeedModelList()),
-                paganation.buttonHolder(Math.toIntExact(productService.loadProductPageCount())));
+                paganation.buttonHolder(totalPages));
+
+
+        verticalLayout.add(commonComponents.pageIndicator(pageChoise,totalPages));
+
     }
 
 
     // updata data according to filters
     public void updateView(VerticalLayout verticalLayout){
-
+        totalPages = Math.toIntExact(productService.loadProductPageCount(stockChoise,categoryChoise,promtChoise,visibilityChoise));
 
         commonComponents.showNotification(String.format("Filters - Stock: '%s' Category: '%s' Prompt: '%s' Page: '%d'",
                 stockChoise.getDisplayName(),
@@ -235,8 +252,11 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         try {
             verticalLayout.add(
                     filterHolder,
-                    productPageProductFeed.productsMain(productService.loadProductFeedModel(stockChoise,categoryChoise,promtChoise,pageChoise,20)),
-                    paganation.buttonHolder(Math.toIntExact(productService.loadProductPageCount())));
+                    productPageProductFeed.productsMain(productService.loadProductFeedModel(stockChoise,categoryChoise,promtChoise,visibilityChoise,pageChoise,20)),
+                    paganation.buttonHolder(totalPages));
+
+            verticalLayout.add(commonComponents.pageIndicator(pageChoise,totalPages));
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {

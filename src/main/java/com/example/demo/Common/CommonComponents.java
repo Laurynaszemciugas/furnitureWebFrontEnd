@@ -242,6 +242,15 @@ public class CommonComponents {
 
     }
 
+    // Page counter
+
+    public Span pageIndicator(int pageChoise, int totalPages){
+        Span totalDataAvailable = spanCrafterWordNoHide(String.format("%s %d %s %d", "Page ", pageChoise, "out of ", totalPages),"stat-example");
+        totalDataAvailable.getStyle().set("position","absolute").set("right","50px").set("bottom","20px");
+        return totalDataAvailable;
+    }
+
+
 
 
 

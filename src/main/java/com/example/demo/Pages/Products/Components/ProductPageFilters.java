@@ -10,6 +10,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,8 @@ public class ProductPageFilters {
     Consumer<String> clearFilters;
 
     Consumer<String> allStockConsumer;
+
+    Consumer<Visibility> visibilityConsumer;
 
     public ProductPageFilters(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
@@ -52,6 +55,10 @@ public class ProductPageFilters {
         this.allStockConsumer = allStockConsumer;
     }
 
+    public void setVisibilityConsumer(Consumer<Visibility> visibilityConsumer){
+        this.visibilityConsumer = visibilityConsumer;
+    }
+
 
 
 
@@ -63,7 +70,8 @@ public class ProductPageFilters {
         Button lowStock = commonComponents.normalButtonNoNavigate(Stock.Low_Stock.getDisplayName(), "transparent-button");
         Button noStock = commonComponents.normalButtonNoNavigate(Stock.No_Stock.getDisplayName(), "transparent-button");
 
-        Button showMoreFilters = commonComponents.smallIconButtonsNoNavigate(VaadinIcon.FILTER,"grey");
+        Button showMoreFilters = new Button(commonComponents.iconCrafter(VaadinIcon.FILTER,"30px","grey"));
+        showMoreFilters.addClassName("transparent-button");
 
         List<Button> buttons = List.of(allStock,inStock,lowStock,noStock);
 
@@ -84,13 +92,23 @@ public class ProductPageFilters {
 
         // dialog test
 
+        Button dialogClose = new Button("Back");
+
         Dialog dialog = new Dialog();
-        dialog.add(types,visibilityComboBox);
+        VerticalLayout dialogStuff = new VerticalLayout(
+                commonComponents.biefPageExplanation("Filters"),
+                types,
+                visibilityComboBox,
+                dialogClose);
+        dialog.add(dialogStuff);
+
+
 
         showMoreFilters.addClickListener(e-> dialog.open());
+        dialogClose.addClickListener(e-> dialog.close());
 
-
-        Button clear = commonComponents.normalButtonNoNavigate("Clear filters","clear-button");
+        Button clear = new Button(VaadinIcon.ERASER.create());
+        clear.setText("Clear Filters");
 
         inStock.addClickListener(e->{
             stockConsumer.accept(Stock.In_Stock);
@@ -117,6 +135,10 @@ public class ProductPageFilters {
             allStockConsumer.accept("");
         });
 
+        visibilityComboBox.addValueChangeListener(e->{
+           visibilityConsumer.accept(e.getValue());
+        });
+
 
 
 
@@ -125,8 +147,10 @@ public class ProductPageFilters {
                 inStock,
                 lowStock,
                 noStock,
-                clear,
-                showMoreFilters
+                showMoreFilters,
+                commonComponents.spaceFiller(),
+                clear
+
 
 
         );

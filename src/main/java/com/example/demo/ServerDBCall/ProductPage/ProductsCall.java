@@ -3,6 +3,7 @@ package com.example.demo.ServerDBCall.ProductPage;
 import com.example.demo.ControllerModels.Products.ProductFeedModel;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Stock;
+import com.example.demo.Enums.Visibility;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,20 +20,21 @@ import java.util.List;
 @Service
 public class ProductsCall {
 
-    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTYxNzQwNywiZXhwIjoxNzc5NjUzNDA3fQ.OdmsAtbgCQHJMmhEXhJ-ee6C8OPvigTudY1zXHrOdZU";
+    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTY1MzgxOSwiZXhwIjoxNzc5Njg5ODE5fQ.VoN9axRnCss7YzTNtTBfsurKypgZnbbEYTw8zbk-HTo";
 
 
-    public List<ProductFeedModel> getAllProducts(Stock stock, Category category,String prompt, int page, int size) throws IOException, InterruptedException {
+    public List<ProductFeedModel> getAllProducts(Stock stock, Category category, String prompt, Visibility visibility, int page, int size) throws IOException, InterruptedException {
 
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
 
 
         String url = String.format(
-                "http://localhost:8080/api/product/getProducts/%s/%s/%s/%d/%d",
+                "http://localhost:8080/api/product/getProducts/%s/%s/%s/%s/%d/%d",
                 stock,
                 category,
                 prompt,
+                visibility,
                 page,
                 size
         );
@@ -64,13 +66,21 @@ public class ProductsCall {
 
 
 
-    public Long getProductPages() throws IOException, InterruptedException {
+    public Long getProductPages(Stock stock, Category category, String prompt, Visibility visibility) throws IOException, InterruptedException {
 
         HttpClient client = HttpClient.newHttpClient();
 
+        String url = String.format(
+                "http://localhost:8080/api/product/getPages/%s/%s/%s/%s",
+                stock,
+                category,
+                prompt,
+                visibility
+        );
+
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/product/getProductsPageCount"))
-                .header("Accept", "application/json")
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
                 .header("Authorization","Bearer " + JWT)
                 .GET()
                 .build();

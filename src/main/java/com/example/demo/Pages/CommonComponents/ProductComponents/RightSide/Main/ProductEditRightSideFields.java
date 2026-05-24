@@ -208,6 +208,17 @@ public class ProductEditRightSideFields {
 
 
         FormLayout productStatus = new FormLayout();
+        visibility.addValueChangeListener(e->{
+           if(e.getValue().equals(Visibility.NonVisible)){
+               status.setValue(Status.Disabled);
+               status.setEnabled(false);
+           }
+           else{
+               status.setEnabled(true);
+           }
+        });
+
+
         productStatus.add(status,visibility);
 
 
@@ -292,7 +303,16 @@ public class ProductEditRightSideFields {
         category.setItems(Category.values());
         tags.setItems(Tags.values());
         status.setItems(Status.values());
-        visibility.setItems(Visibility.values());
+        List<Visibility> list = new ArrayList<>();
+
+        for (var v : Visibility.values()) {
+            if (v != Visibility.ALL) {
+                list.add(v);
+            }
+        }
+
+        visibility.setItems(list);
+
 
         productName.setValue(productEditDto.getProductName() == null ? "" : productEditDto.getProductName());
         sku.setValue(productEditDto.getSku() == null ? "" : productEditDto.getSku());

@@ -19,7 +19,7 @@ import java.util.List;
 
 @Service
 public class CommonCalls {
-    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTYxNzQwNywiZXhwIjoxNzc5NjUzNDA3fQ.OdmsAtbgCQHJMmhEXhJ-ee6C8OPvigTudY1zXHrOdZU";
+    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTY1MzgxOSwiZXhwIjoxNzc5Njg5ODE5fQ.VoN9axRnCss7YzTNtTBfsurKypgZnbbEYTw8zbk-HTo";
 
     public List<ComboBoxMaterial> getMaterialNames() throws IOException, InterruptedException {
 

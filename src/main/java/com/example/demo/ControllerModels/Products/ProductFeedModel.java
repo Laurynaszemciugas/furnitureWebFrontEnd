@@ -2,6 +2,7 @@ package com.example.demo.ControllerModels.Products;
 
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.ProductCategory;
+import com.example.demo.Enums.Visibility;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -20,4 +21,8 @@ public class ProductFeedModel {
     private double price;
     private Long stockQuantity;
     private Long lowStockThreshold;
+
+    private double discount;
+    private double discountedPrice;
+    private Visibility visibility;
 }

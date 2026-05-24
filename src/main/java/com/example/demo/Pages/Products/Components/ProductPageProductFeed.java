@@ -7,6 +7,7 @@ import com.example.demo.ControllerModels.Products.ProductFeedModel;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.ProductCategory;
 import com.example.demo.Enums.Stock;
+import com.example.demo.Enums.Visibility;
 import com.example.demo.ServerDBCall.ProductPage.ProductsCall;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.UI;
@@ -61,6 +62,7 @@ public class ProductPageProductFeed {
         verticalLayout = new HorizontalLayout();
         verticalLayout.setWidthFull();
         verticalLayout.addClassName("layout-flex");
+
         verticalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
         System.out.println(productFeedModelList);
@@ -70,7 +72,7 @@ public class ProductPageProductFeed {
         }
         else{
             for(var s : productFeedModelList){
-                verticalLayout.add(productFeed(s.getId(),s.getImageUrl(),s.getProductName(),s.getCategory(),s.getPrice(),s.getStockQuantity(),s.getLowStockThreshold()));
+                verticalLayout.add(productFeed(s.getId(),s.getImageUrl(),s.getProductName(),s.getCategory(),s.getPrice(),s.getStockQuantity(),s.getLowStockThreshold(),s.getDiscount(),s.getDiscountedPrice(),s.getVisibility()));
             }
         }
 
@@ -87,7 +89,7 @@ public class ProductPageProductFeed {
 
 
 
-    public VerticalLayout productFeed(long id, String mainImageUrl, String productName, Category productCategory, double price, long unitsLeft, long minTreshold){
+    public VerticalLayout productFeed(long id, String mainImageUrl, String productName, Category productCategory, double price, long unitsLeft, long minTreshold, double discount, double discountedPrice, Visibility visibility){
         VerticalLayout product = new VerticalLayout();
         product.addClassName("island");
         product.getStyle().set("flex", "1 1 302px");
@@ -104,6 +106,27 @@ public class ProductPageProductFeed {
 
         Span productPrice = commonComponents.spanCrafterWordNoHide(String.format("%.2f %s",price,"Eur"),"activityFeed-name");
         productPrice.getStyle().set("margin-top","10px");
+
+        HorizontalLayout priceHolder = new HorizontalLayout(productPrice);
+
+        if(discount > 0){
+
+            Span discountMark = commonComponents.spanCrafterWordNoHide(String.format("%.0f %s", discount,"%"),"discount-badge");
+            discountMark.getStyle().set("top","20px").set("right","20px").set("position","absolute");
+            priceHolder.add(discountMark);
+
+            productPrice.getStyle()
+                    .set("text-decoration", "line-through");
+
+            Span span = commonComponents.spanCrafterWordNoHide(String.format("%.2f %s", discountedPrice, "Eur"),"discount");
+            span.addClassName("stock-in");
+            priceHolder.add(span);
+
+
+        }
+
+
+
 
 
 
@@ -157,12 +180,17 @@ public class ProductPageProductFeed {
                 commonComponents.imageCrafter(mainImageUrl,"100%","220px","10px"),
                 commonComponents.spanCrafterWordNoHide(productName,"activityFeed-name"),
                 commonComponents.spanCrafter(productCategory.getDisplayName(),"stat-title"),
-                productPrice,
+                priceHolder,
                 commonComponents.doubleValueRow(stockLevel, commonComponents.spanCrafter(String.format("%d %s",unitsLeft, "Units"),"stat-title")),
                 div
 
 
         );
+
+        if(visibility.equals(Visibility.NonVisible)){
+            removeProduct.setVisible(false);
+            removeProduct.setEnabled(false);
+        }
 
 
 
