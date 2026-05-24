@@ -135,9 +135,9 @@ public class MaterialAndDetails {
 
     public void extendDataOfTheDataMaterial(Long id,List<ListMaterialGrid> listMaterialGrids){
         for(var s : listMaterialGrids) {
-            if(s.getId() == id) {
+            if(s.getId().equals(id)) {
                 try {
-                    Materials materialData = commonCalls.getMaterialDataAccordingToName(id);
+                    Materials materialData = commonCalls.getMaterialDataAccordingToId(id);
                     s.getUnit().setValue(materialData.getUnit());
                     s.setUnitPrice(materialData.getUnitPrice());
                     s.setStockLevel(materialData.getInStock());

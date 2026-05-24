@@ -2,6 +2,7 @@ package com.example.demo.Pages.Orders.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.MainLayout.MainLayout;
 import com.vaadin.flow.component.button.Button;
@@ -9,6 +10,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -23,10 +25,12 @@ public class Orders extends VerticalLayout implements BeforeEnterObserver {
 
     CommonComponents commonComponents;
     Common common;
+    Paganation paganation;
 
     public Orders(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.paganation = new Paganation();
         setPadding(false);
         setSpacing(false);
         setSizeFull();
@@ -102,13 +106,47 @@ public class Orders extends VerticalLayout implements BeforeEnterObserver {
 
         leftSide.add(
                 nameOfGrids,
-                buttonsHolder
+                buttonsHolder,
+                orderFeedHolder(),
+                paganation.buttonHolder(5)
 
         );
 
 
         return leftSide;
     }
+
+
+    public Scroller orderFeedHolder(){
+
+        VerticalLayout feed = new VerticalLayout();
+        feed.setWidthFull();
+
+
+        for(int i = 0; i <= 10; i++){
+            feed.add(createOrderPreview());
+        }
+
+        Scroller scroller = new Scroller(feed);
+        scroller.setMaxHeight("800px");
+        scroller.setWidthFull();
+
+
+        return scroller;
+
+    }
+
+    public VerticalLayout createOrderPreview(){
+        VerticalLayout preview = new VerticalLayout();
+        preview.setWidthFull();
+        preview.addClassName("island");
+
+        preview.setHeight("120px");
+
+        return preview;
+    }
+
+
 
     public VerticalLayout rightSideOrderInfo(){
         VerticalLayout RightSide = new VerticalLayout();
@@ -131,6 +169,7 @@ public class Orders extends VerticalLayout implements BeforeEnterObserver {
 
         // RIGHT SIDE
         right.setMaxWidth("700px");
+
 
         sidesHolder.add(left, right);
         sidesHolder.expand(left);

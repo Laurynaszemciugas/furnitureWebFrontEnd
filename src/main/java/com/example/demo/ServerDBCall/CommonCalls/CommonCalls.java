@@ -88,7 +88,7 @@ public class CommonCalls {
     }
 
 
-    public Materials getMaterialDataAccordingToName(Long id) throws IOException, InterruptedException {
+    public Materials getMaterialDataAccordingToId(Long id) throws IOException, InterruptedException {
 
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
