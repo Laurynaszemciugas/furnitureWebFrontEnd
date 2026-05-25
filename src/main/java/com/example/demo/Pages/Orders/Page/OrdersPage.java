@@ -5,19 +5,23 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.Product;
+import com.example.demo.Enums.OrderStatus;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.ServerDBCall.OrderCalls.OrderCalls;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import lombok.SneakyThrows;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,12 +76,20 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         leftSide.addClassName("island");
 
         HorizontalLayout nameOfGrids = new HorizontalLayout();
+        nameOfGrids.addClassName("layout-flex");
         nameOfGrids.setWidthFull();
-        nameOfGrids.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+        TextField searchField = commonComponents.textFieldCrafter("Search orders..","", VaadinIcon.SEARCH);
+        Button showMoreFilters = new Button(commonComponents.iconCrafter(VaadinIcon.FILTER,"30px","grey"));
+        showMoreFilters.addClassName("transparent-button");
+
         nameOfGrids.add(
                 commonComponents.spanCrafterWordNoHide("Orders List","activityFeed-name"),
-                commonComponents.textFieldCrafter("Search orders..","", VaadinIcon.SEARCH)
+                commonComponents.spaceFiller(),
+                searchField,
+                showMoreFilters
         );
+
 
         Button allButton = commonComponents.normalButtonNoNavigate("All", "transparent-button");
         allButton.addClassName("active");
@@ -130,17 +142,9 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         List<Orders> orders = orderCalls.getAllOders();
 
         for(var s : orders){
-            System.out.println(s.getProductsData());
-            System.out.println("---------------------------------------------------");
-
-            feed.add(createOrderPreview());
+            feed.add(createOrderPreview(s.getId(),s.getOrderStatus()));
         }
-//        List<Product> products = orderCalls.getProducts();
-//
-//        for(var s : products){
-//            System.out.println(s.getMaterials());
-//            System.out.println("---------------------------------------------------");
-//        }
+
 
         Scroller scroller = new Scroller(feed);
         scroller.setMaxHeight("800px");
@@ -151,18 +155,45 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
     }
 
-    public VerticalLayout createOrderPreview(){
+    public VerticalLayout createOrderPreview(Long orderId, OrderStatus orderStatus){
         VerticalLayout preview = new VerticalLayout();
+        preview.getStyle()
+                .set("padding-left","40px")
+                .set("padding-right","40px");
         preview.setWidthFull();
         preview.addClassName("island");
-
         preview.setHeight("120px");
+
+        Span status = commonComponents.spanCrafterWordNoHide(orderStatus.toString(),"stock-badge");
+
+        switch (orderStatus){
+            case In_Progress -> status.addClassName("status-in-progress");
+            case Pending -> status.addClassName("status-pending");
+            case Finished -> status.addClassName("status-finished");
+        }
+
+        HorizontalLayout firstLayer = new HorizontalLayout();
+
+        firstLayer.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        firstLayer.setWidthFull();
+        firstLayer.add(
+                commonComponents.spanCrafterWordNoHide(String.format("%s: %d", "Id", orderId),"stat-example"),
+                status
+        );
+
+        preview.add(
+                firstLayer
+        );
+
+
+
 
         return preview;
     }
 
 
 
+    // =============== Right side =========================
     public VerticalLayout rightSideOrderInfo(){
         VerticalLayout RightSide = new VerticalLayout();
         RightSide.addClassName("island");

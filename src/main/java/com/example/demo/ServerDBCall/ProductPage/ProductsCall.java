@@ -1,5 +1,6 @@
 package com.example.demo.ServerDBCall.ProductPage;
 
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.Products.ProductFeedModel;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Stock;
@@ -20,10 +21,16 @@ import java.util.List;
 @Service
 public class ProductsCall {
 
-    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTY1MzgxOSwiZXhwIjoxNzc5Njg5ODE5fQ.VoN9axRnCss7YzTNtTBfsurKypgZnbbEYTw8zbk-HTo";
 
+    SessionCrafter sessionCrafter;
+
+    public ProductsCall() {
+        this.sessionCrafter = new SessionCrafter();
+    }
 
     public List<ProductFeedModel> getAllProducts(Stock stock, Category category, String prompt, Visibility visibility, int page, int size) throws IOException, InterruptedException {
+
+        String JWT = sessionCrafter.extractSession("JWT", String.class);
 
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
@@ -68,6 +75,8 @@ public class ProductsCall {
 
     public Long getProductPages(Stock stock, Category category, String prompt, Visibility visibility) throws IOException, InterruptedException {
 
+        String JWT = sessionCrafter.extractSession("JWT", String.class);
+
         HttpClient client = HttpClient.newHttpClient();
 
         String url = String.format(
@@ -102,6 +111,8 @@ public class ProductsCall {
 
     @SneakyThrows
     public String removeProduct(Long id){
+
+        String JWT = sessionCrafter.extractSession("JWT", String.class);
 
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();

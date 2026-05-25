@@ -14,6 +14,7 @@ import com.example.demo.Pages.Products.Components.ProductPageFilters;
 import com.example.demo.Pages.Products.Components.ProductPageProductFeed;
 import com.example.demo.Services.Products.ProductService;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -125,11 +126,28 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
         int page = Integer.parseInt(beforeEnterEvent.getRouteParameters().get("page").orElse(null));
 
+        if(page <= 0){
+            this.pageChoise = 1;
+            UI.getCurrent().navigate("Products/1");
+            updateView(verticalLayout);
+            longConsumer.accept(1);
+
+        }
 
         if(page > 1) {
-            this.pageChoise = page;
-            updateView(verticalLayout);
-            longConsumer.accept(page);
+            if(totalPages < page){
+                this.pageChoise = 1;
+                UI.getCurrent().navigate("Products/1");
+                updateView(verticalLayout);
+                longConsumer.accept(1);
+            }
+            else {
+                this.pageChoise = page;
+                updateView(verticalLayout);
+                longConsumer.accept(page);
+            }
+
+
         }
 
 
@@ -183,9 +201,10 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         paganation.setOnPageChange(page -> {
 
 
-            this.pageChoise = page;
-            updateView(verticalLayout);
-
+            if(totalPages!=1) {
+                this.pageChoise = page;
+                updateView(verticalLayout);
+            }
 
 
         });

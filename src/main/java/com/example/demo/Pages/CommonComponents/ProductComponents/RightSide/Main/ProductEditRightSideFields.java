@@ -59,6 +59,7 @@ public class ProductEditRightSideFields {
 
 
 
+
     private Binder<Product> binder =
             new Binder<>(Product.class);
 
@@ -497,7 +498,7 @@ public class ProductEditRightSideFields {
         } catch (InterruptedException ex) {
             throw new RuntimeException(ex);
         }
-        boolean imageError = (newImages == null || newImages.isEmpty());
+        boolean imageError = (product.getImages() == null || product.getImages().isEmpty());
 
         if(!dataCorrect){
             errorCount++;
@@ -542,10 +543,8 @@ public class ProductEditRightSideFields {
 
 
         dialog.addConfirmListener(event -> {
-            if(errorCount == 2) {
                 consumer.accept(product);
                 UI.getCurrent().navigate("Products/1");
-            }
         });
 
         dialog.addCancelListener(event -> {
@@ -576,11 +575,10 @@ public class ProductEditRightSideFields {
 
 
         dialog.addConfirmListener(event -> {
-            if(errorCount == 1) {
+
 
                 consumer.accept(product);
                 UI.getCurrent().navigate("Products/1");
-            }
         });
 
         dialog.addCancelListener(event -> {

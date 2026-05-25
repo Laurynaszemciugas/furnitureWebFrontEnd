@@ -1,5 +1,6 @@
 package com.example.demo.ServerDBCall.CommonCalls;
 
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
 import com.example.demo.ControllerModels.Products.ProductFeedModel;
@@ -19,9 +20,17 @@ import java.util.List;
 
 @Service
 public class CommonCalls {
-    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTY1MzgxOSwiZXhwIjoxNzc5Njg5ODE5fQ.VoN9axRnCss7YzTNtTBfsurKypgZnbbEYTw8zbk-HTo";
+
+
+    SessionCrafter sessionCrafter;
+
+    public CommonCalls() {
+        this.sessionCrafter = new SessionCrafter();
+    }
 
     public List<ComboBoxMaterial> getMaterialNames() throws IOException, InterruptedException {
+
+        String JWT = sessionCrafter.extractSession("JWT", String.class);
 
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
@@ -55,6 +64,9 @@ public class CommonCalls {
 
 
     public Double getEstimatedMaterialPrice(List<ProductMaterials> productMaterials) throws IOException, InterruptedException {
+
+        String JWT = sessionCrafter.extractSession("JWT", String.class);
+
 
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
@@ -90,6 +102,8 @@ public class CommonCalls {
 
     public Materials getMaterialDataAccordingToId(Long id) throws IOException, InterruptedException {
 
+        String JWT = sessionCrafter.extractSession("JWT", String.class);
+
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -123,6 +137,8 @@ public class CommonCalls {
 
 
     public String checkIfMaterialsAreInStock(List<ProductMaterials> productMaterials) throws IOException, InterruptedException {
+
+        String JWT = sessionCrafter.extractSession("JWT", String.class);
 
         HttpClient client = HttpClient.newHttpClient();
         ObjectMapper mapper = new ObjectMapper();

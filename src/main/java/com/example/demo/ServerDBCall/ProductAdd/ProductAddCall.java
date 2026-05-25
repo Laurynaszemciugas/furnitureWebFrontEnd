@@ -1,5 +1,6 @@
 package com.example.demo.ServerDBCall.ProductAdd;
 
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.ControllerModels.Products.ProductFeedModel;
 import com.example.demo.Enums.Category;
@@ -18,9 +19,15 @@ import java.util.List;
 @Service
 public class ProductAddCall {
 
-    String JWT = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXh4QGdtYWlsLmNvbSIsImlkIjoxLCJyb2xlIjoiVVNFUiIsImlhdCI6MTc3OTY1MzgxOSwiZXhwIjoxNzc5Njg5ODE5fQ.VoN9axRnCss7YzTNtTBfsurKypgZnbbEYTw8zbk-HTo";
+    SessionCrafter sessionCrafter;
+
+    public ProductAddCall() {
+        this.sessionCrafter = new SessionCrafter();
+    }
 
     public void addNewOrder(Product product) throws IOException, InterruptedException {
+
+        String JWT = sessionCrafter.extractSession("JWT", String.class);
 
         ObjectMapper mapper = new ObjectMapper();
 
