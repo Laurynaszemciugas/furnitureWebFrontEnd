@@ -431,6 +431,13 @@ max-height: 800px;
     border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
+/* NONE found - grey */
+.status-none {
+    background: rgba(245, 158, 11, 0.15);
+    color: grey;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
 
 .pagination-button {
     background-color: #1e88e5;

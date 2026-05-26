@@ -24,6 +24,7 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import lombok.SneakyThrows;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -41,9 +42,10 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
     OrderCalls orderCalls;
 
 
-    Consumer<String> consumer;
+    Consumer<Long> consumer;
+    Orders selectedOrder = new Orders();
 
-    public void setConsumer(Consumer<String> consumer){
+    public void setConsumer(Consumer<Long> consumer){
         this.consumer = consumer;
     }
 
@@ -243,7 +245,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
         preview.addClickListener(e->{
             System.out.println(orderId);
-            consumer.accept("yay");
+            consumer.accept(orderId);
         });
 
 
@@ -261,12 +263,95 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
     public VerticalLayout rightSideOrderInfo(){
         VerticalLayout rightSide = new VerticalLayout();
         rightSide.setVisible(false);
+
+
+        HorizontalLayout firstLayer = new HorizontalLayout();
+        firstLayer.setWidthFull();
+        firstLayer.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+        Span status = commonComponents.spanCrafter("","stock-badge");
+
+        HorizontalLayout secondLayer = new HorizontalLayout();
+        secondLayer.setWidthFull();
+        secondLayer.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+        Span orderId = commonComponents.spanCrafter("","activityFeed-name");
+        Span itemCount = commonComponents.spanCrafter("","stat-title");
+
+
         setConsumer(e->{
             rightSide.setVisible(true);
-            rightSide.removeAll();
             rightSide.addClassName("island");
-            rightSide.add(new Span("tttttttttttttttttttttttttttttt"));
+            try {
+                 selectedOrder = orderCalls.getAnOrderFromId(e);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            String orderStatus = selectedOrder.getOrderStatus() !=null ? selectedOrder.getOrderStatus().getDisplayName() : "None";
+            status.getStyle().set("padding","8px");
+            status.setText(orderStatus);
+
+            status.removeClassName("status-in-progress");
+            status.removeClassName("status-pending");
+            status.removeClassName("status-finished");
+            status.removeClassName("status-none");
+
+            if(selectedOrder.getOrderStatus() !=null) {
+                switch (selectedOrder.getOrderStatus()) {
+                    case In_Progress -> status.addClassName("status-in-progress");
+                    case Pending -> status.addClassName("status-pending");
+                    case Finished -> status.addClassName("status-finished");
+                }
+            }
+            else{
+                status.addClassName("status-none");
+            }
+
+            String id = selectedOrder.getId() !=null ? "ORD-" + selectedOrder.getId() : "ORD-NULL";
+            int size = selectedOrder.getProductsData().size();
+            String items = size != 0 ? String.valueOf(size) : "No products";
+
+            orderId.setText(id);
+            itemCount.setText(items);
+
+
+
+
         });
+
+
+
+
+
+
+
+
+
+        firstLayer.add(
+                commonComponents.spanCrafterWordNoHide("Order details","activityFeed-name"),
+                status
+        );
+
+        secondLayer.add(
+                orderId,
+                itemCount
+        );
+
+
+
+
+
+
+
+        rightSide.add(
+                firstLayer,
+                secondLayer
+        );
+
+
 
 
         return rightSide;

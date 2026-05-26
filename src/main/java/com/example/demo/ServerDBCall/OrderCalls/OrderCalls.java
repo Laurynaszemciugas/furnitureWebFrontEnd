@@ -62,6 +62,44 @@ public class OrderCalls {
     }
 
 
+    public Orders getAnOrderFromId(Long id) throws IOException, InterruptedException {
+
+        String JWT = sessionCrafter.extractSession("JWT", String.class);
+
+        System.out.println(JWT);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/order/getOrderFromId/" + id))
+                .header("Authorization","Bearer " + JWT)
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(
+                request,
+                HttpResponse.BodyHandlers.ofString()
+        );
+
+        if (response.statusCode() != 200) {
+            System.err.println("Backend Request Failed! Status Code: " + response.statusCode());
+            System.err.println("Backend Response Body: " + response.body());
+            return null;
+        }
+
+        return mapper.readValue(
+                response.body(),
+                new TypeReference<Orders>() {}
+        );
+
+    }
+
+
+
 
 
 
