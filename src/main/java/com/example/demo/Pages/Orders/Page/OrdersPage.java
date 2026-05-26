@@ -3,13 +3,16 @@ package com.example.demo.Pages.Orders.Page;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Paganation;
+import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.ServerDBCall.OrderCalls.OrderCalls;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -22,8 +25,11 @@ import com.vaadin.flow.router.Route;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 
 @Route(value = "Orders", layout = MainLayout.class)
@@ -33,6 +39,13 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
     Common common;
     Paganation paganation;
     OrderCalls orderCalls;
+
+
+    Consumer<String> consumer;
+
+    public void setConsumer(Consumer<String> consumer){
+        this.consumer = consumer;
+    }
 
     public OrdersPage(CommonComponents commonComponents, Common common, OrderCalls orderCalls) {
         this.commonComponents = commonComponents;
@@ -142,7 +155,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         List<Orders> orders = orderCalls.getAllOders();
 
         for(var s : orders){
-            feed.add(createOrderPreview(s.getId(),s.getOrderStatus()));
+            feed.add(createOrderPreview(s.getId(),s.getOrderStatus(),s.getProductsData(), s.getEstimatedDueDate(),s.getCreated()));
         }
 
 
@@ -155,16 +168,21 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
     }
 
-    public VerticalLayout createOrderPreview(Long orderId, OrderStatus orderStatus){
+    public VerticalLayout createOrderPreview(Long orderId, OrderStatus orderStatus, List<OrderProducts> products, LocalDateTime dueDate, LocalDateTime created){
         VerticalLayout preview = new VerticalLayout();
         preview.getStyle()
-                .set("padding-left","40px")
-                .set("padding-right","40px");
+                .set("padding-left","20px")
+                .set("padding-right","40px")
+                .set("position","relative");
+        preview.addClassName("island-hover");
         preview.setWidthFull();
-        preview.addClassName("island");
-        preview.setHeight("120px");
 
-        Span status = commonComponents.spanCrafterWordNoHide(orderStatus.toString(),"stock-badge");
+
+
+        // ====================== first layer =====================================
+
+        Span status = commonComponents.spanCrafter(orderStatus.getDisplayName(),"stock-badge");
+        status.getStyle().set("padding","8px");
 
         switch (orderStatus){
             case In_Progress -> status.addClassName("status-in-progress");
@@ -173,33 +191,85 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         }
 
         HorizontalLayout firstLayer = new HorizontalLayout();
-
+        firstLayer.addClassName("layout-flex");
         firstLayer.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        firstLayer.setAlignItems(Alignment.CENTER);
         firstLayer.setWidthFull();
         firstLayer.add(
-                commonComponents.spanCrafterWordNoHide(String.format("%s: %d", "Id", orderId),"stat-example"),
+                commonComponents.spanCrafter(String.format("%s-%d", "ORD", orderId),"stat-blue"),
                 status
         );
 
+        // ====================== second layer =====================================
+
+        ComboBox<String> productNames = new ComboBox<>();
+        for(var s : products){
+            productNames.getListDataView().addItem(s.getProduct().getProductName());
+        }
+        if(products.isEmpty()){
+            productNames.setItems("No Items");
+            productNames.setValue("No Items");
+           productNames.setEnabled(false);
+
+        }
+        else{
+            int productCount = products.size();;
+            productNames.setPlaceholder(String.format("%d %s",productCount,"Items"));
+        }
+
+        HorizontalLayout secondLayer = new HorizontalLayout();
+        secondLayer.addClassName("layout-flex");
+        secondLayer.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        secondLayer.setAlignItems(Alignment.CENTER);
+        secondLayer.setWidthFull();
+        secondLayer.add(
+                productNames,
+                commonComponents.spanCrafter(String.format("%s: %s","Created date",dateFormatter(created,"MMMM d, yyyy ● h:mma")),"stat-title"),
+                commonComponents.spanCrafter(String.format("%s: %s","Due date",dateFormatter(dueDate,"MMMM d, yyyy ● h:mma")),"stat-title")
+
+        );
+
+        Icon icon = VaadinIcon.ANGLE_RIGHT.create();
+        icon.setColor("grey");
+        icon.setSize("25px");
+        icon.getStyle().set("position","absolute").set("right","5px").set("bottom","45%");
+
         preview.add(
-                firstLayer
+                firstLayer,
+                secondLayer,
+                icon
         );
 
 
+        preview.addClickListener(e->{
+            System.out.println(orderId);
+            consumer.accept("yay");
+        });
 
 
         return preview;
+    }
+
+    public String dateFormatter(LocalDateTime localDateTime, String format){
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
+        return localDateTime.format(dateTimeFormatter);
     }
 
 
 
     // =============== Right side =========================
     public VerticalLayout rightSideOrderInfo(){
-        VerticalLayout RightSide = new VerticalLayout();
-        RightSide.addClassName("island");
+        VerticalLayout rightSide = new VerticalLayout();
+        rightSide.setVisible(false);
+        setConsumer(e->{
+            rightSide.setVisible(true);
+            rightSide.removeAll();
+            rightSide.addClassName("island");
+            rightSide.add(new Span("tttttttttttttttttttttttttttttt"));
+        });
 
 
-        return RightSide;
+        return rightSide;
     }
 
     public HorizontalLayout leftAndRightSideHolder(){

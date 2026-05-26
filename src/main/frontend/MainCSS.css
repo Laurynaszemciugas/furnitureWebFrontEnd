@@ -127,6 +127,75 @@ vaadin-button {
         0 1px 2px rgba(0,0,0,0.04),
         0 6px 20px rgba(0,0,0,0.06);
     padding: 16px;
+
+
+}
+
+
+
+
+.island-disAP {
+    background: #ffffff;
+    border: 1px solid #eaeaea;
+    border-radius: 14px;
+
+    max-height: 0;
+        padding: 0 16px;
+        margin: 0;
+        overflow: hidden;
+
+    box-shadow:
+        0 1px 2px rgba(0,0,0,0.04),
+        0 6px 20px rgba(0,0,0,0.06);
+    padding: 16px;
+
+transform: translateY(-10px);
+    opacity: 0;
+
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+                will-change: transform;
+
+}
+
+.island-disAP.show {
+
+max-height: 800px;
+    padding: 16px; /* Restore original padding */
+    border-width: 1px; /* Restore border */
+
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+.island-hover {
+    background: #ffffff;
+    border: 1px solid #eaeaea;
+    border-radius: 14px;
+    box-shadow:
+        0 1px 2px rgba(0,0,0,0.04),
+        0 6px 20px rgba(0,0,0,0.06);
+    padding: 16px;
+
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+            will-change: transform;
+
+}
+
+
+.island-hover:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 4px 10px rgba(0,0,0,0.08),
+        0 10px 25px rgba(0,0,0,0.10);
+    border-color: #dcdcdc;
+    cursor: pointer;
+}
+
+.island-hover:active {
+    transform: translateY(1px);
+    box-shadow:
+        0 2px 6px rgba(0,0,0,0.08);
 }
 
 
@@ -188,6 +257,13 @@ vaadin-button {
 .stat-example {
     font-size: 14px;
     color: black;
+    font-weight: 500;
+    z-index: 10;
+}
+
+.stat-blue {
+    font-size: 14px;
+    color: blue;
     font-weight: 500;
     z-index: 10;
 }

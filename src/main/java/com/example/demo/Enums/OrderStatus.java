@@ -2,9 +2,18 @@ package com.example.demo.Enums;
 
 public enum OrderStatus {
 
-    In_Progress,
-    Finished,
-    Pending,
-    ALL
+    In_Progress("In Progress"),
+    Finished("Finished"),
+    Pending("Pending"),
+    ALL("All");
 
+    private String displayName;
+
+    OrderStatus(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
 }
