@@ -44,6 +44,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
     Consumer<Long> consumer;
     Orders selectedOrder = new Orders();
+    VerticalLayout orderItemsHolder = new VerticalLayout();
 
     public void setConsumer(Consumer<Long> consumer){
         this.consumer = consumer;
@@ -226,8 +227,8 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         secondLayer.setWidthFull();
         secondLayer.add(
                 productNames,
-                commonComponents.spanCrafter(String.format("%s: %s","Created date",dateFormatter(created,"MMMM d, yyyy ● h:mma")),"stat-title"),
-                commonComponents.spanCrafter(String.format("%s: %s","Due date",dateFormatter(dueDate,"MMMM d, yyyy ● h:mma")),"stat-title")
+                commonComponents.spanCrafter(String.format("%s: %s","Created date",common.dateFormatter(created,"MMMM d, yyyy ● h:mma")),"stat-title"),
+                commonComponents.spanCrafter(String.format("%s: %s","Due date",common.dateFormatter(dueDate,"MMMM d, yyyy ● h:mma")),"stat-title")
 
         );
 
@@ -252,10 +253,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         return preview;
     }
 
-    public String dateFormatter(LocalDateTime localDateTime, String format){
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
-        return localDateTime.format(dateTimeFormatter);
-    }
+
 
 
 
@@ -272,11 +270,21 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         Span status = commonComponents.spanCrafter("","stock-badge");
 
         HorizontalLayout secondLayer = new HorizontalLayout();
+        secondLayer.setPadding(false);
         secondLayer.setWidthFull();
         secondLayer.setJustifyContentMode(JustifyContentMode.BETWEEN);
 
         Span orderId = commonComponents.spanCrafter("","activityFeed-name");
         Span itemCount = commonComponents.spanCrafter("","stat-title");
+        Span totalCount = commonComponents.spanCrafter("","stat-title");
+
+        HorizontalLayout thirdLayer = new HorizontalLayout();
+        thirdLayer.setPadding(false);
+        thirdLayer.setWidthFull();
+        thirdLayer.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+        Span created = commonComponents.spanCrafter("","stat-title");
+        Span totalCost = commonComponents.spanCrafter("","activityFeed-name");
 
 
         setConsumer(e->{
@@ -312,11 +320,31 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
             String id = selectedOrder.getId() !=null ? "ORD-" + selectedOrder.getId() : "ORD-NULL";
             int size = selectedOrder.getProductsData().size();
-            String items = size != 0 ? String.valueOf(size) : "No products";
+            int totalProductCount = 0;
+            for(var s : selectedOrder.getProductsData()) {
+               totalProductCount += s.getAmountOfProduct();
+            }
+            String items = size != 0 ? String.format("%s: %d","Product count", totalProductCount) : "No products";
+            String uniqueProducts = size != 0 ? String.format("%s: %d","Unique product count", size) : "No unique products";
 
             orderId.setText(id);
             itemCount.setText(items);
+            totalCount.setText(uniqueProducts);
 
+
+            String createdDate = common.dateFormatter(selectedOrder.getCreated(),"MMMM d, yyyy ● h:mma");
+            double costTotal = selectedOrder.getTotalPrice();
+
+            created.setText(String.format("%s - %s", "Order created",createdDate));
+            totalCost.setText(String.format("%s %.2f %s","Total",costTotal,"Eur"));
+
+
+            orderItemsHolder.removeAll();
+            orderItemsHolder.setPadding(false);
+            orderItemsHolder.setSpacing(false);
+            orderItemsHolder.add(
+                    orderListRight(selectedOrder.getProductsData(), selectedOrder.getTotalPrice())
+            );
 
 
 
@@ -337,7 +365,12 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
         secondLayer.add(
                 orderId,
-                itemCount
+                itemCount,
+                totalCount
+        );
+        thirdLayer.add(
+                created,
+                totalCost
         );
 
 
@@ -348,7 +381,10 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
         rightSide.add(
                 firstLayer,
-                secondLayer
+                secondLayer,
+                thirdLayer,
+                orderItemsHolder
+
         );
 
 
@@ -356,6 +392,65 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
         return rightSide;
     }
+
+    public VerticalLayout orderListRight(List<OrderProducts> orderProducts,double totalCost){
+        VerticalLayout v = new VerticalLayout();
+        v.setWidthFull();
+        v.addClassName("island");
+
+        HorizontalLayout firstLayer = new HorizontalLayout();
+        firstLayer.setWidthFull();
+        firstLayer.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+        Span name = commonComponents.spanCrafterWordNoHide("Total","stat-example");
+        Span total = commonComponents.spanCrafterWordNoHide("0.0","stat-example");
+
+        if(orderProducts!=null){
+            total.setText(String.format("%.2f %s",totalCost,"Eur"));
+        }
+
+        firstLayer.add(
+                name,
+                total);
+
+
+
+
+        v.add(
+                commonComponents.spanCrafter("Order items","stat-example")
+        );
+
+            for (var s : orderProducts) {
+                v.add(
+                        orderListItemsCraft(s.getAmountOfProduct(), s.getProduct().getProductName(), s.getCost())
+                );
+        }
+
+        v.add(
+                firstLayer
+        );
+
+
+        return  v;
+    }
+
+    public HorizontalLayout orderListItemsCraft(Long amount, String productName, double cost){
+        HorizontalLayout h = new HorizontalLayout();
+        h.setWidthFull();
+        h.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+        Span first = commonComponents.spanCrafterWordNoHide(String.format("%s %d %s","●",amount,productName),"stat-title");
+        Span second = commonComponents.spanCrafterWordNoHide(String.format("%.2f %s",cost,"Eur"),"stat-title");
+
+        h.add(
+                first,
+                second
+        );
+
+        return h;
+
+    }
+
 
     public HorizontalLayout leftAndRightSideHolder(){
         HorizontalLayout sidesHolder = new HorizontalLayout();

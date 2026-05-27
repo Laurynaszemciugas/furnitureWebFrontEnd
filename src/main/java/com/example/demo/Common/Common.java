@@ -4,6 +4,7 @@ import com.vaadin.flow.component.html.Span;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
@@ -118,6 +119,11 @@ public class Common {
         String source = "data:" + mimeType + ";base64," + base64;
 
         return  source;
+    }
+
+    public String dateFormatter(LocalDateTime localDateTime, String format){
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
+        return localDateTime.format(dateTimeFormatter);
     }
 
 
