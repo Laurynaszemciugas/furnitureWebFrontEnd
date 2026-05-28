@@ -21,6 +21,7 @@ public class Orders {
     private User user;
     private Double totalPrice;
     private OrderStatus orderStatus;
+    private String orderNote;
     private LocalDateTime estimatedDueDate;
     private LocalDateTime created;
 

@@ -2,22 +2,28 @@ package com.example.demo.Pages.Orders.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.CommonDtos.Employee;
+import com.example.demo.ControllerModels.CommonDtos.EmployeeJoin.OrderEmployees;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.DTOS.ComboBoxEmployees;
 import com.example.demo.Enums.EmployeeCategory;
+import com.example.demo.Enums.OrderStatus;
 import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
 import com.example.demo.ServerDBCall.OrderCalls.OrderCalls;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
@@ -43,11 +49,17 @@ public class OrdersRightSide {
     VerticalLayout orderItemsHolder = new VerticalLayout();
     VerticalLayout timeLineHoder = new VerticalLayout();
     VerticalLayout employeeHolder = new VerticalLayout();
+    VerticalLayout noteHolder = new VerticalLayout();
+    VerticalLayout employeeAssigmentHolder = new VerticalLayout();
 
     Span dueDateForChange;
 
     List<ComboBoxEmployees> listEmployees = new ArrayList<>();
 
+    Long employeeId;
+    String employeeName;
+    EmployeeCategory employeeCategoryNew;
+    String employeeProfilePic;
 
     @SneakyThrows
     public OrdersRightSide(CommonComponents commonComponents, Common common, OrderCalls orderCalls, EmployeeCalls employeeCalls) {
@@ -170,9 +182,21 @@ public class OrdersRightSide {
             employeeHolder.setPadding(false);
             for(var s : selectedOrder.getEmployees()){
                 employeeHolder.add(
-                        loadEmployees(s.getId(),s.getEmployee().getProfileImage(),s.getEmployee().getFullName(),s.getEmployee().getEmployeeCategory())
+                        loadEmployees(s.getId(),
+                                s.getEmployee().getFullName(),
+                                s.getEmployee().getEmployeeCategory(),
+                                s.getEmployee().getProfileImage())
                 );
             }
+
+            employeeAssigmentHolder.removeAll();
+            employeeAssigmentHolder.add(
+                    employeeAssignment()
+            );
+
+
+            noteHolder.removeAll();
+            noteHolder.add(noteCrafter(selectedOrder.getOrderNote()));
 
 
 
@@ -214,7 +238,8 @@ public class OrdersRightSide {
                 thirdLayer,
                 orderItemsHolder,
                 timeLineHoder,
-                employeeAssignment()
+                employeeAssigmentHolder,
+                noteHolder
 
         );
 
@@ -312,7 +337,11 @@ public class OrdersRightSide {
 
 
         dueDateForChange = commonComponents.spanCrafter(common.dateFormatter(dueDate,"MMMM d, yyyy ● h:mma"),"stat-title");
-        Button editDate = commonComponents.normalButtonNoNavigate("Edit","s");
+        Button editDate = commonComponents.buttonThemeAndIconNoNavigate("Edit", ButtonVariant.LUMO_ICON, VaadinIcon.PENCIL,"Blue");
+
+        if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished)){
+            editDate.setEnabled(false);
+        }
 
         editDate.addClickListener(e->{
             showEditDateDialog();
@@ -386,7 +415,12 @@ public class OrdersRightSide {
         employeeLayer.setWidthFull();
         employeeLayer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
-        Button addEmployee = new Button("Add employee");
+        Button addEmployee = commonComponents.buttonThemeAndIconNoNavigate("Add employee", ButtonVariant.LUMO_PRIMARY, VaadinIcon.PLUS,"White");
+
+        if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished)){
+            addEmployee.setEnabled(false);
+        }
+
         addEmployee.addClickListener(e->{
             showEmployeeDialog();
         });
@@ -412,43 +446,51 @@ public class OrdersRightSide {
 
     }
 
-    public HorizontalLayout displayEmployees(){
+
+
+    public HorizontalLayout loadEmployees(Long id, String name, EmployeeCategory employeeCategory, String profilePic){
 
         HorizontalLayout h = new HorizontalLayout();
         h.setAlignItems(FlexComponent.Alignment.CENTER);
         h.addClassName("island");
         h.setWidthFull();
 
-        Image image = commonComponents.imageCrafter("No_picture.png","50px","50px","20px");
-        Span fullName = commonComponents.spanCrafterWordNoHide("John Smith","stat-example");
-        Span role = commonComponents.spanCrafterWordNoHide("Intern","stat-title");
+        Button button = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.TRASH,"Blue");
+        button.setVisible(false);
 
-        h.add(
-                image,
-                fullName,
-                commonComponents.spaceFiller(),
-                role
-        );
+        if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished)){
+            button.setEnabled(false);
+        }
+
+        h.getElement().addEventListener("mouseenter", e -> {
+            button.setVisible(true);
+        });
 
 
-        return h;
-    }
+        h.getElement().addEventListener("mouseleave", e -> {
+            button.setVisible(false);
 
-    public HorizontalLayout loadEmployees(Long id,String imageUrl, String name, EmployeeCategory employeeCategory){
+        });
 
-        HorizontalLayout h = new HorizontalLayout();
-        h.setAlignItems(FlexComponent.Alignment.CENTER);
-        h.addClassName("island");
-        h.setWidthFull();
-
-        Button button = new Button("Remove");
         button.addClickListener(e->{
             h.getParent().ifPresent(parent ->{
                 ((HasComponents) parent).remove(h);
             });
+
+                selectedOrder.getEmployees().removeIf(emp -> emp.getEmployee().getId().equals(id));
+
+
+
         });
 
-        Image image = commonComponents.imageCrafter(imageUrl,"50px","50px","20px");
+        String url = "";
+        if(profilePic != null){
+            url = profilePic;
+        }
+        else{
+            url = "No_picture.png";
+        }
+        Image image = commonComponents.imageCrafter(url,"50px","50px","20px");
         Span fullName = commonComponents.spanCrafterWordNoHide(name,"stat-example");
         Span role = commonComponents.spanCrafterWordNoHide(employeeCategory.toString(),"stat-title");
 
@@ -474,15 +516,59 @@ public class OrdersRightSide {
         VerticalLayout v = new VerticalLayout();
         v.setWidthFull();
 
+        HorizontalLayout empDisplay = new HorizontalLayout();
+
         ComboBox<ComboBoxEmployees> comboBox = new ComboBox<>("Select employee");
         comboBox.setItems(listEmployees);
         comboBox.setItemLabelGenerator(ComboBoxEmployees::getFullName);
+        Button button = new Button("Add");
+
+        comboBox.addValueChangeListener(e->{
+            employeeId = e.getValue().getId();
+            employeeName = e.getValue().getFullName();
+            employeeCategoryNew = e.getValue().getEmployeeCategory();
+            employeeProfilePic = e.getValue().getProfileImage();
+
+            empDisplay.removeAll();
+
+            Span empID = new Span(employeeId.toString());
+
+            empDisplay.add(
+                    empID
+            );
+
+            v.removeAll();
+            v.add(
+                    comboBox,
+                    empDisplay,
+                    button
+            );
+
+        });
 
 
-
-        Button button = new Button("Add employee");
         button.addClickListener(e->{
-            employeeHolder.add(displayEmployees());
+
+            employeeHolder.add(
+                    loadEmployees(
+                            employeeId,
+                            employeeName,
+                            employeeCategoryNew,
+                            employeeProfilePic)
+            );
+
+            OrderEmployees employees = new OrderEmployees();
+            employees.setId(employeeId);
+
+            Employee employee = new Employee();
+            employee.setId(employeeId);
+
+
+            employees.setEmployee(employee);
+
+            selectedOrder.getEmployees().add(employees);
+
+
             dialog.close();
         });
 
@@ -500,6 +586,44 @@ public class OrdersRightSide {
 
         return  dialog;
 
+    }
+
+    public VerticalLayout noteCrafter(String text){
+
+        VerticalLayout v = new VerticalLayout();
+        v.setWidthFull();
+        v.addClassName("island");
+
+
+        TextArea note = new TextArea();
+        note.setPlaceholder("Add special instructions or notes...");
+        note.setWidthFull();
+        note.setMinHeight("100px");
+
+        if(text != null) {
+            note.setValue(text);
+        }
+        if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished)){
+            note.setEnabled(false);
+        }
+        note.addValueChangeListener(e->{
+           selectedOrder.setOrderNote(note.getValue());
+
+
+            System.out.println(selectedOrder.getOrderNote());
+        });
+
+
+        v.add(
+                commonComponents.doubleValueRow(
+                        commonComponents.spanCrafter("Add note","stat-example")
+                        ,commonComponents.spanCrafter("(Optional)","stat-title")),
+                note
+        );
+
+
+
+        return v;
     }
 
 
