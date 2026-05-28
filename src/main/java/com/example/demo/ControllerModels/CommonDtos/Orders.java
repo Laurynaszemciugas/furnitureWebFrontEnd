@@ -19,6 +19,7 @@ public class Orders {
     private List<OrderProducts> productsData;
     private List<OrderEmployees> employees;
     private User user;
+    private User orderPlacedBy;
     private Double totalPrice;
     private OrderStatus orderStatus;
     private String orderNote;

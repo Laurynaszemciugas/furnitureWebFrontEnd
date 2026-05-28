@@ -20,10 +20,15 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
@@ -52,7 +57,14 @@ public class OrdersRightSide {
     VerticalLayout noteHolder = new VerticalLayout();
     VerticalLayout employeeAssigmentHolder = new VerticalLayout();
 
+    Span status;
+
+    // total values to be changed
+    Span totalCost;
+    Span total;
+
     Span dueDateForChange;
+
 
     List<ComboBoxEmployees> listEmployees = new ArrayList<>();
 
@@ -89,7 +101,7 @@ public class OrdersRightSide {
         firstLayer.setWidthFull();
         firstLayer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
-        Span status = commonComponents.spanCrafter("","stock-badge");
+        status = commonComponents.spanCrafter("","stock-badge");
 
         HorizontalLayout secondLayer = new HorizontalLayout();
         secondLayer.setPadding(false);
@@ -106,7 +118,7 @@ public class OrdersRightSide {
         thirdLayer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
         Span created = commonComponents.spanCrafter("","stat-title");
-        Span totalCost = commonComponents.spanCrafter("","activityFeed-name");
+        totalCost = commonComponents.spanCrafter("","activityFeed-name");
 
 
 
@@ -142,17 +154,9 @@ public class OrdersRightSide {
             }
 
             String id = selectedOrder.getId() !=null ? "ORD-" + selectedOrder.getId() : "ORD-NULL";
-            int size = selectedOrder.getProductsData().size();
-            int totalProductCount = 0;
-            for(var s : selectedOrder.getProductsData()) {
-                totalProductCount += s.getAmountOfProduct();
-            }
-            String items = size != 0 ? String.format("%s: %d","Product count", totalProductCount) : "No products";
-            String uniqueProducts = size != 0 ? String.format("%s: %d","Unique product count", size) : "No unique products";
+
 
             orderId.setText(id);
-            itemCount.setText(items);
-            totalCount.setText(uniqueProducts);
 
 
             String createdDate = common.dateFormatter(selectedOrder.getCreated(),"MMMM d, yyyy ● h:mma");
@@ -239,7 +243,8 @@ public class OrdersRightSide {
                 orderItemsHolder,
                 timeLineHoder,
                 employeeAssigmentHolder,
-                noteHolder
+                noteHolder,
+                actionButtons()
 
         );
 
@@ -259,7 +264,7 @@ public class OrdersRightSide {
         firstLayer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
         Span name = commonComponents.spanCrafterWordNoHide("Total","stat-example");
-        Span total = commonComponents.spanCrafterWordNoHide("0.0","stat-example");
+        total = commonComponents.spanCrafterWordNoHide("0.0","stat-example");
 
         if(orderProducts!=null){
             total.setText(String.format("%.2f %s",totalCost,"Eur"));
@@ -278,7 +283,7 @@ public class OrdersRightSide {
 
         for (var s : orderProducts) {
             v.add(
-                    orderListItemsCraft(s.getAmountOfProduct(), s.getProduct().getProductName(), s.getCost())
+                    orderListItemsCraft(s.getId(),s.getAmountOfProduct(), s.getProduct().getProductName(), s.getCost())
             );
         }
 
@@ -290,17 +295,90 @@ public class OrdersRightSide {
         return  v;
     }
 
-    public HorizontalLayout orderListItemsCraft(Long amount, String productName, double cost){
+    public HorizontalLayout orderListItemsCraft(Long id ,Long amount, String productName, double cost){
         HorizontalLayout h = new HorizontalLayout();
         h.setWidthFull();
         h.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        h.setHeight("50px");
+        h.setAlignItems(FlexComponent.Alignment.CENTER);
 
-        Span first = commonComponents.spanCrafterWordNoHide(String.format("%s %d %s","●",amount,productName),"stat-title");
-        Span second = commonComponents.spanCrafterWordNoHide(String.format("%.2f %s",cost,"Eur"),"stat-title");
+        Button button = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.TRASH,"Blue");
+        button.setVisible(false);
+
+        button.addClickListener(e->{
+            selectedOrder.getProductsData().removeIf(product -> product.getId().equals(id));
+
+            h.getParent().ifPresent(parent ->{
+                ((HasComponents) parent).remove(h);
+            });
+
+            commonComponents.showNotification("Removed product " +  productName,3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
+
+            updateTotal();
+        });
+
+        h.getElement().addEventListener("mouseenter", e -> {
+            button.setVisible(true);
+        });
+
+
+        h.getElement().addEventListener("mouseleave", e -> {
+            button.setVisible(false);
+
+        });
+
+        Span name  = commonComponents.spanCrafterWordNoHide(String.format("%s %s","●",productName),"stat-title");
+
+        IntegerField amountCounter = new IntegerField();
+        amountCounter.setStep(1);
+        amountCounter.setMax(100);
+        amountCounter.setMin(1);
+        amountCounter.setStepButtonsVisible(true);
+        amountCounter.setValue(Math.toIntExact(amount));
+
+
+        double estimatedCost = amount*cost;
+        Span costOfProducts = commonComponents.spanCrafterWordNoHide(String.format("%.2f %s",estimatedCost,"Eur"),"stat-title");
+
+        amountCounter.addValueChangeListener(e->{
+           if(e.getValue() <= 0){
+               commonComponents.showNotification("Cannot make a product quanitity less or equal than 0 ",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_ERROR);
+               amountCounter.setValue(1);
+           }
+           else if(e.getValue() >100){
+               commonComponents.showNotification("Cannot make product quantity more than 100 ",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_ERROR);
+               amountCounter.setValue(1);
+           }
+
+           else{
+               for(var s : selectedOrder.getProductsData()){
+                   if(s.getId().equals(id)){
+                       s.setAmountOfProduct(e.getValue().longValue());
+                   }
+               }
+           }
+
+           double newCost = e.getValue() * cost;
+
+           costOfProducts.setText(String.format("%.2f %s",newCost,"Eur"));
+
+
+            updateTotal();
+
+        });
+
+
+
+        HorizontalLayout secondHolder = new HorizontalLayout();
+        secondHolder.setAlignItems(FlexComponent.Alignment.CENTER);
+        secondHolder.add(
+                costOfProducts,
+                button);
 
         h.add(
-                first,
-                second
+                name,
+                amountCounter,
+                secondHolder
         );
 
         return h;
@@ -409,9 +487,11 @@ public class OrdersRightSide {
     public VerticalLayout employeeAssignment(){
 
         VerticalLayout v = new VerticalLayout();
+        v.setPadding(false);
         v.setWidthFull();
 
         HorizontalLayout employeeLayer = new HorizontalLayout();
+        employeeLayer.setPadding(false);
         employeeLayer.setWidthFull();
         employeeLayer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
@@ -519,8 +599,37 @@ public class OrdersRightSide {
         HorizontalLayout empDisplay = new HorizontalLayout();
 
         ComboBox<ComboBoxEmployees> comboBox = new ComboBox<>("Select employee");
+        comboBox.setWidth("250px");
         comboBox.setItems(listEmployees);
         comboBox.setItemLabelGenerator(ComboBoxEmployees::getFullName);
+
+        comboBox.setRenderer(new ComponentRenderer<>(employee -> {
+
+            HorizontalLayout comboBoxEmployee = new HorizontalLayout();
+            comboBoxEmployee.setAlignItems(FlexComponent.Alignment.CENTER);
+            comboBoxEmployee.setWidthFull();
+
+            Image image = commonComponents.imageCrafter(employee.getProfileImage() != null ? employee.getProfileImage() : "No_picture.png","30px","30px","20px");
+            Span employeeFullName = commonComponents.spanCrafter(employee.getFullName(),"stat-example");
+            Span employeeRole = commonComponents.spanCrafter(employee.getEmployeeCategory().toString(),"stat-title");
+
+            VerticalLayout nameRole = new VerticalLayout();
+            nameRole.setWidthFull();
+
+            nameRole.add(
+                    employeeFullName,
+                    employeeRole
+            );
+
+            comboBoxEmployee.add(
+                    image,
+                    nameRole
+            );
+
+            return  comboBoxEmployee;
+
+        }));
+
         Button button = new Button("Add");
 
         comboBox.addValueChangeListener(e->{
@@ -530,11 +639,19 @@ public class OrdersRightSide {
             employeeProfilePic = e.getValue().getProfileImage();
 
             empDisplay.removeAll();
+            empDisplay.addClassName("island");
+            empDisplay.setAlignItems(FlexComponent.Alignment.CENTER);
 
             Span empID = new Span(employeeId.toString());
+            Image empImage = commonComponents.imageCrafter(employeeProfilePic != null ? employeeProfilePic : "No_picture.png", "40px","40px","20px");
+            Span empName = new Span(employeeName);
+            Span empRole = new Span(employeeCategoryNew.toString());
 
             empDisplay.add(
-                    empID
+                    empID,
+                    empImage,
+                    empName,
+                    empRole
             );
 
             v.removeAll();
@@ -549,27 +666,37 @@ public class OrdersRightSide {
 
         button.addClickListener(e->{
 
-            employeeHolder.add(
-                    loadEmployees(
-                            employeeId,
-                            employeeName,
-                            employeeCategoryNew,
-                            employeeProfilePic)
-            );
-
-            OrderEmployees employees = new OrderEmployees();
-            employees.setId(employeeId);
-
-            Employee employee = new Employee();
-            employee.setId(employeeId);
 
 
-            employees.setEmployee(employee);
-
-            selectedOrder.getEmployees().add(employees);
 
 
-            dialog.close();
+
+            if(!selectedOrder.getEmployees().stream().anyMatch(emp -> emp.getEmployee().getId().equals(employeeId))) {
+
+                employeeHolder.add(
+                        loadEmployees(
+                                employeeId,
+                                employeeName,
+                                employeeCategoryNew,
+                                employeeProfilePic)
+                );
+
+                OrderEmployees employees = new OrderEmployees();
+                employees.setId(employeeId);
+
+                Employee employee = new Employee();
+                employee.setId(employeeId);
+
+                employees.setEmployee(employee);
+
+                selectedOrder.getEmployees().add(employees);
+
+
+                dialog.close();
+            }
+            else{
+                commonComponents.showNotification(String.format("%s %s", employeeName,"is already used"),3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_ERROR);
+            }
         });
 
         v.add(
@@ -627,7 +754,76 @@ public class OrdersRightSide {
     }
 
 
+    public HorizontalLayout actionButtons(){
 
+        HorizontalLayout h = new HorizontalLayout();
+        h.setWidthFull();
+        h.addClassName("layout-flex");
+
+        h.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+
+        Button pending = commonComponents.buttonThemeAndIconNoNavigate("Mark as Pending", ButtonVariant.LUMO_ICON, VaadinIcon.CLOCK,"Blue");
+
+        pending.addClickListener(e->{
+           selectedOrder.setOrderStatus(OrderStatus.Pending);
+           commonComponents.showNotification("Order was set to Pending",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
+            changeStatusDisplay(OrderStatus.Pending);
+        });
+
+        Button inProgress = commonComponents.buttonThemeAndIconNoNavigate("Mark as In Progress", ButtonVariant.LUMO_PRIMARY, VaadinIcon.HOURGLASS_START,"White");
+
+        inProgress.addClickListener(e->{
+            selectedOrder.setOrderStatus(OrderStatus.In_Progress);
+            commonComponents.showNotification("Order was set to In Progress",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
+            changeStatusDisplay(OrderStatus.In_Progress);
+        });
+
+        Button finished = commonComponents.buttonThemeAndIconNoNavigate("Mark as Finished", ButtonVariant.LUMO_SUCCESS, VaadinIcon.CHECK,"green");
+
+        finished.addClickListener(e->{
+            selectedOrder.setOrderStatus(OrderStatus.Finished);
+            commonComponents.showNotification("Order was set to Finished",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
+            changeStatusDisplay(OrderStatus.Finished);
+        });
+
+
+        h.add(
+                pending,
+                inProgress,
+                finished
+        );
+
+
+        return h;
+    }
+
+    public void changeStatusDisplay(OrderStatus orderStatus){
+
+        status.setText(orderStatus.getDisplayName());
+
+        status.removeClassName("status-in-progress");
+        status.removeClassName("status-pending");
+        status.removeClassName("status-finished");
+        status.removeClassName("status-none");
+
+        switch (selectedOrder.getOrderStatus()) {
+            case In_Progress -> status.addClassName("status-in-progress");
+            case Pending -> status.addClassName("status-pending");
+            case Finished -> status.addClassName("status-finished");
+        }
+    }
+
+
+    public void updateTotal(){
+        double totalValue = 0.0;
+
+        for(var s : selectedOrder.getProductsData()){
+            totalValue += s.getAmountOfProduct() * s.getCost();
+        }
+
+        totalCost.setText(String.format("%s %.2f %s","Total",totalValue,"Eur"));
+        total.setText(String.format("%.2f %s",totalValue,"Eur"));
+    }
 
 
 }
