@@ -43,19 +43,21 @@ public class OrdersRightSide {
     Common common;
     OrderCalls orderCalls;
     EmployeeCalls employeeCalls;
+    AssignEmployees assignEmployees;
 
 
     // refrence to the leftside component
     OrdersLeftSide ordersLeftSide;
 
 
-    Consumer<Long> consumer;
     Orders selectedOrder = new Orders();
     VerticalLayout orderItemsHolder = new VerticalLayout();
     VerticalLayout timeLineHoder = new VerticalLayout();
     VerticalLayout employeeHolder = new VerticalLayout();
     VerticalLayout noteHolder = new VerticalLayout();
     VerticalLayout employeeAssigmentHolder = new VerticalLayout();
+
+    VerticalLayout rightSide;
 
     Span status;
 
@@ -73,12 +75,21 @@ public class OrdersRightSide {
     EmployeeCategory employeeCategoryNew;
     String employeeProfilePic;
 
+
+    Consumer<Orders> ordersConsumer;
+
     @SneakyThrows
-    public OrdersRightSide(CommonComponents commonComponents, Common common, OrderCalls orderCalls, EmployeeCalls employeeCalls) {
+    public OrdersRightSide(
+            CommonComponents commonComponents,
+            Common common,
+            OrderCalls orderCalls,
+            EmployeeCalls employeeCalls
+    ) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.orderCalls = orderCalls;
         this.employeeCalls = employeeCalls;
+        this.assignEmployees = new AssignEmployees(commonComponents,common,employeeCalls);
 
 
         listEmployees.addAll(employeeCalls.getMiniEmployeeData());
@@ -90,12 +101,15 @@ public class OrdersRightSide {
         this.ordersLeftSide = ordersLeftSide;
     }
 
+    public void setOrderConsumer(Consumer<Orders> ordersConsumer){
+        this.ordersConsumer = ordersConsumer;
+    }
 
     // =============== Right side =========================
     public VerticalLayout rightSideOrderInfo(){
-        VerticalLayout rightSide = new VerticalLayout();
+        rightSide = new VerticalLayout();
         rightSide.setVisible(false);
-
+        rightSide.getStyle().set("position","relative");
 
         HorizontalLayout firstLayer = new HorizontalLayout();
         firstLayer.setWidthFull();
@@ -157,7 +171,7 @@ public class OrdersRightSide {
 
 
             orderId.setText(id);
-
+            orderId.getStyle().set("color","blue");
 
             String createdDate = common.dateFormatter(selectedOrder.getCreated(),"MMMM d, yyyy ● h:mma");
             double costTotal = selectedOrder.getTotalPrice();
@@ -186,16 +200,20 @@ public class OrdersRightSide {
             employeeHolder.setPadding(false);
             for(var s : selectedOrder.getEmployees()){
                 employeeHolder.add(
-                        loadEmployees(s.getId(),
+                        assignEmployees.loadEmployees(
+                                s.getEmployee().getId(),
                                 s.getEmployee().getFullName(),
                                 s.getEmployee().getEmployeeCategory(),
-                                s.getEmployee().getProfileImage())
-                );
+                                s.getEmployee().getProfileImage(),
+                                selectedOrder
+                                ));
             }
 
+
+            // assign employee add remove
             employeeAssigmentHolder.removeAll();
             employeeAssigmentHolder.add(
-                    employeeAssignment()
+                    assignEmployees.employeeAssignment(selectedOrder,employeeHolder)
             );
 
 
@@ -211,6 +229,20 @@ public class OrdersRightSide {
 
 
 
+        Button save = commonComponents.normalThemeButtonNoNavigate("Save",ButtonVariant.LUMO_PRIMARY);
+
+        Button exit = commonComponents.buttonThemeAndIconNoNavigate("",ButtonVariant.ERROR,VaadinIcon.CLOSE,"Red");
+        exit.getStyle().set("position","absolute").set("right","10px").set("top","10px");
+        exit.addClickListener(e->{
+           rightSide.setVisible(false);
+        });
+
+        rightSide.add(exit);
+
+        save.addClickListener(e->{
+            ordersConsumer.accept(selectedOrder);
+            rightSide.setVisible(false);
+        });
 
 
 
@@ -237,6 +269,8 @@ public class OrdersRightSide {
 
 
         rightSide.add(
+                save,
+
                 firstLayer,
                 secondLayer,
                 thirdLayer,
@@ -318,12 +352,17 @@ public class OrdersRightSide {
         });
 
         h.getElement().addEventListener("mouseenter", e -> {
-            button.setVisible(true);
+            if(!selectedOrder.getOrderStatus().equals(OrderStatus.Finished)){
+                button.setVisible(true);
+            }
         });
 
 
         h.getElement().addEventListener("mouseleave", e -> {
-            button.setVisible(false);
+            if(!selectedOrder.getOrderStatus().equals(OrderStatus.Finished)){
+                button.setVisible(false);
+            }
+
 
         });
 
@@ -335,6 +374,10 @@ public class OrdersRightSide {
         amountCounter.setMin(1);
         amountCounter.setStepButtonsVisible(true);
         amountCounter.setValue(Math.toIntExact(amount));
+
+        if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished)){
+            amountCounter.setReadOnly(true);
+        }
 
 
         double estimatedCost = amount*cost;
@@ -353,6 +396,7 @@ public class OrdersRightSide {
            else{
                for(var s : selectedOrder.getProductsData()){
                    if(s.getId().equals(id)){
+                       System.out.println(e.getValue());
                        s.setAmountOfProduct(e.getValue().longValue());
                    }
                }
@@ -484,236 +528,16 @@ public class OrdersRightSide {
 
     }
 
-    public VerticalLayout employeeAssignment(){
 
-        VerticalLayout v = new VerticalLayout();
-        v.setPadding(false);
-        v.setWidthFull();
 
-        HorizontalLayout employeeLayer = new HorizontalLayout();
-        employeeLayer.setPadding(false);
-        employeeLayer.setWidthFull();
-        employeeLayer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
-        Button addEmployee = commonComponents.buttonThemeAndIconNoNavigate("Add employee", ButtonVariant.LUMO_PRIMARY, VaadinIcon.PLUS,"White");
 
-        if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished)){
-            addEmployee.setEnabled(false);
-        }
 
-        addEmployee.addClickListener(e->{
-            showEmployeeDialog();
-        });
 
-        employeeLayer.add(
-                commonComponents.spanCrafterWordNoHide("Assign Employees","activityFeed-name"),
-                addEmployee
 
-        );
 
-        v.add(
-                employeeLayer,
-                employeeHolder
-        );
 
 
-
-
-
-
-
-        return  v;
-
-    }
-
-
-
-    public HorizontalLayout loadEmployees(Long id, String name, EmployeeCategory employeeCategory, String profilePic){
-
-        HorizontalLayout h = new HorizontalLayout();
-        h.setAlignItems(FlexComponent.Alignment.CENTER);
-        h.addClassName("island");
-        h.setWidthFull();
-
-        Button button = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.TRASH,"Blue");
-        button.setVisible(false);
-
-        if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished)){
-            button.setEnabled(false);
-        }
-
-        h.getElement().addEventListener("mouseenter", e -> {
-            button.setVisible(true);
-        });
-
-
-        h.getElement().addEventListener("mouseleave", e -> {
-            button.setVisible(false);
-
-        });
-
-        button.addClickListener(e->{
-            h.getParent().ifPresent(parent ->{
-                ((HasComponents) parent).remove(h);
-            });
-
-                selectedOrder.getEmployees().removeIf(emp -> emp.getEmployee().getId().equals(id));
-
-
-
-        });
-
-        String url = "";
-        if(profilePic != null){
-            url = profilePic;
-        }
-        else{
-            url = "No_picture.png";
-        }
-        Image image = commonComponents.imageCrafter(url,"50px","50px","20px");
-        Span fullName = commonComponents.spanCrafterWordNoHide(name,"stat-example");
-        Span role = commonComponents.spanCrafterWordNoHide(employeeCategory.toString(),"stat-title");
-
-        h.add(
-                image,
-                fullName,
-                commonComponents.spaceFiller(),
-                role,
-                button
-        );
-
-
-        return h;
-    }
-
-
-
-    public Dialog showEmployeeDialog(){
-
-        Dialog dialog = new Dialog("Select employee ");
-
-
-        VerticalLayout v = new VerticalLayout();
-        v.setWidthFull();
-
-        HorizontalLayout empDisplay = new HorizontalLayout();
-
-        ComboBox<ComboBoxEmployees> comboBox = new ComboBox<>("Select employee");
-        comboBox.setWidth("250px");
-        comboBox.setItems(listEmployees);
-        comboBox.setItemLabelGenerator(ComboBoxEmployees::getFullName);
-
-        comboBox.setRenderer(new ComponentRenderer<>(employee -> {
-
-            HorizontalLayout comboBoxEmployee = new HorizontalLayout();
-            comboBoxEmployee.setAlignItems(FlexComponent.Alignment.CENTER);
-            comboBoxEmployee.setWidthFull();
-
-            Image image = commonComponents.imageCrafter(employee.getProfileImage() != null ? employee.getProfileImage() : "No_picture.png","30px","30px","20px");
-            Span employeeFullName = commonComponents.spanCrafter(employee.getFullName(),"stat-example");
-            Span employeeRole = commonComponents.spanCrafter(employee.getEmployeeCategory().toString(),"stat-title");
-
-            VerticalLayout nameRole = new VerticalLayout();
-            nameRole.setWidthFull();
-
-            nameRole.add(
-                    employeeFullName,
-                    employeeRole
-            );
-
-            comboBoxEmployee.add(
-                    image,
-                    nameRole
-            );
-
-            return  comboBoxEmployee;
-
-        }));
-
-        Button button = new Button("Add");
-
-        comboBox.addValueChangeListener(e->{
-            employeeId = e.getValue().getId();
-            employeeName = e.getValue().getFullName();
-            employeeCategoryNew = e.getValue().getEmployeeCategory();
-            employeeProfilePic = e.getValue().getProfileImage();
-
-            empDisplay.removeAll();
-            empDisplay.addClassName("island");
-            empDisplay.setAlignItems(FlexComponent.Alignment.CENTER);
-
-            Span empID = new Span(employeeId.toString());
-            Image empImage = commonComponents.imageCrafter(employeeProfilePic != null ? employeeProfilePic : "No_picture.png", "40px","40px","20px");
-            Span empName = new Span(employeeName);
-            Span empRole = new Span(employeeCategoryNew.toString());
-
-            empDisplay.add(
-                    empID,
-                    empImage,
-                    empName,
-                    empRole
-            );
-
-            v.removeAll();
-            v.add(
-                    comboBox,
-                    empDisplay,
-                    button
-            );
-
-        });
-
-
-        button.addClickListener(e->{
-
-
-
-
-
-
-            if(!selectedOrder.getEmployees().stream().anyMatch(emp -> emp.getEmployee().getId().equals(employeeId))) {
-
-                employeeHolder.add(
-                        loadEmployees(
-                                employeeId,
-                                employeeName,
-                                employeeCategoryNew,
-                                employeeProfilePic)
-                );
-
-                OrderEmployees employees = new OrderEmployees();
-                employees.setId(employeeId);
-
-                Employee employee = new Employee();
-                employee.setId(employeeId);
-
-                employees.setEmployee(employee);
-
-                selectedOrder.getEmployees().add(employees);
-
-
-                dialog.close();
-            }
-            else{
-                commonComponents.showNotification(String.format("%s %s", employeeName,"is already used"),3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_ERROR);
-            }
-        });
-
-        v.add(
-                comboBox,
-                button
-        );
-
-        dialog.add(
-                v
-        );
-
-
-        dialog.open();
-
-        return  dialog;
-
-    }
 
     public VerticalLayout noteCrafter(String text){
 
@@ -731,7 +555,7 @@ public class OrdersRightSide {
             note.setValue(text);
         }
         if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished)){
-            note.setEnabled(false);
+            note.setReadOnly(true);
         }
         note.addValueChangeListener(e->{
            selectedOrder.setOrderNote(note.getValue());

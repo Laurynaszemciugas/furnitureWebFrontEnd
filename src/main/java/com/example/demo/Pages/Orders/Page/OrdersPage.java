@@ -20,6 +20,8 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
@@ -94,6 +96,27 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         verticalLayout.add(
                 briefExplanation(),
                 leftAndRightSideHolder());
+
+
+
+        // get info that user tries to save order
+        ordersRightSide.setOrderConsumer(e->{
+            try {
+                orderCalls.saveModifiedOrder(e);
+                commonComponents.showNotification("Order  ORD-" +  e.getId() + " was saved",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
+                for(var s : e.getEmployees()){
+                    System.out.println(s.getEmployee().getId());
+                }
+            } catch (IOException ex) {
+                commonComponents.showNotification("Error accur while saving please try again later",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_ERROR);
+                throw new RuntimeException(ex);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+            System.out.println("saving");
+        });
+
+
 
         return verticalLayout;
     }

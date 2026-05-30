@@ -1,4 +1,4 @@
-package com.example.demo.Pages.ProductAdd.Page;
+package com.example.demo.Pages.Products.ProductsEdit.Page;
 
 
 import com.example.demo.Common.Common;
@@ -9,47 +9,44 @@ import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Compo
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Main.ProductEditRightSideFields;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ReviewCrafter;
 import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
-import com.example.demo.ServerDBCall.ProductAdd.ProductAddCall;
-import com.example.demo.Services.ProductAdd.ProductAddService;
+import com.example.demo.Services.ProductEditService.ProductEditService;
+
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
-import java.io.IOException;
-
-@Route(value = "ProductsAdd", layout = MainLayout.class)
-public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
+@Route(value = "ProductsEdit/:id", layout = MainLayout.class)
+public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver {
 
 
 
     CommonComponents commonComponents;
     Common common;
+    ProductEditService productEditService;
     CommonCalls commonCalls;
-    ProductAddService productAddService;
-    ProductAddCall productAddCall;
 
     ProductEditRightSideFields productEditRightSideFields;
     ProductEditImage productEditImage;
     ReviewCrafter reviewCrafter;
 
 
+    int productId = 0;
 
 
-    public ProductsAdd(CommonComponents commonComponents,
-                       Common common,
-                       CommonCalls commonCalls,
-                       ProductAddService productAddService,
-                       ProductAddCall productAddCall) {
+
+    public ProductsEdit(CommonComponents commonComponents,
+                        Common common,
+                        CommonCalls commonCalls,
+                        ProductEditService productEditService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.commonCalls = commonCalls;
-        this.productAddService = productAddService;
-        this.productAddCall = productAddCall;
-
-
+        this.productEditService = productEditService;
         this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonCalls);
         this.productEditImage = new ProductEditImage(commonComponents,common);
         this.reviewCrafter = new ReviewCrafter(commonComponents,common);
@@ -59,7 +56,7 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
         setPadding(false);
         setSpacing(false);
         setSizeFull();
-        setAlignItems(Alignment.CENTER);
+        setAlignItems(FlexComponent.Alignment.CENTER);
 
 
 
@@ -73,6 +70,11 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
 
         removeAll();
 
+        int id = Integer.parseInt(beforeEnterEvent.getRouteParameters().get("id").orElse(null));
+
+        this.productId = id;
+
+
 
         add(mainLayout());
 
@@ -83,14 +85,20 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top", "5px");
 
+
         productEditRightSideFields.setConsumer(e->{
-            try {
-                productAddCall.addNewOrder(e);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
+
+
+            System.out.println("Edit time");
+
+            System.out.println("after pressing save");
+            for(var s : e.getImages()){
+                System.out.println(s.getImageName() + " " + s.getImageLogic());
             }
+
+            productEditService.updateProductEdit(e);
+
+
         });
 
         verticalLayout.add(briefPageExplanation(), joinImagesInfo());
@@ -105,14 +113,15 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
         h.addClassName("island");
         h.getStyle().set("flex-wrap","wrap");
 
-        //make an empty field
-        Product sharedProductInstance = new Product();
+        Product product = productEditService.productEditDtoLoad(Long.valueOf(productId));
+        if(product == null){
+            UI.getCurrent().navigate("make a no page found page");
+        }
 
-        HorizontalLayout images = productEditImage.images(sharedProductInstance);
-        Div holder = new Div(images,
-                productEditImage.uploadStuff(),
-                reviewCrafter.commentsHolder(sharedProductInstance.getComments()));
-        VerticalLayout fields = productEditRightSideFields.rightSide(sharedProductInstance);
+        HorizontalLayout images = productEditImage.images(product);
+        Div holder = new Div(images,productEditImage.uploadStuff(),
+                reviewCrafter.commentsHolder(product.getComments()));
+        VerticalLayout fields = productEditRightSideFields.rightSide(product);
 
         h.add(holder,fields);
         h.expand(fields);
@@ -124,10 +133,8 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
 
 
 
-
-
     public HorizontalLayout briefPageExplanation(){
-        HorizontalLayout left = commonComponents.biefPageExplanation("Add a new product");
+        HorizontalLayout left = commonComponents.biefPageExplanation("Edit product");
         left.setWidthFull();
 
         return left;
