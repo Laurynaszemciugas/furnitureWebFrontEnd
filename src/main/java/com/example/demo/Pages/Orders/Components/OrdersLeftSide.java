@@ -206,7 +206,6 @@ public class OrdersLeftSide {
 
 
         preview.addClickListener(e->{
-            System.out.println(orderId);
             consumer.accept(orderId);
         });
 

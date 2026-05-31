@@ -122,6 +122,8 @@ public class Grids {
 
         }).setHeader("Actions").setAutoWidth(true);
 
+        productFeedModelGrid.setHeight("600px");
+
         return productFeedModelGrid;
 
 

@@ -109,6 +109,7 @@ public class OrdersRightSide {
     public VerticalLayout rightSideOrderInfo(){
         rightSide = new VerticalLayout();
         rightSide.setVisible(false);
+        rightSide.addClassName("island-dis");
         rightSide.getStyle().set("position","relative");
 
         HorizontalLayout firstLayer = new HorizontalLayout();
@@ -138,7 +139,7 @@ public class OrdersRightSide {
 
         ordersLeftSide.setConsumer(e->{
             rightSide.setVisible(true);
-            rightSide.addClassName("island");
+            rightSide.addClassName("island-dis");
             try {
                 selectedOrder = orderCalls.getAnOrderFromId(e);
             } catch (IOException ex) {
@@ -649,9 +650,11 @@ public class OrdersRightSide {
     }
 
 
-    public void hideRightSide(){
-        rightSide.setVisible(false);
 
+
+    public void hideRightSide() {
+        rightSide.removeClassName("island-dis");
+       rightSide.setVisible(false);
     }
 
 }

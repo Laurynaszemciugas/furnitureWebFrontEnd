@@ -2,6 +2,7 @@ package com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Main
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.ControllerModels.Common.*;
 import com.example.demo.ControllerModels.CommonDtos.*;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
@@ -35,6 +36,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import lombok.SneakyThrows;
+import org.springframework.beans.BeanUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,6 +58,8 @@ public class ProductEditRightSideFields {
     ProductEditImage productEditImage;
 
     MaterialAndDetails materialAndDetails;
+
+    ObjectConverter objectConverter;
 
 
 
@@ -111,10 +115,14 @@ public class ProductEditRightSideFields {
 
 
     public ProductEditRightSideFields(CommonComponents commonComponents,
-                                      Common common, CommonCalls commonCalls) {
+                                      Common common,
+                                      CommonCalls commonCalls,
+                                      ObjectConverter objectConverter
+    ) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.commonCalls = commonCalls;
+        this.objectConverter = objectConverter;
         this.grids = new Grids(commonComponents,common);
         this.materialAndDetails = new MaterialAndDetails(commonComponents,common,commonCalls,grids);
 
@@ -181,6 +189,12 @@ public class ProductEditRightSideFields {
         tagsSelected.setSpacing(false);
         tagsSelected.setPadding(false);
 
+        if(visibility.getValue().equals(Visibility.NonVisible)){
+            status.setEnabled(false);
+        }
+        materialCost.setReadOnly(true);
+        stockQuantity.setReadOnly(true);
+        lowThreshold.setReadOnly(true);
 
 
 
@@ -260,9 +274,9 @@ public class ProductEditRightSideFields {
         HorizontalLayout buttonSave = new HorizontalLayout();
         buttonSave.setWidthFull();
         Button save = commonComponents.normalThemeButtonNoNavigate("Save",ButtonVariant.LUMO_PRIMARY);
-        Button clear = commonComponents.normalThemeButtonNoNavigate("Clear",ButtonVariant.LUMO_PRIMARY);
-        clear.addClassName("clear-button");
-        buttonSave.add(save,clear);
+        Button clear = commonComponents.buttonThemeAndIconNoNavigate("Clear",ButtonVariant.ERROR,VaadinIcon.ERASER,"Red");
+        Button goBack = new Button("Go back (Products)",e-> UI.getCurrent().navigate("Products/1"));
+        buttonSave.add(save,clear,goBack);
 
         productFeedModelGrid.removeAllColumns();
 
@@ -444,7 +458,7 @@ public class ProductEditRightSideFields {
                     s.setImageUrl(common.imageMaker(s.getImageData(),s.getImageType()));
                 }
 
-                product.setImages(convertImageData(product.getImages(),newImages));
+                product.setImages(objectConverter.convert(newImages,ImagesData.class));
 
             }
 
@@ -747,7 +761,6 @@ public class ProductEditRightSideFields {
 
         // STOCK QUANTITY
         binder.forField(stockQuantity)
-                .asRequired("Stock quantity required")
                 .withConverter(
                         Double::longValue,
                         Long::doubleValue
@@ -762,7 +775,6 @@ public class ProductEditRightSideFields {
 
         // LOW STOCK THRESHOLD
         binder.forField(lowThreshold)
-                .asRequired("Low stock threshold required")
                 .withConverter(
                         Double::longValue,
                         Long::doubleValue
@@ -808,25 +820,12 @@ public class ProductEditRightSideFields {
     }
 
 
-    public List<ImagesData> convertImageData(List<ImagesData> imagesData, List<CommonImagesData> commonImagesDataList){
 
-        imagesData.clear();
 
-        for(var s : commonImagesDataList){
-            ImagesData newImageData = new ImagesData();
-            newImageData.setImageName(s.getImageName());
-            newImageData.setImageData(s.getImageData());
-            newImageData.setImageType(s.getImageType());
-            newImageData.setImageUrl(s.getImageUrl());
-            newImageData.setImageLogic(s.getImageLogic());
-            newImageData.setId(s.getId());
-            newImageData.setUuId(s.getUuId());
-            newImageData.setCreated(s.getCreated());
-            imagesData.add(newImageData);
-        }
 
-        return imagesData;
-    }
+
+
+
 
 
 }

@@ -3,6 +3,7 @@ package com.example.demo.Pages.Products.ProductsEdit.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.ControllerModels.Common.CommonImagesData;
 import com.example.demo.ControllerModels.CommonDtos.ImagesData;
 import com.example.demo.ControllerModels.CommonDtos.Product;
@@ -35,6 +36,8 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
     ProductEditService productEditService;
     CommonCalls commonCalls;
 
+    ObjectConverter objectConverter;
+
     ProductEditRightSideFields productEditRightSideFields;
     ProductEditImage productEditImage;
     ReviewCrafter reviewCrafter;
@@ -47,12 +50,14 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
     public ProductsEdit(CommonComponents commonComponents,
                         Common common,
                         CommonCalls commonCalls,
-                        ProductEditService productEditService) {
+                        ProductEditService productEditService,
+                        ObjectConverter objectConverter) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.commonCalls = commonCalls;
         this.productEditService = productEditService;
-        this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonCalls);
+        this.objectConverter = objectConverter;
+        this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonCalls,objectConverter);
         this.productEditImage = new ProductEditImage(commonComponents,common);
         this.reviewCrafter = new ReviewCrafter(commonComponents,common);
 
@@ -123,11 +128,7 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
             UI.getCurrent().navigate("make a no page found page");
         }
 
-
-        List<CommonImagesData> commonImagesData = new ArrayList<>();
-        convertImageData(product.getImages(),commonImagesData);
-
-        HorizontalLayout images = productEditImage.images(commonImagesData);
+        HorizontalLayout images = productEditImage.images(objectConverter.convert(product.getImages(),CommonImagesData.class));
         Div holder = new Div(images,productEditImage.uploadStuff(),
                 reviewCrafter.commentsHolder(product.getComments()));
         VerticalLayout fields = productEditRightSideFields.rightSide(product);
@@ -149,22 +150,6 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
         return left;
     }
 
-    public List<CommonImagesData> convertImageData(List<ImagesData> imagesData, List<CommonImagesData> commonImagesDataList){
-
-        for(var s : imagesData){
-            CommonImagesData commonImagesData = new CommonImagesData();
-            commonImagesData.setImageName(s.getImageName());
-            commonImagesData.setImageData(s.getImageData());
-            commonImagesData.setImageType(s.getImageType());
-            commonImagesData.setImageUrl(s.getImageUrl());
-            commonImagesData.setImageLogic(s.getImageLogic());
-            commonImagesData.setId(s.getId());
-            commonImagesData.setUuId(s.getUuId());
-            commonImagesDataList.add(commonImagesData);
-        }
-
-        return commonImagesDataList;
-    }
 
 
 

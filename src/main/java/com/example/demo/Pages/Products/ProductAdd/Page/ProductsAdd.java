@@ -3,6 +3,7 @@ package com.example.demo.Pages.Products.ProductAdd.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.ControllerModels.Common.CommonImagesData;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.MainLayout.MainLayout;
@@ -34,6 +35,9 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
     ProductAddService productAddService;
     ProductAddCall productAddCall;
 
+    ObjectConverter objectConverter;
+
+
     ProductEditRightSideFields productEditRightSideFields;
     ProductEditImage productEditImage;
     ReviewCrafter reviewCrafter;
@@ -45,15 +49,17 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
                        Common common,
                        CommonCalls commonCalls,
                        ProductAddService productAddService,
-                       ProductAddCall productAddCall) {
+                       ProductAddCall productAddCall,
+                       ObjectConverter objectConverter) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.commonCalls = commonCalls;
         this.productAddService = productAddService;
         this.productAddCall = productAddCall;
+        this.objectConverter = objectConverter;
 
 
-        this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonCalls);
+        this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonCalls,objectConverter);
         this.productEditImage = new ProductEditImage(commonComponents,common);
         this.reviewCrafter = new ReviewCrafter(commonComponents,common);
 

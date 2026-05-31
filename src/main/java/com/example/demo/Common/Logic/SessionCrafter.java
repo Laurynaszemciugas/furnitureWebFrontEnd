@@ -10,6 +10,7 @@ public class SessionCrafter {
         VaadinSession.getCurrent().setAttribute(sessionName,value);
     }
 
+    // extract data from session
     public <T> T extractSession(String sessionName, Class<T> tClass){
         return tClass.cast(
                 VaadinSession.getCurrent().getAttribute(sessionName)

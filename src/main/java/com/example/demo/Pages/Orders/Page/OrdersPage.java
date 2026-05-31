@@ -138,10 +138,10 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         VerticalLayout right = ordersRightSide.rightSideOrderInfo();
 
         // LEFT SIDE
-        left.setWidth("740px");
+        left.setWidth("450px");
 
         // RIGHT SIDE
-        right.setMaxWidth("700px");
+        right.setMaxWidth("1050px");
 
 
         sidesHolder.add(left, right);
