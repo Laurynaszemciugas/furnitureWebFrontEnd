@@ -99,7 +99,7 @@ public class ProductEditRightSideFields {
 
     HorizontalLayout tagsSelected = new HorizontalLayout();
 
-    List<ImagesData> newImages = null;
+    List<CommonImagesData> newImages = null;
 
     public void setConsumer (Consumer<Product> consumer){
         this.consumer = consumer;
@@ -132,6 +132,12 @@ public class ProductEditRightSideFields {
                 newImages = new ArrayList<>();
                 newImages.addAll(list);
             });
+
+            productEditImage.setMainChange(list -> {
+                newImages = new ArrayList<>();
+                newImages.addAll(list);
+            });
+
         }
     }
 
@@ -437,7 +443,8 @@ public class ProductEditRightSideFields {
                 for(var s : newImages){
                     s.setImageUrl(common.imageMaker(s.getImageData(),s.getImageType()));
                 }
-                product.setImages(newImages);
+
+                product.setImages(convertImageData(product.getImages(),newImages));
 
             }
 
@@ -798,6 +805,27 @@ public class ProductEditRightSideFields {
                 .asRequired("Visibility required")
                 .bind(Product::getVisibility,
                         Product::setVisibility);
+    }
+
+
+    public List<ImagesData> convertImageData(List<ImagesData> imagesData, List<CommonImagesData> commonImagesDataList){
+
+        imagesData.clear();
+
+        for(var s : commonImagesDataList){
+            ImagesData newImageData = new ImagesData();
+            newImageData.setImageName(s.getImageName());
+            newImageData.setImageData(s.getImageData());
+            newImageData.setImageType(s.getImageType());
+            newImageData.setImageUrl(s.getImageUrl());
+            newImageData.setImageLogic(s.getImageLogic());
+            newImageData.setId(s.getId());
+            newImageData.setUuId(s.getUuId());
+            newImageData.setCreated(s.getCreated());
+            imagesData.add(newImageData);
+        }
+
+        return imagesData;
     }
 
 

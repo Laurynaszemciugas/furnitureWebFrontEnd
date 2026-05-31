@@ -2,6 +2,7 @@ package com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Comp
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.Common.CommonImagesData;
 import com.example.demo.ControllerModels.CommonDtos.ImagesData;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.Enums.ImageLogic;
@@ -18,6 +19,7 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.server.streams.InMemoryUploadHandler;
 import com.vaadin.flow.server.streams.UploadHandler;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -39,16 +41,17 @@ public class ProductEditImage {
     Image mainImage = new Image("No_picture.png", "Product image");
 
     // all images saved here
-    List<ImagesData> imagesDataList = new ArrayList<>();
+    List<CommonImagesData> imagesDataList = new ArrayList<>();
 
-    List<ImagesData> newUploadedImages = new ArrayList<>();
+    List<CommonImagesData> newUploadedImages = new ArrayList<>();
 
     // mini images nonMain go here
     VerticalLayout feedLayout = new VerticalLayout();
 
 
     // just a tripwire that says to controller hey i got updlaoded
-    private Consumer<List<ImagesData>> listConsumer = list -> {};
+    private Consumer<List<CommonImagesData>> listConsumer = list -> {};
+    private Consumer<List<CommonImagesData>> mainChange = list -> {};
 
 
 
@@ -65,21 +68,25 @@ public class ProductEditImage {
 
 
 
-    public void setListConsumer(Consumer<List<ImagesData>> listConsumer){
+    public void setListConsumer(Consumer<List<CommonImagesData>> listConsumer){
         this.listConsumer = listConsumer;
+    }
+    public void setMainChange(Consumer<List<CommonImagesData>> mainChange){
+        this.mainChange = mainChange;
     }
 
 
-    public void loadData(Product productEditDto){
-        if(productEditDto.getImages() != null && !productEditDto.getImages().isEmpty()) {
+    public void loadData(List<CommonImagesData> commonImagesData){
+        if(commonImagesData != null && !commonImagesData.isEmpty()) {
             mainFound = true;
-            imagesDataList.addAll(productEditDto.getImages());
+            imagesDataList.addAll(commonImagesData);
+
 
             addExistingImages();
         }
     }
 
-    public HorizontalLayout images(Product productEditDtos) {
+    public HorizontalLayout images(List<CommonImagesData> commonImagesData) {
 
 
 
@@ -124,7 +131,7 @@ public class ProductEditImage {
 
 
 
-        loadData(productEditDtos);
+        loadData(commonImagesData);
 
 
         holder.add(imageHolder,scroller);
@@ -158,11 +165,12 @@ public class ProductEditImage {
                     String fileName = metadata.fileName();
                     String mimeType = metadata.contentType();
 
-                    ImagesData imagesData = new ImagesData();
+                    CommonImagesData imagesData = new CommonImagesData();
                     imagesData.setUuId(UUID.randomUUID().toString());
                     imagesData.setImageName(fileName);
                     imagesData.setImageUrl("none");
                     imagesData.setImageType(mimeType);
+                    imagesData.setCreated(LocalDateTime.now());
                     if(!mainFound) {
                         imagesData.setImageLogic(ImageLogic.Main);
                         mainFound = true;
@@ -265,6 +273,8 @@ public class ProductEditImage {
 
                }
 
+               System.out.println(s.getImageName() + " " + s.getImageLogic());
+
            }
 
 
@@ -273,7 +283,7 @@ public class ProductEditImage {
 
             mainImage.setSrc(currentImage);
 
-
+            mainChange.accept(imagesDataList);
 
 
         });

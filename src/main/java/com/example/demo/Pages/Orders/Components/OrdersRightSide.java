@@ -234,7 +234,7 @@ public class OrdersRightSide {
         Button exit = commonComponents.buttonThemeAndIconNoNavigate("",ButtonVariant.ERROR,VaadinIcon.CLOSE,"Red");
         exit.getStyle().set("position","absolute").set("right","10px").set("top","10px");
         exit.addClickListener(e->{
-           rightSide.setVisible(false);
+           hideRightSide();
         });
 
         rightSide.add(exit);

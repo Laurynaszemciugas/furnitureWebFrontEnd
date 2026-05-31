@@ -165,6 +165,7 @@ public class OrdersLeftSide {
         // ====================== second layer =====================================
 
         ComboBox<String> productNames = new ComboBox<>();
+
         for(var s : products){
             productNames.getListDataView().addItem(s.getProduct().getProductName());
         }
@@ -178,6 +179,7 @@ public class OrdersLeftSide {
             int productCount = products.size();;
             productNames.setPlaceholder(String.format("%d %s",productCount,"Items"));
         }
+
 
         HorizontalLayout secondLayer = new HorizontalLayout();
         secondLayer.addClassName("layout-flex");

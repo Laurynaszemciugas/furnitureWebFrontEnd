@@ -3,6 +3,8 @@ package com.example.demo.Pages.Products.ProductsEdit.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.Common.CommonImagesData;
+import com.example.demo.ControllerModels.CommonDtos.ImagesData;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ProductEditImage;
@@ -19,6 +21,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Route(value = "ProductsEdit/:id", layout = MainLayout.class)
 public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver {
@@ -118,7 +123,11 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
             UI.getCurrent().navigate("make a no page found page");
         }
 
-        HorizontalLayout images = productEditImage.images(product);
+
+        List<CommonImagesData> commonImagesData = new ArrayList<>();
+        convertImageData(product.getImages(),commonImagesData);
+
+        HorizontalLayout images = productEditImage.images(commonImagesData);
         Div holder = new Div(images,productEditImage.uploadStuff(),
                 reviewCrafter.commentsHolder(product.getComments()));
         VerticalLayout fields = productEditRightSideFields.rightSide(product);
@@ -138,6 +147,23 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
         left.setWidthFull();
 
         return left;
+    }
+
+    public List<CommonImagesData> convertImageData(List<ImagesData> imagesData, List<CommonImagesData> commonImagesDataList){
+
+        for(var s : imagesData){
+            CommonImagesData commonImagesData = new CommonImagesData();
+            commonImagesData.setImageName(s.getImageName());
+            commonImagesData.setImageData(s.getImageData());
+            commonImagesData.setImageType(s.getImageType());
+            commonImagesData.setImageUrl(s.getImageUrl());
+            commonImagesData.setImageLogic(s.getImageLogic());
+            commonImagesData.setId(s.getId());
+            commonImagesData.setUuId(s.getUuId());
+            commonImagesDataList.add(commonImagesData);
+        }
+
+        return commonImagesDataList;
     }
 
 

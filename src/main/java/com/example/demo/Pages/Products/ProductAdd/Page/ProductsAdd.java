@@ -3,6 +3,7 @@ package com.example.demo.Pages.Products.ProductAdd.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.Common.CommonImagesData;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ProductEditImage;
@@ -19,6 +20,8 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Route(value = "ProductsAdd", layout = MainLayout.class)
 public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
@@ -107,8 +110,9 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
 
         //make an empty field
         Product sharedProductInstance = new Product();
+        List<CommonImagesData> commonImagesData = new ArrayList<>();
 
-        HorizontalLayout images = productEditImage.images(sharedProductInstance);
+        HorizontalLayout images = productEditImage.images(commonImagesData);
         Div holder = new Div(images,
                 productEditImage.uploadStuff(),
                 reviewCrafter.commentsHolder(sharedProductInstance.getComments()));
