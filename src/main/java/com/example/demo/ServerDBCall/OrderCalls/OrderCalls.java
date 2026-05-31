@@ -124,9 +124,7 @@ public class OrderCalls {
         );
 
         if (response.statusCode() != 200) {
-            System.err.println("Backend Request Failed! Status Code: " + response.statusCode());
-            System.err.println("Backend Response Body: " + response.body());
-            return null;
+            throw new RuntimeException(response.body());
         }
 
         return response.body();

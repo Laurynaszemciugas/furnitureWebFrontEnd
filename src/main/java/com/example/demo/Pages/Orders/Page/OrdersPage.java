@@ -102,18 +102,13 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         // get info that user tries to save order
         ordersRightSide.setOrderConsumer(e->{
             try {
-                orderCalls.saveModifiedOrder(e);
-                commonComponents.showNotification("Order  ORD-" +  e.getId() + " was saved",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
-                for(var s : e.getEmployees()){
-                    System.out.println(s.getEmployee().getId());
-                }
-            } catch (IOException ex) {
-                commonComponents.showNotification("Error accur while saving please try again later",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_ERROR);
-                throw new RuntimeException(ex);
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
+                String answer = orderCalls.saveModifiedOrder(e);
+                commonComponents.showNotification(answer,3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
+                ordersRightSide.hideRightSide();
+
+            } catch (Exception ex) {
+                commonComponents.showNotification(ex.getMessage(), 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_ERROR);
             }
-            System.out.println("saving");
         });
 
 

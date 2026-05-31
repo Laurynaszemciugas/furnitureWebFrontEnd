@@ -240,8 +240,7 @@ public class OrdersRightSide {
         rightSide.add(exit);
 
         save.addClickListener(e->{
-            ordersConsumer.accept(selectedOrder);
-            rightSide.setVisible(false);
+                ordersConsumer.accept(selectedOrder);
         });
 
 
@@ -649,5 +648,10 @@ public class OrdersRightSide {
         total.setText(String.format("%.2f %s",totalValue,"Eur"));
     }
 
+
+    public void hideRightSide(){
+        rightSide.setVisible(false);
+
+    }
 
 }
