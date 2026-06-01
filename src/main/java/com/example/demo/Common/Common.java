@@ -122,7 +122,13 @@ public class Common {
     }
 
     public String dateFormatter(LocalDateTime localDateTime, String format){
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);
+        DateTimeFormatter dateTimeFormatter;
+        if(localDateTime != null) {
+            dateTimeFormatter = DateTimeFormatter.ofPattern(format);
+        }
+        else {
+            return "null";
+        }
         return localDateTime.format(dateTimeFormatter);
     }
 

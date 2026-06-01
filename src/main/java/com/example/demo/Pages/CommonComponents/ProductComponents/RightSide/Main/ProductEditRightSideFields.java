@@ -189,7 +189,7 @@ public class ProductEditRightSideFields {
         tagsSelected.setSpacing(false);
         tagsSelected.setPadding(false);
 
-        if(visibility.getValue().equals(Visibility.NonVisible)){
+        if( visibility.getValue() != null && visibility.getValue().equals(Visibility.NonVisible)) {
             status.setEnabled(false);
         }
         materialCost.setReadOnly(true);

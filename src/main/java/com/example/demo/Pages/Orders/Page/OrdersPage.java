@@ -8,10 +8,12 @@ import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.Pages.Orders.Components.OrderFilters;
 import com.example.demo.Pages.Orders.Components.OrdersLeftSide;
 import com.example.demo.Pages.Orders.Components.OrdersRightSide;
 import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
 import com.example.demo.ServerDBCall.OrderCalls.OrderCalls;
+import com.example.demo.Services.Orders.OrdersService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -34,6 +36,7 @@ import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -51,17 +54,33 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
     OrdersRightSide ordersRightSide;
     OrdersLeftSide ordersLeftSide;
+    OrderFilters orderFilters;
+
+    OrdersService ordersService;
+
+
+    // filter data
+
+    OrderStatus orderStatusChoice = OrderStatus.ALL;
+    Double priceFromChoice = 0.0;
+    Double priceToChoice = 0.0;
+    LocalDate dateFromChoice = LocalDate.now();
+    LocalDate dateToChoice = LocalDate.now();
+    Long amountOfProductsChoice = 3l;
+    int pageChoice = 0;
+    int pageCountChoice = 7;
 
 
 
-
-    public OrdersPage(CommonComponents commonComponents, Common common, OrderCalls orderCalls,EmployeeCalls employeeCalls) {
+    public OrdersPage(CommonComponents commonComponents, Common common, OrderCalls orderCalls,EmployeeCalls employeeCalls,OrdersService ordersService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.orderCalls = orderCalls;
+        this.ordersService = ordersService;
 
         this.ordersRightSide = new OrdersRightSide(commonComponents,common,orderCalls,employeeCalls);
         this.ordersLeftSide = new OrdersLeftSide(commonComponents,common,orderCalls);
+        this.orderFilters = new OrderFilters(commonComponents, common);
 
 
         this.ordersRightSide.setOrdersLeftSide(ordersLeftSide);
@@ -70,6 +89,9 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         setSpacing(false);
         setSizeFull();
         setAlignItems(FlexComponent.Alignment.CENTER);
+
+
+
 
         add(mainLayout());
     }
@@ -134,7 +156,17 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         sidesHolder.setWidthFull();
         sidesHolder.addClassName("layout-flex");
 
-        VerticalLayout left = ordersLeftSide.leftSideTheListOfOrders();
+        VerticalLayout left = ordersLeftSide.leftSideTheListOfOrders(ordersService.getOrderFeedData(
+                orderStatusChoice,
+                priceFromChoice,
+                priceToChoice ,
+                dateFromChoice,
+                dateToChoice,
+                amountOfProductsChoice,
+                pageChoice,
+                pageCountChoice
+
+        ));
         VerticalLayout right = ordersRightSide.rightSideOrderInfo();
 
         // LEFT SIDE

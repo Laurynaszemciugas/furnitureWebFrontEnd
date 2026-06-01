@@ -3,6 +3,8 @@ package com.example.demo.ServerDBCall.OrderCalls;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.Product;
+import com.example.demo.ControllerModels.Orders.OrdersFeedData;
+import com.example.demo.Enums.OrderStatus;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
@@ -12,6 +14,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -24,20 +27,37 @@ public class OrderCalls {
         this.sessionCrafter = new SessionCrafter();
     }
 
-    public List<Orders> getAllOders() throws IOException, InterruptedException {
+    public List<OrdersFeedData> getOrders(
+                                           OrderStatus orderStatusChoice,
+                                           Double priceFromChoice,
+                                           Double priceToChoice,
+                                           LocalDate dateFromChoice,
+                                           LocalDate dateToChoice,
+                                           Long amountOfProductsChoice,
+                                           int pageChoice,
+                                           int pageCountChoice) throws IOException, InterruptedException {
 
         String JWT = sessionCrafter.extractSession("JWT", String.class);
 
-        System.out.println(JWT);
 
         ObjectMapper mapper = new ObjectMapper();
 
-
+        String url = String.format(
+                "http://localhost:8080/api/order/getAllOrders/%s/%f/%f/%s/%s/%d/%d/%d",
+                orderStatusChoice,
+                priceFromChoice,
+                priceToChoice,
+                dateFromChoice,
+                dateToChoice,
+                amountOfProductsChoice,
+                pageChoice,
+                pageCountChoice
+        );
 
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/order/get"))
+                .uri(URI.create(url))
                 .header("Authorization","Bearer " + JWT)
                 .header("Content-Type", "application/json")
                 .GET()
@@ -56,7 +76,7 @@ public class OrderCalls {
 
         return mapper.readValue(
                 response.body(),
-                new TypeReference<List<Orders>>() {}
+                new TypeReference<List<OrdersFeedData>>() {}
         );
 
     }
