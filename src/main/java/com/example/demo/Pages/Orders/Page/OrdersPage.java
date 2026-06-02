@@ -8,6 +8,7 @@ import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.Pages.Orders.Components.BriefOrderPageExplanation;
 import com.example.demo.Pages.Orders.Components.OrderFilters;
 import com.example.demo.Pages.Orders.Components.OrdersLeftSide;
 import com.example.demo.Pages.Orders.Components.OrdersRightSide;
@@ -15,6 +16,7 @@ import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
 import com.example.demo.ServerDBCall.OrderCalls.OrderCalls;
 import com.example.demo.Services.Orders.OrdersService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
@@ -56,6 +58,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
     OrdersRightSide ordersRightSide;
     OrdersLeftSide ordersLeftSide;
     OrderFilters orderFilters;
+    BriefOrderPageExplanation briefOrderPageExplanation;
 
     OrdersService ordersService;
 
@@ -85,6 +88,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         this.ordersRightSide = new OrdersRightSide(commonComponents,common,orderCalls,employeeCalls);
         this.ordersLeftSide = new OrdersLeftSide(commonComponents,common,orderCalls);
         this.orderFilters = new OrderFilters(commonComponents, common);
+        this.briefOrderPageExplanation = new BriefOrderPageExplanation(commonComponents,common);
         this.paganation = new Paganation();
 
 
@@ -96,7 +100,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         setAlignItems(FlexComponent.Alignment.CENTER);
 
 
-    modifyRequests();
+        modifyRequests();
 
         filterMemory.add(
                 orderFilters.moreFilters(),
@@ -111,6 +115,8 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
 
         removeAll();
+
+
 
 
         add(mainLayout());
@@ -154,29 +160,37 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
         orderFilters.setOrderStatusConsumer(e->{
             orderStatusChoice = e;
+            setNewPage();
             updateUIData();
+
+
         });
 
         orderFilters.setFromDateConsumer(e->{
             dateFromChoice = e;
+            setNewPage();
             updateUIData();
         });
 
         orderFilters.setToDateConsumer(e->{
             dateToChoice = e;
+            setNewPage();
             updateUIData();
         });
         orderFilters.setFromCostConsumer(e->{
             priceFromChoice = e;
+            setNewPage();
             updateUIData();
         });
         orderFilters.setToCostConsumer(e->{
             priceToChoice = e;
+            setNewPage();
             updateUIData();
         });
 
         orderFilters.setAmountOfProductsConsumer(e->{
             amountOfProductsChoice = e;
+            setNewPage();
             updateUIData();
         });
         orderFilters.setClearFilters(e->{
@@ -193,11 +207,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
 
 
-    public VerticalLayout briefExplanation(){
-        VerticalLayout v = new VerticalLayout();
-        v.add(commonComponents.biefPageExplanation("Orders"));
-        return v;
-    }
+
 
 
     public void addUIData(){
@@ -258,7 +268,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         VerticalLayout right = ordersRightSide.rightSideOrderInfo();
 
         // LEFT SIDE
-        leftSide.setWidth("450px");
+        leftSide.setWidth("250px");
 
         // RIGHT SIDE
         right.setMaxWidth("1050px");
@@ -272,7 +282,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
 
         verticalLayout.add(
-                briefExplanation(),
+                briefOrderPageExplanation.briefExplanation(),
                 sidesHolder);
     }
 
@@ -289,8 +299,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         leftSide.setWidthFull();
         leftSide.addClassName("island");
 
-//        pageChoice = 0;
-//        paganation.updateUIFromExternal(1);
+
 
         Scroller left = ordersLeftSide.orderFeedHolder(
                 ordersService.getOrderFeedData(
@@ -322,7 +331,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         VerticalLayout right = ordersRightSide.rightSideOrderInfo();
 
         // LEFT SIDE
-        leftSide.setWidth("450px");
+        leftSide.setWidth("250px");
 
         // RIGHT SIDE
         right.setMaxWidth("1050px");
@@ -336,8 +345,13 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
 
         verticalLayout.add(
-                briefExplanation(),
+                briefOrderPageExplanation.briefExplanation(),
                 sidesHolder);
+    }
+
+    public void setNewPage(){
+        pageChoice = 0;
+        paganation.updateUIFromExternal(1);
     }
 
 

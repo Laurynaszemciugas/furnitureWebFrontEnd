@@ -219,6 +219,7 @@ public class OrderFilters {
 
 
         HorizontalLayout buttonsHolder = new HorizontalLayout();
+        buttonsHolder.addClassName("layout-flex");
         buttonsHolder.add(
                 allButton,
                 pendingButton,
@@ -236,6 +237,7 @@ public class OrderFilters {
                 buttonsHolder,
                 clear
         );
+        allHolder.addClassName("layout-flex");
 
         return allHolder;
     }
