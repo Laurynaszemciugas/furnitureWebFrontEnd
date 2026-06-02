@@ -31,4 +31,16 @@ public class OrdersService {
         return orderCalls.getOrders(orderStatusChoice,priceFromChoice,priceToChoice,dateFromChoice,dateToChoice,amountOfProductsChoice,pageChoice,pageCountChoice);
     }
 
+    @SneakyThrows
+    public Long getPageCount(
+            OrderStatus orderStatusChoice,
+            Double priceFromChoice,
+            Double priceToChoice,
+            LocalDate dateFromChoice,
+            LocalDate dateToChoice,
+            Long amountOfProductsChoice
+            ){
+        return orderCalls.getPageCount(orderStatusChoice,priceFromChoice,priceToChoice,dateFromChoice,dateToChoice,amountOfProductsChoice);
+    }
+
 }

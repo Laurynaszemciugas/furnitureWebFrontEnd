@@ -40,9 +40,7 @@ public class OrdersLeftSide {
     CommonComponents commonComponents;
     Common common;
     OrderCalls orderCalls;
-    Paganation paganation;
 
-    OrderFilters orderFilters;
 
 
     Consumer<Long> consumer;
@@ -55,70 +53,10 @@ public class OrdersLeftSide {
         this.common = common;
         this.orderCalls = orderCalls;
 
-        this.paganation = new Paganation();
-        this.orderFilters = new OrderFilters(commonComponents, common);
+
     }
 
-    public VerticalLayout leftSideTheListOfOrders(List<OrdersFeedData> ordersFeedData){
-        VerticalLayout leftSide = new VerticalLayout();
-        leftSide.addClassName("island");
 
-        HorizontalLayout nameOfGrids = new HorizontalLayout();
-        nameOfGrids.addClassName("layout-flex");
-        nameOfGrids.setWidthFull();
-
-        TextField searchField = commonComponents.textFieldCrafter("Search orders..","", VaadinIcon.SEARCH);
-        Button showMoreFilters = new Button(commonComponents.iconCrafter(VaadinIcon.FILTER,"30px","grey"),e-> orderFilters.showFilters());
-        showMoreFilters.addClassName("transparent-button");
-
-        nameOfGrids.add(
-                commonComponents.spanCrafterWordNoHide("Orders List","activityFeed-name"),
-                commonComponents.spaceFiller(),
-                searchField,
-                showMoreFilters
-        );
-
-
-        Button allButton = commonComponents.normalButtonNoNavigate("All", "transparent-button");
-        allButton.addClassName("active");
-        Button pendingButton = commonComponents.normalButtonNoNavigate("Pending", "transparent-button");
-        Button inProgressButton = commonComponents.normalButtonNoNavigate("In Progress", "transparent-button");
-        Button finishedButton = commonComponents.normalButtonNoNavigate("Finished", "transparent-button");
-
-        List<Button> buttons = List.of(allButton,pendingButton,inProgressButton,finishedButton);
-
-        for(var s : buttons){
-
-            s.addClickListener(e->{
-                buttons.forEach(b-> b.removeClassName("active"));
-                s.addClassName("active");
-            });
-
-        }
-
-
-
-
-        HorizontalLayout buttonsHolder = new HorizontalLayout();
-        buttonsHolder.add(
-                allButton,
-                pendingButton,
-                inProgressButton,
-                finishedButton
-
-        );
-
-        leftSide.add(
-                nameOfGrids,
-                buttonsHolder,
-                orderFeedHolder(ordersFeedData),
-                paganation.buttonHolder(5)
-
-        );
-
-
-        return leftSide;
-    }
 
 
     @SneakyThrows
@@ -183,9 +121,13 @@ public class OrdersLeftSide {
 
         // ====================== second layer =====================================
 
-        ComboBox<String> productNames = new ComboBox<>();
-        productNames.setItems("Items");
-        productNames.setPlaceholder(String.format("%d %s",products,"Items"));
+        TextField productNames = new TextField();
+        productNames.setReadOnly(true);
+        Long number = 0l;
+        if(products != null){
+            number = products;
+        }
+        productNames.setValue(String.format("%d %s",number,"Items"));
 
 
         HorizontalLayout secondLayer = new HorizontalLayout();

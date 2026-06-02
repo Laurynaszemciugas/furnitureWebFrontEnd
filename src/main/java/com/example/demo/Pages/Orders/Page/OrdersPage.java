@@ -51,6 +51,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
     Common common;
     OrderCalls orderCalls;
     EmployeeCalls employeeCalls;
+    Paganation paganation;
 
     OrdersRightSide ordersRightSide;
     OrdersLeftSide ordersLeftSide;
@@ -58,18 +59,21 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
     OrdersService ordersService;
 
+    VerticalLayout filterMemory = new VerticalLayout();
+
 
     // filter data
 
     OrderStatus orderStatusChoice = OrderStatus.ALL;
     Double priceFromChoice = 0.0;
     Double priceToChoice = 0.0;
-    LocalDate dateFromChoice = LocalDate.now();
-    LocalDate dateToChoice = LocalDate.now();
-    Long amountOfProductsChoice = 3l;
+    LocalDate dateFromChoice = LocalDate.of(1000,12,12);
+    LocalDate dateToChoice = LocalDate.of(1000,12,12);
+    Long amountOfProductsChoice = 0l;
     int pageChoice = 0;
-    int pageCountChoice = 7;
+    int pageCountChoice = 5;
 
+    VerticalLayout verticalLayout;
 
 
     public OrdersPage(CommonComponents commonComponents, Common common, OrderCalls orderCalls,EmployeeCalls employeeCalls,OrdersService ordersService) {
@@ -81,6 +85,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         this.ordersRightSide = new OrdersRightSide(commonComponents,common,orderCalls,employeeCalls);
         this.ordersLeftSide = new OrdersLeftSide(commonComponents,common,orderCalls);
         this.orderFilters = new OrderFilters(commonComponents, common);
+        this.paganation = new Paganation();
 
 
         this.ordersRightSide.setOrdersLeftSide(ordersLeftSide);
@@ -91,7 +96,13 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         setAlignItems(FlexComponent.Alignment.CENTER);
 
 
+    modifyRequests();
 
+        filterMemory.add(
+                orderFilters.moreFilters(),
+                orderFilters.Buttons()
+        );
+        filterMemory.setPadding(false);
 
         add(mainLayout());
     }
@@ -110,14 +121,12 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
 
     public VerticalLayout mainLayout() {
-        VerticalLayout verticalLayout = new VerticalLayout();
+        verticalLayout = new VerticalLayout();
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top", "5px");
         verticalLayout.addClassName("main-island");
 
-        verticalLayout.add(
-                briefExplanation(),
-                leftAndRightSideHolder());
+        addUIData();
 
 
 
@@ -140,55 +149,195 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
 
 
+    public void modifyRequests(){
 
 
+        orderFilters.setOrderStatusConsumer(e->{
+            orderStatusChoice = e;
+            updateUIData();
+        });
 
+        orderFilters.setFromDateConsumer(e->{
+            dateFromChoice = e;
+            updateUIData();
+        });
 
+        orderFilters.setToDateConsumer(e->{
+            dateToChoice = e;
+            updateUIData();
+        });
+        orderFilters.setFromCostConsumer(e->{
+            priceFromChoice = e;
+            updateUIData();
+        });
+        orderFilters.setToCostConsumer(e->{
+            priceToChoice = e;
+            updateUIData();
+        });
 
+        orderFilters.setAmountOfProductsConsumer(e->{
+            amountOfProductsChoice = e;
+            updateUIData();
+        });
+        orderFilters.setClearFilters(e->{
+            addUIData();
+        });
+        paganation.setOnPageChange(e->{
+            pageChoice = e-1;
+            updateUIData();
+        });
 
-
-
-
-
-    @SneakyThrows
-    public HorizontalLayout leftAndRightSideHolder(){
-        HorizontalLayout sidesHolder = new HorizontalLayout();
-        sidesHolder.setWidthFull();
-        sidesHolder.addClassName("layout-flex");
-
-        VerticalLayout left = ordersLeftSide.leftSideTheListOfOrders(ordersService.getOrderFeedData(
-                orderStatusChoice,
-                priceFromChoice,
-                priceToChoice ,
-                dateFromChoice,
-                dateToChoice,
-                amountOfProductsChoice,
-                pageChoice,
-                pageCountChoice
-
-        ));
-        VerticalLayout right = ordersRightSide.rightSideOrderInfo();
-
-        // LEFT SIDE
-        left.setWidth("450px");
-
-        // RIGHT SIDE
-        right.setMaxWidth("1050px");
-
-
-        sidesHolder.add(left, right);
-        sidesHolder.expand(left);
-
-
-
-        return sidesHolder;
     }
+
+
+
 
 
     public VerticalLayout briefExplanation(){
         VerticalLayout v = new VerticalLayout();
         v.add(commonComponents.biefPageExplanation("Orders"));
         return v;
+    }
+
+
+    public void addUIData(){
+
+        verticalLayout.removeAll();
+
+
+        orderStatusChoice = OrderStatus.ALL;
+        priceFromChoice = 0.0;
+        priceToChoice = 0.0;
+        dateFromChoice = LocalDate.of(1000,12,12);
+        dateToChoice = LocalDate.of(1000,12,12);
+        amountOfProductsChoice = 0l;
+        pageChoice = 0;
+
+        HorizontalLayout sidesHolder = new HorizontalLayout();
+        sidesHolder.setWidthFull();
+        sidesHolder.addClassName("layout-flex");
+
+
+        VerticalLayout leftSide = new VerticalLayout();
+        leftSide.setWidthFull();
+        leftSide.addClassName("island");
+
+        Scroller left = ordersLeftSide.orderFeedHolder(
+                ordersService.getOrderFeedData(
+                        orderStatusChoice,
+                        priceFromChoice,
+                        priceToChoice ,
+                        dateFromChoice,
+                        dateToChoice,
+                        amountOfProductsChoice,
+                        pageChoice,
+                        pageCountChoice
+
+                ));
+
+        filterMemory.removeAll();
+        filterMemory.add(
+                orderFilters.moreFilters(),
+                orderFilters.Buttons()
+        );
+
+        leftSide.add(
+                filterMemory,
+                left,
+                paganation.buttonHolder(
+                        (ordersService.getPageCount(
+                                orderStatusChoice,
+                                priceFromChoice,
+                                priceToChoice,
+                                dateFromChoice,
+                                dateToChoice,
+                                amountOfProductsChoice)).intValue())
+
+        );
+
+        VerticalLayout right = ordersRightSide.rightSideOrderInfo();
+
+        // LEFT SIDE
+        leftSide.setWidth("450px");
+
+        // RIGHT SIDE
+        right.setMaxWidth("1050px");
+
+
+        sidesHolder.add(leftSide, right);
+        sidesHolder.expand(leftSide);
+
+
+
+
+
+        verticalLayout.add(
+                briefExplanation(),
+                sidesHolder);
+    }
+
+    public void updateUIData(){
+
+        verticalLayout.removeAll();
+
+        HorizontalLayout sidesHolder = new HorizontalLayout();
+        sidesHolder.setWidthFull();
+        sidesHolder.addClassName("layout-flex");
+
+
+        VerticalLayout leftSide = new VerticalLayout();
+        leftSide.setWidthFull();
+        leftSide.addClassName("island");
+
+//        pageChoice = 0;
+//        paganation.updateUIFromExternal(1);
+
+        Scroller left = ordersLeftSide.orderFeedHolder(
+                ordersService.getOrderFeedData(
+                        orderStatusChoice,
+                        priceFromChoice,
+                        priceToChoice ,
+                        dateFromChoice,
+                        dateToChoice,
+                        amountOfProductsChoice,
+                        pageChoice,
+                        pageCountChoice
+
+                ));
+
+        leftSide.add(
+                filterMemory,
+                left,
+                paganation.buttonHolder(
+                        (ordersService.getPageCount(
+                                orderStatusChoice,
+                                priceFromChoice,
+                                priceToChoice,
+                                dateFromChoice,
+                                dateToChoice,
+                                amountOfProductsChoice)).intValue())
+
+        );
+
+        VerticalLayout right = ordersRightSide.rightSideOrderInfo();
+
+        // LEFT SIDE
+        leftSide.setWidth("450px");
+
+        // RIGHT SIDE
+        right.setMaxWidth("1050px");
+
+
+        sidesHolder.add(leftSide, right);
+        sidesHolder.expand(leftSide);
+
+
+
+
+
+        verticalLayout.add(
+                briefExplanation(),
+                sidesHolder);
     }
 
 

@@ -82,6 +82,58 @@ public class OrderCalls {
     }
 
 
+    public Long getPageCount(
+            OrderStatus orderStatusChoice,
+            Double priceFromChoice,
+            Double priceToChoice,
+            LocalDate dateFromChoice,
+            LocalDate dateToChoice,
+            Long amountOfProductsChoice) throws IOException, InterruptedException {
+
+        String JWT = sessionCrafter.extractSession("JWT", String.class);
+
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        String url = String.format(
+                "http://localhost:8080/api/order/getAmountOfPages/%s/%f/%f/%s/%s/%d",
+                orderStatusChoice,
+                priceFromChoice,
+                priceToChoice,
+                dateFromChoice,
+                dateToChoice,
+                amountOfProductsChoice
+        );
+
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Authorization","Bearer " + JWT)
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(
+                request,
+                HttpResponse.BodyHandlers.ofString()
+        );
+
+        if (response.statusCode() != 200) {
+            System.err.println("Backend Request Failed! Status Code: " + response.statusCode());
+            System.err.println("Backend Response Body: " + response.body());
+            return null;
+        }
+
+        return mapper.readValue(
+                response.body(),
+                new TypeReference<Long>() {}
+        );
+
+    }
+
+
+
     public Orders getAnOrderFromId(Long id) throws IOException, InterruptedException {
 
         String JWT = sessionCrafter.extractSession("JWT", String.class);
