@@ -69,7 +69,7 @@ public class OrdersLeftSide {
 
         if(ordersFeedData != null && !ordersFeedData.isEmpty()) {
             for (var s : ordersFeedData) {
-                feed.add(createOrderPreview(s.getId(), s.getOrderStatus(), s.getProductCount(), s.getEstimatedDueDate(), s.getCreated()));
+                feed.add(createOrderPreview(s.getId(), s.getOrderStatus(), s.getProductCount(), s.getEstimatedDueDate(), s.getCreated(),s.getTotalPrice()));
             }
         }
         else{
@@ -87,7 +87,7 @@ public class OrdersLeftSide {
 
     }
 
-    public VerticalLayout createOrderPreview(Long orderId, OrderStatus orderStatus, Long products, LocalDateTime dueDate, LocalDateTime created){
+    public VerticalLayout createOrderPreview(Long orderId, OrderStatus orderStatus, Long products, LocalDateTime dueDate, LocalDateTime created,Double price){
         VerticalLayout preview = new VerticalLayout();
         preview.getStyle()
                 .set("padding-left","20px")
@@ -138,7 +138,8 @@ public class OrdersLeftSide {
         secondLayer.add(
                 productNames,
                 commonComponents.spanCrafter(String.format("%s: %s","Created date",common.dateFormatter(created,"MMMM d, yyyy ● h:mma")),"stat-title"),
-                commonComponents.spanCrafter(String.format("%s: %s","Due date",common.dateFormatter(dueDate,"MMMM d, yyyy ● h:mma")),"stat-title")
+                commonComponents.spanCrafter(String.format("%s: %s","Due date",common.dateFormatter(dueDate,"MMMM d, yyyy ● h:mma")),"stat-title"),
+                commonComponents.spanCrafter(String.format("%.2f %s",price,"Eur"),"stat-example")
 
         );
 

@@ -15,6 +15,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.TextField;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -36,9 +37,9 @@ public class OrderFilters {
     Consumer<LocalDate> toDateConsumer;
     Consumer<Long> amountOfProductsConsumer;
     Consumer<String> clearFilters;
+    Consumer<String> prompt;
 
 
-    OrderStatus orderStatusChoice = null;
     Double priceFromChoice = null;
     Double priceToChoice = null;
     LocalDate dateFromChoice= null;
@@ -251,9 +252,19 @@ public class OrderFilters {
         Button showMoreFilters = new Button(commonComponents.iconCrafter(VaadinIcon.FILTER,"30px","grey"), e-> showFilters());
         showMoreFilters.addClassName("transparent-button");
 
+        TextField search = commonComponents.textFieldCrafter("Search products...","",VaadinIcon.SEARCH);
+
+        search.addValueChangeListener(e->{
+           String value = e.getValue().isBlank() ? "ALL" : e.getValue();
+            System.out.println(value);
+           prompt.accept(value);
+        });
+
+
         nameOfGrids.add(
                 commonComponents.spanCrafterWordNoHide("Orders List","activityFeed-name"),
                 commonComponents.spaceFiller(),
+                search,
                 showMoreFilters
         );
         return nameOfGrids;

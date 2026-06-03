@@ -26,9 +26,10 @@ public class OrdersService {
             LocalDate dateFromChoice,
             LocalDate dateToChoice,
             Long amountOfProductsChoice,
+            String promtChoice,
             int pageChoice,
             int pageCountChoice){
-        return orderCalls.getOrders(orderStatusChoice,priceFromChoice,priceToChoice,dateFromChoice,dateToChoice,amountOfProductsChoice,pageChoice,pageCountChoice);
+        return orderCalls.getOrders(orderStatusChoice,priceFromChoice,priceToChoice,dateFromChoice,dateToChoice,amountOfProductsChoice,promtChoice,pageChoice,pageCountChoice);
     }
 
     @SneakyThrows
@@ -38,9 +39,10 @@ public class OrdersService {
             Double priceToChoice,
             LocalDate dateFromChoice,
             LocalDate dateToChoice,
-            Long amountOfProductsChoice
+            Long amountOfProductsChoice,
+            String promtChoice
             ){
-        return orderCalls.getPageCount(orderStatusChoice,priceFromChoice,priceToChoice,dateFromChoice,dateToChoice,amountOfProductsChoice);
+        return orderCalls.getPageCount(orderStatusChoice,priceFromChoice,priceToChoice,dateFromChoice,dateToChoice,amountOfProductsChoice,promtChoice);
     }
 
 }

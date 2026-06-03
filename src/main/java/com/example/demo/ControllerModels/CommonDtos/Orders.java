@@ -3,6 +3,8 @@ package com.example.demo.ControllerModels.CommonDtos;
 import com.example.demo.ControllerModels.CommonDtos.EmployeeJoin.OrderEmployees;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.Enums.OrderStatus;
+import com.example.demo.Enums.PayMethod;
+import com.example.demo.Enums.PayStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -24,6 +26,10 @@ public class Orders {
     private OrderStatus orderStatus;
     private String orderNote;
     private LocalDateTime estimatedDueDate;
+    private String phoneNumber;
+    private PayStatus payStatus;
+    private PayMethod payMethod;
+    private String billingAddress;
     private LocalDateTime created;
 
 

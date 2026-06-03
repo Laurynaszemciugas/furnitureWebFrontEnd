@@ -9,9 +9,12 @@ import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.DTOS.ComboBoxEmployees;
 import com.example.demo.Enums.EmployeeCategory;
 import com.example.demo.Enums.OrderStatus;
+import com.example.demo.Enums.PayMethod;
+import com.example.demo.Enums.PayStatus;
 import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
 import com.example.demo.ServerDBCall.OrderCalls.OrderCalls;
 import com.vaadin.flow.component.HasComponents;
+import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -66,7 +69,10 @@ public class OrdersRightSide {
     Span total;
 
     Span dueDateForChange;
+    Span addressAuto;
 
+    ComboBox<PayStatus> payStatusComboBox;
+    ComboBox<PayMethod> payMethodComboBox;
 
     List<ComboBoxEmployees> listEmployees = new ArrayList<>();
 
@@ -124,8 +130,33 @@ public class OrdersRightSide {
         secondLayer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
         Span orderId = commonComponents.spanCrafter("","activityFeed-name");
-        Span itemCount = commonComponents.spanCrafter("","stat-title");
-        Span totalCount = commonComponents.spanCrafter("","stat-title");
+
+        VerticalLayout userData = new VerticalLayout();
+        userData.addClassName("island");
+        userData.setPadding(false);
+        userData.setWidthFull();
+
+
+        addressAuto = commonComponents.spanCrafter("none","stat-title");
+        TextArea address = new TextArea("Address");
+        address.setHeight("120px");
+        address.setWidthFull();
+        address.addValueChangeListener(e->{
+            selectedOrder.setBillingAddress(e.getValue());
+            addressAuto.setText(
+                    selectedOrder.getBillingAddress() == null
+                            ? "Buyer address: None"
+                            : String.format("Buyer address: %s", selectedOrder.getBillingAddress())
+            );
+        });
+
+        HorizontalLayout userSmallInfo = new HorizontalLayout();
+        userSmallInfo.setPadding(false);
+        userSmallInfo.setWidthFull();
+        userSmallInfo.setJustifyContentMode(FlexComponent.JustifyContentMode.AROUND);
+
+
+
 
         HorizontalLayout thirdLayer = new HorizontalLayout();
         thirdLayer.setPadding(false);
@@ -133,11 +164,17 @@ public class OrdersRightSide {
         thirdLayer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
         Span created = commonComponents.spanCrafter("","stat-title");
+        Span buyerName =  commonComponents.spanCrafterWordNoHide(String.format("%s %s", "Buyer name:" ,selectedOrder.getOrderPlacedBy() == null ? "None" : selectedOrder.getOrderPlacedBy().getName()),"stat-title");
+        Span phoneNumber = commonComponents.spanCrafterWordNoHide(String.format("%s %s", "Buyer phone number:" ,selectedOrder.getPhoneNumber() == null ? "None" : selectedOrder.getPhoneNumber()),"stat-title");
         totalCost = commonComponents.spanCrafter("","activityFeed-name");
 
 
 
+
+        // CONSUMMER
+
         ordersLeftSide.setConsumer(e->{
+
             rightSide.setVisible(true);
             rightSide.addClassName("island-dis");
             try {
@@ -223,6 +260,17 @@ public class OrdersRightSide {
 
 
 
+             buyerName.setText(String.format("%s %s", "Buyer name:" ,selectedOrder.getOrderPlacedBy() == null ? "None" : selectedOrder.getOrderPlacedBy().getName()));
+             phoneNumber.setText(String.format("%s %s", "Buyer phone number:" ,selectedOrder.getPhoneNumber() == null ? "None" : selectedOrder.getPhoneNumber()));
+            addressAuto.setText(
+                    selectedOrder.getBillingAddress() == null
+                            ? "Buyer address: None"
+                            : String.format("Buyer address: %s", selectedOrder.getBillingAddress())
+            );
+            address.setValue(selectedOrder.getBillingAddress() == null ? "None" : selectedOrder.getBillingAddress());
+
+            payStatusComboBox.setValue(selectedOrder.getPayStatus() == null ? null : selectedOrder.getPayStatus());
+            payMethodComboBox.setValue(selectedOrder.getPayMethod() == null ? null : selectedOrder.getPayMethod());
         });
 
 
@@ -251,11 +299,37 @@ public class OrdersRightSide {
                 status
         );
 
+
+
         secondLayer.add(
-                orderId,
-                itemCount,
-                totalCount
+                orderId
         );
+
+
+
+
+
+
+
+
+
+        userSmallInfo.add(
+                buyerName,
+                phoneNumber,
+                addressAuto
+
+        );
+
+        userData.add(
+                commonComponents.spanCrafterWordNoHide("Buyer info","activityFeed-name"),
+                userSmallInfo,
+                address
+
+        );
+
+
+
+
         thirdLayer.add(
                 created,
                 totalCost
@@ -273,11 +347,13 @@ public class OrdersRightSide {
 
                 firstLayer,
                 secondLayer,
+                userData,
                 thirdLayer,
                 orderItemsHolder,
                 timeLineHoder,
                 employeeAssigmentHolder,
                 noteHolder,
+                orderStatusButtons(),
                 actionButtons()
 
         );
@@ -615,6 +691,48 @@ public class OrdersRightSide {
                 pending,
                 inProgress,
                 finished
+        );
+
+
+        return h;
+    }
+
+
+    public HorizontalLayout orderStatusButtons(){
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setWidthFull();
+        h.addClassName("layout-flex");
+
+        payStatusComboBox = new ComboBox<>("Paid/Unpaid");
+        payStatusComboBox.setItems(PayStatus.values());
+
+
+        payMethodComboBox = new ComboBox<>("Pay method");
+        payMethodComboBox.setItems(PayMethod.values());
+
+        payStatusComboBox.addValueChangeListener(e->{
+
+            if(e.isFromClient()) {
+                System.out.println(e.getValue());
+                selectedOrder.setPayStatus(e.getValue());
+                commonComponents.showNotification("Order was set as " + e.getValue(), 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
+                System.out.println(selectedOrder.getPayStatus());
+            }
+        });
+
+        payMethodComboBox.addValueChangeListener(e->{
+
+            if(e.isFromClient()) {
+                selectedOrder.setPayMethod(e.getValue());
+                commonComponents.showNotification("Order was set as " + e.getValue(), 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
+            }
+        });
+
+
+        h.add(
+                payStatusComboBox,
+                payMethodComboBox
         );
 
 

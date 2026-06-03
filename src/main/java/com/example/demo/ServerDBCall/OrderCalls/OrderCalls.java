@@ -34,6 +34,7 @@ public class OrderCalls {
                                            LocalDate dateFromChoice,
                                            LocalDate dateToChoice,
                                            Long amountOfProductsChoice,
+                                           String promtChoice,
                                            int pageChoice,
                                            int pageCountChoice) throws IOException, InterruptedException {
 
@@ -43,13 +44,14 @@ public class OrderCalls {
         ObjectMapper mapper = new ObjectMapper();
 
         String url = String.format(
-                "http://localhost:8080/api/order/getAllOrders/%s/%f/%f/%s/%s/%d/%d/%d",
+                "http://localhost:8080/api/order/getAllOrders/%s/%f/%f/%s/%s/%d/%s/%d/%d",
                 orderStatusChoice,
                 priceFromChoice,
                 priceToChoice,
                 dateFromChoice,
                 dateToChoice,
                 amountOfProductsChoice,
+                promtChoice,
                 pageChoice,
                 pageCountChoice
         );
@@ -88,7 +90,8 @@ public class OrderCalls {
             Double priceToChoice,
             LocalDate dateFromChoice,
             LocalDate dateToChoice,
-            Long amountOfProductsChoice) throws IOException, InterruptedException {
+            Long amountOfProductsChoice,
+            String promtChoice) throws IOException, InterruptedException {
 
         String JWT = sessionCrafter.extractSession("JWT", String.class);
 
@@ -96,13 +99,14 @@ public class OrderCalls {
         ObjectMapper mapper = new ObjectMapper();
 
         String url = String.format(
-                "http://localhost:8080/api/order/getAmountOfPages/%s/%f/%f/%s/%s/%d",
+                "http://localhost:8080/api/order/getAmountOfPages/%s/%f/%f/%s/%s/%d/%s",
                 orderStatusChoice,
                 priceFromChoice,
                 priceToChoice,
                 dateFromChoice,
                 dateToChoice,
-                amountOfProductsChoice
+                amountOfProductsChoice,
+                promtChoice
         );
 
         HttpClient client = HttpClient.newHttpClient();

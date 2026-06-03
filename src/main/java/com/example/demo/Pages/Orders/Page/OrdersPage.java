@@ -73,6 +73,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
     LocalDate dateFromChoice = LocalDate.of(1000,12,12);
     LocalDate dateToChoice = LocalDate.of(1000,12,12);
     Long amountOfProductsChoice = 0l;
+    String promtChoice = "ALL";
     int pageChoice = 0;
     int pageCountChoice = 5;
 
@@ -188,6 +189,12 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
             updateUIData();
         });
 
+        orderFilters.setPrompt(e->{
+            this.promtChoice = e;
+            setNewPage();
+            updateUIData();
+        });
+
         orderFilters.setAmountOfProductsConsumer(e->{
             amountOfProductsChoice = e;
             setNewPage();
@@ -240,6 +247,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
                         dateFromChoice,
                         dateToChoice,
                         amountOfProductsChoice,
+                        promtChoice,
                         pageChoice,
                         pageCountChoice
 
@@ -261,7 +269,8 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
                                 priceToChoice,
                                 dateFromChoice,
                                 dateToChoice,
-                                amountOfProductsChoice)).intValue())
+                                amountOfProductsChoice,
+                                promtChoice)).intValue())
 
         );
 
@@ -309,6 +318,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
                         dateFromChoice,
                         dateToChoice,
                         amountOfProductsChoice,
+                        promtChoice,
                         pageChoice,
                         pageCountChoice
 
@@ -324,7 +334,8 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
                                 priceToChoice,
                                 dateFromChoice,
                                 dateToChoice,
-                                amountOfProductsChoice)).intValue())
+                                amountOfProductsChoice,
+                                promtChoice)).intValue())
 
         );
 
