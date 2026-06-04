@@ -13,6 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class OrderAddProducts {
 
+    private Long id;
     private String mainImage;
     private String productName;
     private String sku;
@@ -21,5 +22,6 @@ public class OrderAddProducts {
     private Long lowStockThreshold;
     private Stock stock;
     private Double price;
+    private Long amountSelected;
 
 }
