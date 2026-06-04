@@ -37,6 +37,7 @@ import lombok.SneakyThrows;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -705,11 +706,11 @@ public class OrdersRightSide {
         h.addClassName("layout-flex");
 
         payStatusComboBox = new ComboBox<>("Paid/Unpaid");
-        payStatusComboBox.setItems(PayStatus.values());
+        payStatusComboBox.setItems(Arrays.stream(PayStatus.values()).filter(e-> e!= PayStatus.ALL).toList());
 
 
         payMethodComboBox = new ComboBox<>("Pay method");
-        payMethodComboBox.setItems(PayMethod.values());
+        payMethodComboBox.setItems(Arrays.stream(PayMethod.values()).filter(e-> e != PayMethod.ALL).toList());
 
         payStatusComboBox.addValueChangeListener(e->{
 

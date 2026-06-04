@@ -22,9 +22,6 @@ public class Employee {
     private String gmail;
 
     private String profileImage;
-
-    private String password;
-
     private EnabledDisabled enabledDisabled;
     private EmployeeCategory employeeCategory;
     private User user;

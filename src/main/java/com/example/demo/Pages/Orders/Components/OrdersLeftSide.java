@@ -98,6 +98,7 @@ public class OrdersLeftSide {
 
 
 
+
         // ====================== first layer =====================================
 
         Span status = commonComponents.spanCrafter(orderStatus.getDisplayName(),"stock-badge");

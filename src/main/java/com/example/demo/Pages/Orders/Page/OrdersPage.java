@@ -143,6 +143,8 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
                 String answer = orderCalls.saveModifiedOrder(e);
                 commonComponents.showNotification(answer,3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
                 ordersRightSide.hideRightSide();
+                setNewPage();
+                updateUIData();
 
             } catch (Exception ex) {
                 commonComponents.showNotification(ex.getMessage(), 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_ERROR);
@@ -238,6 +240,8 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         VerticalLayout leftSide = new VerticalLayout();
         leftSide.setWidthFull();
         leftSide.addClassName("island");
+        leftSide.setMaxHeight("900px");
+
 
         Scroller left = ordersLeftSide.orderFeedHolder(
                 ordersService.getOrderFeedData(

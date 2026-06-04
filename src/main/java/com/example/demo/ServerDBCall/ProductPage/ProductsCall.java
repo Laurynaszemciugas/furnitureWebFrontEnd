@@ -1,6 +1,7 @@
 package com.example.demo.ServerDBCall.ProductPage;
 
 import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.ControllerModels.Orders.OrderAddProducts;
 import com.example.demo.ControllerModels.Products.ProductFeedModel;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Stock;
@@ -138,6 +139,40 @@ public class ProductsCall {
         }
 
         return response.body();
+
+    }
+
+
+    public List<OrderAddProducts> getProductsForAddOrder() throws IOException, InterruptedException {
+
+        String JWT = sessionCrafter.extractSession("JWT", String.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/product/getProductsForAddOrder"))
+                .header("Authorization","Bearer " + JWT)
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(
+                request,
+                HttpResponse.BodyHandlers.ofString()
+        );
+
+        if (response.statusCode() != 200) {
+            System.err.println("Backend Request Failed! Status Code: " + response.statusCode());
+            System.err.println("Backend Response Body: " + response.body());
+        }
+
+        return mapper.readValue(
+                response.body(),
+                new TypeReference<List<OrderAddProducts>>() {}
+        );
 
     }
 

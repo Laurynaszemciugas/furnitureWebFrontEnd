@@ -1,5 +1,6 @@
 package com.example.demo.Services.Products;
 
+import com.example.demo.ControllerModels.Orders.OrderAddProducts;
 import com.example.demo.ControllerModels.Products.ProductFeedModel;
 import com.example.demo.ControllerModels.Products.ProductPageData;
 import com.example.demo.Enums.Category;
@@ -57,6 +58,11 @@ public class ProductService {
         return  productsCall.removeProduct(id);
     }
 
+
+    @SneakyThrows
+    public List<OrderAddProducts> getProductsForAddOrder(){
+        return productsCall.getProductsForAddOrder();
+    }
 
 
 }
