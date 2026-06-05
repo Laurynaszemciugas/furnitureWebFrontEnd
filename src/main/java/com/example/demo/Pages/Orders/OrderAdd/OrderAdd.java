@@ -2,11 +2,14 @@ package com.example.demo.Pages.Orders.OrderAdd;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.Orders.OrderAddProducts;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.PayMethod;
 import com.example.demo.Enums.PayStatus;
 import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.Pages.Orders.Components.AssignEmployees;
+import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -42,7 +45,8 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
     CommonComponents commonComponents;
     Common common;
     ProductService productService;
-
+    AssignEmployees assignEmployees;
+    EmployeeCalls employeeCalls;
 
 
     Binder<Void> binder = new Binder<>();
@@ -61,17 +65,23 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
     List<OrderAddProducts> selectedProducts = new ArrayList<>();
     Grid<OrderAddProducts> orderItems;
 
-    Span totalValueOfItems;
+    Span totalValueOfItems = new Span();;
 
+    Orders selectedOrder = new Orders();
+    VerticalLayout employeeHolder = new VerticalLayout();
 
     public OrderAdd(
             CommonComponents commonComponents,
             Common common,
-            ProductService productService) {
+            ProductService productService,
+            EmployeeCalls employeeCalls
+            ) {
 
         this.commonComponents = commonComponents;
         this.common = common;
         this.productService = productService;
+        this.employeeCalls = employeeCalls;
+        this.assignEmployees = new AssignEmployees(commonComponents,common,employeeCalls);
 
         setPadding(false);
         setSpacing(false);
@@ -80,6 +90,9 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
         binder();
 
         listOfProducts.addAll(productService.getProductsForAddOrder());
+
+
+
 
     }
 
@@ -168,10 +181,20 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
         v.setWidthFull();
         v.addClassName("island");
 
+        employeeHolder.removeAll();
+        employeeHolder.setPadding(false);
+        VerticalLayout verticalLayout = new VerticalLayout();
+        verticalLayout.setPadding(false);
+        verticalLayout.add(
+                assignEmployees.employeeAssignment(selectedOrder,employeeHolder)
+
+        );
+
 
         v.add(
                 consumerInformation(),
-                consumerOrderItems()
+                consumerOrderItems(),
+                verticalLayout
         );
 
         return v;
@@ -217,7 +240,8 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
 
 
         orderItems = new Grid<>(OrderAddProducts.class,false);
-        orderItems.setItems(selectedProducts);
+        updateGrid();
+        calculateTotal();
 
         orderItems.addComponentColumn(e->{
 
@@ -286,6 +310,8 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
 
             quantity.addValueChangeListener(ee->{
                 e.setAmountSelected(Long.valueOf(String.valueOf(ee.getValue())));
+                updateGrid();
+                calculateTotal();
             });
 
             return  quantity;
@@ -298,6 +324,11 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
 
             Button button = new Button("", VaadinIcon.TRASH.create());
 
+            button.addClickListener(ee->{
+                selectedProducts.removeIf(item-> item.equals(e));
+                updateGrid();
+                calculateTotal();
+            });
 
 
             return  button;
@@ -306,7 +337,7 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
 
 
 
-        totalValueOfItems = commonComponents.spanCrafterWordNoHide(String.format("%s: %.2f %s","Total", 100.20,"Eur"),"stat-example");
+        totalValueOfItems = commonComponents.spanCrafterWordNoHide(String.format("%s: %.2f %s","Total", 0.0,"Eur"),"stat-example");
         Button addProduct = commonComponents.buttonThemeAndIconNoNavigate("Create Order", ButtonVariant.LUMO_PRIMARY, VaadinIcon.PLUS,"white");
 
         addProduct.addClickListener(e->{
@@ -339,6 +370,7 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
 
         Grid<OrderAddProducts> productList = new Grid<>(OrderAddProducts.class,false);
         productList.setItems(listOfProducts);
+        productList.setSizeFull();
 
         productList.addComponentColumn(e->{
 
@@ -413,13 +445,15 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
                             break;
                         }
                     }
-                    orderItems.setItems(selectedProducts);
+                    updateGrid();
+                    calculateTotal();
                 }
                 else{
                     selectedProducts.add(orderAddProducts);
                 }
                 dialog.close();
-                orderItems.setItems(selectedProducts);
+                updateGrid();
+                calculateTotal();
             });
 
 
@@ -427,27 +461,33 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
         }).setAutoWidth(true).setHeader("Actions");
 
 
-        Button button = new Button("Select");
-        button.setVisible(false);
+        Button button = new Button("back",e-> dialog.close());
 
 
-        productList.asSingleSelect().addValueChangeListener(e->{
-
-        });
 
 
 
 
         dialog.add(
-                productList,
-                button
+                productList
         );
 
         dialog.open();
     }
 
 
+    public void updateGrid(){
+        orderItems.setItems(selectedProducts);
+    }
 
+    public void calculateTotal(){
+        Double total = 0.0;
+        for(var s : selectedProducts){
+            Long taken = s.getAmountSelected() == null ? 0 : s.getAmountSelected();
+            total+= s.getPrice()* taken;
+        }
+        totalValueOfItems.setText(String.format("%s: %.2f %s","Total", total,"Eur"));
+    }
 
 
 

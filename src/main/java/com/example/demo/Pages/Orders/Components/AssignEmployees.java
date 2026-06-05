@@ -10,10 +10,12 @@ import com.example.demo.Enums.EmployeeCategory;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
 import com.vaadin.flow.component.HasComponents;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -55,6 +57,7 @@ public class AssignEmployees {
     public VerticalLayout employeeAssignment(Orders selectedOrder, VerticalLayout employeeHolder){
 
         VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
         v.setPadding(false);
         v.setWidthFull();
 
@@ -71,13 +74,14 @@ public class AssignEmployees {
     public HorizontalLayout assignEmployeesComponent(Orders selectedOrder, VerticalLayout employeeHolder) {
 
         HorizontalLayout employeeLayer = new HorizontalLayout();
+
         employeeLayer.setPadding(false);
         employeeLayer.setWidthFull();
         employeeLayer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
         Button addEmployee = commonComponents.buttonThemeAndIconNoNavigate("Add employee", ButtonVariant.LUMO_PRIMARY, VaadinIcon.PLUS, "White");
 
-        if (selectedOrder.getOrderStatus().equals(OrderStatus.Finished)) {
+        if (OrderStatus.Finished.equals(selectedOrder.getOrderStatus())) {
             addEmployee.setEnabled(false);
         }
 
@@ -98,7 +102,100 @@ public class AssignEmployees {
     public Dialog showEmployeeDialog(Orders selectedOrder, VerticalLayout employeeHolder) {
 
         Dialog dialog = new Dialog("Select employee ");
+        dialog.setHeight("600px");
+        dialog.setWidth("700px");
 
+        Grid<ComboBoxEmployees> employeeGrid = new Grid<>(ComboBoxEmployees.class,false);
+        employeeGrid.setItems(listEmployees);
+
+        employeeGrid.addComponentColumn(e->{
+            Image image = commonComponents.imageCrafter(e.getProfileImage() != null ? e.getProfileImage() : "No_picture.png", "30px", "30px", "20px");
+            return image;
+        }).setHeader("Image");
+
+        employeeGrid.addComponentColumn(e->{
+            Span employeeFullName = commonComponents.spanCrafter(e.getFullName(), "stat-example");
+            return employeeFullName;
+        }).setHeader("Name");
+
+        employeeGrid.addComponentColumn(e->{
+            Span employeeRole = commonComponents.spanCrafter(e.getEmployeeCategory().toString(), "stat-title");
+            return employeeRole;
+        }).setHeader("Category");
+
+        employeeGrid.addComponentColumn(e->{
+            Button button = new Button("Select");
+
+
+
+            if(selectedOrder.getEmployees() != null){
+            for(var s : selectedOrder.getEmployees()) {
+                if (s.getEmployee().getId().equals(e.getId())) {
+                    button.setText("Selected");
+                    button.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+                    break;
+                }
+            }
+
+            }
+
+
+            button.addClickListener(ee -> {
+
+                employeeId = e.getId();
+                employeeName = e.getFullName();
+                employeeCategoryNew = e.getEmployeeCategory();
+                employeeProfilePic = e.getProfileImage();
+
+                if (selectedOrder.getEmployees() == null || !selectedOrder.getEmployees().stream().anyMatch(emp -> emp.getEmployee().getId().equals(employeeId)) ) {
+
+                    employeeHolder.add(
+                            loadEmployees(
+                                    employeeId,
+                                    employeeName,
+                                    employeeCategoryNew,
+                                    employeeProfilePic,
+                                    selectedOrder
+                            ));
+
+                    OrderEmployees employees = new OrderEmployees();
+
+                    Employee employee = new Employee();
+                    employee.setId(employeeId);
+
+                    employees.setEmployee(employee);
+
+                    if(selectedOrder.getEmployees() == null){
+                        selectedOrder.setEmployees(new ArrayList<>());
+                    }
+                    selectedOrder.getEmployees().add(employees);
+
+
+                    employeeGrid.setItems(listEmployees);
+
+
+                } else {
+                    commonComponents.showNotification(String.format("%s %s", employeeName, "is already used"), 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_ERROR);
+                }
+            });
+
+            return button;
+        }).setHeader("Actions");
+
+        employeeGrid.setPartNameGenerator(employee -> {
+            // Check if the current row's employee is in the selectedOrder list
+            if (selectedOrder != null && selectedOrder.getEmployees() != null) {
+                boolean isAlreadySelected = selectedOrder.getEmployees().stream()
+                        .anyMatch(emp -> emp.getEmployee().getId().equals(employee.getId()));
+
+
+                if (isAlreadySelected) {
+                    System.out.println("here");
+                    return "newColor";
+                }
+            }
+            return null;
+        });
 
         VerticalLayout v = new VerticalLayout();
         v.setWidthFull();
@@ -171,38 +268,10 @@ public class AssignEmployees {
         });
 
 
-        button.addClickListener(e -> {
 
-
-            if (!selectedOrder.getEmployees().stream().anyMatch(emp -> emp.getEmployee().getId().equals(employeeId))) {
-
-                employeeHolder.add(
-                        loadEmployees(
-                                employeeId,
-                                employeeName,
-                                employeeCategoryNew,
-                                employeeProfilePic,
-                                selectedOrder
-                        ));
-
-                OrderEmployees employees = new OrderEmployees();
-
-                Employee employee = new Employee();
-                employee.setId(employeeId);
-
-                employees.setEmployee(employee);
-
-                selectedOrder.getEmployees().add(employees);
-
-
-                dialog.close();
-            } else {
-                commonComponents.showNotification(String.format("%s %s", employeeName, "is already used"), 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_ERROR);
-            }
-        });
 
         v.add(
-                comboBox,
+                employeeGrid,
                 button
         );
 
@@ -228,19 +297,19 @@ public class AssignEmployees {
         Button button = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.TRASH, "Blue");
         button.setVisible(false);
 
-        if (selectedOrder.getOrderStatus().equals(OrderStatus.Finished)) {
+        if (OrderStatus.Finished.equals(selectedOrder.getOrderStatus())) {
             button.setEnabled(false);
         }
 
         h.getElement().addEventListener("mouseenter", e -> {
-            if (!selectedOrder.getOrderStatus().equals(OrderStatus.Finished)) {
+            if (!OrderStatus.Finished.equals(selectedOrder.getOrderStatus())) {
                 button.setVisible(true);
             }
         });
 
 
         h.getElement().addEventListener("mouseleave", e -> {
-            if (!selectedOrder.getOrderStatus().equals(OrderStatus.Finished)) {
+            if (!OrderStatus.Finished.equals(selectedOrder.getOrderStatus())) {
                 button.setVisible(false);
             }
 

@@ -340,6 +340,10 @@ vaadin-button {
     z-index: 10;
 }
 
+.newColor{
+background-color: #d4edda;
+}
+
 
 .new-badge {
     display: inline-block;
