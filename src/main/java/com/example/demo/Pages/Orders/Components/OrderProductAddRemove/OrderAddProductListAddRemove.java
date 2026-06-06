@@ -26,6 +26,8 @@ public class OrderAddProductListAddRemove {
     CommonComponents commonComponents;
     Common common;
 
+    OrderGridProductRemoveAdd orderGridProductRemoveAdd;
+
     List<OrderAddProducts> selectedProducts = new ArrayList<>();
     Grid<OrderAddProducts> orderItems;
 
@@ -36,6 +38,9 @@ public class OrderAddProductListAddRemove {
     public OrderAddProductListAddRemove(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.orderGridProductRemoveAdd = new OrderGridProductRemoveAdd(commonComponents,common);
+
+        updataTotalValue();
     }
 
 
@@ -49,100 +54,11 @@ public class OrderAddProductListAddRemove {
 
 
         orderItems = new Grid<>(OrderAddProducts.class,false);
-        updateGrid();
-        calculateTotal();
-
-        orderItems.addComponentColumn(e->{
-
-            Image image = commonComponents.imageCrafter(e.getMainImage() == null ? "No_picture.png" : e.getMainImage() ,"80px","80px","15px");
-
-            Span productName = commonComponents.spanCrafterWordNoHide(e.getProductName() == null ? "None" : e.getProductName(),"stat-example");
-            Span productSku = commonComponents.spanCrafterWordNoHide(e.getSku() == null ? "None" : e.getSku(),"stat-title");
-
-            VerticalLayout nameHolder = new VerticalLayout();
-            nameHolder.add(
-                    productName,
-                    productSku
-            );
-
-            HorizontalLayout productHolder = new HorizontalLayout();
-            productHolder.setAlignItems(FlexComponent.Alignment.CENTER);
-            productHolder.add(
-                    image,
-                    nameHolder
-            );
+        orderGridProductRemoveAdd.updateGrid(orderItems, selectedProducts);
+        orderGridProductRemoveAdd.calculateTotal(selectedProducts);
 
 
-
-            return  productHolder;
-        }).setAutoWidth(true).setHeader("Product");
-
-
-        orderItems.addComponentColumn(e->{
-
-
-
-            Span productCategory = commonComponents.spanCrafterWordNoHide(e.getCategory() == null ? "None" : e.getCategory().toString(),"stat-title");
-
-            return  productCategory;
-        }).setAutoWidth(true).setHeader("Category");
-
-        orderItems.addComponentColumn(e->{
-
-            Span stockQuantity = commonComponents.spanCrafterWordNoHide(e.getStockQuantity() == null ? "None" : String.format("%s %d","In stock:",e.getStockQuantity()),"stat-title");
-            Span lowStockThreshold = commonComponents.spanCrafterWordNoHide(e.getLowStockThreshold() == null ? "None" : String.format("%s %d","Threshold:",e.getLowStockThreshold()),"stat-title");
-
-            VerticalLayout stockLevel = new VerticalLayout();
-            stockLevel.add(
-                    stockQuantity,
-                    lowStockThreshold
-            );
-
-            return  stockLevel;
-        }).setAutoWidth(true).setHeader("Stock levels");
-
-        orderItems.addComponentColumn(e->{
-
-            Span productPrice = commonComponents.spanCrafterWordNoHide(e.getPrice() == null ? "None" : String.format("%.2f %s",e.getPrice(),"Eur"),"stat-example");
-
-            return  productPrice;
-        }).setAutoWidth(true).setHeader("Price");
-
-        orderItems.addComponentColumn(e->{
-
-            IntegerField quantity = new IntegerField();
-            quantity.setStep(1);
-            quantity.setMin(0);
-            quantity.setMax(100);
-            quantity.setValue(e.getAmountSelected() == null ? 0: e.getAmountSelected().intValue());
-            quantity.setStepButtonsVisible(true);
-
-            quantity.addValueChangeListener(ee->{
-                e.setAmountSelected(Long.valueOf(String.valueOf(ee.getValue())));
-                updateGrid();
-                calculateTotal();
-            });
-
-            return  quantity;
-        }).setAutoWidth(true).setHeader("Quantity");
-
-
-
-
-        orderItems.addComponentColumn(e->{
-
-            Button button = new Button("", VaadinIcon.TRASH.create());
-
-            button.addClickListener(ee->{
-                selectedProducts.removeIf(item-> item.equals(e));
-                updateGrid();
-                calculateTotal();
-            });
-
-
-            return  button;
-        }).setAutoWidth(true).setHeader("Actions");
-
+        orderGridProductRemoveAdd.assembleGrid(orderItems,selectedProducts);
 
 
 
@@ -253,28 +169,20 @@ public class OrderAddProductListAddRemove {
                             break;
                         }
                     }
-                    updateGrid();
-                    calculateTotal();
+                    orderGridProductRemoveAdd.updateGrid(orderItems, selectedProducts);
+                    orderGridProductRemoveAdd.calculateTotal(selectedProducts);
                 }
                 else{
                     selectedProducts.add(orderAddProducts);
                 }
                 dialog.close();
-                updateGrid();
-                calculateTotal();
+                orderGridProductRemoveAdd.updateGrid(orderItems, selectedProducts);
+                orderGridProductRemoveAdd.calculateTotal(selectedProducts);
             });
 
 
             return  button;
         }).setAutoWidth(true).setHeader("Actions");
-
-
-        Button button = new Button("back",e-> dialog.close());
-
-
-
-
-
 
         dialog.add(
                 productList
@@ -284,18 +192,12 @@ public class OrderAddProductListAddRemove {
     }
 
 
-    public void updateGrid(){
-        orderItems.setItems(selectedProducts);
+    public void updataTotalValue(){
+        orderGridProductRemoveAdd.setTotalValue(e->{
+            totalValueOfItems.setText(String.format("%s: %.2f %s","Total", e,"Eur"));
+        });
     }
 
-    public void calculateTotal(){
-        Double total = 0.0;
-        for(var s : selectedProducts){
-            Long taken = s.getAmountSelected() == null ? 0 : s.getAmountSelected();
-            total+= s.getPrice()* taken;
-        }
-        totalValueOfItems.setText(String.format("%s: %.2f %s","Total", total,"Eur"));
-    }
 
 
 }
