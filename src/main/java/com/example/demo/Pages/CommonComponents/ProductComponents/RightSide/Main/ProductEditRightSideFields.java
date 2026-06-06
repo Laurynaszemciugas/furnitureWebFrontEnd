@@ -374,8 +374,8 @@ public class ProductEditRightSideFields {
             for(var s : productEditDto.getMaterials()) {
                 listMaterialGrids.add(new ListMaterialGrid(
                         s.getMaterials().getId(),
-                        s.getNameForRefrence(),
-                        materialAndDetails.comboBoxMaterial(s.getNameForRefrence(),listMaterialGrids,productFeedModelGrid,addNewMaterial),
+                        s.getMaterials().getMaterialName(),
+                        materialAndDetails.comboBoxMaterial(s.getMaterials().getMaterialName(),listMaterialGrids,productFeedModelGrid,addNewMaterial),
                         materialAndDetails.quantityField(s.getAmountUsed(),listMaterialGrids,productFeedModelGrid,materialCost),
                         materialAndDetails.unitField(s.getMaterials().getUnit()),
                         s.getMaterials().getUnitPrice(),
@@ -494,8 +494,8 @@ public class ProductEditRightSideFields {
             product.setExtraDetails(extraDetails);
 
 
-            checkIfDataCorrect(materials,product);
-
+                consumer.accept(product);
+                UI.getCurrent().navigate("Products/1");
 
             } else {
                 System.out.println("Validation failed");

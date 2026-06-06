@@ -58,7 +58,7 @@ public class MaterialAndDetails {
         materials.setItems(materialNames);
         materials.setItemLabelGenerator(ComboBoxMaterial::getMaterialName);
 
-        if(!chosenValue.equalsIgnoreCase("")) {
+        if(chosenValue!=null && !chosenValue.equalsIgnoreCase("")) {
             for(var s : materialNames){
                 if(s.getMaterialName().equalsIgnoreCase(chosenValue)){
                     materials.setValue(s);
