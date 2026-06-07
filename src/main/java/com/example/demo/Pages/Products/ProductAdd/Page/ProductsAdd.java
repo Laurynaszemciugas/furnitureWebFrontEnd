@@ -13,7 +13,11 @@ import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Compo
 import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.example.demo.ServerDBCall.ProductAdd.ProductAddCall;
 import com.example.demo.Services.ProductAdd.ProductAddService;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -90,6 +94,7 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
     public VerticalLayout mainLayout() {
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setMaxWidth("1650px");
+        verticalLayout.addClassName("main-island");
         verticalLayout.getStyle().set("margin-top", "5px");
 
         productEditRightSideFields.setConsumer(e->{
@@ -102,7 +107,9 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
             }
         });
 
-        verticalLayout.add(briefPageExplanation(), joinImagesInfo());
+        verticalLayout.add(
+                productEditRightSideFields.briefPageExplanation(),
+                joinImagesInfo());
 
         return verticalLayout;
     }
@@ -111,7 +118,7 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
     public HorizontalLayout joinImagesInfo(){
         HorizontalLayout h =new HorizontalLayout();
         h.setWidthFull();
-        h.addClassName("island");
+
         h.getStyle().set("flex-wrap","wrap");
 
         //make an empty field
@@ -136,12 +143,7 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
 
 
 
-    public HorizontalLayout briefPageExplanation(){
-        HorizontalLayout left = commonComponents.biefPageExplanation("Add a new product");
-        left.setWidthFull();
 
-        return left;
-    }
 
 
 

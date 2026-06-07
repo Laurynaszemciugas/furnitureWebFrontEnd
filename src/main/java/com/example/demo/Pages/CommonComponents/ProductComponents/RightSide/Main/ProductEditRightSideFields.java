@@ -85,6 +85,10 @@ public class ProductEditRightSideFields {
     private ComboBox<Status> status = new ComboBox<>("Status");
     private ComboBox<Visibility> visibility = new ComboBox<>("Visibility");
 
+
+    Button save;
+    Button goBack;
+
     List<ListExtraDetailsGrid> listExtraDetailsGrids = new ArrayList<>();
     Grid<ListExtraDetailsGrid> extraDetailsGrid = new Grid<>(ListExtraDetailsGrid.class,false);
 
@@ -271,18 +275,9 @@ public class ProductEditRightSideFields {
 
         });
 
-        HorizontalLayout buttonSave = new HorizontalLayout();
-        buttonSave.setWidthFull();
-        Button save = commonComponents.normalThemeButtonNoNavigate("Save",ButtonVariant.LUMO_PRIMARY);
-        Button clear = commonComponents.buttonThemeAndIconNoNavigate("Clear",ButtonVariant.ERROR,VaadinIcon.ERASER,"Red");
-        Button goBack = new Button("Go back (Products)",e-> UI.getCurrent().navigate("Products/1"));
-        buttonSave.add(save,clear,goBack);
-
         productFeedModelGrid.removeAllColumns();
 
         v.add(
-                commonComponents.spanCrafterWordNoHide("Actions","activityFeed-name"),
-                buttonSave,
                 commonComponents.spanCrafterWordNoHide("Basic information","activityFeed-name"),
                 basicInfo,
                 commonComponents.spanCrafterWordNoHide("Spefication","activityFeed-name"),
@@ -307,11 +302,26 @@ public class ProductEditRightSideFields {
 
 
         saveDate(save,productEditDtos);
-        clearData(clear);
 
 
 
         return v;
+    }
+
+    public HorizontalLayout briefPageExplanation(){
+        HorizontalLayout left = commonComponents.biefPageExplanation("Add a new product");
+        left.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+
+        HorizontalLayout buttonSave = new HorizontalLayout();
+        save = commonComponents.normalThemeButtonNoNavigate("Save", ButtonVariant.LUMO_PRIMARY);
+        goBack = new Button("Go back",e-> UI.getCurrent().navigate("Products/1"));
+        buttonSave.add(save,goBack);
+
+        left.add(buttonSave);
+
+        left.setWidthFull();
+
+        return left;
     }
 
 
@@ -391,33 +401,6 @@ public class ProductEditRightSideFields {
 
     }
 
-    public void clearData(Button clear){
-
-        clear.addClickListener(e->{
-            productName.clear();
-            sku.clear();
-            description.clear();
-            status.clear();
-            price.clear();
-            materialCost.clear();
-            stockQuantity.clear();
-            lowThreshold.clear();
-            category.clear();
-            tags.clear();
-            visibility.clear();
-
-            listMaterialGrids.clear();
-            listExtraDetailsGrids.clear();
-
-            upgradeExtraDetailsGrid();
-            upgradeMaterialGrid();
-
-            removeTags();
-
-        });
-
-
-    }
 
     public void saveDate(Button save, Product product){
 

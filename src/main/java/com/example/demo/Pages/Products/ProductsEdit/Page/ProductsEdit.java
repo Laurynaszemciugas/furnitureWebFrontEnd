@@ -144,7 +144,7 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
 
 
     public HorizontalLayout briefPageExplanation(){
-        HorizontalLayout left = commonComponents.biefPageExplanation("Edit product");
+        HorizontalLayout left = productEditRightSideFields.briefPageExplanation();
         left.setWidthFull();
 
         return left;
