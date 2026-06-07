@@ -26,6 +26,7 @@ public class User {
     private LocalDate bannedTill;
     private LocalDateTime created;
 
-
-
+    private String fullName;
+    private String imageUrl;
+    private String phoneNumber;
 }

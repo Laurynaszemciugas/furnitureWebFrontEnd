@@ -213,7 +213,7 @@ public class OrdersRightSide {
             orderId.getStyle().set("color","blue");
 
             String createdDate = common.dateFormatter(selectedOrder.getCreated(),"MMMM d, yyyy ● h:mma");
-            double costTotal = selectedOrder.getTotalPrice();
+            double costTotal = selectedOrder.getTotalPrice() == null ? 0.0 : selectedOrder.getTotalPrice();
 
             created.setText(String.format("%s - %s", "Order created",createdDate));
             totalCost.setText(String.format("%s %.2f %s","Total",costTotal,"Eur"));
@@ -223,7 +223,7 @@ public class OrdersRightSide {
             orderItemsHolder.setPadding(false);
             orderItemsHolder.setSpacing(false);
             orderItemsHolder.add(
-                    orderListRight(selectedOrder.getProductsData(), selectedOrder.getTotalPrice())
+                    orderListRight(selectedOrder.getProductsData(), selectedOrder.getTotalPrice() == null ? 0.0 : selectedOrder.getTotalPrice())
             );
 
 
@@ -394,7 +394,7 @@ public class OrdersRightSide {
 
         for (var s : orderProducts) {
             v.add(
-                    orderListItemsCraft(s.getId(),s.getAmountOfProduct(), s.getProduct().getProductName(), s.getCost())
+                    orderListItemsCraft(s.getId(),s.getAmountOfProduct(), s.getProduct().getProductName(), s.getCost() == null ? 0 : s.getCost())
             );
         }
 
@@ -450,14 +450,14 @@ public class OrdersRightSide {
         amountCounter.setMax(100);
         amountCounter.setMin(1);
         amountCounter.setStepButtonsVisible(true);
-        amountCounter.setValue(Math.toIntExact(amount));
+        amountCounter.setValue(Math.toIntExact(amount == null ? 0 : amount));
 
         if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished)){
             amountCounter.setReadOnly(true);
         }
 
 
-        double estimatedCost = amount*cost;
+        double estimatedCost = amount == null ? 0 : amount * cost;
         Span costOfProducts = commonComponents.spanCrafterWordNoHide(String.format("%.2f %s",estimatedCost,"Eur"),"stat-title");
 
         amountCounter.addValueChangeListener(e->{

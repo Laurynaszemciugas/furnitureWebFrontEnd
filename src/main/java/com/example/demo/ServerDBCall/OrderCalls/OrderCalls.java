@@ -3,6 +3,7 @@ package com.example.demo.ServerDBCall.OrderCalls;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.Product;
+import com.example.demo.ControllerModels.OrderAdd.ConsumerData;
 import com.example.demo.ControllerModels.Orders.OrdersFeedData;
 import com.example.demo.Enums.OrderStatus;
 import org.springframework.stereotype.Service;
@@ -208,8 +209,75 @@ public class OrderCalls {
 
     }
 
+    public String saveNewOrder(Orders order) throws IOException, InterruptedException {
+
+        String JWT = sessionCrafter.extractSession("JWT", String.class);
+
+        System.out.println(JWT);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(order);
 
 
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/order/saveNewOrder"))
+                .header("Authorization","Bearer " + JWT)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = client.send(
+                request,
+                HttpResponse.BodyHandlers.ofString()
+        );
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException(response.body());
+        }
+
+        return response.body();
+
+
+    }
+
+
+    public List<ConsumerData> getConsumer() throws IOException, InterruptedException {
+
+        String JWT = sessionCrafter.extractSession("JWT", String.class);
+
+        System.out.println(JWT);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/order/getConsumers"))
+                .header("Authorization","Bearer " + JWT)
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(
+                request,
+                HttpResponse.BodyHandlers.ofString()
+        );
+
+        if (response.statusCode() != 200) {
+            System.err.println("Backend Request Failed! Status Code: " + response.statusCode());
+            System.err.println("Backend Response Body: " + response.body());
+            return null;
+        }
+
+        return mapper.readValue(
+                response.body(),
+                new TypeReference<List<ConsumerData>>() {}
+        );
+
+    }
 
 
 

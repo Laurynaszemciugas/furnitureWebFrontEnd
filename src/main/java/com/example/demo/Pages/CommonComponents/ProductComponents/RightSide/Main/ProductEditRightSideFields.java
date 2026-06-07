@@ -308,14 +308,14 @@ public class ProductEditRightSideFields {
         return v;
     }
 
-    public HorizontalLayout briefPageExplanation(){
-        HorizontalLayout left = commonComponents.biefPageExplanation("Add a new product");
+    public HorizontalLayout briefPageExplanation(String name){
+        HorizontalLayout left = commonComponents.biefPageExplanation(name);
         left.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
         HorizontalLayout buttonSave = new HorizontalLayout();
         save = commonComponents.normalThemeButtonNoNavigate("Save", ButtonVariant.LUMO_PRIMARY);
-        goBack = new Button("Go back",e-> UI.getCurrent().navigate("Products/1"));
-        buttonSave.add(save,goBack);
+        goBack = new Button("Cancel",e-> UI.getCurrent().navigate("Products/1"));
+        buttonSave.add(goBack,save);
 
         left.add(buttonSave);
 

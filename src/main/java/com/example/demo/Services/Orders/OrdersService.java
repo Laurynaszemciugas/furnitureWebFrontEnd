@@ -1,8 +1,13 @@
 package com.example.demo.Services.Orders;
 
+import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.CommonDtos.Orders;
+import com.example.demo.ControllerModels.OrderAdd.ConsumerData;
 import com.example.demo.ControllerModels.Orders.OrdersFeedData;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.ServerDBCall.OrderCalls.OrderCalls;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +18,11 @@ import java.util.List;
 public class OrdersService {
 
     OrderCalls orderCalls;
+    CommonComponents commonComponents;
 
-    public OrdersService(OrderCalls orderCalls) {
+    public OrdersService(OrderCalls orderCalls, CommonComponents commonComponents) {
         this.orderCalls = orderCalls;
+        this.commonComponents = commonComponents;
     }
 
     @SneakyThrows
@@ -43,6 +50,23 @@ public class OrdersService {
             String promtChoice
             ){
         return orderCalls.getPageCount(orderStatusChoice,priceFromChoice,priceToChoice,dateFromChoice,dateToChoice,amountOfProductsChoice,promtChoice);
+    }
+
+    @SneakyThrows
+    public List<ConsumerData> getConsumers(){
+        return orderCalls.getConsumer();
+    }
+
+    @SneakyThrows
+    public void saveNewOrder(Orders orders){
+
+        try{
+            String answer = orderCalls.saveNewOrder(orders);
+            commonComponents.showNotification(answer, 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_ERROR);
+        } catch (Exception e) {
+            commonComponents.showNotification(e.getMessage(), 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_ERROR);
+        }
+
     }
 
 }

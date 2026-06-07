@@ -94,10 +94,11 @@ public class OrderGridProductRemoveAdd {
 
             IntegerField quantity = new IntegerField();
             quantity.setStep(1);
-            quantity.setMin(0);
+            quantity.setMin(1);
             quantity.setMax(100);
-            quantity.setValue(e.getAmountSelected() == null ? 0: e.getAmountSelected().intValue());
+            quantity.setValue(e.getAmountSelected() == null ? 1: e.getAmountSelected().intValue());
             quantity.setStepButtonsVisible(true);
+
 
             quantity.addValueChangeListener(ee->{
                 e.setAmountSelected(Long.valueOf(String.valueOf(ee.getValue())));

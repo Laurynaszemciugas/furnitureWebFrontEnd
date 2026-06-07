@@ -73,6 +73,7 @@ public class AssignEmployees {
 
     public HorizontalLayout assignEmployeesComponent(Orders selectedOrder, VerticalLayout employeeHolder) {
 
+
         HorizontalLayout employeeLayer = new HorizontalLayout();
 
         employeeLayer.setPadding(false);
@@ -101,8 +102,10 @@ public class AssignEmployees {
 
     public Dialog showEmployeeDialog(Orders selectedOrder, VerticalLayout employeeHolder) {
 
+
+
         Dialog dialog = new Dialog("Select employee ");
-        dialog.setHeight("600px");
+        dialog.setHeight("550px");
         dialog.setWidth("700px");
 
         Grid<ComboBoxEmployees> employeeGrid = new Grid<>(ComboBoxEmployees.class,false);
@@ -234,7 +237,6 @@ public class AssignEmployees {
 
         }));
 
-        Button button = new Button("Add");
 
         comboBox.addValueChangeListener(e -> {
             employeeId = e.getValue().getId();
@@ -261,8 +263,7 @@ public class AssignEmployees {
             v.removeAll();
             v.add(
                     comboBox,
-                    empDisplay,
-                    button
+                    empDisplay
             );
 
         });
@@ -271,8 +272,7 @@ public class AssignEmployees {
 
 
         v.add(
-                employeeGrid,
-                button
+                employeeGrid
         );
 
         dialog.add(

@@ -108,7 +108,7 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
         });
 
         verticalLayout.add(
-                productEditRightSideFields.briefPageExplanation(),
+                productEditRightSideFields.briefPageExplanation("Add new product"),
                 joinImagesInfo());
 
         return verticalLayout;
