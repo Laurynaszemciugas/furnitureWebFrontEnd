@@ -57,13 +57,10 @@ public class OrderAddProductListAddRemove {
 
 
     public VerticalLayout consumerOrderItems(Orders orders){
-//gay
 
+        // load data its gonna work only on the edit page cuz it checks if its null on new order its always null
         if(orders.getProductsData()!=null) {
-            System.out.println("DATA FOR PRODUCTSSSS");
-            System.out.println(selectedProducts);
             selectedProducts = productService.getExisitingData(orders.getId());
-
         }
 
         VerticalLayout v = new VerticalLayout();

@@ -160,6 +160,7 @@ public class OrdersRightSide {
         userSmallInfo.setPadding(false);
         userSmallInfo.setWidthFull();
         userSmallInfo.setJustifyContentMode(FlexComponent.JustifyContentMode.AROUND);
+        userSmallInfo.addClassName("layout-flex");
 
 
 
@@ -170,8 +171,9 @@ public class OrdersRightSide {
         thirdLayer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
         Span created = commonComponents.spanCrafter("","stat-title");
-        Span buyerName =  commonComponents.spanCrafterWordNoHide(String.format("%s %s", "Buyer name:" ,selectedOrder.getOrderPlacedBy() == null ? "None" : selectedOrder.getOrderPlacedBy().getName()),"stat-title");
-        Span phoneNumber = commonComponents.spanCrafterWordNoHide(String.format("%s %s", "Buyer phone number:" ,selectedOrder.getPhoneNumber() == null ? "None" : selectedOrder.getPhoneNumber()),"stat-title");
+        Span buyerName =  commonComponents.spanCrafterWordNoHide(String.format("%s %s", "Buyer name:" ,selectedOrder.getOrderPlacedBy() == null ? selectedOrder.getOrderCreatedByName() == null ? "Unknown" : selectedOrder.getOrderCreatedByName() : selectedOrder.getOrderPlacedBy().getName()),"stat-title");
+        Span phoneNumber = commonComponents.spanCrafterWordNoHide(String.format("%s %s", "Buyer phone number:" ,selectedOrder.getPhoneNumber() == null ? "Unknown" : selectedOrder.getPhoneNumber()),"stat-title");
+        Span email = commonComponents.spanCrafterWordNoHide(String.format("%s %s", "Buyer Email:" ,selectedOrder.getOrderCreatedByGmail() == null ? "Unknown" : selectedOrder.getOrderCreatedByGmail()),"stat-title");
         totalCost = commonComponents.spanCrafter("","activityFeed-name");
 
 
@@ -218,10 +220,8 @@ public class OrdersRightSide {
             orderId.getStyle().set("color","blue");
 
             String createdDate = common.dateFormatter(selectedOrder.getCreated(),"MMMM d, yyyy ● h:mma");
-            double costTotal = selectedOrder.getTotalPrice() == null ? 0.0 : selectedOrder.getTotalPrice();
 
             created.setText(String.format("%s - %s", "Order created",createdDate));
-            totalCost.setText(String.format("%s %.2f %s","Total",costTotal,"Eur"));
 
 
             orderItemsHolder.removeAll();
@@ -256,24 +256,27 @@ public class OrdersRightSide {
 
             // assign employee add remove
             employeeAssigmentHolder.removeAll();
+            employeeAssigmentHolder.setPadding(false);
             employeeAssigmentHolder.add(
                     assignEmployees.employeeAssignment(selectedOrder,employeeHolder)
             );
 
 
             noteHolder.removeAll();
+            noteHolder.setPadding(false);
             noteHolder.add(noteCrafter(selectedOrder.getOrderNote()));
 
 
 
-             buyerName.setText(String.format("%s %s", "Buyer name:" ,selectedOrder.getOrderPlacedBy() == null ? "None" : selectedOrder.getOrderPlacedBy().getName()));
-             phoneNumber.setText(String.format("%s %s", "Buyer phone number:" ,selectedOrder.getPhoneNumber() == null ? "None" : selectedOrder.getPhoneNumber()));
+             buyerName.setText(String.format("%s %s", "Buyer name:" ,selectedOrder.getOrderPlacedBy() == null ? selectedOrder.getOrderCreatedByName() == null ? "Unknown" : selectedOrder.getOrderCreatedByName() : selectedOrder.getOrderPlacedBy().getName()));
+             phoneNumber.setText(String.format("%s %s", "Buyer phone number:" ,selectedOrder.getPhoneNumber() == null ? "Unknown" : selectedOrder.getPhoneNumber()));
+            email.setText(String.format("%s %s", "Buyer Email:" ,selectedOrder.getOrderCreatedByGmail() == null ? "Unknown" : selectedOrder.getOrderCreatedByGmail()));
             addressAuto.setText(
                     selectedOrder.getBillingAddress() == null
-                            ? "Buyer address: None"
+                            ? "Buyer address: Unknown"
                             : String.format("Buyer address: %s", selectedOrder.getBillingAddress())
             );
-            address.setValue(selectedOrder.getBillingAddress() == null ? "None" : selectedOrder.getBillingAddress());
+            address.setValue(selectedOrder.getBillingAddress() == null ? "Unknown" : selectedOrder.getBillingAddress());
 
             payStatusComboBox.setValue(selectedOrder.getPayStatus() == null ? null : selectedOrder.getPayStatus());
             payMethodComboBox.setValue(selectedOrder.getPayMethod() == null ? null : selectedOrder.getPayMethod());
@@ -322,7 +325,8 @@ public class OrdersRightSide {
         userSmallInfo.add(
                 buyerName,
                 phoneNumber,
-                addressAuto
+                addressAuto,
+                email
 
         );
 
@@ -337,8 +341,7 @@ public class OrdersRightSide {
 
 
         thirdLayer.add(
-                created,
-                totalCost
+                created
         );
 
 
@@ -414,7 +417,7 @@ public class OrdersRightSide {
 
             commonComponents.showNotification("Removed product " +  productName,3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
 
-            updateTotal();
+
         });
 
         h.getElement().addEventListener("mouseenter", e -> {
@@ -473,7 +476,6 @@ public class OrdersRightSide {
            costOfProducts.setText(String.format("%.2f %s",newCost,"Eur"));
 
 
-            updateTotal();
 
         });
 
@@ -502,7 +504,7 @@ public class OrdersRightSide {
         v.setWidthFull();
 
         v.add(
-                commonComponents.spanCrafter("Timeline","stat-example")
+                commonComponents.spanCrafter("Timeline","activityFeed-name")
         );
 
         HorizontalLayout h = new HorizontalLayout();
@@ -633,7 +635,7 @@ public class OrdersRightSide {
 
         v.add(
                 commonComponents.doubleValueRow(
-                        commonComponents.spanCrafter("Add note","stat-example")
+                        commonComponents.spanCrafter("Add note","activityFeed-name")
                         ,commonComponents.spanCrafter("(Optional)","stat-title")),
                 note
         );
@@ -746,16 +748,16 @@ public class OrdersRightSide {
     }
 
 
-    public void updateTotal(){
-        double totalValue = 0.0;
-
-        for(var s : selectedOrder.getProductsData()){
-            totalValue += s.getAmountOfProduct() * s.getCost();
-        }
-
-        totalCost.setText(String.format("%s %.2f %s","Total",totalValue,"Eur"));
-        total.setText(String.format("%.2f %s",totalValue,"Eur"));
-    }
+//    public void updateTotal(){
+//        double totalValue = 0.0;
+//
+//        for(var s : selectedOrder.getProductsData()){
+//            totalValue += s.getAmountOfProduct() * s.getCost();
+//        }
+//
+//        totalCost.setText(String.format("%s %.2f %s","Total",totalValue,"Eur"));
+//        total.setText(String.format("%.2f %s",totalValue,"Eur"));
+//    }
 
 
 

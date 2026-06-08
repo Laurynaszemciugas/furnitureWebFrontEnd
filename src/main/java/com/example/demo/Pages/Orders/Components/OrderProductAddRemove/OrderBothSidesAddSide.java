@@ -102,9 +102,10 @@ public class OrderBothSidesAddSide {
                 selectedOrder.setPayMethod(payMethodComboBox.getValue());
                 selectedOrder.setCreated(createdDate.getValue());
                 selectedOrder.setEstimatedDueDate(dueDate.getValue());
+                selectedOrder.setOrderCreatedByName(selectCustomer.getValue());
+                selectedOrder.setOrderCreatedByGmail(customerGmail.getValue());
                 User user = new User();
                 user.setGmail(customerGmail.getValue());
-                user.setFullName(selectCustomer.getValue());
                 selectedOrder.setOrderPlacedBy(user);
 
 
