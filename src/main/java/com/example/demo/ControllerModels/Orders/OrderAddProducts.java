@@ -2,18 +2,17 @@ package com.example.demo.ControllerModels.Orders;
 
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Stock;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class OrderAddProducts {
 
     private Long id;
+    @ToString.Exclude
     private String mainImage;
     private String productName;
     private String sku;

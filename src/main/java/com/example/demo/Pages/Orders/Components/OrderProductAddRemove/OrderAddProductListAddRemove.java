@@ -2,6 +2,7 @@ package com.example.demo.Pages.Orders.Components.OrderProductAddRemove;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.Product;
@@ -19,6 +20,8 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import lombok.SneakyThrows;
+import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +56,15 @@ public class OrderAddProductListAddRemove {
 
 
 
-    public VerticalLayout consumerOrderItems( Orders orders){
+    public VerticalLayout consumerOrderItems(Orders orders){
+//gay
+
+        if(orders.getProductsData()!=null) {
+            System.out.println("DATA FOR PRODUCTSSSS");
+            System.out.println(selectedProducts);
+            selectedProducts = productService.getExisitingData(orders.getId());
+
+        }
 
         VerticalLayout v = new VerticalLayout();
         v.setWidthFull();
@@ -220,6 +231,12 @@ public class OrderAddProductListAddRemove {
         orderGridProductRemoveAdd.setTotalValue(e->{
             totalValueOfItems.setText(String.format("%s: %.2f %s","Total", e,"Eur"));
         });
+    }
+
+
+    public void loadExistingData(){
+        orderGridProductRemoveAdd.updateGrid(orderItems, selectedProducts);
+        orderGridProductRemoveAdd.calculateTotal(selectedProducts);
     }
 
 

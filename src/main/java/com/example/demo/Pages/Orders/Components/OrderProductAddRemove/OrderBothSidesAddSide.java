@@ -2,6 +2,7 @@ package com.example.demo.Pages.Orders.Components.OrderProductAddRemove;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.Product;
@@ -47,7 +48,6 @@ public class OrderBothSidesAddSide {
     EmployeeCalls employeeCalls;
     OrderAddProductListAddRemove orderAddProductListAddRemove;
     ProductService productService;
-
 
     Binder<Void> binder = new Binder<>();
     // Data fields
@@ -112,7 +112,6 @@ public class OrderBothSidesAddSide {
                 selectedOrder.setPhoneNumber(customerPhoneNumber.getValue());
 
 
-                System.out.println("in the " + selectedOrder.getBillingAddress());
 
                 consumer.accept(selectedOrder);
             }

@@ -64,5 +64,10 @@ public class ProductService {
         return productsCall.getProductsForAddOrder();
     }
 
+    @SneakyThrows
+    public List<OrderAddProducts> getExisitingData(Long id){
+        return productsCall.getExistingData(id);
+    }
+
 
 }

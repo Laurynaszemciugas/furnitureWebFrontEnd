@@ -2,6 +2,7 @@ package com.example.demo.Pages.Orders.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.ControllerModels.CommonDtos.Employee;
 import com.example.demo.ControllerModels.CommonDtos.EmployeeJoin.OrderEmployees;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
@@ -11,8 +12,10 @@ import com.example.demo.Enums.EmployeeCategory;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.PayMethod;
 import com.example.demo.Enums.PayStatus;
+import com.example.demo.Pages.Orders.Components.OrderProductAddRemove.OrderAddProductListAddRemove;
 import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
 import com.example.demo.ServerDBCall.OrderCalls.OrderCalls;
+import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
@@ -48,6 +51,8 @@ public class OrdersRightSide {
     OrderCalls orderCalls;
     EmployeeCalls employeeCalls;
     AssignEmployees assignEmployees;
+    ProductService productService;
+    ObjectConverter objectConverter;
 
 
     // refrence to the leftside component
@@ -77,10 +82,7 @@ public class OrdersRightSide {
 
     List<ComboBoxEmployees> listEmployees = new ArrayList<>();
 
-    Long employeeId;
-    String employeeName;
-    EmployeeCategory employeeCategoryNew;
-    String employeeProfilePic;
+    OrderAddProductListAddRemove orderAddProductListAddRemove;
 
 
     Consumer<Orders> ordersConsumer;
@@ -90,13 +92,16 @@ public class OrdersRightSide {
             CommonComponents commonComponents,
             Common common,
             OrderCalls orderCalls,
-            EmployeeCalls employeeCalls
+            EmployeeCalls employeeCalls,
+            ProductService productService
     ) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.orderCalls = orderCalls;
         this.employeeCalls = employeeCalls;
         this.assignEmployees = new AssignEmployees(commonComponents,common,employeeCalls);
+        this.orderAddProductListAddRemove = new OrderAddProductListAddRemove(commonComponents,common,productService);
+        this.productService = productService;
 
 
         listEmployees.addAll(employeeCalls.getMiniEmployeeData());
@@ -223,7 +228,7 @@ public class OrdersRightSide {
             orderItemsHolder.setPadding(false);
             orderItemsHolder.setSpacing(false);
             orderItemsHolder.add(
-                    orderListRight(selectedOrder.getProductsData(), selectedOrder.getTotalPrice() == null ? 0.0 : selectedOrder.getTotalPrice())
+                    orderAddProductListAddRemove.consumerOrderItems(selectedOrder)
             );
 
 
@@ -381,25 +386,9 @@ public class OrdersRightSide {
             total.setText(String.format("%.2f %s",totalCost,"Eur"));
         }
 
-        firstLayer.add(
-                name,
-                total);
-
-
-
 
         v.add(
-                commonComponents.spanCrafter("Order items","stat-example")
-        );
-
-        for (var s : orderProducts) {
-            v.add(
-                    orderListItemsCraft(s.getId(),s.getAmountOfProduct(), s.getProduct().getProductName(), s.getCost() == null ? 0 : s.getCost())
-            );
-        }
-
-        v.add(
-                firstLayer
+                orderAddProductListAddRemove.consumerOrderItems(selectedOrder)
         );
 
 

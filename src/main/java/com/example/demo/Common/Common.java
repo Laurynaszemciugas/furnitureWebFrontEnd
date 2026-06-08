@@ -1,5 +1,6 @@
 package com.example.demo.Common;
 
+import com.example.demo.Common.Logic.ErrorDisplay;
 import com.example.demo.Enums.Warnings;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Span;
@@ -15,9 +16,12 @@ import java.time.format.DateTimeFormatter;
 public class Common {
 
     CommonComponents commonComponents;
+    ErrorDisplay errorDisplay;
+
 
     public Common(CommonComponents commonComponents) {
         this.commonComponents = commonComponents;
+        this.errorDisplay = new ErrorDisplay(commonComponents);
     }
 
     public String dateFormatter(LocalDate date, String yyyymmdd){
@@ -145,16 +149,14 @@ public class Common {
         UI.getCurrent().navigate(navigateTo);
     }
 
-    public void customActionsForNotification(String message, Warnings warning){
-        NotificationVariant notificationVariant = NotificationVariant.ERROR;
+    public void customActionsForNotification(String message, Warnings warning, String navigateInCaseOfSuccess){
+       boolean canNavigate = errorDisplay.customActionsForNotification(message,warning);
 
-        switch (warning){
-            case ERROR -> notificationVariant = NotificationVariant.ERROR;
-            case FATAL_ERROR -> notificationVariant = NotificationVariant.ERROR;
-            case OK -> notificationVariant = NotificationVariant.SUCCESS;
-            case WARNING -> notificationVariant = NotificationVariant.WARNING;
-        }
-        commonComponents.showNotification(message,4000, Notification.Position.BOTTOM_CENTER, notificationVariant);
+//       if(canNavigate){
+//           customNavigate(navigateInCaseOfSuccess);
+//       }
+
+
     }
 
 

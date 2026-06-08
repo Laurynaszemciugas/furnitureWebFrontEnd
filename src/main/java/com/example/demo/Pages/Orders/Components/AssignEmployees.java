@@ -112,19 +112,21 @@ public class AssignEmployees {
         employeeGrid.setItems(listEmployees);
 
         employeeGrid.addComponentColumn(e->{
-            Image image = commonComponents.imageCrafter(e.getProfileImage() != null ? e.getProfileImage() : "No_picture.png", "30px", "30px", "20px");
-            return image;
-        }).setHeader("Image");
-
-        employeeGrid.addComponentColumn(e->{
+            Image image = commonComponents.imageCrafter(e.getProfileImage() != null ? e.getProfileImage() : "No_picture.png", "80px", "80px", "50px");
             Span employeeFullName = commonComponents.spanCrafter(e.getFullName(), "stat-example");
-            return employeeFullName;
-        }).setHeader("Name");
-
-        employeeGrid.addComponentColumn(e->{
             Span employeeRole = commonComponents.spanCrafter(e.getEmployeeCategory().toString(), "stat-title");
-            return employeeRole;
-        }).setHeader("Category");
+
+            VerticalLayout v = new VerticalLayout();
+            v.add(employeeFullName,employeeRole);
+
+            HorizontalLayout h = new HorizontalLayout();
+            h.add(image,v);
+            h.setWidthFull();
+
+            return h;
+        }).setHeader("Employee").setAutoWidth(true);
+
+
 
         employeeGrid.addComponentColumn(e->{
             Button button = new Button("Select");
@@ -183,7 +185,7 @@ public class AssignEmployees {
             });
 
             return button;
-        }).setHeader("Actions");
+        }).setHeader("Actions").setAutoWidth(true);
 
         employeeGrid.setPartNameGenerator(employee -> {
             // Check if the current row's employee is in the selectedOrder list

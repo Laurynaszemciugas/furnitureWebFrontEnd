@@ -105,6 +105,9 @@ public class OrderGridProductRemoveAdd {
 
 
             quantity.addValueChangeListener(ee->{
+
+                System.out.println("Griid valuesss");
+                System.out.println(ee.getValue());
                 e.setAmountSelected(Long.valueOf(String.valueOf(ee.getValue())));
                 updateGrid(orderItems, selectedProducts);
                 calculateTotal(selectedProducts);

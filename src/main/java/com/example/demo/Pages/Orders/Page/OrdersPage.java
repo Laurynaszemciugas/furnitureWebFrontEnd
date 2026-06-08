@@ -2,6 +2,7 @@ package com.example.demo.Pages.Orders.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
@@ -15,6 +16,7 @@ import com.example.demo.Pages.Orders.Components.OrdersRightSide;
 import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
 import com.example.demo.ServerDBCall.OrderCalls.OrderCalls;
 import com.example.demo.Services.Orders.OrdersService;
+import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -63,7 +65,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
     OrdersService ordersService;
 
     VerticalLayout filterMemory = new VerticalLayout();
-
+    ProductService productService;
 
     // filter data
 
@@ -80,13 +82,14 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
     VerticalLayout verticalLayout;
 
 
-    public OrdersPage(CommonComponents commonComponents, Common common, OrderCalls orderCalls,EmployeeCalls employeeCalls,OrdersService ordersService) {
+    public OrdersPage(CommonComponents commonComponents, Common common, OrderCalls orderCalls,EmployeeCalls employeeCalls,OrdersService ordersService,ProductService productService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.orderCalls = orderCalls;
         this.ordersService = ordersService;
 
-        this.ordersRightSide = new OrdersRightSide(commonComponents,common,orderCalls,employeeCalls);
+        this.productService = productService;
+        this.ordersRightSide = new OrdersRightSide(commonComponents,common,orderCalls,employeeCalls,productService);
         this.ordersLeftSide = new OrdersLeftSide(commonComponents,common,orderCalls);
         this.orderFilters = new OrderFilters(commonComponents, common);
         this.briefOrderPageExplanation = new BriefOrderPageExplanation(commonComponents,common);
@@ -147,7 +150,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
                 updateUIData();
 
             } catch (Exception ex) {
-                commonComponents.showNotification(ex.getMessage(), 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_ERROR);
+                commonComponents.showNotification(ex.getMessage(), 12000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_ERROR);
             }
         });
 

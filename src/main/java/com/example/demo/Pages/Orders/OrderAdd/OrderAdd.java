@@ -43,7 +43,6 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
     OrdersService ordersService;
 
     OrderBothSidesAddSide orderBothSidesAddSide;
-
     List<OrderAddProducts> listOfProducts = new ArrayList<>();
 
     public OrderAdd(

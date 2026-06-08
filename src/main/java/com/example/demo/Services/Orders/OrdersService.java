@@ -69,8 +69,7 @@ public class OrdersService {
         try {
 
             ErrorResponse answer = orderCalls.saveNewOrder(orders);
-            common.customActionsForNotification(answer.getMessage(),answer.getWarning());
-            common.customNavigate("Orders");
+            common.customActionsForNotification(answer.getMessage(),answer.getWarning(),"Orders");
 
         } catch (RuntimeException ex) {
 
@@ -81,7 +80,7 @@ public class OrdersService {
                     ErrorResponse.class
             );
 
-            common.customActionsForNotification(error.getMessage(),error.getWarning());
+            common.customActionsForNotification(error.getMessage(),error.getWarning(),"Orders");
         }
     }
 
