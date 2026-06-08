@@ -46,6 +46,7 @@ public class OrderBothSidesAddSide {
     AssignEmployees assignEmployees;
     EmployeeCalls employeeCalls;
     OrderAddProductListAddRemove orderAddProductListAddRemove;
+    ProductService productService;
 
 
     Binder<Void> binder = new Binder<>();
@@ -55,7 +56,6 @@ public class OrderBothSidesAddSide {
     TextField customerPhoneNumber = new TextField("Phone");
     TextArea customerAddress = new TextArea("Billing address");
     TextArea orderNote = new TextArea();
-    List<OrderAddProducts> listOfProducts = new ArrayList<>();
 
     ComboBox<OrderStatus> orderStatusComboBox = new ComboBox<>("Order status");
     ComboBox<PayStatus> payStatusComboBox = new ComboBox<>("Payment status");
@@ -69,12 +69,13 @@ public class OrderBothSidesAddSide {
 
     Consumer<Orders> consumer;
 
-    public OrderBothSidesAddSide(CommonComponents commonComponents, Common common, EmployeeCalls employeeCalls) {
+    public OrderBothSidesAddSide(CommonComponents commonComponents, Common common, EmployeeCalls employeeCalls,ProductService productService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.employeeCalls = employeeCalls;
+        this.productService = productService;
         this.assignEmployees = new AssignEmployees(commonComponents,common,employeeCalls);
-        this.orderAddProductListAddRemove = new OrderAddProductListAddRemove(commonComponents,common);
+        this.orderAddProductListAddRemove = new OrderAddProductListAddRemove(commonComponents,common,productService);
 
 
         binder();
@@ -133,10 +134,8 @@ public class OrderBothSidesAddSide {
     }
 
     // ====================== Left side =========================================
-    public VerticalLayout leftSide(List<OrderAddProducts> items){
+    public VerticalLayout leftSide(){
 
-        listOfProducts.clear();
-        listOfProducts.addAll(items);
 
         VerticalLayout v = new VerticalLayout();
         v.setWidthFull();
@@ -154,7 +153,8 @@ public class OrderBothSidesAddSide {
 
         v.add(
                 consumerInformation(),
-                orderAddProductListAddRemove.consumerOrderItems(listOfProducts,selectedOrder),
+                // remove that listOfPRoducts and place inside the class
+                orderAddProductListAddRemove.consumerOrderItems(selectedOrder),
                 verticalLayout
         );
 

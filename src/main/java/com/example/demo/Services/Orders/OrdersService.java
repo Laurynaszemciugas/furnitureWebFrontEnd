@@ -1,7 +1,9 @@
 package com.example.demo.Services.Orders;
 
+import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
+import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.OrderAdd.ConsumerData;
 import com.example.demo.ControllerModels.Orders.OrdersFeedData;
 import com.example.demo.Enums.OrderStatus;
@@ -10,6 +12,8 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,10 +23,12 @@ public class OrdersService {
 
     OrderCalls orderCalls;
     CommonComponents commonComponents;
+    Common common;
 
-    public OrdersService(OrderCalls orderCalls, CommonComponents commonComponents) {
+    public OrdersService(OrderCalls orderCalls, CommonComponents commonComponents, Common common) {
         this.orderCalls = orderCalls;
         this.commonComponents = commonComponents;
+        this.common = common;
     }
 
     @SneakyThrows
@@ -58,15 +64,26 @@ public class OrdersService {
     }
 
     @SneakyThrows
-    public void saveNewOrder(Orders orders){
+    public void saveNewOrder(Orders orders) {
 
-        try{
-            String answer = orderCalls.saveNewOrder(orders);
-            commonComponents.showNotification(answer, 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_ERROR);
-        } catch (Exception e) {
-            commonComponents.showNotification(e.getMessage(), 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_ERROR);
+        try {
+
+            ErrorResponse answer = orderCalls.saveNewOrder(orders);
+            common.customActionsForNotification(answer.getMessage(),answer.getWarning());
+            common.customNavigate("Orders");
+
+        } catch (RuntimeException ex) {
+
+            ObjectMapper mapper = new ObjectMapper();
+
+            ErrorResponse error = mapper.readValue(
+                    ex.getMessage(),
+                    ErrorResponse.class
+            );
+
+            common.customActionsForNotification(error.getMessage(),error.getWarning());
         }
+    }
 
     }
 
-}

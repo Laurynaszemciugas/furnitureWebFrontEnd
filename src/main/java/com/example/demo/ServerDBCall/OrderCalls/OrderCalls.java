@@ -3,6 +3,7 @@ package com.example.demo.ServerDBCall.OrderCalls;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.Product;
+import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.OrderAdd.ConsumerData;
 import com.example.demo.ControllerModels.Orders.OrdersFeedData;
 import com.example.demo.Enums.OrderStatus;
@@ -209,7 +210,7 @@ public class OrderCalls {
 
     }
 
-    public String saveNewOrder(Orders order) throws IOException, InterruptedException {
+    public ErrorResponse saveNewOrder(Orders order) throws IOException, InterruptedException {
 
         String JWT = sessionCrafter.extractSession("JWT", String.class);
 
@@ -237,8 +238,8 @@ public class OrderCalls {
             throw new RuntimeException(response.body());
         }
 
-        return response.body();
 
+        return mapper.readValue(response.body(), ErrorResponse.class);
 
     }
 

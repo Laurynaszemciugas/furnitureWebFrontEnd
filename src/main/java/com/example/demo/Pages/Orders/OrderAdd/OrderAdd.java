@@ -2,6 +2,7 @@ package com.example.demo.Pages.Orders.OrderAdd;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Orders.OrderAddProducts;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.PayMethod;
@@ -21,6 +22,8 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
+import org.springframework.web.client.HttpClientErrorException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -57,7 +60,7 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
         this.employeeCalls = employeeCalls;
         this.assignEmployees = new AssignEmployees(commonComponents,common,employeeCalls);
         this.ordersService = ordersService;
-        this.orderBothSidesAddSide = new OrderBothSidesAddSide(commonComponents,common,employeeCalls);
+        this.orderBothSidesAddSide = new OrderBothSidesAddSide(commonComponents,common,employeeCalls,productService);
 
         setPadding(false);
         setSpacing(false);
@@ -99,11 +102,9 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
 
     public void saveData(){
         orderBothSidesAddSide.setConsumer(e->{
-            for(var s : e.getProductsData()){
-                System.out.println(s.getProduct().getId());
-            }
-            System.out.println(e.getBillingAddress());
-            ordersService.saveNewOrder(e);
+                ordersService.saveNewOrder(e);
+
+
         });
     }
 
@@ -114,7 +115,7 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
         h.setWidthFull();
         h.addClassName("layout-flex");
 
-        VerticalLayout left = orderBothSidesAddSide.leftSide(productService.getProductsForAddOrder());
+        VerticalLayout left = orderBothSidesAddSide.leftSide();
         VerticalLayout right = rightSide();
 
         left.setWidth("1000px");

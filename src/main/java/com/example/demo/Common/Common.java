@@ -1,6 +1,10 @@
 package com.example.demo.Common;
 
+import com.example.demo.Enums.Warnings;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -10,6 +14,11 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class Common {
 
+    CommonComponents commonComponents;
+
+    public Common(CommonComponents commonComponents) {
+        this.commonComponents = commonComponents;
+    }
 
     public String dateFormatter(LocalDate date, String yyyymmdd){
 
@@ -130,6 +139,22 @@ public class Common {
             return "null";
         }
         return localDateTime.format(dateTimeFormatter);
+    }
+
+    public void customNavigate(String navigateTo){
+        UI.getCurrent().navigate(navigateTo);
+    }
+
+    public void customActionsForNotification(String message, Warnings warning){
+        NotificationVariant notificationVariant = NotificationVariant.ERROR;
+
+        switch (warning){
+            case ERROR -> notificationVariant = NotificationVariant.ERROR;
+            case FATAL_ERROR -> notificationVariant = NotificationVariant.ERROR;
+            case OK -> notificationVariant = NotificationVariant.SUCCESS;
+            case WARNING -> notificationVariant = NotificationVariant.WARNING;
+        }
+        commonComponents.showNotification(message,4000, Notification.Position.BOTTOM_CENTER, notificationVariant);
     }
 
 

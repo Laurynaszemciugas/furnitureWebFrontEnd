@@ -6,6 +6,7 @@ import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.ControllerModels.Orders.OrderAddProducts;
+import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -27,6 +28,7 @@ public class OrderAddProductListAddRemove {
 
     CommonComponents commonComponents;
     Common common;
+    ProductService productService;
 
     OrderGridProductRemoveAdd orderGridProductRemoveAdd;
 
@@ -37,19 +39,22 @@ public class OrderAddProductListAddRemove {
     List<OrderAddProducts> listOfProducts = new ArrayList<>();
 
 
-    public OrderAddProductListAddRemove(CommonComponents commonComponents, Common common) {
+    public OrderAddProductListAddRemove(CommonComponents commonComponents, Common common,ProductService productService) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.productService = productService;
         this.orderGridProductRemoveAdd = new OrderGridProductRemoveAdd(commonComponents,common);
+
+        listOfProducts.clear();
+        listOfProducts.addAll(productService.getProductsForAddOrder());
 
         updataTotalValue();
     }
 
 
 
-    public VerticalLayout consumerOrderItems(List<OrderAddProducts> items, Orders orders){
-        listOfProducts.clear();
-        listOfProducts.addAll(items);
+    public VerticalLayout consumerOrderItems( Orders orders){
+
         VerticalLayout v = new VerticalLayout();
         v.setWidthFull();
         v.addClassName("island");
