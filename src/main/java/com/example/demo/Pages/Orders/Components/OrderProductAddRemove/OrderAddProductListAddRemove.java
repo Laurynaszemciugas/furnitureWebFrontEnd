@@ -60,7 +60,7 @@ public class OrderAddProductListAddRemove {
         orderGridProductRemoveAdd.calculateTotal(selectedProducts);
 
 
-        orderGridProductRemoveAdd.assembleGrid(orderItems,selectedProducts);
+        orderGridProductRemoveAdd.assembleGrid(orderItems,selectedProducts,orders);
 
 
 
@@ -182,7 +182,9 @@ public class OrderAddProductListAddRemove {
                 orderGridProductRemoveAdd.updateGrid(orderItems, selectedProducts);
                 orderGridProductRemoveAdd.calculateTotal(selectedProducts);
 
-                orders.getProductsData().clear();
+                if(orders.getProductsData() != null) {
+                    orders.getProductsData().clear();
+                }
                 List<OrderProducts> orderProducts = new ArrayList<>();
                 for(var s : selectedProducts){
                     Product product = new Product();

@@ -2,6 +2,9 @@ package com.example.demo.Pages.Orders.Components.OrderProductAddRemove;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
+import com.example.demo.ControllerModels.CommonDtos.Orders;
+import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.ControllerModels.Orders.OrderAddProducts;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -14,6 +17,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -31,7 +35,7 @@ public class OrderGridProductRemoveAdd {
         this.common = common;
     }
 
-    public void assembleGrid(Grid<OrderAddProducts> orderItems, List<OrderAddProducts> selectedProducts){
+    public void assembleGrid(Grid<OrderAddProducts> orderItems, List<OrderAddProducts> selectedProducts, Orders orders){
 
 
         orderItems.addComponentColumn(e->{
@@ -104,6 +108,21 @@ public class OrderGridProductRemoveAdd {
                 e.setAmountSelected(Long.valueOf(String.valueOf(ee.getValue())));
                 updateGrid(orderItems, selectedProducts);
                 calculateTotal(selectedProducts);
+
+                if(orders.getProductsData() != null) {
+                    orders.getProductsData().clear();
+                }
+                List<OrderProducts> orderProducts = new ArrayList<>();
+                for(var s : selectedProducts){
+                    Product product = new Product();
+                    product.setId(s.getId());
+                    OrderProducts orderProducts1 = new OrderProducts();
+                    orderProducts1.setAmountOfProduct(s.getAmountSelected());
+                    orderProducts1.setProduct(product);
+                    orderProducts.add(orderProducts1);
+                }
+                orders.setProductsData(orderProducts);
+
             });
 
             return  quantity;
@@ -121,6 +140,21 @@ public class OrderGridProductRemoveAdd {
                 System.out.println("updating");
                 updateGrid(orderItems, selectedProducts);
                 calculateTotal(selectedProducts);
+
+                if(orders.getProductsData() != null) {
+                    orders.getProductsData().clear();
+                }
+                List<OrderProducts> orderProducts = new ArrayList<>();
+                for(var s : selectedProducts){
+                    Product product = new Product();
+                    product.setId(s.getId());
+                    OrderProducts orderProducts1 = new OrderProducts();
+                    orderProducts1.setAmountOfProduct(s.getAmountSelected());
+                    orderProducts1.setProduct(product);
+                    orderProducts.add(orderProducts1);
+                }
+                orders.setProductsData(orderProducts);
+
             });
 
 
@@ -151,6 +185,7 @@ public class OrderGridProductRemoveAdd {
 
 
     }
+
 
 
 
