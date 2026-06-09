@@ -236,6 +236,8 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         pageChoice = 0;
         promtChoice = "ALL";
 
+        paganation.updateUIFromExternal(1);
+
         HorizontalLayout sidesHolder = new HorizontalLayout();
         sidesHolder.setWidthFull();
         sidesHolder.addClassName("layout-flex");
@@ -244,7 +246,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         VerticalLayout leftSide = new VerticalLayout();
         leftSide.setWidthFull();
         leftSide.addClassName("island");
-        leftSide.setMaxHeight("900px");
+        leftSide.setMaxHeight("1000px");
 
 
         Scroller left = ordersLeftSide.orderFeedHolder(
@@ -288,7 +290,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         leftSide.setWidth("250px");
 
         // RIGHT SIDE
-        right.setMaxWidth("1050px");
+        right.setWidth("1000px");
 
 
         sidesHolder.add(leftSide, right);
@@ -315,6 +317,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         VerticalLayout leftSide = new VerticalLayout();
         leftSide.setWidthFull();
         leftSide.addClassName("island");
+        leftSide.setMaxHeight("1000px");
 
 
 
@@ -353,7 +356,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         leftSide.setWidth("250px");
 
         // RIGHT SIDE
-        right.setMaxWidth("1050px");
+        right.setMaxWidth("1000px");
 
 
         sidesHolder.add(leftSide, right);

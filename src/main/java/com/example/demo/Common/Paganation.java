@@ -93,7 +93,7 @@ public class Paganation {
 
         for(int i = 1; i <= totalPages; i++){
 
-            boolean good = i == 1 || i == totalPages || Math.abs(i-currentPage) <=2;
+            boolean good = i == 1 || i == totalPages || Math.abs(i-currentPage) <=1;
 
             if(good){
 

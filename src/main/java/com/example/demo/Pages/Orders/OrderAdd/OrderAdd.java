@@ -117,7 +117,7 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
         VerticalLayout left = orderBothSidesAddSide.leftSide();
         VerticalLayout right = rightSide();
 
-        left.setWidth("1000px");
+        left.setWidth("500px");
 
         right.setWidth("500px");
 

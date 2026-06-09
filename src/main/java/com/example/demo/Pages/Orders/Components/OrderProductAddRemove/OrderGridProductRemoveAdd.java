@@ -6,11 +6,14 @@ import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.ControllerModels.Orders.OrderAddProducts;
+import com.example.demo.Enums.OrderStatus;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -19,6 +22,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.function.Consumer;
 
 @Setter
@@ -106,26 +110,35 @@ public class OrderGridProductRemoveAdd {
 
             quantity.addValueChangeListener(ee->{
 
-                System.out.println("Griid valuesss");
-                System.out.println(ee.getValue());
-                e.setAmountSelected(Long.valueOf(String.valueOf(ee.getValue())));
-                updateGrid(orderItems, selectedProducts);
-                calculateTotal(selectedProducts);
+                if(ee.getValue() == null || ee.getValue() <= 0 || ee.getValue() >= 100){
+                    quantity.setInvalid(true);
+                    quantity.setErrorMessage("Invalid input");
 
-                if(orders.getProductsData() != null) {
-                    orders.getProductsData().clear();
-                }
-                List<OrderProducts> orderProducts = new ArrayList<>();
-                for(var s : selectedProducts){
-                    Product product = new Product();
-                    product.setId(s.getId());
-                    OrderProducts orderProducts1 = new OrderProducts();
-                    orderProducts1.setAmountOfProduct(s.getAmountSelected());
-                    orderProducts1.setProduct(product);
-                    orderProducts.add(orderProducts1);
-                }
-                orders.setProductsData(orderProducts);
+                    commonComponents.showNotification("Value must be between 1 and 99",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.ERROR);
 
+                    return;
+                }
+
+
+                if(ee.isFromClient()) {
+                    e.setAmountSelected(Long.valueOf(String.valueOf(ee.getValue())));
+                    updateGrid(orderItems, selectedProducts);
+                    calculateTotal(selectedProducts);
+
+                    if (orders.getProductsData() != null) {
+                        orders.getProductsData().clear();
+                    }
+                    List<OrderProducts> orderProducts = new ArrayList<>();
+                    for (var s : selectedProducts) {
+                        Product product = new Product();
+                        product.setId(s.getId());
+                        OrderProducts orderProducts1 = new OrderProducts();
+                        orderProducts1.setAmountOfProduct(s.getAmountSelected());
+                        orderProducts1.setProduct(product);
+                        orderProducts.add(orderProducts1);
+                    }
+                    orders.setProductsData(orderProducts);
+                }
             });
 
             return  quantity;
@@ -135,7 +148,7 @@ public class OrderGridProductRemoveAdd {
 
 
         orderItems.addComponentColumn(e->{
-
+            calculateTotal(selectedProducts);
             Button button = new Button("", VaadinIcon.TRASH.create());
 
             button.addClickListener(ee->{
@@ -159,6 +172,10 @@ public class OrderGridProductRemoveAdd {
                 orders.setProductsData(orderProducts);
 
             });
+
+            if(orders.getOrderStatus() != null && orders.getOrderStatus().equals(OrderStatus.Finished)){
+                button.setEnabled(false);
+            }
 
 
             return  button;

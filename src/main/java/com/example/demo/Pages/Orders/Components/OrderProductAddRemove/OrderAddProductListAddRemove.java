@@ -7,6 +7,7 @@ import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.ControllerModels.Orders.OrderAddProducts;
+import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -59,9 +60,7 @@ public class OrderAddProductListAddRemove {
     public VerticalLayout consumerOrderItems(Orders orders){
 
         // load data its gonna work only on the edit page cuz it checks if its null on new order its always null
-        if(orders.getProductsData()!=null) {
-            selectedProducts = productService.getExisitingData(orders.getId());
-        }
+
 
         VerticalLayout v = new VerticalLayout();
         v.setWidthFull();
@@ -69,6 +68,11 @@ public class OrderAddProductListAddRemove {
 
 
         orderItems = new Grid<>(OrderAddProducts.class,false);
+
+        if(orders.getProductsData()!=null) {
+            selectedProducts = productService.getExisitingData(orders.getId());
+        }
+
         orderGridProductRemoveAdd.updateGrid(orderItems, selectedProducts);
         orderGridProductRemoveAdd.calculateTotal(selectedProducts);
 
@@ -79,6 +83,9 @@ public class OrderAddProductListAddRemove {
 
         totalValueOfItems = commonComponents.spanCrafterWordNoHide(String.format("%s: %.2f %s","Total", 0.0,"Eur"),"stat-example");
         Button addProduct = commonComponents.buttonThemeAndIconNoNavigate("Add product", ButtonVariant.LUMO_PRIMARY, VaadinIcon.PLUS,"white");
+        if(orders.getOrderStatus() != null && orders.getOrderStatus().equals(OrderStatus.Finished)){
+            addProduct.setEnabled(false);
+        }
 
         addProduct.addClickListener(e->{
             showAddOrderDialog(orders);
@@ -226,7 +233,7 @@ public class OrderAddProductListAddRemove {
 
     public void updataTotalValue(){
         orderGridProductRemoveAdd.setTotalValue(e->{
-            totalValueOfItems.setText(String.format("%s: %.2f %s","Total", e,"Eur"));
+            totalValueOfItems.setText(String.format("%s: %.2f %s","Total", e,"Eurs"));
         });
     }
 
