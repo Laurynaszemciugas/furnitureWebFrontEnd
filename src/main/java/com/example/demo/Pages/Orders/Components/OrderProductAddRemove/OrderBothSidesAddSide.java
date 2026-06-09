@@ -215,6 +215,7 @@ public class OrderBothSidesAddSide {
 
 
         createdDate.setWidthFull();
+        createdDate.setReadOnly(true);
         createdDate.setValue(LocalDateTime.now());
 
 
@@ -304,6 +305,12 @@ public class OrderBothSidesAddSide {
 
         binder.forField(dueDate)
                 .asRequired("Order due date is required")
+                .withValidator(
+                        due -> due == null ||
+                                createdDate.getValue() == null ||
+                                !due.isBefore(createdDate.getValue()),
+                        "Due date cannot be before create date"
+                )
                 .bind(v -> null, (v, value) -> {});
 
 

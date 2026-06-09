@@ -34,6 +34,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import lombok.SneakyThrows;
 
@@ -77,13 +78,15 @@ public class OrdersRightSide {
     Span dueDateForChange;
     Span addressAuto;
 
-    ComboBox<PayStatus> payStatusComboBox;
-    ComboBox<PayMethod> payMethodComboBox;
+    ComboBox<PayStatus> payStatusComboBox = new ComboBox<>("Paid/Unpaid");
+    ComboBox<PayMethod> payMethodComboBox = new ComboBox<>("Pay method");
+    TextArea address = new TextArea("Address");
 
     List<ComboBoxEmployees> listEmployees = new ArrayList<>();
 
     OrderAddProductListAddRemove orderAddProductListAddRemove;
 
+    Binder<Void> binder = new Binder<>();
 
     Consumer<Orders> ordersConsumer;
 
@@ -105,7 +108,7 @@ public class OrdersRightSide {
 
 
         listEmployees.addAll(employeeCalls.getMiniEmployeeData());
-
+        binder();
     }
 
 
@@ -124,11 +127,10 @@ public class OrdersRightSide {
         rightSide.addClassName("island-dis");
         rightSide.getStyle().set("position","relative");
 
-        HorizontalLayout firstLayer = new HorizontalLayout();
-        firstLayer.setWidthFull();
-        firstLayer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+
 
         status = commonComponents.spanCrafter("","stock-badge");
+        status.getStyle().set("position","absolute").set("top","20px").set("left","20px");
 
         HorizontalLayout secondLayer = new HorizontalLayout();
         secondLayer.setPadding(false);
@@ -144,7 +146,7 @@ public class OrdersRightSide {
 
 
         addressAuto = commonComponents.spanCrafter("none","stat-title");
-        TextArea address = new TextArea("Address");
+
         address.setHeight("120px");
         address.setWidthFull();
         address.addValueChangeListener(e->{
@@ -289,24 +291,24 @@ public class OrdersRightSide {
 
         Button save = commonComponents.normalThemeButtonNoNavigate("Save",ButtonVariant.LUMO_PRIMARY);
 
-        Button exit = commonComponents.buttonThemeAndIconNoNavigate("",ButtonVariant.ERROR,VaadinIcon.CLOSE,"Red");
-        exit.getStyle().set("position","absolute").set("right","10px").set("top","10px");
+        Button exit = commonComponents.normalThemeButtonNoNavigate("Cancel",ButtonVariant.LUMO_ICON);
         exit.addClickListener(e->{
            hideRightSide();
         });
 
-        rightSide.add(exit);
 
         save.addClickListener(e->{
+            if(binder.validate().isOk()) {
                 ordersConsumer.accept(selectedOrder);
-        });
+            }
+            else{
+                commonComponents.showNotification("Form is not properly filled",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.ERROR);
+            }
+            });
 
 
 
-        firstLayer.add(
-                commonComponents.spanCrafterWordNoHide("Order details","activityFeed-name"),
-                status
-        );
+
 
 
 
@@ -347,14 +349,19 @@ public class OrdersRightSide {
 
 
 
-
+        HorizontalLayout actions = new HorizontalLayout();
+        actions.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        actions.setWidthFull();
+        actions.add(
+                exit,
+                save
+        );
 
 
 
         rightSide.add(
-                save,
-
-                firstLayer,
+                status,
+                actions,
                 secondLayer,
                 userData,
                 thirdLayer,
@@ -378,12 +385,8 @@ public class OrdersRightSide {
         v.setWidthFull();
         v.addClassName("island");
 
-        HorizontalLayout firstLayer = new HorizontalLayout();
-        firstLayer.setWidthFull();
-        firstLayer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
-        Span name = commonComponents.spanCrafterWordNoHide("Total","stat-example");
-        total = commonComponents.spanCrafterWordNoHide("0.0","stat-example");
+
 
         if(orderProducts!=null){
             total.setText(String.format("%.2f %s",totalCost,"Eur"));
@@ -693,14 +696,13 @@ public class OrdersRightSide {
     public HorizontalLayout orderStatusButtons(){
 
         HorizontalLayout h = new HorizontalLayout();
+        h.setJustifyContentMode(FlexComponent.JustifyContentMode.EVENLY);
         h.setWidthFull();
         h.addClassName("layout-flex");
 
-        payStatusComboBox = new ComboBox<>("Paid/Unpaid");
         payStatusComboBox.setItems(Arrays.stream(PayStatus.values()).filter(e-> e!= PayStatus.ALL).toList());
 
 
-        payMethodComboBox = new ComboBox<>("Pay method");
         payMethodComboBox.setItems(Arrays.stream(PayMethod.values()).filter(e-> e != PayMethod.ALL).toList());
 
         payStatusComboBox.addValueChangeListener(e->{
@@ -748,23 +750,29 @@ public class OrdersRightSide {
     }
 
 
-//    public void updateTotal(){
-//        double totalValue = 0.0;
-//
-//        for(var s : selectedOrder.getProductsData()){
-//            totalValue += s.getAmountOfProduct() * s.getCost();
-//        }
-//
-//        totalCost.setText(String.format("%s %.2f %s","Total",totalValue,"Eur"));
-//        total.setText(String.format("%.2f %s",totalValue,"Eur"));
-//    }
-
-
-
 
     public void hideRightSide() {
         rightSide.removeClassName("island-dis");
        rightSide.setVisible(false);
+    }
+
+
+    public void binder(){
+        binder.forField(payStatusComboBox)
+                .asRequired("Pay status is required")
+                .bind(v -> null, (v, value) -> {});
+
+        binder.forField(payMethodComboBox)
+                .asRequired("Pay Method is required")
+                .bind(v -> null, (v, value) -> {});
+
+        binder.forField(address)
+                .asRequired("Address is required")
+                .bind(v -> null, (v, value) -> {});
+
+
+
+
     }
 
 }

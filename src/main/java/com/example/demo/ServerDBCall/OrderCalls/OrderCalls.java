@@ -7,6 +7,8 @@ import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.OrderAdd.ConsumerData;
 import com.example.demo.ControllerModels.Orders.OrdersFeedData;
 import com.example.demo.Enums.OrderStatus;
+import com.example.demo.Pages.Orders.Page.OrdersPage;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
@@ -18,6 +20,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Service
 public class OrderCalls {
@@ -25,9 +28,13 @@ public class OrderCalls {
 
     SessionCrafter sessionCrafter;
 
+
+
     public OrderCalls() {
         this.sessionCrafter = new SessionCrafter();
     }
+
+
 
     public List<OrdersFeedData> getOrders(
                                            OrderStatus orderStatusChoice,
@@ -177,7 +184,7 @@ public class OrderCalls {
     }
 
 
-    public String saveModifiedOrder(Orders order) throws IOException, InterruptedException {
+    public ErrorResponse saveModifiedOrder(Orders order) throws IOException, InterruptedException {
 
         String JWT = sessionCrafter.extractSession("JWT", String.class);
 
@@ -205,7 +212,8 @@ public class OrderCalls {
             throw new RuntimeException(response.body());
         }
 
-        return response.body();
+
+        return mapper.readValue(response.body(),ErrorResponse.class);
 
 
     }

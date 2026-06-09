@@ -28,8 +28,10 @@ public class ErrorDisplay {
                 times = 0;
             }
             case OK ->{
-                notificationVariant = NotificationVariant.SUCCESS;
+                commonComponents.showNotification(message,4000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
                 times = 0;
+                return true;
+
             }
 
             case WARNING ->{

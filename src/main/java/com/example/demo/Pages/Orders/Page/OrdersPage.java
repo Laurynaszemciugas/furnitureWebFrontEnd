@@ -7,6 +7,7 @@ import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.Product;
+import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Orders.Components.BriefOrderPageExplanation;
@@ -138,20 +139,19 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
         addUIData();
 
+        ordersService.setOrderIsSaved(e->{
+            ordersRightSide.hideRightSide();
+            setNewPage();
+            updateUIData();
+        });
 
 
         // get info that user tries to save order
-        ordersRightSide.setOrderConsumer(e->{
-            try {
-                String answer = orderCalls.saveModifiedOrder(e);
-                commonComponents.showNotification(answer,3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
-                ordersRightSide.hideRightSide();
-                setNewPage();
-                updateUIData();
 
-            } catch (Exception ex) {
-                commonComponents.showNotification(ex.getMessage(), 12000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_ERROR);
-            }
+        ordersRightSide.setOrderConsumer(e->{
+            ordersService.saveEditedData(e);
+
+
         });
 
 
@@ -234,6 +234,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         dateToChoice = LocalDate.of(1000,12,12);
         amountOfProductsChoice = 0l;
         pageChoice = 0;
+        promtChoice = "ALL";
 
         HorizontalLayout sidesHolder = new HorizontalLayout();
         sidesHolder.setWidthFull();

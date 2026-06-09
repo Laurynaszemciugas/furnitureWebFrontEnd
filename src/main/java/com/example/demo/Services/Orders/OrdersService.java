@@ -10,20 +10,26 @@ import com.example.demo.Enums.OrderStatus;
 import com.example.demo.ServerDBCall.OrderCalls.OrderCalls;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import lombok.Setter;
 import lombok.SneakyThrows;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Service
+@Setter
 public class OrdersService {
 
     OrderCalls orderCalls;
     CommonComponents commonComponents;
     Common common;
+
+    Consumer<String> orderIsSaved;
 
     public OrdersService(OrderCalls orderCalls, CommonComponents commonComponents, Common common) {
         this.orderCalls = orderCalls;
@@ -83,6 +89,33 @@ public class OrdersService {
             common.customActionsForNotification(error.getMessage(),error.getWarning(),"Orders");
         }
     }
+
+    @SneakyThrows
+    public void saveEditedData(Orders orders){
+
+        try{
+
+            ErrorResponse answer = orderCalls.saveModifiedOrder(orders);
+            common.customActionsForNotification(answer.getMessage(),answer.getWarning(),"Orders");
+            orderIsSaved.accept("yep");
+
+        } catch (RuntimeException ex) {
+            ObjectMapper mapper = new ObjectMapper();
+
+            ErrorResponse error = mapper.readValue(
+                    ex.getMessage(),
+                    ErrorResponse.class
+            );
+
+            common.customActionsForNotification(error.getMessage(),error.getWarning(),"Orders");
+        }
+
+
+    }
+
+
+
+
 
     }
 
