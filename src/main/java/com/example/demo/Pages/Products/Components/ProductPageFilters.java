@@ -155,7 +155,6 @@ public class ProductPageFilters {
 
         );
         horizontalLayout.setWidthFull();
-        //horizontalLayout.getStyle().set("background-color","Red");
         horizontalLayout.addClassName("layout-flex");
 
 

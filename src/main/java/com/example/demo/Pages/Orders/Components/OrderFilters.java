@@ -231,6 +231,7 @@ public class OrderFilters {
 
         Button clear = new Button("Clear filters",VaadinIcon.ERASER.create(), e-> clearFilters.accept("yep"));
 
+
         HorizontalLayout allHolder = new HorizontalLayout();
         allHolder.setWidthFull();
         allHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);

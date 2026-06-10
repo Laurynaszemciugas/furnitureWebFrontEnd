@@ -25,7 +25,6 @@ public class Materials {
     private double materialWeight;
     private double unitPrice;
     private String unit;
-    private EnabledDisabled enabledDisabled;
     @JsonIgnore
     private User user;
 

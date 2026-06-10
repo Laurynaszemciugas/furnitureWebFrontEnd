@@ -164,6 +164,8 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
     public VerticalLayout mainLayout() {
 
+        filterHolder.setPadding(false);
+
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top", "5px");
         verticalLayout.addClassName("main-island");
