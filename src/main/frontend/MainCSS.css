@@ -344,6 +344,11 @@ vaadin-button {
 background-color: #d4edda;
 }
 
+.icons {
+    background-color: #ff3b30;
+    transition: 0.2s;
+}
+
 
 .new-badge {
     display: inline-block;
@@ -438,6 +443,13 @@ background-color: #d4edda;
     background: rgba(239, 68, 68, 0.15);
     color: #ef4444;
     border-color: rgba(239, 68, 68, 0.3);
+}
+
+.miniStatOne {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.3);
+    border-radius: 50%;
 }
 
 /* FINISHED - GREEN */
