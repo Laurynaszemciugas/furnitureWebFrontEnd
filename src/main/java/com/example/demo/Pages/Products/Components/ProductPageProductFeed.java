@@ -118,8 +118,8 @@ public class ProductPageProductFeed {
             productPrice.getStyle()
                     .set("text-decoration", "line-through");
 
-            Span span = commonComponents.spanCrafterWordNoHide(String.format("%.2f %s", discountedPrice, "Eur"),"discount");
-            span.addClassName("stock-in");
+            Span span = commonComponents.spanCrafterWordNoHide(String.format("%.2f %s", discountedPrice, "Eur"),"activityFeed-name");
+            priceHolder.setAlignItems(FlexComponent.Alignment.CENTER);
             priceHolder.add(span);
 
 
@@ -138,7 +138,18 @@ public class ProductPageProductFeed {
 
         Button removeProduct = commonComponents.smallIconButtonsNoNavigate(VaadinIcon.TRASH,"red");
         removeProduct.addClickListener(e->{
-            deleteConfirmation(productName,id);
+
+            common.deleteConfirmation(productName);
+
+                common.setBooleanConsumer(answer->{
+                    if(answer) {
+                        String message = productService.removeProductById(id);
+                        commonComponents.showNotification("Product" + productName + " " + message, 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
+                        common.reloadPage();
+                    }
+                });
+
+
 
 
         });
@@ -198,48 +209,9 @@ public class ProductPageProductFeed {
     }
 
 
-    public void deleteConfirmation(String productName, Long id){
-        ConfirmDialog dialog = new ConfirmDialog();
-
-        dialog.setHeader("Warning");
-
-        VerticalLayout content = new VerticalLayout();
-        content.setSpacing(false);
-        content.setPadding(false);
-
-        Span line = new Span(String.format("%s '%s' %s", "Please enter ", productName.toUpperCase(), "to remove a product"));
-        line.getStyle().set("color", "red");
-
-        TextField confirmName = new TextField("Enter product name");
-
-        content.add(line,confirmName);
 
 
 
-        dialog.setCancelable(true);
-        dialog.setConfirmText("Remove");
-        dialog.setCancelText("Go back");
-
-
-        dialog.addConfirmListener(event -> {
-            if(confirmName.getValue().equals(productName.toUpperCase())) {
-                String message = productService.removeProductById(id);
-                commonComponents.showNotification("Product" + productName + " " + message, 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
-                //updateRequired.accept("need update");
-                UI.getCurrent().getPage().reload();
-            }
-            else{
-                commonComponents.showNotification("Product was not removed verification failed ", 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.ERROR);
-            }
-        });
-
-        dialog.addCancelListener(event -> {
-        });
-
-        dialog.add(content);
-
-        dialog.open();
-    }
 
     public void colorSpan(long unitsLeft, long minTreshold, Span stockLevel){
 

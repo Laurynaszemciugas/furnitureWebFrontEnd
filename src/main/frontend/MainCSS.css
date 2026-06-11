@@ -63,10 +63,10 @@ body {
 
 
 .no-gray-disabled {
-    /* Sets the text of the value inside the box to pure black */
+
     --vaadin-input-field-disabled-value-color: #2d2d2d;
 
-    /* Keeps the background exactly as dark as it was */
+
 
 }
 
@@ -412,10 +412,9 @@ background-color: #d4edda;
 .stock-badge {
     display: inline-block;
     padding: 3px 10px;
-    font-size: 10px;
+    font-size: 15px;
     font-weight: 600;
     border-radius: 999px;
-    text-transform: uppercase;
     letter-spacing: 0.5px;
     line-height: 1;
 

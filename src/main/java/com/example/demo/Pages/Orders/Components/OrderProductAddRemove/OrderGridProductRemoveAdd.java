@@ -107,6 +107,10 @@ public class OrderGridProductRemoveAdd {
             quantity.setValue(e.getAmountSelected() == null ? 1: e.getAmountSelected().intValue());
             quantity.setStepButtonsVisible(true);
 
+            if(orders.getOrderStatus() != null && orders.getOrderStatus().equals(OrderStatus.Finished)){
+                quantity.setEnabled(false);
+                quantity.addClassName("no-gray-disabled");
+            }
 
             quantity.addValueChangeListener(ee->{
 

@@ -6,9 +6,12 @@ import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.Stock;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
@@ -36,7 +39,7 @@ public class MaterialGrid {
                 "Oak Wood",
                 "Premium solid oak wood for furniture manufacturing.",
                 ActiveInactive.ACTIVE,
-                MaterialType.BAMBOO,
+                MaterialType.CERAMIC,
                 Stock.In_Stock,
                 LocalDateTime.now().minusDays(15)
         ));
@@ -55,6 +58,7 @@ public class MaterialGrid {
 
 
 
+        // ======================== Material pic and name =====================================
         grid.addComponentColumn(e->{
 
             HorizontalLayout h = new HorizontalLayout();
@@ -68,19 +72,72 @@ public class MaterialGrid {
             );
 
             return  h;
-        }).setHeader("Image");
+        }).setHeader("Material").setAutoWidth(true);
 
-
+        // ======================== Material type =====================================
         grid.addComponentColumn(e->{
 
-            Span span = commonComponents.spanCrafter(e.getMaterialType() == null ? "Unknown" : String.valueOf(e.getMaterialType()),"stat-example");
+            Span span = commonComponents.spanCrafter(e.getMaterialType() == null ? "Unknown" : String.valueOf(e.getMaterialType().getDisplayName()),"stat-example");
+            span.getStyle().set("width", "fit-content");
+            span.addClassName("stock-badge");
 
+            switch (e.getMaterialType()) {
+
+                case WOOD, BAMBOO, RATTAN, WICKER, CORK -> {
+                    span.getStyle()
+                            .set("background", "rgba(56, 189, 248, 0.15)")
+                            .set("color", "#38bdf8") // sky blue
+                            .set("border", "1px solid rgba(56,189,248,0.3)");
+                }
+
+                case METAL, CARBON_FIBER -> {
+                    span.getStyle()
+                            .set("background", "rgba(99, 102, 241, 0.15)")
+                            .set("color", "#6366f1") // indigo
+                            .set("border", "1px solid rgba(99,102,241,0.3)");
+                }
+
+                case GLASS, CERAMIC, PORCELAIN, ACRYLIC -> {
+                    span.getStyle()
+                            .set("background", "rgba(168, 85, 247, 0.15)")
+                            .set("color", "#a855f7") // purple
+                            .set("border", "1px solid rgba(168,85,247,0.3)");
+                }
+
+                case LEATHER, FAUX_LEATHER, FABRIC, VELVET, LINEN, COTTON -> {
+                    span.getStyle()
+                            .set("background", "rgba(14, 165, 233, 0.15)")
+                            .set("color", "#0ea5e9") // cyan-blue
+                            .set("border", "1px solid rgba(14,165,233,0.3)");
+                }
+
+                case PLASTIC, RUBBER, FOAM -> {
+                    span.getStyle()
+                            .set("background", "rgba(236, 72, 153, 0.15)")
+                            .set("color", "#ec4899") // pink
+                            .set("border", "1px solid rgba(236,72,153,0.3)");
+                }
+
+                case STONE, MARBLE, GRANITE, CONCRETE -> {
+                    span.getStyle()
+                            .set("background", "rgba(100, 116, 139, 0.15)")
+                            .set("color", "#64748b") // slate
+                            .set("border", "1px solid rgba(100,116,139,0.3)");
+                }
+
+                case MDF, PLYWOOD, PARTICLE_BOARD, LAMINATE -> {
+                    span.getStyle()
+                            .set("background", "rgba(20, 184, 166, 0.15)")
+                            .set("color", "#14b8a6") // teal
+                            .set("border", "1px solid rgba(20,184,166,0.3)");
+                }
+            }
 
 
             return  span;
-        }).setHeader("Type");
+        }).setHeader("Type").setAutoWidth(true);
 
-
+        // ======================== Material description=====================================
         grid.addComponentColumn(e->{
 
 
@@ -93,8 +150,9 @@ public class MaterialGrid {
 
         grid.addComponentColumn(e->{
 
-            Span span = commonComponents.spanCrafter(e.getActiveInactive() == null ? "Unknown" : String.valueOf(e.getActiveInactive()),"activityFeed-name");
+            Span span = commonComponents.spanCrafter(e.getActiveInactive() == null ? "Unknown" : String.valueOf(e.getActiveInactive().getGetDisplayNames()),"activityFeed-name");
             span.addClassName("stock-badge");
+            span.getStyle().set("width", "fit-content");
 
             switch (e.getActiveInactive()){
                 case ACTIVE -> span.addClassName("stock-in");
@@ -103,7 +161,64 @@ public class MaterialGrid {
 
 
             return  span;
-        }).setHeader("Status");
+        }).setHeader("Status").setAutoWidth(true);
+
+
+        // ======================== stock =====================================
+        grid.addComponentColumn(e->{
+
+            Span span = commonComponents.spanCrafter(e.getStock() == null ? "Unknown" : String.valueOf(e.getStock().getDisplayName()),"activityFeed-name");
+            span.addClassName("stock-badge");
+            span.getStyle().set("width", "fit-content");
+
+            switch (e.getStock()){
+                case In_Stock -> span.addClassName("stock-in");
+                case No_Stock -> span.addClassName("stock-out");
+                case Low_Stock -> span.addClassName("stock-low");
+            }
+
+
+            return  span;
+        }).setHeader("Stock");
+
+        // ======================== Material create date =====================================
+        grid.addComponentColumn(e->{
+
+            String date = common.dateFormatter(e.getCreated(),"MMMM d yyyy");
+
+            Span span = commonComponents.spanCrafter(date,"stat-example");
+
+
+            return  span;
+        }).setHeader("Created").setAutoWidth(true);
+
+
+        // ======================== Material actions =====================================
+        grid.addComponentColumn(e->{
+
+
+            HorizontalLayout h = new HorizontalLayout();
+            Button edit = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.PENCIL,"Black");
+            Button delete = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.TRASH,"Red");
+
+            delete.addClickListener(deleteValue->{
+                common.deleteConfirmation(e.getName());
+               common.setBooleanConsumer(canDelete->{
+                   if(canDelete){
+                       System.out.println("deleting material");
+                   }
+               });
+            });
+
+            h.add(
+                    delete,
+                    edit
+
+            );
+
+
+            return  h;
+        }).setHeader("Actions").setAutoWidth(true);
 
 
         return grid;
