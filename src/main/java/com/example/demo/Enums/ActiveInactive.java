@@ -1,6 +1,6 @@
 package com.example.demo.Enums;
 
-public enum Enabled {
+public enum ActiveInactive {
 
     ALL("All"),
     ACTIVE("Active"),
@@ -8,7 +8,7 @@ public enum Enabled {
 
     private String getDisplayNames;
 
-    Enabled(String getDisplayNames) {
+    ActiveInactive(String getDisplayNames) {
         this.getDisplayNames = getDisplayNames;
     }
 

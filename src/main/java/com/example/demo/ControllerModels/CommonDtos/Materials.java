@@ -1,8 +1,8 @@
 package com.example.demo.ControllerModels.CommonDtos;
 
 
-import com.example.demo.Enums.Enabled;
-import com.example.demo.Enums.EnabledDisabled;
+import com.example.demo.Enums.ActiveInactive;
+import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.Stock;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -21,12 +21,17 @@ public class Materials {
     private Long inStock;
     private Long minThresHold;
     private Stock stock;
-    private Enabled enabled;
+    private ActiveInactive enabled;
     private double materialWeight;
     private double unitPrice;
+
     private String unit;
+    private String description;
+    private MaterialType materialType;
+
     @JsonIgnore
     private User user;
+
 
     private LocalDateTime created;
 
