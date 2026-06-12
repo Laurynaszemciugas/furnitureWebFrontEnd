@@ -3,6 +3,7 @@ package com.example.demo.Pages.Material.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Enums.ActiveInactive;
+import com.example.demo.Enums.Stock;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -39,15 +40,17 @@ public class MaterialFilters {
 
         Button all = commonComponents.normalButtonNoNavigate(ActiveInactive.ALL.getGetDisplayNames(), "transparent-button");
         all.addClassName("active");
-        Button active = commonComponents.normalButtonNoNavigate(ActiveInactive.ACTIVE.getGetDisplayNames(), "transparent-button");
-        Button inactive = commonComponents.normalButtonNoNavigate(ActiveInactive.INACTIVE.getGetDisplayNames(), "transparent-button");
+        Button active = commonComponents.normalButtonNoNavigate(Stock.In_Stock.getDisplayName(), "transparent-button");
+        Button inactive = commonComponents.normalButtonNoNavigate(Stock.Low_Stock.getDisplayName(), "transparent-button");
+        Button NoStock = commonComponents.normalButtonNoNavigate(Stock.No_Stock.getDisplayName(), "transparent-button");
 
         Button clear = new Button("Clear filters", VaadinIcon.ERASER.create());
 
         buttonHolder.add(
                 all,
                 active,
-                inactive
+                inactive,
+                NoStock
         );
 
         buttonHolderhOLDER.add(
@@ -56,7 +59,7 @@ public class MaterialFilters {
         );
 
 
-        List<Button> buttonList = List.of(all,active,inactive);
+        List<Button> buttonList = List.of(all,active,inactive,NoStock);
 
         for(var s : buttonList){
 
