@@ -3,8 +3,11 @@ package com.example.demo.Pages.Material.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Enums.ActiveInactive;
+import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.Stock;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -71,7 +74,7 @@ public class MaterialFilters {
         }
 
         TextField search = commonComponents.textFieldCrafter("Search products...","",VaadinIcon.SEARCH);
-        Button showMoreFilters = new Button(commonComponents.iconCrafter(VaadinIcon.FILTER,"30px","grey"));
+        Button showMoreFilters = new Button(commonComponents.iconCrafter(VaadinIcon.FILTER,"30px","grey"), e-> showMoreFilters());
         showMoreFilters.addClassName("transparent-button");
         HorizontalLayout h3 = new HorizontalLayout();
         h3.setPadding(false);
@@ -97,6 +100,42 @@ public class MaterialFilters {
         );
 
         return  v;
+    }
+
+    public Dialog showMoreFilters(){
+
+        Dialog dialog = new Dialog("Filters");
+
+        Button back = new Button("Back", e-> dialog.close());
+
+        VerticalLayout dialogHolder = new VerticalLayout();
+        dialogHolder.setSpacing(false);
+        dialogHolder.setPadding(false);
+
+
+        ComboBox<MaterialType> materialTypeComboBox = new ComboBox<>("Material type");
+        materialTypeComboBox.setItems(MaterialType.values());
+        materialTypeComboBox.setItemLabelGenerator(MaterialType::getDisplayName);
+
+        ComboBox<ActiveInactive> activeInactiveComboBox = new ComboBox<>("Material status");
+        activeInactiveComboBox.setItems(ActiveInactive.values());
+        activeInactiveComboBox.setItemLabelGenerator(ActiveInactive::getGetDisplayNames);
+
+
+
+
+
+        dialogHolder.add(
+                materialTypeComboBox,
+                activeInactiveComboBox,
+                back
+        );
+
+        dialog.add(dialogHolder);
+
+        dialog.open();
+
+return dialog;
     }
 
 

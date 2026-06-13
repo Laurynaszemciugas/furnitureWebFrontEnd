@@ -62,6 +62,7 @@ public class OrderFilters {
         Dialog filters = new Dialog("Filters");
 
         VerticalLayout filterHolder = new VerticalLayout();
+        filterHolder.setSpacing(false);
         filterHolder.setPadding(false);
 
 

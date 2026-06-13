@@ -35,7 +35,8 @@ public enum MaterialType {
     LAMINATE("Laminate"),
 
     CARBON_FIBER("Carbon Fiber"),
-    ACRYLIC("Acrylic");
+    ACRYLIC("Acrylic"),
+    ALL("All");
 
     private final String displayName;
 

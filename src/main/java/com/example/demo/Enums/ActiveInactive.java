@@ -2,9 +2,10 @@ package com.example.demo.Enums;
 
 public enum ActiveInactive {
 
-    ALL("All"),
+
     ACTIVE("Active"),
-    INACTIVE("Inactive");
+    INACTIVE("Inactive"),
+    ALL("All");
 
     private String getDisplayNames;
 
