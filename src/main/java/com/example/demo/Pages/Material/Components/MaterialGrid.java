@@ -9,11 +9,13 @@ import com.example.demo.Enums.Stock;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ public class MaterialGrid {
     public Grid gridHolder(){
 
         Grid<MaterialBriefDto> grid = new Grid<>(MaterialBriefDto.class,false);
+        grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
         List<MaterialBriefDto> info = new ArrayList<>();
         info.add(new MaterialBriefDto(
                 "https://picsum.photos/200?1",
@@ -41,6 +44,9 @@ public class MaterialGrid {
                 ActiveInactive.ACTIVE,
                 MaterialType.CERAMIC,
                 Stock.In_Stock,
+                20l,
+                13l,
+                200.5,
                 LocalDateTime.now().minusDays(15)
         ));
 
@@ -51,6 +57,9 @@ public class MaterialGrid {
                 ActiveInactive.INACTIVE,
                 MaterialType.BAMBOO,
                 Stock.Low_Stock,
+                20l,
+                11l,
+                685.22,
                 LocalDateTime.now().minusDays(8)
         ));
         grid.setItems(info);
@@ -65,10 +74,17 @@ public class MaterialGrid {
             h.setAlignItems(FlexComponent.Alignment.CENTER);
             Image image = commonComponents.imageCrafter(e.getImageUrl() == null ? "No_picture.png" : e.getImageUrl(),"90px","90px","10px");
             Span span = commonComponents.spanCrafter(e.getName() == null ? "Unknown" : e.getName(),"activityFeed-name");
+            Span span2 = commonComponents.spanCrafter(e.getUnitPrice() == null ? "Unknown" :   "Unit price: "+ e.getUnitPrice() + "Eur","stat-title");
+
+            VerticalLayout v = new VerticalLayout();
+            v.add(
+                    span,
+                    span2
+            );
 
             h.add(
                     image,
-                    span
+                    v
             );
 
             return  h;
@@ -146,7 +162,7 @@ public class MaterialGrid {
 
 
             return  span;
-        }).setHeader("Description");
+        }).setHeader("Description").setResizable(true);
 
         grid.addComponentColumn(e->{
 
@@ -167,6 +183,8 @@ public class MaterialGrid {
         // ======================== stock =====================================
         grid.addComponentColumn(e->{
 
+            VerticalLayout v = new VerticalLayout();
+
             Span span = commonComponents.spanCrafter(e.getStock() == null ? "Unknown" : String.valueOf(e.getStock().getDisplayName()),"activityFeed-name");
             span.addClassName("stock-badge");
             span.getStyle().set("width", "fit-content");
@@ -178,8 +196,18 @@ public class MaterialGrid {
             }
 
 
-            return  span;
-        }).setHeader("Stock");
+            Span span2 = commonComponents.spanCrafter(e.getAmountLeft() == null ? "Unknown" :  "Current stock: " + e.getAmountLeft(),"stat-title");
+            Span span3 = commonComponents.spanCrafter(e.getMinThresh() == null ? "Unknown" : "Min threshold: " + e.getMinThresh(),"stat-title");
+
+
+            v.add(
+                    span,
+                    span2,
+                    span3
+            );
+
+            return  v;
+        }).setHeader("Stock").setAutoWidth(true);
 
         // ======================== Material create date =====================================
         grid.addComponentColumn(e->{

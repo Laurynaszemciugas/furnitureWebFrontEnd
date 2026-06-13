@@ -1,6 +1,7 @@
 package com.example.demo.Common;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
@@ -28,7 +29,8 @@ public class Paganation {
 
         Button button = new Button(String.valueOf(number));
         button.setVisible(false);
-        button.addClassName("pagination-button");
+        button.addThemeVariants(ButtonVariant.LUMO_ICON);
+//        button.addClassName("pagination-button");
 
         button.addClickListener(e->{
             currentPage = Integer.parseInt(button.getText());
@@ -87,7 +89,7 @@ public class Paganation {
         for(var s : buttonList){
 
             s.setVisible(false);
-            s.removeClassName("pagination-button-active");
+            s.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
         }
 
 
@@ -98,7 +100,7 @@ public class Paganation {
             if(good){
 
                 if(i == currentPage){
-                    buttonList.get(i-1).addClassName("pagination-button-active");
+                    buttonList.get(i-1).addThemeVariants(ButtonVariant.PRIMARY);
                 }
                 buttonList.get(i-1).setVisible(true);
             }

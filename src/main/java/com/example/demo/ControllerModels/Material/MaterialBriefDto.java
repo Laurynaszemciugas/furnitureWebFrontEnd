@@ -20,5 +20,8 @@ public class MaterialBriefDto {
     private ActiveInactive activeInactive;
     private MaterialType materialType;
     private Stock stock;
+    private Long amountLeft;
+    private Long minThresh;
+    private Double unitPrice;
     private LocalDateTime created;
 }

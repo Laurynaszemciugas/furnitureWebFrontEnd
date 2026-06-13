@@ -7,12 +7,14 @@ import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.Stock;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 
 import java.util.List;
@@ -105,6 +107,10 @@ public class MaterialFilters {
     public Dialog showMoreFilters(){
 
         Dialog dialog = new Dialog("Filters");
+        dialog.getHeader().add(VaadinIcon.FILTER.create());
+        dialog.setHeaderTitle("Delete Material");
+        dialog.setHeight("auto");
+        dialog.setDraggable(true);
 
         Button back = new Button("Back", e-> dialog.close());
 
@@ -114,24 +120,45 @@ public class MaterialFilters {
 
 
         ComboBox<MaterialType> materialTypeComboBox = new ComboBox<>("Material type");
+        materialTypeComboBox.setWidthFull();
         materialTypeComboBox.setItems(MaterialType.values());
         materialTypeComboBox.setItemLabelGenerator(MaterialType::getDisplayName);
 
         ComboBox<ActiveInactive> activeInactiveComboBox = new ComboBox<>("Material status");
+        activeInactiveComboBox.setWidthFull();
         activeInactiveComboBox.setItems(ActiveInactive.values());
         activeInactiveComboBox.setItemLabelGenerator(ActiveInactive::getGetDisplayNames);
 
+        IntegerField stockAmount  = new IntegerField("Stock amount");
+        IntegerField minThreshold  = new IntegerField("Min threshold");
+        IntegerField unitPrice  = new IntegerField("Unit price");
+        unitPrice.setWidthFull();
+
+        HorizontalLayout stockLevels = commonComponents.doubleValueRow(
+                stockAmount,
+                minThreshold
+        );
 
 
+        DatePicker dateFrom = new DatePicker("Date from");
+        DatePicker dateTo = new DatePicker("Date to");
+
+        HorizontalLayout dateFromTo = commonComponents.doubleValueRow(
+                dateFrom,
+                dateTo
+        );
 
 
         dialogHolder.add(
                 materialTypeComboBox,
                 activeInactiveComboBox,
-                back
+                stockLevels,
+                unitPrice,
+                dateFromTo
         );
 
         dialog.add(dialogHolder);
+        dialog.getFooter().add(back);
 
         dialog.open();
 
