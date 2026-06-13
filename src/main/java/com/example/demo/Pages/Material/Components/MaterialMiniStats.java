@@ -2,6 +2,7 @@ package com.example.demo.Pages.Material.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.MiniStatCrafter;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -13,10 +14,12 @@ public class MaterialMiniStats {
 
     CommonComponents commonComponents;
     Common common;
+    MiniStatCrafter miniStatCrafter;
 
     public MaterialMiniStats(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.miniStatCrafter = new MiniStatCrafter(commonComponents,common);
     }
 
     public HorizontalLayout miniStatHolder(){
@@ -25,10 +28,7 @@ public class MaterialMiniStats {
         miniStatHolder.setWidthFull();
 
         miniStatHolder.add(
-                miniStats(),
-                miniStats(),
-                miniStats(),
-                miniStats()
+                miniStatCrafter.miniStats(VaadinIcon.TRAIN,"Total material",15,"MINIstat")
         );
 
         return miniStatHolder;

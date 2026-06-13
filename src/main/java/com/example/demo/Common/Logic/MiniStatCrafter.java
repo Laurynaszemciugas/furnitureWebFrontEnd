@@ -9,13 +9,12 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.springframework.stereotype.Service;
 
-@Service
-public class miniStatCrafter {
+public class MiniStatCrafter {
 
     CommonComponents commonComponents;
     Common common;
 
-    public miniStatCrafter(CommonComponents commonComponents, Common common) {
+    public MiniStatCrafter(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
     }
