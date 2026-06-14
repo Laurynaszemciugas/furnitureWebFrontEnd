@@ -132,6 +132,8 @@ public class MaterialFilters {
         IntegerField stockAmount  = new IntegerField("Stock amount");
         IntegerField minThreshold  = new IntegerField("Min threshold");
         IntegerField unitPrice  = new IntegerField("Unit price");
+        unitPrice.setStep(100);
+        unitPrice.setStepButtonsVisible(true);
         unitPrice.setWidthFull();
 
         HorizontalLayout stockLevels = commonComponents.doubleValueRow(
