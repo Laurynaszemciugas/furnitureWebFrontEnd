@@ -2,7 +2,6 @@ package com.example.demo.Pages.Products.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.DashBoard.DashBoardPageData;
 import com.example.demo.ControllerModels.Products.ProductPageData;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Stock;
@@ -15,10 +14,8 @@ import com.example.demo.Pages.Products.Components.ProductPageProductFeed;
 import com.example.demo.Services.Products.ProductService;
 
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -27,7 +24,6 @@ import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.util.function.IntConsumer;
-import java.util.function.LongConsumer;
 
 @Route(value = "Products/:page?", layout = MainLayout.class)
 public class ProductsPage extends VerticalLayout implements BeforeEnterObserver {

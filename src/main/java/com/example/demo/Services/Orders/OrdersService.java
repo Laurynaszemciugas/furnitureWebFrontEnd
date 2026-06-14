@@ -8,13 +8,9 @@ import com.example.demo.ControllerModels.OrderAdd.ConsumerData;
 import com.example.demo.ControllerModels.Orders.OrdersFeedData;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.ServerDBCall.OrderCalls.OrderCalls;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;

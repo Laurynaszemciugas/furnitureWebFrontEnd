@@ -85,6 +85,7 @@ import 'Frontend/generated/jar-resources/disableOnClickFunctions.js';
 import '@vaadin/side-nav/src/vaadin-side-nav.js';
 import '@vaadin/side-nav/src/vaadin-side-nav-item.js';
 import '@vaadin/slider/src/vaadin-range-slider.js';
+import '@vaadin/slider/src/vaadin-slider.js';
 import '@vaadin/split-layout/src/vaadin-split-layout.js';
 import '@vaadin/tabs/src/vaadin-tab.js';
 import '@vaadin/tabsheet/src/vaadin-tabsheet.js';

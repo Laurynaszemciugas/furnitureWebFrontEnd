@@ -8,11 +8,14 @@ import com.example.demo.Pages.Material.Components.MaterialBriefExplanations;
 import com.example.demo.Pages.Material.Components.MaterialFilters;
 import com.example.demo.Pages.Material.Components.MaterialGrid;
 import com.example.demo.Pages.Material.Components.MaterialMiniStats;
+import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
+
+import java.time.LocalDate;
 
 @Route(value = "Materials", layout = MainLayout.class)
 public class MaterialPage extends VerticalLayout implements BeforeEnterObserver {
@@ -24,9 +27,10 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
     MaterialFilters materialFilters;
     MaterialGrid materialGrid;
     MaterialBriefExplanations materialBriefExplanations;
+    MaterialService materialService;
 
 
-    public MaterialPage(CommonComponents commonComponents, Common common) {
+    public MaterialPage(CommonComponents commonComponents, Common common,MaterialService materialService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.paganation = new Paganation();
@@ -34,6 +38,7 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
         this.materialFilters = new MaterialFilters(commonComponents,common);
         this.materialGrid = new MaterialGrid(commonComponents,common);
         this.materialBriefExplanations = new MaterialBriefExplanations(commonComponents,common);
+        this.materialService = materialService;
 
 
         setPadding(false);
@@ -64,7 +69,8 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
         verticalLayout.add(
                 materialBriefExplanations.briefExplanation(),
-                materialMiniStats.miniStatHolder(),
+                materialMiniStats.miniStatHolder(materialService.getMiniStats(common.dateCrafter(0,0,0,0,true),common.dateCrafter(0,1,1,0,true))),
+
                 gridFilterHolder()
 
         );
@@ -94,7 +100,7 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
         v.add(
                 materialFilters.filters(),
-                materialGrid.gridHolder(),
+                materialGrid.gridHolder(materialService.getUserMaterialsList()),
                 paganation.buttonHolder(3)
 
         );

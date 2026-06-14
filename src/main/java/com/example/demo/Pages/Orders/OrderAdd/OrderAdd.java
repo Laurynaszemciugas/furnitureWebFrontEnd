@@ -2,32 +2,21 @@ package com.example.demo.Pages.Orders.OrderAdd;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Orders.OrderAddProducts;
-import com.example.demo.Enums.OrderStatus;
-import com.example.demo.Enums.PayMethod;
-import com.example.demo.Enums.PayStatus;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Orders.Components.AssignEmployees;
 import com.example.demo.Pages.Orders.Components.OrderProductAddRemove.OrderBothSidesAddSide;
 import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.Products.ProductService;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
-import org.springframework.web.client.HttpClientErrorException;
-import tools.jackson.databind.ObjectMapper;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 

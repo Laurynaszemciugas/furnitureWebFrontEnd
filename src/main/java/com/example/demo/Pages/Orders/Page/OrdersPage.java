@@ -2,12 +2,7 @@ package com.example.demo.Pages.Orders.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.Common.Paganation;
-import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
-import com.example.demo.ControllerModels.CommonDtos.Orders;
-import com.example.demo.ControllerModels.CommonDtos.Product;
-import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Orders.Components.BriefOrderPageExplanation;
@@ -18,35 +13,15 @@ import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
 import com.example.demo.ServerDBCall.OrderCalls.OrderCalls;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.Products.ProductService;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.datetimepicker.DateTimePicker;
-import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
-import lombok.SneakyThrows;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
 
 
 @Route(value = "Orders", layout = MainLayout.class)

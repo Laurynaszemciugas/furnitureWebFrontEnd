@@ -3,6 +3,7 @@ package com.example.demo.Pages.Material.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.MiniStatCrafter;
+import com.example.demo.ControllerModels.Material.MaterialMiniStat;
 import com.example.demo.Enums.ActiveInactive;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -23,16 +24,16 @@ public class MaterialMiniStats {
         this.miniStatCrafter = new MiniStatCrafter(commonComponents,common);
     }
 
-    public HorizontalLayout miniStatHolder(){
+    public HorizontalLayout miniStatHolder(MaterialMiniStat materialMiniStat){
         HorizontalLayout miniStatHolder = new HorizontalLayout();
         miniStatHolder.addClassName("layout-flex");
         miniStatHolder.setWidthFull();
 
         miniStatHolder.add(
-                miniStatCrafter.miniStats(VaadinIcon.CUBES, "Total material", 15, "All materials", "Black", "rgba(239, 68, 68, 0.18)"),
-                miniStatCrafter.miniStats(VaadinIcon.CHECK, ActiveInactive.ACTIVE.getGetDisplayNames(), 15, "Usable materials", "Black", "rgba(59, 130, 246, 0.18)"),
-                miniStatCrafter.miniStats(VaadinIcon.EYE_SLASH, ActiveInactive.INACTIVE.getGetDisplayNames(), 15, "Non Usable materials", "Black", "rgba(234, 179, 8, 0.18)"),
-                miniStatCrafter.miniStats(VaadinIcon.PAPERCLIP, "Recently added", 15, "This month", "Black", "rgba(249, 115, 22, 0.18)")
+                miniStatCrafter.miniStats(VaadinIcon.CUBES, "Total material", materialMiniStat.getTotalMaterials(), "All materials", "Black", "rgba(239, 68, 68, 0.18)"),
+                miniStatCrafter.miniStats(VaadinIcon.CHECK, ActiveInactive.ACTIVE.getGetDisplayNames(), materialMiniStat.getActiveMaterials(), "Usable materials", "Black", "rgba(59, 130, 246, 0.18)"),
+                miniStatCrafter.miniStats(VaadinIcon.EYE_SLASH, ActiveInactive.INACTIVE.getGetDisplayNames(), materialMiniStat.getInactiveMaterials(), "Non Usable materials", "Black", "rgba(234, 179, 8, 0.18)"),
+                miniStatCrafter.miniStats(VaadinIcon.PAPERCLIP, "Recently added", materialMiniStat.getRecentlyAdded(), "This month", "Black", "rgba(249, 115, 22, 0.18)")
         );
 
         return miniStatHolder;

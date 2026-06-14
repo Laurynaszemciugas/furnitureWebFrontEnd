@@ -32,37 +32,12 @@ public class MaterialGrid {
         this.common = common;
     }
 
-    public Grid gridHolder(){
+    public Grid gridHolder(List<MaterialBriefDto> materiaData){
 
         Grid<MaterialBriefDto> grid = new Grid<>(MaterialBriefDto.class,false);
+        grid.setHeight("700px");
         grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
-        List<MaterialBriefDto> info = new ArrayList<>();
-        info.add(new MaterialBriefDto(
-                "https://picsum.photos/200?1",
-                "Oak Wood",
-                "Premium solid oak wood for furniture manufacturing.",
-                ActiveInactive.ACTIVE,
-                MaterialType.CERAMIC,
-                Stock.In_Stock,
-                20l,
-                13l,
-                200.5,
-                LocalDateTime.now().minusDays(15)
-        ));
-
-        info.add(new MaterialBriefDto(
-                "https://picsum.photos/200?2",
-                "Leather",
-                "High-quality genuine leather suitable for sofas and chairsHigh-quality genuine leather suitable for sofas and chairsHigh-quality genuine leather suitable for sofas and chairsHigh-quality genuine leather suitable for sofas and chairs.",
-                ActiveInactive.INACTIVE,
-                MaterialType.BAMBOO,
-                Stock.Low_Stock,
-                20l,
-                11l,
-                685.22,
-                LocalDateTime.now().minusDays(8)
-        ));
-        grid.setItems(info);
+        grid.setItems(materiaData);
 
 
 
@@ -97,55 +72,57 @@ public class MaterialGrid {
             span.getStyle().set("width", "fit-content");
             span.addClassName("stock-badge");
 
-            switch (e.getMaterialType()) {
+            if(e.getMaterialType() != null) {
+                switch (e.getMaterialType()) {
 
-                case WOOD, BAMBOO, RATTAN, WICKER, CORK -> {
-                    span.getStyle()
-                            .set("background", "rgba(56, 189, 248, 0.15)")
-                            .set("color", "#38bdf8") // sky blue
-                            .set("border", "1px solid rgba(56,189,248,0.3)");
-                }
+                    case WOOD, BAMBOO, RATTAN, WICKER, CORK -> {
+                        span.getStyle()
+                                .set("background", "rgba(56, 189, 248, 0.15)")
+                                .set("color", "#38bdf8") // sky blue
+                                .set("border", "1px solid rgba(56,189,248,0.3)");
+                    }
 
-                case METAL, CARBON_FIBER -> {
-                    span.getStyle()
-                            .set("background", "rgba(99, 102, 241, 0.15)")
-                            .set("color", "#6366f1") // indigo
-                            .set("border", "1px solid rgba(99,102,241,0.3)");
-                }
+                    case METAL, CARBON_FIBER -> {
+                        span.getStyle()
+                                .set("background", "rgba(99, 102, 241, 0.15)")
+                                .set("color", "#6366f1") // indigo
+                                .set("border", "1px solid rgba(99,102,241,0.3)");
+                    }
 
-                case GLASS, CERAMIC, PORCELAIN, ACRYLIC -> {
-                    span.getStyle()
-                            .set("background", "rgba(168, 85, 247, 0.15)")
-                            .set("color", "#a855f7") // purple
-                            .set("border", "1px solid rgba(168,85,247,0.3)");
-                }
+                    case GLASS, CERAMIC, PORCELAIN, ACRYLIC -> {
+                        span.getStyle()
+                                .set("background", "rgba(168, 85, 247, 0.15)")
+                                .set("color", "#a855f7") // purple
+                                .set("border", "1px solid rgba(168,85,247,0.3)");
+                    }
 
-                case LEATHER, FAUX_LEATHER, FABRIC, VELVET, LINEN, COTTON -> {
-                    span.getStyle()
-                            .set("background", "rgba(14, 165, 233, 0.15)")
-                            .set("color", "#0ea5e9") // cyan-blue
-                            .set("border", "1px solid rgba(14,165,233,0.3)");
-                }
+                    case LEATHER, FAUX_LEATHER, FABRIC, VELVET, LINEN, COTTON -> {
+                        span.getStyle()
+                                .set("background", "rgba(14, 165, 233, 0.15)")
+                                .set("color", "#0ea5e9") // cyan-blue
+                                .set("border", "1px solid rgba(14,165,233,0.3)");
+                    }
 
-                case PLASTIC, RUBBER, FOAM -> {
-                    span.getStyle()
-                            .set("background", "rgba(236, 72, 153, 0.15)")
-                            .set("color", "#ec4899") // pink
-                            .set("border", "1px solid rgba(236,72,153,0.3)");
-                }
+                    case PLASTIC, RUBBER, FOAM -> {
+                        span.getStyle()
+                                .set("background", "rgba(236, 72, 153, 0.15)")
+                                .set("color", "#ec4899") // pink
+                                .set("border", "1px solid rgba(236,72,153,0.3)");
+                    }
 
-                case STONE, MARBLE, GRANITE, CONCRETE -> {
-                    span.getStyle()
-                            .set("background", "rgba(100, 116, 139, 0.15)")
-                            .set("color", "#64748b") // slate
-                            .set("border", "1px solid rgba(100,116,139,0.3)");
-                }
+                    case STONE, MARBLE, GRANITE, CONCRETE -> {
+                        span.getStyle()
+                                .set("background", "rgba(100, 116, 139, 0.15)")
+                                .set("color", "#64748b") // slate
+                                .set("border", "1px solid rgba(100,116,139,0.3)");
+                    }
 
-                case MDF, PLYWOOD, PARTICLE_BOARD, LAMINATE -> {
-                    span.getStyle()
-                            .set("background", "rgba(20, 184, 166, 0.15)")
-                            .set("color", "#14b8a6") // teal
-                            .set("border", "1px solid rgba(20,184,166,0.3)");
+                    case MDF, PLYWOOD, PARTICLE_BOARD, LAMINATE -> {
+                        span.getStyle()
+                                .set("background", "rgba(20, 184, 166, 0.15)")
+                                .set("color", "#14b8a6") // teal
+                                .set("border", "1px solid rgba(20,184,166,0.3)");
+                    }
                 }
             }
 

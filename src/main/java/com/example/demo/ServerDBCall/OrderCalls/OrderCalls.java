@@ -2,13 +2,10 @@ package com.example.demo.ServerDBCall.OrderCalls;
 
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
-import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.OrderAdd.ConsumerData;
 import com.example.demo.ControllerModels.Orders.OrdersFeedData;
 import com.example.demo.Enums.OrderStatus;
-import com.example.demo.Pages.Orders.Page.OrdersPage;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
@@ -20,7 +17,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.function.Consumer;
 
 @Service
 public class OrderCalls {
