@@ -1,13 +1,10 @@
-package com.example.demo.Common.Logic;
+package com.example.demo.Common;
 
-import com.example.demo.Common.Common;
-import com.example.demo.Common.CommonComponents;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import org.springframework.stereotype.Service;
 
 public class MiniStatCrafter {
 
