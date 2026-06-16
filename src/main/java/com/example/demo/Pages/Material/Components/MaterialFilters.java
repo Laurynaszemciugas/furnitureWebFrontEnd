@@ -8,6 +8,7 @@ import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.Stock;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -186,9 +187,11 @@ public class MaterialFilters {
         materialTypeComboBox.setWidthFull();
         materialTypeComboBox.setItems(MaterialType.values());
         materialTypeComboBox.setItemLabelGenerator(MaterialType::getDisplayName);
+        setComponentValue("materialTypeChoice",filterData,materialTypeComboBox);
         materialTypeComboBox.addValueChangeListener(e->{
 
-            filterSetter(e.getValue(),MaterialType.ALL,filterData,"materialTypeChoice","Material type",materialTypeConsumer);
+            filterSetter(e.getValue(),MaterialType.ALL,filterData,"materialTypeChoice","Material type",materialTypeConsumer,materialTypeComboBox);
+
 
 //            MaterialType value = e.getValue() == null ? MaterialType.ALL : e.getValue();
 //
@@ -205,10 +208,10 @@ public class MaterialFilters {
 //                materialTypeConsumer.accept(value);
 //            }
         });
-        if(filterData.getMaterialTypeChoice() != null){
-            materialTypeComboBox.setValue(filterData.getMaterialTypeChoice());
-
-        }
+//        if(filterData.getMaterialTypeChoice() != null){
+//            materialTypeComboBox.setValue(filterData.getMaterialTypeChoice());
+//
+//        }
 
         ComboBox<ActiveInactive> activeInactiveComboBox = new ComboBox<>("Material status");
         activeInactiveComboBox.setWidthFull();
@@ -377,10 +380,7 @@ public class MaterialFilters {
 
 
     @SneakyThrows
-    public <T,S> void filterSetter(T getValue, T ifNotNull, S filterDTO, String referenceName, String filterName, Consumer<T> consumer){
-
-        System.out.println("setter");
-
+    public <T,S> void filterSetter(T getValue, T ifNotNull, S filterDTO, String referenceName, String filterName, Consumer<T> consumer, Component component){
 
             T valueItem = getValue == null ? ifNotNull : getValue;
 
@@ -402,13 +402,24 @@ public class MaterialFilters {
 
                 consumer.accept(valueItem);
             }
-        if(filterData.getMaterialTypeChoice() != null){
-
-
-        }
 
 
     }
+    @SneakyThrows
+    public <T,S> void setComponentValue(String referenceName, S filterDTO, Component component) {
+        if (component instanceof HasValue<?, ?> c) {
+
+
+                Field field = filterDTO.getClass().getDeclaredField(referenceName);
+                field.setAccessible(true);
+                Object value = field.get(filterDTO);
+
+            if (value != null) {
+                ((HasValue) c).setValue(value);
+
+
+            }
+        }
 
 
 //     materialTypeComboBox.addValueChangeListener(e->{
@@ -434,6 +445,5 @@ public class MaterialFilters {
 //    }
 
 
-
-
+    }
 }
