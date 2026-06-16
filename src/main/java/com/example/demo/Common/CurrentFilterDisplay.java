@@ -38,20 +38,37 @@ public class CurrentFilterDisplay {
     }
 
 
-    public void addFilter(String filterName, String filterValue, String referenceName, MaterialFilterHolder filterData){
+    public <T> void addFilter(String filterName, T filterValue, String referenceName, T filterData){
 
+        if(filterValue == null){
+            System.out.println("removed");
+            map.remove(filterName);
+
+            if(map.isEmpty()){
+                v.setVisible(false);
+            }
+
+            h.removeAll();
+            for (Map.Entry<String, FilterMeta> entry : map.entrySet()) {
+                h.add(filterExisting(entry.getKey(),entry.getValue(),filterData));
+            }
+
+            return;
+        }
 
         if(map.isEmpty()){
-            map.put(filterName,new FilterMeta(filterValue,referenceName));
+            map.put(filterName,new FilterMeta(filterValue.toString(),referenceName));
         }
         else{
             if(map.containsKey(filterName)){
-                map.put(filterName, new FilterMeta(filterValue,referenceName));
+                map.put(filterName, new FilterMeta(filterValue.toString(),referenceName));
             }
             else {
-                map.put(filterName, new FilterMeta(filterValue,referenceName));
+                map.put(filterName, new FilterMeta(filterValue.toString(),referenceName));
             }
         }
+
+
         h.removeAll();
         for (Map.Entry<String, FilterMeta> entry : map.entrySet()) {
             h.add(filterExisting(entry.getKey(),entry.getValue(),filterData));
@@ -60,6 +77,8 @@ public class CurrentFilterDisplay {
     }
 
     public <T> HorizontalLayout filterExisting(String filterName,FilterMeta filterMeta,T filterData){
+
+
 
         if(map != null|| !map.isEmpty()){
             v.setVisible(true);

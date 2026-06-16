@@ -7,6 +7,7 @@ import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
 import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.Stock;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -19,9 +20,15 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
+import lombok.Setter;
+import lombok.SneakyThrows;
 
+import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.function.Consumer;
 
+@Setter
 public class MaterialFilters {
 
     CommonComponents commonComponents;
@@ -30,6 +37,17 @@ public class MaterialFilters {
 
 
     MaterialFilterHolder filterData = new MaterialFilterHolder();
+
+    // filter consumers
+    Consumer<MaterialType> materialTypeConsumer;
+    Consumer<ActiveInactive> activeInactiveConsumer;
+    Consumer<Stock> stockConsumer;
+    Consumer<Long> stockAmountConsumer;
+    Consumer<Long> minThresholdConsumer;
+    Consumer<Double> unitPriceConsumer;
+    Consumer<LocalDate> fromDateConsumer;
+    Consumer<LocalDate> toDateConsumer;
+    Consumer<String> prompConsumer;
 
 
     public MaterialFilters(CommonComponents commonComponents, Common common) {
@@ -169,19 +187,27 @@ public class MaterialFilters {
         materialTypeComboBox.setItems(MaterialType.values());
         materialTypeComboBox.setItemLabelGenerator(MaterialType::getDisplayName);
         materialTypeComboBox.addValueChangeListener(e->{
-            if (e.getValue() == null) {
-                materialTypeComboBox.setInvalid(true);
-                materialTypeComboBox.setErrorMessage("Material type cannot be empty");
-            }
-            else{
-                filterData.setMaterialTypeChoice(materialTypeComboBox.getValue());
-                if(e.isFromClient()) {
-                    currentFilterDisplay.addFilter("Material type", materialTypeComboBox.getValue().toString(),"materialTypeChoice",filterData);
-                }
-            }
+
+            filterSetter(e.getValue(),MaterialType.ALL,filterData,"materialTypeChoice","Material type",materialTypeConsumer);
+
+//            MaterialType value = e.getValue() == null ? MaterialType.ALL : e.getValue();
+//
+//            if (e.getValue() == null) {
+//                filterData.setMaterialTypeChoice(null);
+//                currentFilterDisplay.addFilter("Material type", materialTypeComboBox.getValue(),"materialTypeChoice",filterData);
+//                materialTypeConsumer.accept(value);
+//            }
+//            else{
+//                filterData.setMaterialTypeChoice(materialTypeComboBox.getValue());
+//                if(e.isFromClient()) {
+//                    currentFilterDisplay.addFilter("Material type", materialTypeComboBox.getValue(),"materialTypeChoice",filterData);
+//                }
+//                materialTypeConsumer.accept(value);
+//            }
         });
         if(filterData.getMaterialTypeChoice() != null){
             materialTypeComboBox.setValue(filterData.getMaterialTypeChoice());
+
         }
 
         ComboBox<ActiveInactive> activeInactiveComboBox = new ComboBox<>("Material status");
@@ -189,15 +215,18 @@ public class MaterialFilters {
         activeInactiveComboBox.setItems(ActiveInactive.values());
         activeInactiveComboBox.setItemLabelGenerator(ActiveInactive::getGetDisplayNames);
         activeInactiveComboBox.addValueChangeListener(e->{
+
+            ActiveInactive value = e.getValue() == null ? ActiveInactive.ALL : e.getValue();
+
             if (e.getValue() == null) {
-                activeInactiveComboBox.setInvalid(true);
-                activeInactiveComboBox.setErrorMessage("Material Active/Inactive cannot be empty");
+                activeInactiveConsumer.accept(value);
             }
             else{
                 filterData.setActiveInactive(activeInactiveComboBox.getValue());
                 if(e.isFromClient()) {
-                    currentFilterDisplay.addFilter("Material status", activeInactiveComboBox.getValue().toString(),"activeInactive",filterData);
+                    currentFilterDisplay.addFilter("Material status", activeInactiveComboBox.getValue(),"activeInactive",filterData);
                 }
+                activeInactiveConsumer.accept(value);
             }
         });
         if(filterData.getActiveInactive() != null){
@@ -210,15 +239,18 @@ public class MaterialFilters {
         stockAmount.setStepButtonsVisible(true);
         stockAmount.setMin(0);
         stockAmount.addValueChangeListener(e->{
+
+            Long value = e.getValue() == null ? 0L : e.getValue();
+
             if (e.getValue() == null || e.getValue() < 0 ) {
-                stockAmount.setInvalid(true);
-                stockAmount.setErrorMessage("Value must be positive");
+                stockAmountConsumer.accept(value);
             }
             else{
                 filterData.setStockAmountChoice(Long.valueOf(stockAmount.getValue()));
                 if(e.isFromClient()) {
-                    currentFilterDisplay.addFilter("Stock Amount", stockAmount.getValue().toString(),"stockAmountChoice",filterData);
+                    currentFilterDisplay.addFilter("Stock Amount", stockAmount.getValue(),"stockAmountChoice",filterData);
                 }
+                stockAmountConsumer.accept(value);
             }
         });
         if(filterData.getStockAmountChoice() != null){
@@ -229,15 +261,18 @@ public class MaterialFilters {
         minThreshold.setStepButtonsVisible(true);
         stockAmount.setMin(0);
         minThreshold.addValueChangeListener(e->{
+
+            Long value = e.getValue() == null ? 0L : e.getValue();
+
             if (e.getValue() == null || e.getValue() < 0 ) {
-                minThreshold.setInvalid(true);
-                minThreshold.setErrorMessage("Value must be positive");
+                minThresholdConsumer.accept(value);
             }
             else{
                 filterData.setMinThresholdChoice(Long.valueOf(minThreshold.getValue()));
                 if(e.isFromClient()) {
-                    currentFilterDisplay.addFilter("Min Threshold", minThreshold.getValue().toString(),"minThresholdChoice",filterData);
+                    currentFilterDisplay.addFilter("Min Threshold", minThreshold.getValue(),"minThresholdChoice",filterData);
                 }
+                minThresholdConsumer.accept(value);
             }
         });
         if(filterData.getMinThresholdChoice() != null){
@@ -253,15 +288,18 @@ public class MaterialFilters {
         unitPrice.setStepButtonsVisible(true);
         unitPrice.setWidthFull();
         unitPrice.addValueChangeListener(e->{
+
+            Double value = e.getValue() == null ? 0L : e.getValue();
+
             if (e.getValue() == null || e.getValue() < 0.0 ) {
-                unitPrice.setInvalid(true);
-                unitPrice.setErrorMessage("Value must be positive");
+                unitPriceConsumer.accept(value);
             }
             else{
                 filterData.setUnitPriceChoice(unitPrice.getValue());
                 if(e.isFromClient()) {
                     currentFilterDisplay.addFilter("Unit price", unitPrice.getValue().toString(),"unitPriceChoice",filterData);
                 }
+                unitPriceConsumer.accept(value);
             }
         });
         if(filterData.getUnitPriceChoice() != null){
@@ -278,15 +316,19 @@ public class MaterialFilters {
 
         DatePicker dateFrom = new DatePicker("Date from");
         dateFrom.addValueChangeListener(e->{
+
+            LocalDate value = e.getValue() == null ? LocalDate.of(1000,12,12) : e.getValue();
+
+
             if (e.getValue() == null) {
-                dateFrom.setInvalid(true);
-                dateFrom.setErrorMessage("From value cannot be empty");
+                fromDateConsumer.accept(value);
             }
             else{
                 filterData.setFromDateChoice(dateFrom.getValue());
                 if(e.isFromClient()) {
                     currentFilterDisplay.addFilter("From date", dateFrom.getValue().toString(),"fromDateChoice",filterData);
                 }
+                fromDateConsumer.accept(value);
             }
         });
         if(filterData.getFromDateChoice() != null){
@@ -295,15 +337,18 @@ public class MaterialFilters {
 
         DatePicker dateTo = new DatePicker("Date to");
         dateTo.addValueChangeListener(e->{
+
+            LocalDate value = e.getValue() == null ? LocalDate.of(1000,12,12) : e.getValue();
+
             if (e.getValue() == null) {
-                dateTo.setInvalid(true);
-                dateTo.setErrorMessage("To value cannot be empty");
+                toDateConsumer.accept(value);
             }
             else{
                 filterData.setTodDateChoice(dateTo.getValue());
                 if(e.isFromClient()) {
                     currentFilterDisplay.addFilter("To date", dateTo.getValue().toString(),"todDateChoice",filterData);
                 }
+                toDateConsumer.accept(value);
             }
         });
         if(filterData.getTodDateChoice() != null){
@@ -330,6 +375,63 @@ public class MaterialFilters {
     return dialog;
     }
 
+
+    @SneakyThrows
+    public <T,S> void filterSetter(T getValue, T ifNotNull, S filterDTO, String referenceName, String filterName, Consumer<T> consumer){
+
+        System.out.println("setter");
+
+
+            T valueItem = getValue == null ? ifNotNull : getValue;
+
+            if (getValue == null) {
+
+                Field field = filterDTO.getClass().getDeclaredField(referenceName);
+                field.setAccessible(true);
+                field.set(filterDTO, null);
+
+                currentFilterDisplay.addFilter(filterName, getValue,referenceName,filterDTO);
+                consumer.accept(valueItem);
+            }
+            else{
+                Field field = filterDTO.getClass().getDeclaredField(referenceName);
+                field.setAccessible(true);
+                field.set(filterDTO, getValue);
+
+                currentFilterDisplay.addFilter(filterName, getValue,referenceName,filterDTO);
+
+                consumer.accept(valueItem);
+            }
+        if(filterData.getMaterialTypeChoice() != null){
+
+
+        }
+
+
+    }
+
+
+//     materialTypeComboBox.addValueChangeListener(e->{
+//
+//        MaterialType value = e.getValue() == null ? MaterialType.ALL : e.getValue();
+//
+//        if (e.getValue() == null) {
+//            filterData.setMaterialTypeChoice(null);
+//            currentFilterDisplay.addFilter("Material type", materialTypeComboBox.getValue(),"materialTypeChoice",filterData);
+//            materialTypeConsumer.accept(value);
+//        }
+//        else{
+//            filterData.setMaterialTypeChoice(materialTypeComboBox.getValue());
+//            if(e.isFromClient()) {
+//                currentFilterDisplay.addFilter("Material type", materialTypeComboBox.getValue(),"materialTypeChoice",filterData);
+//            }
+//            materialTypeConsumer.accept(value);
+//        }
+//    });
+//        if(filterData.getMaterialTypeChoice() != null){
+//        materialTypeComboBox.setValue(filterData.getMaterialTypeChoice());
+//
+//    }
 
 
 

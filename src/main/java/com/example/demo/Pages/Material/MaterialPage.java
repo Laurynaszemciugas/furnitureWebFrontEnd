@@ -77,6 +77,16 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
 
 
+
+        materialFilters.setMaterialTypeConsumer(e->{
+            System.out.println("controller got " + " " + e);
+        });
+        materialFilters.setActiveInactiveConsumer(e->{
+            System.out.println(e);
+        });
+
+
+
         return  verticalLayout;
 
     }
