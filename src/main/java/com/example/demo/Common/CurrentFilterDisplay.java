@@ -5,6 +5,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -16,6 +17,7 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -37,6 +39,11 @@ public class CurrentFilterDisplay {
         this.common = common;
 
         v.setVisible(false);
+        h.addClassName("layout-flex");
+//        h.getStyle().set("flex", "1 1 200px");
+//        h.getStyle().set("max-width", "620px");
+//        h.getStyle().set("min-width", "302px");
+        v.setWidthFull();
         h.setWidthFull();
 
     }
@@ -45,14 +52,14 @@ public class CurrentFilterDisplay {
     public <T> void addFilter(String filterName, T filterValue, String referenceName, T filterData){
 
         if(filterValue == null){
-            System.out.println("removed");
             map.remove(filterName);
 
             if(map.isEmpty()){
                 v.setVisible(false);
             }
 
-            h.removeAll();
+
+
             for (Map.Entry<String, FilterMeta> entry : map.entrySet()) {
                 h.add(filterExisting(entry.getKey(),entry.getValue(),filterData));
             }
@@ -72,17 +79,17 @@ public class CurrentFilterDisplay {
             }
         }
 
-
+        v.removeAll();
         h.removeAll();
+
         for (Map.Entry<String, FilterMeta> entry : map.entrySet()) {
+            System.out.println(map.size());
             h.add(filterExisting(entry.getKey(),entry.getValue(),filterData));
         }
 
     }
 
     public <T> HorizontalLayout filterExisting(String filterName,FilterMeta filterMeta,T filterData){
-
-
 
         if(map != null|| !map.isEmpty()){
             v.setVisible(true);
@@ -139,7 +146,6 @@ public class CurrentFilterDisplay {
     }
 
     public VerticalLayout getFilters(){
-
         Span span = commonComponents.spanCrafter("Active filters","stat-title");
 
         v.addClassName("island");
@@ -157,8 +163,7 @@ public class CurrentFilterDisplay {
     public <S, T> void setComponentValue(
             String referenceName,
             S filterDTO,
-            Component component,
-            Class<T> tClass
+            Component component
     ) {
         if (component instanceof HasValue<?, ?> c) {
 
@@ -174,6 +179,11 @@ public class CurrentFilterDisplay {
                 }
                 else if (component instanceof NumberField f) {
                     f.setValue(((Number) value).doubleValue());
+                }
+                else if(component instanceof DatePicker d){
+                    if(value.equals(LocalDate.of(1000,12,12))){
+                        d.setValue((null));
+                    }
                 }
                 else {
                     ((HasValue) c).setValue(value);
@@ -192,7 +202,7 @@ public class CurrentFilterDisplay {
 
             Field field = filterDTO.getClass().getDeclaredField(referenceName);
             field.setAccessible(true);
-            field.set(filterDTO, null);
+            field.set(filterDTO, valueItem);
 
             addFilter(filterName, getValue,referenceName,filterDTO);
             consumer.accept(valueItem);

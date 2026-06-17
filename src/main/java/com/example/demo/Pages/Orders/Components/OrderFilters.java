@@ -258,7 +258,6 @@ public class OrderFilters {
 
         search.addValueChangeListener(e->{
            String value = e.getValue().isBlank() ? "ALL" : e.getValue();
-            System.out.println(value);
            prompt.accept(value);
         });
 

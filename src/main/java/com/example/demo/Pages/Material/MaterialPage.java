@@ -3,6 +3,9 @@ package com.example.demo.Pages.Material;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Paganation;
+import com.example.demo.ControllerModels.Material.MaterialFilterHolder;
+import com.example.demo.Enums.ActiveInactive;
+import com.example.demo.Enums.MaterialType;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Material.Components.MaterialBriefExplanations;
 import com.example.demo.Pages.Material.Components.MaterialFilters;
@@ -20,6 +23,9 @@ import java.time.LocalDate;
 @Route(value = "Materials", layout = MainLayout.class)
 public class MaterialPage extends VerticalLayout implements BeforeEnterObserver {
 
+
+    VerticalLayout verticalLayout = new VerticalLayout();
+
     CommonComponents commonComponents;
     Common common;
     Paganation paganation;
@@ -29,6 +35,7 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
     MaterialBriefExplanations materialBriefExplanations;
     MaterialService materialService;
 
+    MaterialFilterHolder filterData = new MaterialFilterHolder();
 
     public MaterialPage(CommonComponents commonComponents, Common common,MaterialService materialService) {
         this.commonComponents = commonComponents;
@@ -47,6 +54,9 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
         setAlignItems(FlexComponent.Alignment.CENTER);
 
 
+
+
+
     }
 
 
@@ -60,29 +70,58 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
     }
 
 
+
+
+
+
+
     public VerticalLayout mainLayout() {
-        VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top", "5px");
         verticalLayout.addClassName("main-island");
 
 
-        verticalLayout.add(
-                materialBriefExplanations.briefExplanation(),
-                materialMiniStats.miniStatHolder(materialService.getMiniStats(common.dateCrafter(0,0,0,0,true),common.dateCrafter(0,1,1,0,true))),
-
-                gridFilterHolder()
-
-        );
+        reloadData();
 
 
 
 
         materialFilters.setMaterialTypeConsumer(e->{
-            System.out.println("controller got " + " " + e);
+            filterData.setMaterialTypeChoice(e);
+            filterFeed();
         });
         materialFilters.setActiveInactiveConsumer(e->{
+            filterData.setActiveInactive(e);
+            filterFeed();
+        });
+        materialFilters.setStockAmountConsumer(e->{
+            filterData.setStockAmountChoice(e);
+            filterFeed();
+        });
+        materialFilters.setMinThresholdConsumer(e->{
+            filterData.setMinThresholdChoice(e);
+            filterFeed();
+        });
+        materialFilters.setUnitPriceConsumer(e->{
+            filterData.setUnitPriceChoice(e);
+            filterFeed();
+        });
+        materialFilters.setFromDateConsumer(e->{
+            filterData.setFromDateChoice(e);
             System.out.println(e);
+            filterFeed();
+        });
+        materialFilters.setToDateConsumer(e->{
+            filterData.setTodDateChoice(e);
+            filterFeed();
+        });
+        materialFilters.setStockConsumer(e->{
+            filterData.setStockChoice(e);
+            filterFeed();
+        });
+        materialFilters.setPrompConsumer(e->{
+            filterData.setPromtChoice(e);
+            filterFeed();
         });
 
 
@@ -91,7 +130,33 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
     }
 
+    public void reloadData(){
+        verticalLayout.removeAll();
 
+        filterData = new MaterialFilterHolder();
+
+        verticalLayout.add(
+                materialBriefExplanations.briefExplanation(),
+                materialMiniStats.miniStatHolder(
+                        materialService.getMiniStats(common.dateCrafter(0,0,0,0,true),
+                                common.dateCrafter(0,1,1,0,true))),
+                gridFilterHolder()
+
+        );
+    }
+
+    public void filterFeed(){
+        verticalLayout.removeAll();
+
+        verticalLayout.add(
+                materialBriefExplanations.briefExplanation(),
+                materialMiniStats.miniStatHolder(
+                        materialService.getMiniStats(common.dateCrafter(0,0,0,0,true),
+                                common.dateCrafter(0,1,1,0,true))),
+                gridFilterHolder()
+
+        );
+    }
 
 
 
@@ -110,7 +175,7 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
         v.add(
                 materialFilters.filters(),
-                materialGrid.gridHolder(materialService.getUserMaterialsList()),
+                materialGrid.gridHolder(materialService.getUserMaterialsList(filterData)),
                 paganation.buttonHolder(3)
 
         );

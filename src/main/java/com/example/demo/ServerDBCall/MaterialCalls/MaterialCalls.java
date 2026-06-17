@@ -2,6 +2,7 @@ package com.example.demo.ServerDBCall.MaterialCalls;
 
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
+import com.example.demo.ControllerModels.Material.MaterialFilterHolder;
 import com.example.demo.ControllerModels.Material.MaterialMiniStat;
 import com.example.demo.ControllerModels.Orders.OrdersFeedData;
 import com.example.demo.Enums.OrderStatus;
@@ -26,21 +27,23 @@ public class MaterialCalls {
         this.sessionCrafter = new SessionCrafter();
     }
 
-    public List<MaterialBriefDto> getMaterials() throws IOException, InterruptedException {
+    public List<MaterialBriefDto> getMaterials(MaterialFilterHolder materialFilterHolder) throws IOException, InterruptedException {
 
         String JWT = sessionCrafter.extractSession("JWT", String.class);
 
 
         ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(materialFilterHolder);
 
 
         HttpClient client = HttpClient.newHttpClient();
+
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/api/material/getAllMaterialForFeed"))
                 .header("Authorization","Bearer " + JWT)
                 .header("Content-Type", "application/json")
-                .GET()
+                .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
         HttpResponse<String> response = client.send(
