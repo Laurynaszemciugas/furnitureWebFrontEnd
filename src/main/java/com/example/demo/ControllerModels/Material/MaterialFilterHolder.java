@@ -1,8 +1,7 @@
-package com.example.demo.ControllerModels.Filter.Material;
+package com.example.demo.ControllerModels.Material;
 
 import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.MaterialType;
-import com.example.demo.Enums.Status;
 import com.example.demo.Enums.Stock;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

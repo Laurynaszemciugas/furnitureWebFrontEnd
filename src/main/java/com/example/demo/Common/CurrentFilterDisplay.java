@@ -1,15 +1,19 @@
 package com.example.demo.Common;
 
 import com.example.demo.ControllerModels.Filter.Common.FilterMeta;
-import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.NumberField;
 import lombok.Setter;
+import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -146,6 +150,68 @@ public class CurrentFilterDisplay {
         );
         return v;
     }
+
+
+
+    @SneakyThrows
+    public <S, T> void setComponentValue(
+            String referenceName,
+            S filterDTO,
+            Component component,
+            Class<T> tClass
+    ) {
+        if (component instanceof HasValue<?, ?> c) {
+
+            Field field = filterDTO.getClass().getDeclaredField(referenceName);
+            field.setAccessible(true);
+
+            Object value = field.get(filterDTO);
+
+            if (value != null) {
+
+                if (component instanceof IntegerField f) {
+                    f.setValue(((Number) value).intValue());
+                }
+                else if (component instanceof NumberField f) {
+                    f.setValue(((Number) value).doubleValue());
+                }
+                else {
+                    ((HasValue) c).setValue(value);
+                }
+            }
+        }
+    }
+
+
+    @SneakyThrows
+    public <T,S> void filterSetter(T getValue, T ifNull, S filterDTO, String referenceName, String filterName, Consumer<T> consumer){
+
+        T valueItem = getValue == null ? ifNull : getValue;
+
+        if (getValue == null) {
+
+            Field field = filterDTO.getClass().getDeclaredField(referenceName);
+            field.setAccessible(true);
+            field.set(filterDTO, null);
+
+            addFilter(filterName, getValue,referenceName,filterDTO);
+            consumer.accept(valueItem);
+        }
+        else{
+            Field field = filterDTO.getClass().getDeclaredField(referenceName);
+            field.setAccessible(true);
+            field.set(filterDTO, getValue);
+
+            addFilter(filterName, getValue,referenceName,filterDTO);
+
+            consumer.accept(valueItem);
+        }
+
+
+    }
+
+
+
 
 
 
