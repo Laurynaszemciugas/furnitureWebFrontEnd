@@ -2,7 +2,10 @@ package com.example.demo.Pages.Orders.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.CurrentFilterDisplay;
 import com.example.demo.Common.Paganation;
+import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
+import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Orders.Components.BriefOrderPageExplanation;
@@ -45,17 +48,12 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
     // filter data
 
-    OrderStatus orderStatusChoice = OrderStatus.ALL;
-    Double priceFromChoice = 0.0;
-    Double priceToChoice = 0.0;
-    LocalDate dateFromChoice = LocalDate.of(1000,12,12);
-    LocalDate dateToChoice = LocalDate.of(1000,12,12);
-    Long amountOfProductsChoice = 0l;
-    String promtChoice = "ALL";
-    int pageChoice = 0;
-    int pageCountChoice = 5;
+    OrderFilterHolder filterData = new OrderFilterHolder();
 
     VerticalLayout verticalLayout;
+
+    CurrentFilterDisplay currentFilterDisplay;
+
 
 
     public OrdersPage(CommonComponents commonComponents, Common common, OrderCalls orderCalls,EmployeeCalls employeeCalls,OrdersService ordersService,ProductService productService) {
@@ -67,12 +65,15 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         this.productService = productService;
         this.ordersRightSide = new OrdersRightSide(commonComponents,common,orderCalls,employeeCalls,productService);
         this.ordersLeftSide = new OrdersLeftSide(commonComponents,common,orderCalls);
-        this.orderFilters = new OrderFilters(commonComponents, common);
+        this.orderFilters = new OrderFilters(commonComponents, common,employeeCalls);
         this.briefOrderPageExplanation = new BriefOrderPageExplanation(commonComponents,common);
         this.paganation = new Paganation();
 
 
         this.ordersRightSide.setOrdersLeftSide(ordersLeftSide);
+
+        this.currentFilterDisplay = new CurrentFilterDisplay(commonComponents,common);
+        this.orderFilters.setCurrentFilterDisplay(currentFilterDisplay);
 
         setPadding(false);
         setSpacing(false);
@@ -140,7 +141,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
 
         orderFilters.setOrderStatusConsumer(e->{
-            orderStatusChoice = e;
+            filterData.setOrderStatusChoice(e);
             setNewPage();
             updateUIData();
 
@@ -148,45 +149,56 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         });
 
         orderFilters.setFromDateConsumer(e->{
-            dateFromChoice = e;
+            filterData.setDateFromChoice(e);
             setNewPage();
             updateUIData();
         });
 
         orderFilters.setToDateConsumer(e->{
-            dateToChoice = e;
+            filterData.setDateToChoice(e);
             setNewPage();
             updateUIData();
         });
         orderFilters.setFromCostConsumer(e->{
-            priceFromChoice = e;
+            filterData.setPriceFromChoice(e);
             setNewPage();
             updateUIData();
         });
         orderFilters.setToCostConsumer(e->{
-            priceToChoice = e;
+            filterData.setPriceToChoice(e);
             setNewPage();
             updateUIData();
         });
 
         orderFilters.setPrompt(e->{
-            this.promtChoice = e;
+            filterData.setPromptChoice(e);
             setNewPage();
             updateUIData();
         });
 
         orderFilters.setAmountOfProductsConsumer(e->{
-            amountOfProductsChoice = e;
+            filterData.setAmountOfProductsChoice(e);
             setNewPage();
             updateUIData();
         });
         orderFilters.setClearFilters(e->{
+            currentFilterDisplay.clearAllData();
             addUIData();
         });
         paganation.setOnPageChange(e->{
-            pageChoice = e-1;
+            e = e-1;
+            filterData.setPage(e);
             updateUIData();
         });
+
+        //needed
+        currentFilterDisplay.setReloadController(e->{
+            System.out.println("reset");
+            filterData = (OrderFilterHolder) e;
+            setNewPage();
+            updateUIData();
+        });
+
 
     }
 
@@ -202,14 +214,8 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         verticalLayout.removeAll();
 
 
-        orderStatusChoice = OrderStatus.ALL;
-        priceFromChoice = 0.0;
-        priceToChoice = 0.0;
-        dateFromChoice = LocalDate.of(1000,12,12);
-        dateToChoice = LocalDate.of(1000,12,12);
-        amountOfProductsChoice = 0l;
-        pageChoice = 0;
-        promtChoice = "ALL";
+        filterData = new OrderFilterHolder();
+
 
         paganation.updateUIFromExternal(1);
 
@@ -225,18 +231,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
 
         Scroller left = ordersLeftSide.orderFeedHolder(
-                ordersService.getOrderFeedData(
-                        orderStatusChoice,
-                        priceFromChoice,
-                        priceToChoice ,
-                        dateFromChoice,
-                        dateToChoice,
-                        amountOfProductsChoice,
-                        promtChoice,
-                        pageChoice,
-                        pageCountChoice
-
-                ));
+                ordersService.getOrderFeedData(filterData));
 
         filterMemory.removeAll();
         filterMemory.add(
@@ -247,17 +242,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         leftSide.add(
                 filterMemory,
                 left,
-                paganation.buttonHolder(
-                        (ordersService.getPageCount(
-                                orderStatusChoice,
-                                priceFromChoice,
-                                priceToChoice,
-                                dateFromChoice,
-                                dateToChoice,
-                                amountOfProductsChoice,
-                                promtChoice)).intValue())
-
-        );
+                paganation.buttonHolder(Math.toIntExact(ordersService.getPageCount(filterData))));
 
         VerticalLayout right = ordersRightSide.rightSideOrderInfo();
 
@@ -297,33 +282,13 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
 
         Scroller left = ordersLeftSide.orderFeedHolder(
-                ordersService.getOrderFeedData(
-                        orderStatusChoice,
-                        priceFromChoice,
-                        priceToChoice ,
-                        dateFromChoice,
-                        dateToChoice,
-                        amountOfProductsChoice,
-                        promtChoice,
-                        pageChoice,
-                        pageCountChoice
-
-                ));
+                ordersService.getOrderFeedData(filterData));
 
         leftSide.add(
                 filterMemory,
                 left,
                 paganation.buttonHolder(
-                        (ordersService.getPageCount(
-                                orderStatusChoice,
-                                priceFromChoice,
-                                priceToChoice,
-                                dateFromChoice,
-                                dateToChoice,
-                                amountOfProductsChoice,
-                                promtChoice)).intValue())
-
-        );
+                        Math.toIntExact((ordersService.getPageCount(filterData)))));
 
         VerticalLayout right = ordersRightSide.rightSideOrderInfo();
 
@@ -347,7 +312,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
     }
 
     public void setNewPage(){
-        pageChoice = 0;
+        filterData.setPage(0);
         paganation.updateUIFromExternal(1);
     }
 

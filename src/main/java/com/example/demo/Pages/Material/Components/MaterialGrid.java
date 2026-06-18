@@ -32,12 +32,32 @@ public class MaterialGrid {
         this.common = common;
     }
 
-    public Grid gridHolder(List<MaterialBriefDto> materiaData){
+    public VerticalLayout gridHolder(List<MaterialBriefDto> materiaData){
+
+        VerticalLayout vv = new VerticalLayout();
+        vv.setPadding(false);
+        vv.setSpacing(false);
+        vv.setWidthFull();
+
+
 
         Grid<MaterialBriefDto> grid = new Grid<>(MaterialBriefDto.class,false);
         grid.setHeight("700px");
         grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
         grid.setItems(materiaData);
+
+
+        vv.add(grid);
+
+        if(materiaData == null || materiaData.isEmpty()){
+            grid.setVisible(false);
+            vv.add(
+                    commonComponents.noDataFound()
+            );
+        }
+        else{
+            grid.setVisible(true);
+        }
 
 
 
@@ -226,7 +246,7 @@ public class MaterialGrid {
         }).setHeader("Actions").setAutoWidth(true);
 
 
-        return grid;
+        return vv;
     }
 
 }

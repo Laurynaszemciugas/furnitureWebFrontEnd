@@ -3,6 +3,7 @@ package com.example.demo.ServerDBCall.OrderCalls;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
+import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
 import com.example.demo.ControllerModels.OrderAdd.ConsumerData;
 import com.example.demo.ControllerModels.Orders.OrdersFeedData;
 import com.example.demo.Enums.OrderStatus;
@@ -32,42 +33,22 @@ public class OrderCalls {
 
 
 
-    public List<OrdersFeedData> getOrders(
-                                           OrderStatus orderStatusChoice,
-                                           Double priceFromChoice,
-                                           Double priceToChoice,
-                                           LocalDate dateFromChoice,
-                                           LocalDate dateToChoice,
-                                           Long amountOfProductsChoice,
-                                           String promtChoice,
-                                           int pageChoice,
-                                           int pageCountChoice) throws IOException, InterruptedException {
+    public List<OrdersFeedData> getOrders(OrderFilterHolder orderFilterHolder) throws IOException, InterruptedException {
 
         String JWT = sessionCrafter.extractSession("JWT", String.class);
 
 
         ObjectMapper mapper = new ObjectMapper();
 
-        String url = String.format(
-                "http://localhost:8080/api/order/getAllOrders/%s/%f/%f/%s/%s/%d/%s/%d/%d",
-                orderStatusChoice,
-                priceFromChoice,
-                priceToChoice,
-                dateFromChoice,
-                dateToChoice,
-                amountOfProductsChoice,
-                promtChoice,
-                pageChoice,
-                pageCountChoice
-        );
+        String json = mapper.writeValueAsString(orderFilterHolder);
 
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
+                .uri(URI.create("http://localhost:8080/api/order/getAllOrders"))
                 .header("Authorization","Bearer " + JWT)
                 .header("Content-Type", "application/json")
-                .GET()
+                .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
         HttpResponse<String> response = client.send(
@@ -89,38 +70,21 @@ public class OrderCalls {
     }
 
 
-    public Long getPageCount(
-            OrderStatus orderStatusChoice,
-            Double priceFromChoice,
-            Double priceToChoice,
-            LocalDate dateFromChoice,
-            LocalDate dateToChoice,
-            Long amountOfProductsChoice,
-            String promtChoice) throws IOException, InterruptedException {
+    public Long getPageCount(OrderFilterHolder orderFilterHolder) throws IOException, InterruptedException {
 
         String JWT = sessionCrafter.extractSession("JWT", String.class);
 
 
         ObjectMapper mapper = new ObjectMapper();
-
-        String url = String.format(
-                "http://localhost:8080/api/order/getAmountOfPages/%s/%f/%f/%s/%s/%d/%s",
-                orderStatusChoice,
-                priceFromChoice,
-                priceToChoice,
-                dateFromChoice,
-                dateToChoice,
-                amountOfProductsChoice,
-                promtChoice
-        );
+        String json = mapper.writeValueAsString(orderFilterHolder);
 
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
+                .uri(URI.create("http://localhost:8080/api/order/getAmountOfPages"))
                 .header("Authorization","Bearer " + JWT)
                 .header("Content-Type", "application/json")
-                .GET()
+                .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
         HttpResponse<String> response = client.send(

@@ -4,6 +4,7 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
+import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
 import com.example.demo.ControllerModels.OrderAdd.ConsumerData;
 import com.example.demo.ControllerModels.Orders.OrdersFeedData;
 import com.example.demo.Enums.OrderStatus;
@@ -34,30 +35,13 @@ public class OrdersService {
     }
 
     @SneakyThrows
-    public List<OrdersFeedData> getOrderFeedData(
-            OrderStatus orderStatusChoice,
-            Double priceFromChoice,
-            Double priceToChoice,
-            LocalDate dateFromChoice,
-            LocalDate dateToChoice,
-            Long amountOfProductsChoice,
-            String promtChoice,
-            int pageChoice,
-            int pageCountChoice){
-        return orderCalls.getOrders(orderStatusChoice,priceFromChoice,priceToChoice,dateFromChoice,dateToChoice,amountOfProductsChoice,promtChoice,pageChoice,pageCountChoice);
+    public List<OrdersFeedData> getOrderFeedData(OrderFilterHolder orderFilterHolder){
+        return orderCalls.getOrders(orderFilterHolder);
     }
 
     @SneakyThrows
-    public Long getPageCount(
-            OrderStatus orderStatusChoice,
-            Double priceFromChoice,
-            Double priceToChoice,
-            LocalDate dateFromChoice,
-            LocalDate dateToChoice,
-            Long amountOfProductsChoice,
-            String promtChoice
-            ){
-        return orderCalls.getPageCount(orderStatusChoice,priceFromChoice,priceToChoice,dateFromChoice,dateToChoice,amountOfProductsChoice,promtChoice);
+    public Long getPageCount(OrderFilterHolder orderFilterHolder){
+        return orderCalls.getPageCount(orderFilterHolder);
     }
 
     @SneakyThrows

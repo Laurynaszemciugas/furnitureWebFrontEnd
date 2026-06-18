@@ -2,7 +2,15 @@ package com.example.demo.Pages.Orders.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.CurrentFilterDisplay;
+import com.example.demo.ControllerModels.CommonDtos.Employee;
+import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
+import com.example.demo.DTOS.ComboBoxEmployees;
+import com.example.demo.DTOS.ComboBoxMaterial;
+import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.OrderStatus;
+import com.example.demo.Enums.Stock;
+import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
 import com.sun.jdi.LongValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -15,8 +23,10 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import lombok.Setter;
+import lombok.SneakyThrows;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -39,23 +49,27 @@ public class OrderFilters {
     Consumer<String> clearFilters;
     Consumer<String> prompt;
 
-
-    Double priceFromChoice = null;
-    Double priceToChoice = null;
-    LocalDate dateFromChoice= null;
-    LocalDate dateToChoice= null;
-    Long amountOfProductsChoice= null;
+    CurrentFilterDisplay currentFilterDisplay;
+    OrderFilterHolder filterData = new OrderFilterHolder();
 
 
-    public OrderFilters(CommonComponents commonComponents, Common common) {
+    EmployeeCalls employeeCalls;
+
+    List<ComboBoxEmployees> comboBoxEmployees = new ArrayList<>();
+
+    @SneakyThrows
+    public OrderFilters(CommonComponents commonComponents, Common common, EmployeeCalls employeeCalls) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.employeeCalls = employeeCalls;
 
-
+        comboBoxEmployees.addAll(employeeCalls.getMiniEmployeeData());
 
     }
 
-
+    public void setCurrentFilterDisplay(CurrentFilterDisplay currentFilterDisplay) {
+        this.currentFilterDisplay = currentFilterDisplay;
+    }
 
     public void showFilters(){
 
@@ -68,27 +82,20 @@ public class OrderFilters {
 
 
         // =========== FROM DATE =====================
-        DatePicker from = new DatePicker("From");
-
+        DatePicker from = new DatePicker("Date from");
+        currentFilterDisplay.setComponentValue("dateFromChoice",filterData,from);
         from.addValueChangeListener(e->{
-            LocalDate value = e.getValue() == null ? LocalDate.of(1000,12,12) : e.getValue();
-            fromDateConsumer.accept(value);
-            dateFromChoice = value;
+            currentFilterDisplay.filterSetter(e.getValue(), LocalDate.of(1000,12,12),filterData,"dateFromChoice","Date from",fromDateConsumer);
         });
-        if(dateFromChoice!=null && !dateFromChoice.equals(LocalDate.of(1000,12,12))){
-            from.setValue(dateFromChoice);
-        }
+
 
         // =========== TO DATE =====================
-        DatePicker to = new DatePicker("to");
+        DatePicker to = new DatePicker("Date to");
+        currentFilterDisplay.setComponentValue("dateToChoice",filterData,to);
         to.addValueChangeListener(e->{
-            LocalDate value = e.getValue() == null ? LocalDate.of(1000,12,12) : e.getValue();
-            toDateConsumer.accept(value);
-            dateToChoice = value;
+            currentFilterDisplay.filterSetter(e.getValue(), LocalDate.of(1000,12,12),filterData,"dateToChoice","Date to",toDateConsumer);
         });
-        if(dateToChoice!=null && !dateToChoice.equals(LocalDate.of(1000,12,12))){
-            to.setValue(dateToChoice);
-        }
+
 
         FormLayout dateHolder = new FormLayout();
 
@@ -102,46 +109,43 @@ public class OrderFilters {
         );
 
         // =========== PRODUCT COUNT =====================
-        IntegerField amountOfProducts = new IntegerField("Product count");
+        IntegerField amountOfProducts = new IntegerField("Products count in the order");
+        amountOfProducts.setWidthFull();
         amountOfProducts.setMax(100);
         amountOfProducts.setMin(0);
         amountOfProducts.setStep(1);
         amountOfProducts.setStepButtonsVisible(true);
-
+        currentFilterDisplay.setComponentValue("amountOfProductsChoice",filterData,amountOfProducts);
         amountOfProducts.addValueChangeListener(e->{
-            Long value = e.getValue() == null ? 0l : e.getValue();
-            amountOfProductsConsumer.accept(value);
-            amountOfProductsChoice = value;
+            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue()), 0L,filterData,"amountOfProductsChoice","Amount of products",amountOfProductsConsumer);
         });
-        if(amountOfProductsChoice!=null && amountOfProductsChoice != 0){
-            amountOfProducts.setValue(Math.toIntExact(amountOfProductsChoice));
-        }
+
 
 
         // =========== FROM AMOUNT =====================
-        IntegerField fromAmount = new IntegerField("From");
-
+        NumberField fromAmount = new NumberField("Order price from");
+        fromAmount.setMax(100000);
+        fromAmount.setMin(0);
+        fromAmount.setStep(200);
+        fromAmount.setStepButtonsVisible(true);
+        currentFilterDisplay.setComponentValue("priceFromChoice",filterData,fromAmount);
         fromAmount.addValueChangeListener(e->{
-            Double value = e.getValue() == null ? 0.0 : e.getValue().doubleValue();
-            fromCostConsumer.accept(value);
-            priceFromChoice = value;
+            currentFilterDisplay.filterSetter(e.getValue(), 0.0,filterData,"priceFromChoice","Order price from",fromCostConsumer);
         });
-        if(priceFromChoice!=null && priceFromChoice != 0){
-            fromAmount.setValue(priceFromChoice.intValue());
-        }
+
 
         // =========== TO AMOUNT =====================
-        IntegerField toAmount = new IntegerField("to");
+        NumberField toAmount = new NumberField("Order price to");
+        toAmount.setMax(100000);
         toAmount.setMin(0);
-
+        toAmount.setStep(200);
+        toAmount.setMin(0);
+        toAmount.setStepButtonsVisible(true);
+        currentFilterDisplay.setComponentValue("priceToChoice",filterData,toAmount);
         toAmount.addValueChangeListener(e->{
-            Double value = e.getValue() == null ? 0.0 : e.getValue().doubleValue();
-            toCostConsumer.accept(value);
-            priceToChoice = value;
+            currentFilterDisplay.filterSetter(e.getValue(), 0.0,filterData,"priceToChoice","Order price to",toCostConsumer);
         });
-        if(priceToChoice!=null && priceToChoice != 0){
-            toAmount.setValue(priceToChoice.intValue());
-        }
+
 
 
         FormLayout amountHolder = new FormLayout();
@@ -155,27 +159,31 @@ public class OrderFilters {
         );
 
 
+        ComboBox<ComboBoxEmployees> employeesComboBox = new ComboBox<>("Employee in order");
+        employeesComboBox.setWidthFull();
+        employeesComboBox.setItems(comboBoxEmployees);
+        employeesComboBox.setItemLabelGenerator(ComboBoxEmployees::getFullName);
+
+        ComboBox<ComboBoxMaterial> materialComboBox = new ComboBox<>("Materials in order");
+        materialComboBox.setWidthFull();
+
         filterHolder.add(
-                commonComponents.spanCrafterWordNoHide("Cost from to","stat-title"),
                 amountHolder,
-                commonComponents.spanCrafterWordNoHide("Date from to","stat-title"),
                 dateHolder,
-                commonComponents.spanCrafterWordNoHide("Amount of Products in order","stat-title"),
-                amountOfProducts
+                amountOfProducts,
+                employeesComboBox,
+                materialComboBox
         );
 
         Button button = new Button("Back", e-> filters.close());
 
-        HorizontalLayout h = new HorizontalLayout();
-        h.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        h.add(
-                button
-        );
+
+
+        filters.getFooter().add(button);
 
 
         filters.add(
-                filterHolder,
-                h
+                filterHolder
         );
 
         filters.open();
@@ -185,30 +193,71 @@ public class OrderFilters {
 
 
     public HorizontalLayout Buttons(){
+
+
+
         Button allButton = commonComponents.normalButtonNoNavigate("All", "transparent-button");
         allButton.addClassName("active");
         allButton.addClickListener(e->{
-           orderStatusConsumer.accept(OrderStatus.ALL);
+            currentFilterDisplay.filterSetter(
+                    OrderStatus.ALL,
+                    OrderStatus.ALL,
+                    filterData,
+                    "orderStatusChoice",
+                    "Order status",
+                    orderStatusConsumer
+            );
         });
 
         Button pendingButton = commonComponents.normalButtonNoNavigate("Pending", "transparent-button");
         pendingButton.addClickListener(e->{
-            orderStatusConsumer.accept(OrderStatus.Pending);
+            currentFilterDisplay.filterSetter(
+                    OrderStatus.Pending,
+                    OrderStatus.ALL,
+                    filterData,
+                    "orderStatusChoice",
+                    "Order status",
+                    orderStatusConsumer
+            );
         });
 
         Button inProgressButton = commonComponents.normalButtonNoNavigate("In Progress", "transparent-button");
         inProgressButton.addClickListener(e->{
-            orderStatusConsumer.accept(OrderStatus.In_Progress);
+            currentFilterDisplay.filterSetter(
+                    OrderStatus.In_Progress,
+                    OrderStatus.ALL,
+                    filterData,
+                    "orderStatusChoice",
+                    "Order status",
+                    orderStatusConsumer
+            );
         });
 
         Button finishedButton = commonComponents.normalButtonNoNavigate("Finished", "transparent-button");
         finishedButton.addClickListener(e->{
-            orderStatusConsumer.accept(OrderStatus.Finished);
+            currentFilterDisplay.filterSetter(
+                    OrderStatus.Finished,
+                    OrderStatus.ALL,
+                    filterData,
+                    "orderStatusChoice",
+                    "Order status",
+                    orderStatusConsumer
+            );
         });
 
         List<Button> buttons = List.of(allButton,pendingButton,inProgressButton,finishedButton);
 
         for(var s : buttons){
+
+            currentFilterDisplay.setReloadButtons(ee->{
+
+                if(filterData.getOrderStatusChoice().equals(OrderStatus.ALL)) {
+                    orderStatusConsumer.accept(OrderStatus.ALL);
+                    buttons.forEach(button ->
+                            button.removeClassName("active"));
+                    allButton.addClassName("active");
+                }
+            });
 
             s.addClickListener(e->{
                 buttons.forEach(b-> b.removeClassName("active"));
@@ -263,6 +312,7 @@ public class OrderFilters {
 
 
         nameOfGrids.add(
+                currentFilterDisplay.getFilters(),
                 commonComponents.spanCrafterWordNoHide("Orders List","activityFeed-name"),
                 commonComponents.spaceFiller(),
                 search,

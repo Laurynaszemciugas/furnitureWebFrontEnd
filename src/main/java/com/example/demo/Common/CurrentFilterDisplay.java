@@ -32,7 +32,8 @@ public class CurrentFilterDisplay {
     HorizontalLayout h = new HorizontalLayout();
     Map<String, FilterMeta> map = new HashMap<>();
 
-    Consumer<String> reloadInfo;
+    Consumer<String> reloadButtons;
+    Consumer<Object> reloadController;
 
     public CurrentFilterDisplay(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
@@ -40,6 +41,8 @@ public class CurrentFilterDisplay {
 
         v.setVisible(false);
         h.addClassName("layout-flex");
+        Span span = commonComponents.spanCrafter("Active filters","stat-title");
+        v.add(span);
 //        h.getStyle().set("flex", "1 1 200px");
 //        h.getStyle().set("max-width", "620px");
 //        h.getStyle().set("min-width", "302px");
@@ -49,16 +52,10 @@ public class CurrentFilterDisplay {
     }
 
 
-    public <T> void addFilter(String filterName, T filterValue, String referenceName, T filterData){
+    public <T> void addFilter(String filterName, T filterValue, String referenceName, T filterData, T nullValue){
 
         if(filterValue == null){
             map.remove(filterName);
-
-            if(map.isEmpty()){
-                v.setVisible(false);
-            }
-
-
 
             for (Map.Entry<String, FilterMeta> entry : map.entrySet()) {
                 h.add(filterExisting(entry.getKey(),entry.getValue(),filterData));
@@ -68,18 +65,18 @@ public class CurrentFilterDisplay {
         }
 
         if(map.isEmpty()){
-            map.put(filterName,new FilterMeta(filterValue.toString(),referenceName));
+            map.put(filterName,new FilterMeta(filterValue.toString(),referenceName,nullValue));
         }
         else{
             if(map.containsKey(filterName)){
-                map.put(filterName, new FilterMeta(filterValue.toString(),referenceName));
+                map.put(filterName, new FilterMeta(filterValue.toString(),referenceName,nullValue));
             }
             else {
-                map.put(filterName, new FilterMeta(filterValue.toString(),referenceName));
+                map.put(filterName, new FilterMeta(filterValue.toString(),referenceName,nullValue));
             }
         }
 
-        v.removeAll();
+
         h.removeAll();
 
         for (Map.Entry<String, FilterMeta> entry : map.entrySet()) {
@@ -89,9 +86,29 @@ public class CurrentFilterDisplay {
 
     }
 
-    public <T> HorizontalLayout filterExisting(String filterName,FilterMeta filterMeta,T filterData){
+    public <T> void checkIfValueIsNullValue(String filterName, T nullValue, T filterData){
 
-        if(map != null|| !map.isEmpty()){
+        System.out.println("checked");
+
+        h.removeAll();
+        for (Map.Entry<String, FilterMeta> entry : map.entrySet()) {
+
+            if(entry.getKey().equals(filterName)){
+                System.out.println(filterName);
+                if(entry.getValue().getValue().equals(nullValue)){
+                    System.out.println("remove");
+                    map.remove(filterName);
+                }
+            }
+
+            h.add(filterExisting(entry.getKey(),entry.getValue(),filterData));
+
+        }
+    }
+
+    public <T,S> HorizontalLayout filterExisting(String filterName,FilterMeta filterMeta,S filterData){
+
+        if(!map.isEmpty()){
             v.setVisible(true);
         }
         else{
@@ -111,11 +128,12 @@ public class CurrentFilterDisplay {
             map.remove(filterName);
             vv.getParent().ifPresent(parent -> ((HasComponents) parent).remove(vv));
 
+            System.out.println(filterName);
 
             try {
                 Field field = filterData.getClass().getDeclaredField(filterMeta.getFieldName());
                 field.setAccessible(true);
-                field.set(filterData, null);
+                field.set(filterData, filterMeta.getIfNull());
             } catch (NoSuchFieldException | IllegalAccessException ex) {
                 throw new RuntimeException(ex);
             }
@@ -127,7 +145,9 @@ public class CurrentFilterDisplay {
             }
 
 
-            reloadInfo.accept("need reload");
+
+            reloadButtons.accept("Need reload");
+            reloadController.accept(filterData);
 
 
 
@@ -146,12 +166,11 @@ public class CurrentFilterDisplay {
     }
 
     public VerticalLayout getFilters(){
-        Span span = commonComponents.spanCrafter("Active filters","stat-title");
+
 
         v.addClassName("island");
         v.setWidthFull();
         v.add(
-                span,
                 h
         );
         return v;
@@ -196,6 +215,8 @@ public class CurrentFilterDisplay {
     @SneakyThrows
     public <T,S> void filterSetter(T getValue, T ifNull, S filterDTO, String referenceName, String filterName, Consumer<T> consumer){
 
+        checkIfValueIsNullValue(filterName,ifNull,filterDTO);
+
         T valueItem = getValue == null ? ifNull : getValue;
 
         if (getValue == null) {
@@ -204,7 +225,7 @@ public class CurrentFilterDisplay {
             field.setAccessible(true);
             field.set(filterDTO, valueItem);
 
-            addFilter(filterName, getValue,referenceName,filterDTO);
+            addFilter(filterName, getValue,referenceName,filterDTO,ifNull);
             consumer.accept(valueItem);
         }
         else{
@@ -212,12 +233,18 @@ public class CurrentFilterDisplay {
             field.setAccessible(true);
             field.set(filterDTO, getValue);
 
-            addFilter(filterName, getValue,referenceName,filterDTO);
+            addFilter(filterName, getValue,referenceName,filterDTO,ifNull);
 
             consumer.accept(valueItem);
         }
 
 
+    }
+
+    public void clearAllData(){
+        map.clear();
+        h.removeAll();
+        v.setVisible(false);
     }
 
 

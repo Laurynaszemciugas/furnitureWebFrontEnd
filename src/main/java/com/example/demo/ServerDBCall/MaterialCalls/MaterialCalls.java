@@ -2,10 +2,8 @@ package com.example.demo.ServerDBCall.MaterialCalls;
 
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
-import com.example.demo.ControllerModels.Material.MaterialFilterHolder;
+import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
 import com.example.demo.ControllerModels.Material.MaterialMiniStat;
-import com.example.demo.ControllerModels.Orders.OrdersFeedData;
-import com.example.demo.Enums.OrderStatus;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
@@ -63,6 +61,46 @@ public class MaterialCalls {
         );
 
     }
+
+
+    public Long getPages(MaterialFilterHolder materialFilterHolder) throws IOException, InterruptedException {
+
+        String JWT = sessionCrafter.extractSession("JWT", String.class);
+
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(materialFilterHolder);
+
+
+        HttpClient client = HttpClient.newHttpClient();
+
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:8080/api/material/getTotalPages"))
+                .header("Authorization","Bearer " + JWT)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = client.send(
+                request,
+                HttpResponse.BodyHandlers.ofString()
+        );
+
+        if (response.statusCode() != 200) {
+            System.err.println("Backend Request Failed! Status Code: " + response.statusCode());
+            System.err.println("Backend Response Body: " + response.body());
+            return null;
+        }
+
+        return mapper.readValue(
+                response.body(),
+                new TypeReference<Long>() {}
+        );
+
+    }
+
+
 
 
     public MaterialMiniStat getMiniStatData(LocalDate fromDate, LocalDate toDate) throws IOException, InterruptedException {

@@ -3,13 +3,10 @@ package com.example.demo.Pages.Material.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.CurrentFilterDisplay;
-import com.example.demo.ControllerModels.Material.MaterialBriefDto;
-import com.example.demo.ControllerModels.Material.MaterialFilterHolder;
+import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
 import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.Stock;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -23,9 +20,7 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import lombok.Setter;
-import lombok.SneakyThrows;
 
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Consumer;
@@ -50,30 +45,36 @@ public class MaterialFilters {
     Consumer<LocalDate> fromDateConsumer;
     Consumer<LocalDate> toDateConsumer;
     Consumer<String> prompConsumer;
+    Consumer<MaterialFilterHolder> clearFilters;
 
 
     public MaterialFilters(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
-        this.currentFilterDisplay = new CurrentFilterDisplay(commonComponents,common);
+
 
 
 
     }
 
-
+    public void setCurrentFilterDisplay(CurrentFilterDisplay currentFilterDisplay) {
+        this.currentFilterDisplay = currentFilterDisplay;
+    }
 
     public VerticalLayout filters(){
         VerticalLayout v = new VerticalLayout();
         v.setPadding(false);
+
 
         // get current filter display
         v.add(currentFilterDisplay.getFilters());
 
 
         HorizontalLayout buttonHolder = new HorizontalLayout();
+        buttonHolder.addClassName("layout-flex");
 
         HorizontalLayout buttonHolderhOLDER = new HorizontalLayout();
+        buttonHolderhOLDER.addClassName("layout-flex");
         buttonHolderhOLDER.setWidthFull();
         buttonHolderhOLDER.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
@@ -125,6 +126,12 @@ public class MaterialFilters {
         });
 
         Button clear = new Button("Clear filters", VaadinIcon.ERASER.create());
+        clear.addClickListener(e->{
+            filterData = new MaterialFilterHolder();
+            clearFilters.accept(filterData);
+            currentFilterDisplay.clearAllData();
+
+        });
 
         buttonHolder.add(
                 all,
@@ -143,23 +150,22 @@ public class MaterialFilters {
 
         for(var s : buttonList){
 
+
+            currentFilterDisplay.setReloadButtons(ee->{
+
+                if(filterData.getStockChoice().equals(Stock.ALL)) {
+                    stockConsumer.accept(Stock.ALL);
+                    buttonList.forEach(button ->
+                            button.removeClassName("active"));
+                    all.addClassName("active");
+                }
+            });
+
             s.addClickListener(e->{
 
                 buttonList.forEach(button->
                         button.removeClassName("active"));
                 s.addClassName("active");
-
-
-                currentFilterDisplay.setReloadInfo(ee->{
-                    if(filterData.getStockChoice() == null){
-                        buttonList.forEach(button->
-                                button.removeClassName("active"));
-                        all.addClassName("active");
-                    }
-                });
-
-
-
 
             });
 
@@ -188,6 +194,7 @@ public class MaterialFilters {
         Span name = commonComponents.spanCrafter("Materials list","stat-value");
 
         HorizontalLayout h2 = new HorizontalLayout();
+        h2.addClassName("layout-flex");
         h2.setWidthFull();
         h2.setPadding(false);
         h2.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
@@ -243,7 +250,7 @@ public class MaterialFilters {
         stockAmount.setMin(0);
         currentFilterDisplay.setComponentValue("stockAmountChoice",filterData,stockAmount);
         stockAmount.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(Long.valueOf(e.getValue()),0L,filterData,"stockAmountChoice","Stock amount",stockAmountConsumer);
+            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue()),0L,filterData,"stockAmountChoice","Stock amount",stockAmountConsumer);
         });
 
         // ================= MIN AMOUNT =================================
@@ -252,13 +259,14 @@ public class MaterialFilters {
         stockAmount.setMin(0);
         currentFilterDisplay.setComponentValue("minThresholdChoice",filterData,minThreshold);
         minThreshold.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(Long.valueOf(e.getValue()),0L,filterData,"minThresholdChoice","Min threshold",minThresholdConsumer);
+            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue()),0L,filterData,"minThresholdChoice","Min threshold",minThresholdConsumer);
         });
 
 
 
         // ================= UNIT PRICE AMOUNT =================================
         NumberField unitPrice  = new NumberField("Unit price");
+        unitPrice.setInvalid(false);
         unitPrice.setStep(0.5);
         unitPrice.setMax(100000);
         unitPrice.setMin(0);

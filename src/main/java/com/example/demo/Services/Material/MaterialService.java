@@ -1,7 +1,7 @@
 package com.example.demo.Services.Material;
 
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
-import com.example.demo.ControllerModels.Material.MaterialFilterHolder;
+import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
 import com.example.demo.ControllerModels.Material.MaterialMiniStat;
 import com.example.demo.ServerDBCall.MaterialCalls.MaterialCalls;
 import lombok.SneakyThrows;
@@ -23,6 +23,11 @@ public class MaterialService {
     @SneakyThrows
     public List<MaterialBriefDto> getUserMaterialsList(MaterialFilterHolder materialFilterHolder){
         return materialCalls.getMaterials(materialFilterHolder);
+    }
+
+    @SneakyThrows
+    public Long getPageCount(MaterialFilterHolder materialFilterHolder){
+        return materialCalls.getPages(materialFilterHolder);
     }
 
     @SneakyThrows

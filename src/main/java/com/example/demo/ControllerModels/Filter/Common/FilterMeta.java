@@ -9,10 +9,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FilterMeta {
+public  class  FilterMeta {
 
     String value;
     String fieldName;
+    Object ifNull;
 
 
 }
