@@ -10,6 +10,7 @@ import com.example.demo.DTOS.ComboBoxMaterial;
 import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.Stock;
+import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
 import com.sun.jdi.LongValue;
 import com.vaadin.flow.component.button.Button;
@@ -48,22 +49,29 @@ public class OrderFilters {
     Consumer<Long> amountOfProductsConsumer;
     Consumer<String> clearFilters;
     Consumer<String> prompt;
+    Consumer<Long> employeeId;
+    Consumer<Long> materialId;
 
     CurrentFilterDisplay currentFilterDisplay;
     OrderFilterHolder filterData = new OrderFilterHolder();
 
 
+
     EmployeeCalls employeeCalls;
+    CommonCalls commonCalls;
 
     List<ComboBoxEmployees> comboBoxEmployees = new ArrayList<>();
+    List<ComboBoxMaterial> comboBoxMaterials = new ArrayList<>();
 
     @SneakyThrows
-    public OrderFilters(CommonComponents commonComponents, Common common, EmployeeCalls employeeCalls) {
+    public OrderFilters(CommonComponents commonComponents, Common common, EmployeeCalls employeeCalls,CommonCalls commonCalls) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.employeeCalls = employeeCalls;
+        this.commonCalls = commonCalls;
 
         comboBoxEmployees.addAll(employeeCalls.getMiniEmployeeData());
+        comboBoxMaterials.addAll(commonCalls.getMaterialNames());
 
     }
 
@@ -166,6 +174,8 @@ public class OrderFilters {
 
         ComboBox<ComboBoxMaterial> materialComboBox = new ComboBox<>("Materials in order");
         materialComboBox.setWidthFull();
+        materialComboBox.setItems(comboBoxMaterials);
+        materialComboBox.setItemLabelGenerator(ComboBoxMaterial::getMaterialName);
 
         filterHolder.add(
                 amountHolder,

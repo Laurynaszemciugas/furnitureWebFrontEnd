@@ -12,6 +12,7 @@ import com.example.demo.Pages.Orders.Components.BriefOrderPageExplanation;
 import com.example.demo.Pages.Orders.Components.OrderFilters;
 import com.example.demo.Pages.Orders.Components.OrdersLeftSide;
 import com.example.demo.Pages.Orders.Components.OrdersRightSide;
+import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
 import com.example.demo.ServerDBCall.OrderCalls.OrderCalls;
 import com.example.demo.Services.Orders.OrdersService;
@@ -34,6 +35,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
     Common common;
     OrderCalls orderCalls;
     EmployeeCalls employeeCalls;
+    CommonCalls commonCalls;
     Paganation paganation;
 
     OrdersRightSide ordersRightSide;
@@ -56,16 +58,17 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
 
 
-    public OrdersPage(CommonComponents commonComponents, Common common, OrderCalls orderCalls,EmployeeCalls employeeCalls,OrdersService ordersService,ProductService productService) {
+    public OrdersPage(CommonComponents commonComponents, Common common, OrderCalls orderCalls,EmployeeCalls employeeCalls,OrdersService ordersService,ProductService productService,CommonCalls commonCalls) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.orderCalls = orderCalls;
         this.ordersService = ordersService;
+        this.commonCalls = commonCalls;
 
         this.productService = productService;
         this.ordersRightSide = new OrdersRightSide(commonComponents,common,orderCalls,employeeCalls,productService);
         this.ordersLeftSide = new OrdersLeftSide(commonComponents,common,orderCalls);
-        this.orderFilters = new OrderFilters(commonComponents, common,employeeCalls);
+        this.orderFilters = new OrderFilters(commonComponents, common,employeeCalls,commonCalls);
         this.briefOrderPageExplanation = new BriefOrderPageExplanation(commonComponents,common);
         this.paganation = new Paganation();
 
