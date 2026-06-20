@@ -5,13 +5,17 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.CurrentFilterDisplay;
 import com.example.demo.ControllerModels.CommonDtos.Employee;
 import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
+import com.example.demo.ControllerModels.Orders.OrderAddProducts;
+import com.example.demo.ControllerModels.Products.ProductFeedModel;
 import com.example.demo.DTOS.ComboBoxEmployees;
 import com.example.demo.DTOS.ComboBoxMaterial;
 import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.Stock;
+import com.example.demo.Pages.Orders.OrderAdd.OrderAdd;
 import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
+import com.example.demo.ServerDBCall.ProductPage.ProductsCall;
 import com.sun.jdi.LongValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -50,7 +54,7 @@ public class OrderFilters {
     Consumer<String> clearFilters;
     Consumer<String> prompt;
     Consumer<Long> employeeId;
-    Consumer<Long> materialId;
+    Consumer<Long> productId;
 
     CurrentFilterDisplay currentFilterDisplay;
     OrderFilterHolder filterData = new OrderFilterHolder();
@@ -58,20 +62,20 @@ public class OrderFilters {
 
 
     EmployeeCalls employeeCalls;
-    CommonCalls commonCalls;
+    ProductsCall productsCall;
 
     List<ComboBoxEmployees> comboBoxEmployees = new ArrayList<>();
-    List<ComboBoxMaterial> comboBoxMaterials = new ArrayList<>();
+    List<OrderAddProducts> productFeedModelList = new ArrayList<>();
 
     @SneakyThrows
-    public OrderFilters(CommonComponents commonComponents, Common common, EmployeeCalls employeeCalls,CommonCalls commonCalls) {
+    public OrderFilters(CommonComponents commonComponents, Common common, EmployeeCalls employeeCalls,ProductsCall productsCall) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.employeeCalls = employeeCalls;
-        this.commonCalls = commonCalls;
+        this.productsCall = productsCall;
 
         comboBoxEmployees.addAll(employeeCalls.getMiniEmployeeData());
-        comboBoxMaterials.addAll(commonCalls.getMaterialNames());
+        productFeedModelList.addAll(productsCall.getProductsForAddOrder());
 
     }
 
@@ -93,7 +97,7 @@ public class OrderFilters {
         DatePicker from = new DatePicker("Date from");
         currentFilterDisplay.setComponentValue("dateFromChoice",filterData,from);
         from.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(), LocalDate.of(1000,12,12),filterData,"dateFromChoice","Date from",fromDateConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(), LocalDate.of(1000,12,12),null,filterData,"dateFromChoice","Date from",fromDateConsumer);
         });
 
 
@@ -101,7 +105,7 @@ public class OrderFilters {
         DatePicker to = new DatePicker("Date to");
         currentFilterDisplay.setComponentValue("dateToChoice",filterData,to);
         to.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(), LocalDate.of(1000,12,12),filterData,"dateToChoice","Date to",toDateConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(), LocalDate.of(1000,12,12),null,filterData,"dateToChoice","Date to",toDateConsumer);
         });
 
 
@@ -125,7 +129,7 @@ public class OrderFilters {
         amountOfProducts.setStepButtonsVisible(true);
         currentFilterDisplay.setComponentValue("amountOfProductsChoice",filterData,amountOfProducts);
         amountOfProducts.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue()), 0L,filterData,"amountOfProductsChoice","Amount of products",amountOfProductsConsumer);
+            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue()), 0L,null,filterData,"amountOfProductsChoice","Amount of products",amountOfProductsConsumer);
         });
 
 
@@ -138,7 +142,7 @@ public class OrderFilters {
         fromAmount.setStepButtonsVisible(true);
         currentFilterDisplay.setComponentValue("priceFromChoice",filterData,fromAmount);
         fromAmount.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(), 0.0,filterData,"priceFromChoice","Order price from",fromCostConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(), 0.0,null,filterData,"priceFromChoice","Order price from",fromCostConsumer);
         });
 
 
@@ -151,7 +155,7 @@ public class OrderFilters {
         toAmount.setStepButtonsVisible(true);
         currentFilterDisplay.setComponentValue("priceToChoice",filterData,toAmount);
         toAmount.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(), 0.0,filterData,"priceToChoice","Order price to",toCostConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(), 0.0,null,filterData,"priceToChoice","Order price to",toCostConsumer);
         });
 
 
@@ -172,10 +176,24 @@ public class OrderFilters {
         employeesComboBox.setItems(comboBoxEmployees);
         employeesComboBox.setItemLabelGenerator(ComboBoxEmployees::getFullName);
 
-        ComboBox<ComboBoxMaterial> materialComboBox = new ComboBox<>("Materials in order");
+
+        employeesComboBox.setValue(comboBoxEmployees.stream().filter(e->e.getId().equals(filterData.getEmployee()))
+                .findFirst().orElse(null));
+        employeesComboBox.addValueChangeListener(e->{
+            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue().getId()), 0L,e.getValue().getFullName(),filterData,"employee","Employee in order",employeeId);
+        });
+
+        ComboBox<OrderAddProducts> materialComboBox = new ComboBox<>("Products in order");
+
         materialComboBox.setWidthFull();
-        materialComboBox.setItems(comboBoxMaterials);
-        materialComboBox.setItemLabelGenerator(ComboBoxMaterial::getMaterialName);
+        materialComboBox.setItems(productFeedModelList);
+        materialComboBox.setItemLabelGenerator(OrderAddProducts::getProductName);
+
+        materialComboBox.setValue(productFeedModelList.stream().filter(e->e.getId().equals(filterData.getProducts()))
+                .findFirst().orElse(null));
+        materialComboBox.addValueChangeListener(e->{
+            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue().getId()), 0L,e.getValue().getProductName(),filterData,"products","Products in order",productId);
+        });
 
         filterHolder.add(
                 amountHolder,
@@ -212,6 +230,7 @@ public class OrderFilters {
             currentFilterDisplay.filterSetter(
                     OrderStatus.ALL,
                     OrderStatus.ALL,
+                    null,
                     filterData,
                     "orderStatusChoice",
                     "Order status",
@@ -224,6 +243,7 @@ public class OrderFilters {
             currentFilterDisplay.filterSetter(
                     OrderStatus.Pending,
                     OrderStatus.ALL,
+                    null,
                     filterData,
                     "orderStatusChoice",
                     "Order status",
@@ -236,6 +256,7 @@ public class OrderFilters {
             currentFilterDisplay.filterSetter(
                     OrderStatus.In_Progress,
                     OrderStatus.ALL,
+                    null,
                     filterData,
                     "orderStatusChoice",
                     "Order status",
@@ -248,6 +269,7 @@ public class OrderFilters {
             currentFilterDisplay.filterSetter(
                     OrderStatus.Finished,
                     OrderStatus.ALL,
+                    null,
                     filterData,
                     "orderStatusChoice",
                     "Order status",

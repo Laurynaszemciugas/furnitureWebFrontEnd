@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class OrderFilterHolder {
 
     private Long employee = 0L;
-    private Long product = 0L;
+    private Long products = 0L;
     private String promptChoice = "ALL";
     private OrderStatus orderStatusChoice = OrderStatus.ALL;
     private Double priceFromChoice = 0.0;
@@ -22,7 +22,6 @@ public class OrderFilterHolder {
     private LocalDate dateFromChoice= LocalDate.of(1000,12,12);
     private LocalDate dateToChoice= LocalDate.of(1000,12,12);
     private Long amountOfProductsChoice= 0L;
-    private Long employeeId = 0L;
     private int page = 0;
     private int pageCount = 5;
 

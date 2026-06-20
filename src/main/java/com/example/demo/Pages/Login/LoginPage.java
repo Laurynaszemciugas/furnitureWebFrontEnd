@@ -37,8 +37,10 @@ public class LoginPage extends VerticalLayout {
         VerticalLayout v = new VerticalLayout();
 
         TextField textField1 = new TextField("Name");
+        textField1.setValue("maxx@gmail.com");
 
         TextField textField2 = new TextField("Password");
+        textField2.setValue("maxx@gmail.com");
 
         Button button = new Button("Login");
 

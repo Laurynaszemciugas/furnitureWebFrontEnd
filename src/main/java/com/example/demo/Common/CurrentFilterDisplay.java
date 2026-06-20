@@ -211,13 +211,25 @@ public class CurrentFilterDisplay {
         }
     }
 
+//    public <S,T> void setComboCustomValue(){
+//        materialComboBox.setValue(productFeedModelList.stream().filter(e->e.getId().equals(filterData.getProducts()))
+//                .findFirst().orElse(null));
+//    }
+
 
     @SneakyThrows
-    public <T,S> void filterSetter(T getValue, T ifNull, S filterDTO, String referenceName, String filterName, Consumer<T> consumer){
+    public <T,S> void filterSetter(T getValue, T ifNull, Object otherNull, S filterDTO, String referenceName, String filterName, Consumer<T> consumer){
 
         checkIfValueIsNullValue(filterName,ifNull,filterDTO);
 
         T valueItem = getValue == null ? ifNull : getValue;
+
+        T nameOfTheFilter = getValue == null ? ifNull : getValue;
+
+        if(otherNull != null){
+            nameOfTheFilter = (T) otherNull;
+        }
+
 
         if (getValue == null) {
 
@@ -233,7 +245,7 @@ public class CurrentFilterDisplay {
             field.setAccessible(true);
             field.set(filterDTO, getValue);
 
-            addFilter(filterName, getValue,referenceName,filterDTO,ifNull);
+            addFilter(filterName, nameOfTheFilter,referenceName,filterDTO,ifNull);
 
             consumer.accept(valueItem);
         }
