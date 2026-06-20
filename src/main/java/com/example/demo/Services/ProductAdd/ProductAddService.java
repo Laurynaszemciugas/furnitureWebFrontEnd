@@ -1,7 +1,6 @@
 package com.example.demo.Services.ProductAdd;
 
 import com.example.demo.ControllerModels.CommonDtos.ExtraDetails;
-import com.example.demo.ControllerModels.CommonDtos.ImagesData;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.Enums.*;
 import com.example.demo.ServerDBCall.ProductAdd.ProductAddCall;

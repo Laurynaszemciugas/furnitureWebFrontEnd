@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,5 +36,6 @@ public class Materials {
 
 
     private LocalDateTime created;
+    private List<MaterialImageData> images = new ArrayList<>();
 
 }

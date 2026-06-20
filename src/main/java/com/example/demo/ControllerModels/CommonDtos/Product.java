@@ -37,7 +37,7 @@ public class Product {
 
     private List<ProductTags> tags = new ArrayList<>();
 
-    private List<ImagesData> images = new ArrayList<>();
+    private List<ProductImageData> images = new ArrayList<>();
 
     private List<ProductMaterials> materials = new ArrayList<>();
 

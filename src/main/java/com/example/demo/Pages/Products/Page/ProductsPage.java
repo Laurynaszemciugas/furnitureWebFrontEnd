@@ -46,8 +46,10 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     private IntConsumer longConsumer;
 
     // main layout
+    VerticalLayout connectAll = new VerticalLayout();
     VerticalLayout verticalLayout = new VerticalLayout();
     VerticalLayout filterHolder = new VerticalLayout();
+    VerticalLayout briefExplanation = new VerticalLayout();
 
     private Stock stockChoise = Stock.ALL;
     private Category categoryChoise = Category.ALL;
@@ -86,9 +88,14 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
         this.longConsumer = paganation::updateUIFromExternal;
 
+        briefExplanation.add(
+                productPageBriefExplanation.briefPageExplanation()
+        );
+
+
         filterHolder.add(
-                productPageBriefExplanation.briefPageExplanation(),
-                productPageFilters.filters());
+                productPageFilters.filters()
+        );
 
 
 
@@ -162,12 +169,13 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
         filterHolder.setPadding(false);
 
+
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top", "5px");
         verticalLayout.addClassName("main-island");
         verticalLayout.getStyle().set("position","relative");
 
-        productPageBriefExplanation.setFilterConsumer(promt->{
+        productPageFilters.setFilterConsumer(promt->{
             this.promtChoise = promt;
             if(promt.equalsIgnoreCase("")){
                 this.promtChoise = "ALL";
@@ -175,7 +183,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
             updateView(verticalLayout);
         });
 
-        productPageFilters.consumerStock(stock -> {
+        productPageFilters.setStockConsumer(stock -> {
 
             this.stockChoise = stock;
 
@@ -183,7 +191,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         });
 
 
-        productPageFilters.consumerType(e->{
+        productPageFilters.setType(e->{
 
             this.categoryChoise = e;
 
@@ -191,7 +199,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
         });
 
-        productPageFilters.consumerAllStock(e->{
+        productPageFilters.setAllStockConsumer(e->{
             this.stockChoise = Stock.ALL;
             updateView(verticalLayout);
         });
@@ -213,7 +221,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         });
 
 
-        productPageFilters.consumerClear(e->{
+        productPageFilters.setClearFilters(e->{
 
             stockChoise = Stock.ALL;
             categoryChoise = Category.ALL;
@@ -243,14 +251,30 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
     //get default data
     public void loadData(VerticalLayout verticalLayout){
-        verticalLayout.removeAll();
-        verticalLayout.add(
+
+        connectAll.removeAll();
+        connectAll.addClassName("island");
+
+        connectAll.add(
                 filterHolder,
                 productPageProductFeed.productsMain(data.getProductFeedModelList()),
-                paganation.buttonHolder(totalPages));
+                paganation.buttonHolder(totalPages),
+                commonComponents.pageIndicator(pageChoise,totalPages)
+        );
+
+        verticalLayout.removeAll();
+        verticalLayout.add(
+                briefExplanation,
+                connectAll
+        );
 
 
-        verticalLayout.add(commonComponents.pageIndicator(pageChoise,totalPages));
+
+
+
+
+
+
 
     }
 

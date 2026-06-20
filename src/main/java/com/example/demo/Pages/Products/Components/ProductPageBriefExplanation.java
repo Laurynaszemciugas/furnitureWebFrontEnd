@@ -19,7 +19,6 @@ public class ProductPageBriefExplanation {
     Common common;
 
 
-    Consumer<String> filterConsumer;
 
     public ProductPageBriefExplanation(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
@@ -27,23 +26,15 @@ public class ProductPageBriefExplanation {
     }
 
 
-    public void setFilterConsumer( Consumer<String> filterConsumer){
-        this.filterConsumer = filterConsumer;
-    }
 
 
 
     public HorizontalLayout briefPageExplanation(){
         HorizontalLayout left = commonComponents.biefPageExplanation("Inventory management");
 
-        TextField search = commonComponents.textFieldCrafter("Search products...","",VaadinIcon.SEARCH);
 
-        search.addValueChangeListener(e->{
-           filterConsumer.accept(e.getValue());
-        });
 
         HorizontalLayout right =new HorizontalLayout(
-                search,
                 commonComponents.buttonThemeAndIcon("Add new product","ProductsAdd", ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White")
         );
         right.addClassName("layout-flex");

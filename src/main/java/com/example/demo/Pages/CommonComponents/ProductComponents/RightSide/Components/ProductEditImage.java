@@ -3,7 +3,6 @@ package com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Comp
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Common.CommonImagesData;
-import com.example.demo.ControllerModels.CommonDtos.ImagesData;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.Enums.ImageLogic;
 import com.vaadin.flow.component.button.Button;

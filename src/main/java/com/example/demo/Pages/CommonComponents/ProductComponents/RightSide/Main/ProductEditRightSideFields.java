@@ -406,6 +406,8 @@ public class ProductEditRightSideFields {
 
         save.addClickListener(e -> {
 
+            System.out.println("ssssssssssssssssssss");
+
 
             if (binder.validate().isOk()) {
 
@@ -441,7 +443,7 @@ public class ProductEditRightSideFields {
                     s.setImageUrl(common.imageMaker(s.getImageData(),s.getImageType()));
                 }
 
-                product.setImages(objectConverter.convert(newImages,ImagesData.class));
+                product.setImages(objectConverter.convert(newImages,ProductImageData.class));
 
             }
 

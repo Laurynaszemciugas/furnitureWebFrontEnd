@@ -9,15 +9,19 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.function.Consumer;
 
 
+@Setter
 public class ProductPageFilters {
 
     CommonComponents commonComponents;
@@ -33,36 +37,20 @@ public class ProductPageFilters {
 
     Consumer<Visibility> visibilityConsumer;
 
+    Consumer<String> filterConsumer;
+
     public ProductPageFilters(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
     }
 
 
-    public void consumerStock(Consumer<Stock> stockConsumer){
-        this.stockConsumer = stockConsumer;
-    }
-
-    public void consumerType(Consumer<Category> type){
-        this.type = type;
-    }
-
-    public void consumerClear(Consumer<String> clearFilters){
-        this.clearFilters = clearFilters;
-    }
-
-    public void consumerAllStock(Consumer<String> allStockConsumer){
-        this.allStockConsumer = allStockConsumer;
-    }
-
-    public void setVisibilityConsumer(Consumer<Visibility> visibilityConsumer){
-        this.visibilityConsumer = visibilityConsumer;
-    }
 
 
 
 
-    public HorizontalLayout filters(){
+
+    public VerticalLayout filters(){
 
         Button allStock = commonComponents.normalButtonNoNavigate(Stock.ALL.getDisplayName(), "transparent-button");
         allStock.addClassName("active");
@@ -110,6 +98,14 @@ public class ProductPageFilters {
         Button clear = new Button(VaadinIcon.ERASER.create());
         clear.setText("Clear Filters");
 
+
+        TextField search = commonComponents.textFieldCrafter("Search products...","",VaadinIcon.SEARCH);
+
+        search.addValueChangeListener(e->{
+            filterConsumer.accept(e.getValue());
+        });
+
+
         inStock.addClickListener(e->{
             stockConsumer.accept(Stock.In_Stock);
         });
@@ -140,6 +136,22 @@ public class ProductPageFilters {
         });
 
 
+        HorizontalLayout stuff = new HorizontalLayout();
+        stuff.setPadding(false);
+        stuff.add(
+                search,
+                showMoreFilters
+        );
+
+        HorizontalLayout lilExplanation = new HorizontalLayout();
+        lilExplanation.setPadding(false);
+        lilExplanation.setWidthFull();
+        lilExplanation.add(
+                commonComponents.spanCrafterWordNoHide("Product feed","activityFeed-name"),
+                stuff
+        );
+        lilExplanation.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+
 
 
         HorizontalLayout horizontalLayout = new HorizontalLayout(
@@ -147,18 +159,28 @@ public class ProductPageFilters {
                 inStock,
                 lowStock,
                 noStock,
-                showMoreFilters,
+
                 commonComponents.spaceFiller(),
                 clear
 
 
 
         );
+
+        VerticalLayout allHolder = new VerticalLayout();
+        allHolder.setPadding(false);
+        allHolder.setWidthFull();
+
+        allHolder.add(
+                lilExplanation,
+                horizontalLayout
+        );
+
         horizontalLayout.setWidthFull();
         horizontalLayout.addClassName("layout-flex");
 
 
-        return horizontalLayout;
+        return allHolder;
     }
 
 }
