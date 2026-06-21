@@ -1,5 +1,6 @@
 package com.example.demo.Services.Material;
 
+import com.example.demo.ControllerModels.Common.MiniStatHolder;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
 import com.example.demo.ControllerModels.Material.MaterialMiniStat;
@@ -31,7 +32,7 @@ public class MaterialService {
     }
 
     @SneakyThrows
-    public MaterialMiniStat getMiniStats(LocalDate fromDate, LocalDate toDate){
+    public MiniStatHolder getMiniStats(LocalDate fromDate, LocalDate toDate){
         return materialCalls.getMiniStatData(fromDate,toDate);
     }
 

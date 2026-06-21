@@ -2,7 +2,9 @@ package com.example.demo.Pages.Products.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.Filter.Prodcut.ProductFilterHolder;
 import com.example.demo.ControllerModels.Products.ProductPageData;
+import com.example.demo.ControllerModels.Products.ProductPageMiniStat;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Stock;
 import com.example.demo.Enums.Visibility;
@@ -10,7 +12,10 @@ import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Common.Paganation;
 import com.example.demo.Pages.Products.Components.ProductPageBriefExplanation;
 import com.example.demo.Pages.Products.Components.ProductPageFilters;
+import com.example.demo.Pages.Products.Components.ProductPageMiniStats;
 import com.example.demo.Pages.Products.Components.ProductPageProductFeed;
+import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
+import com.example.demo.ServerDBCall.MaterialCalls.MaterialCalls;
 import com.example.demo.Services.Products.ProductService;
 
 import com.vaadin.flow.component.UI;
@@ -34,12 +39,14 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     Common common;
     ProductService productService;
     Paganation paganation;
+    CommonCalls commonCalls;
 
 
     // all stuff that make this page
     ProductPageBriefExplanation productPageBriefExplanation;
     ProductPageFilters productPageFilters;
     ProductPageProductFeed productPageProductFeed;
+    ProductPageMiniStats productPageMiniStat;
 
 
     // call to pagannation
@@ -63,19 +70,23 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     // page data
     ProductPageData data = new ProductPageData();
 
+    ProductFilterHolder filterData = new ProductFilterHolder();
 
 
     public ProductsPage(CommonComponents commonComponents,
                         Common common,
-                        ProductService productService) {
+                        ProductService productService,
+                        CommonCalls commonCalls) {
 
 
         this.commonComponents = commonComponents;
         this.common = common;
         this.productService = productService;
+        this.commonCalls = commonCalls;
         this.productPageBriefExplanation = new ProductPageBriefExplanation(commonComponents,common);
-        this.productPageFilters = new ProductPageFilters(commonComponents,common);
+        this.productPageFilters = new ProductPageFilters(commonComponents,common,commonCalls);
         this.productPageProductFeed = new ProductPageProductFeed(commonComponents,common,productService);
+        this.productPageMiniStat = new ProductPageMiniStats(commonComponents,common);
 
 
         this.paganation = new Paganation();
@@ -117,14 +128,14 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
 
 
-        if(data == null || data.isDataStale()){
-            data = productService.loadProductData(Stock.ALL, Category.ALL,"ALL",Visibility.Visible,1,20);
-            System.out.println(data.getProductFeedModelList());
-        }
-
-        else{
-            System.out.println("data good");
-        }
+//        if(data == null || data.isDataStale()){
+//            data = productService.loadProductData(Stock.ALL, Category.ALL,"ALL",Visibility.Visible,1,20);
+//            System.out.println(data.getProductFeedModelList());
+//        }
+//
+//        else{
+//            System.out.println("data good");
+//        }
 
 
         int page = Integer.parseInt(beforeEnterEvent.getRouteParameters().get("page").orElse(null));
@@ -176,10 +187,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         verticalLayout.getStyle().set("position","relative");
 
         productPageFilters.setFilterConsumer(promt->{
-            this.promtChoise = promt;
-            if(promt.equalsIgnoreCase("")){
-                this.promtChoise = "ALL";
-            }
+            filterData.setPrompt(promt);
             updateView(verticalLayout);
         });
 
@@ -191,7 +199,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         });
 
 
-        productPageFilters.setType(e->{
+        productPageFilters.setCategoryConsumer(e->{
 
             this.categoryChoise = e;
 
@@ -199,10 +207,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
         });
 
-        productPageFilters.setAllStockConsumer(e->{
-            this.stockChoise = Stock.ALL;
-            updateView(verticalLayout);
-        });
+
 
         paganation.setOnPageChange(page -> {
 
@@ -250,14 +255,17 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     }
 
     //get default data
+    @SneakyThrows
     public void loadData(VerticalLayout verticalLayout){
+
+        filterData = new ProductFilterHolder();
 
         connectAll.removeAll();
         connectAll.addClassName("island");
 
         connectAll.add(
                 filterHolder,
-                productPageProductFeed.productsMain(data.getProductFeedModelList()),
+                productPageProductFeed.productsMain(productService.loadProductFeedModel(filterData)),
                 paganation.buttonHolder(totalPages),
                 commonComponents.pageIndicator(pageChoise,totalPages)
         );
@@ -265,6 +273,10 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         verticalLayout.removeAll();
         verticalLayout.add(
                 briefExplanation,
+                productPageMiniStat.miniStatHolder(
+                        productService.getMiniStats(
+                                common.dateCrafter(0,0,0,0,true),
+                                common.dateCrafter(0,1,1,0,true))),
                 connectAll
         );
 
@@ -280,29 +292,28 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
 
     // updata data according to filters
+    @SneakyThrows
     public void updateView(VerticalLayout verticalLayout){
         totalPages = Math.toIntExact(productService.loadProductPageCount(stockChoise,categoryChoise,promtChoise,visibilityChoise));
 
-        commonComponents.showNotification(String.format("Filters - Stock: '%s' Category: '%s' Prompt: '%s' Page: '%d'",
-                stockChoise.getDisplayName(),
-                categoryChoise.getDisplayName(),
-                promtChoise, pageChoise),
-                6000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
+
+        connectAll.removeAll();
+        connectAll.addClassName("island");
+        connectAll.add(
+                filterHolder,
+                productPageProductFeed.productsMain(productService.loadProductFeedModel(filterData)),
+                paganation.buttonHolder(totalPages),
+                commonComponents.pageIndicator(pageChoise,totalPages)
+        );
 
         verticalLayout.removeAll();
-        try {
-            verticalLayout.add(
-                    filterHolder,
-                    productPageProductFeed.productsMain(productService.loadProductFeedModel(stockChoise,categoryChoise,promtChoise,visibilityChoise,pageChoise,20)),
-                    paganation.buttonHolder(totalPages));
+        verticalLayout.add(
+                briefExplanation,
+                productPageMiniStat.miniStatHolder(productService.getMiniStats(common.dateCrafter(0,0,0,0,true),common.dateCrafter(0,0,0,0,true))),
+                connectAll
+        );
 
-            verticalLayout.add(commonComponents.pageIndicator(pageChoise,totalPages));
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 

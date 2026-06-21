@@ -1,8 +1,11 @@
 package com.example.demo.Services.Products;
 
+import com.example.demo.ControllerModels.Common.MiniStatHolder;
+import com.example.demo.ControllerModels.Filter.Prodcut.ProductFilterHolder;
 import com.example.demo.ControllerModels.Orders.OrderAddProducts;
 import com.example.demo.ControllerModels.Products.ProductFeedModel;
 import com.example.demo.ControllerModels.Products.ProductPageData;
+import com.example.demo.ControllerModels.Products.ProductPageMiniStat;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Stock;
 import com.example.demo.Enums.Visibility;
@@ -12,6 +15,7 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,25 +32,22 @@ public class ProductService {
 
 
     // good for specific data need
-    public List<ProductFeedModel> loadProductFeedModel(Stock stock, Category category, String prompt, Visibility visibility, int page, int size) throws IOException, InterruptedException {
-
-        page = page -1;
-
-        return productsCall.getAllProducts(stock, category,prompt,visibility,page,size);
+    public List<ProductFeedModel> loadProductFeedModel(ProductFilterHolder productFilterHolder) throws IOException, InterruptedException {
+        return productsCall.getAllProducts(productFilterHolder);
     }
 
 
-    // good for default but there is only one record
-    public ProductPageData loadProductData(Stock stock, Category category,String prompt, Visibility visibility, int page, int size) throws IOException, InterruptedException {
-
-        ProductPageData productPageData = new ProductPageData();
-            productPageData.setProductFeedModelList(loadProductFeedModel(stock,category,prompt,visibility,page,size));
-
-        productPageData.setCreatedAt(LocalDateTime.now());
-
-        return productPageData;
-
-    }
+//    // good for default but there is only one record
+//    public ProductPageData loadProductData(Stock stock, Category category,String prompt, Visibility visibility, int page, int size) throws IOException, InterruptedException {
+//
+//        ProductPageData productPageData = new ProductPageData();
+//            productPageData.setProductFeedModelList(loadProductFeedModel(stock,category,prompt,visibility,page,size));
+//
+//        productPageData.setCreatedAt(LocalDateTime.now());
+//
+//        return productPageData;
+//
+//    }
 
     @SneakyThrows
     public Long loadProductPageCount(Stock stock, Category category, String prompt, Visibility visibility){
@@ -67,6 +68,12 @@ public class ProductService {
     @SneakyThrows
     public List<OrderAddProducts> getExisitingData(Long id){
         return productsCall.getExistingData(id);
+    }
+
+
+    @SneakyThrows
+    public MiniStatHolder getMiniStats(LocalDate from, LocalDate to){
+        return productsCall.getMiniStatData(from,to);
     }
 
 

@@ -1,6 +1,7 @@
 package com.example.demo.ServerDBCall.MaterialCalls;
 
 import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.ControllerModels.Common.MiniStatHolder;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
 import com.example.demo.ControllerModels.Material.MaterialMiniStat;
@@ -103,7 +104,7 @@ public class MaterialCalls {
 
 
 
-    public MaterialMiniStat getMiniStatData(LocalDate fromDate, LocalDate toDate) throws IOException, InterruptedException {
+    public MiniStatHolder getMiniStatData(LocalDate fromDate, LocalDate toDate) throws IOException, InterruptedException {
 
         String JWT = sessionCrafter.extractSession("JWT", String.class);
 
@@ -135,7 +136,7 @@ public class MaterialCalls {
 
         return mapper.readValue(
                 response.body(),
-                new TypeReference<MaterialMiniStat>() {}
+                new TypeReference<MiniStatHolder>() {}
         );
 
     }

@@ -38,7 +38,7 @@ public class MiniStatCrafter {
         v.setSpacing(false);
         v.add(
                 commonComponents.spanCrafter(title,"activityFeed-name"),
-                commonComponents.spanCrafter(value.toString(),"stat-value"),
+                commonComponents.spanCrafter(value == null ? "Unknown" : value.toString(),"stat-value"),
                 commonComponents.spanCrafter(miniTittle,"stat-title")
         );
 

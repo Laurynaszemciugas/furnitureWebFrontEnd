@@ -176,9 +176,9 @@ public class OrderFilters {
         employeesComboBox.setItems(comboBoxEmployees);
         employeesComboBox.setItemLabelGenerator(ComboBoxEmployees::getFullName);
 
-
         employeesComboBox.setValue(comboBoxEmployees.stream().filter(e->e.getId().equals(filterData.getEmployee()))
                 .findFirst().orElse(null));
+
         employeesComboBox.addValueChangeListener(e->{
             currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue().getId()), 0L,e.getValue().getFullName(),filterData,"employee","Employee in order",employeeId);
         });
