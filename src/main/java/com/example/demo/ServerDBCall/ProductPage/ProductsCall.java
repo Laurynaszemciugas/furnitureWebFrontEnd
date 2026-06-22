@@ -30,6 +30,9 @@ public class ProductsCall {
 
     SessionCrafter sessionCrafter;
 
+    HttpClient client = HttpClient.newHttpClient();
+    ObjectMapper mapper = new ObjectMapper();
+
     public ProductsCall() {
         this.sessionCrafter = new SessionCrafter();
     }
@@ -38,11 +41,10 @@ public class ProductsCall {
 
         String JWT = sessionCrafter.extractSession("JWT", String.class);
 
-        HttpClient client = HttpClient.newHttpClient();
-        ObjectMapper mapper = new ObjectMapper();
 
 
-     String json = mapper.writeValueAsString(productFilterHolder);
+
+        String json = mapper.writeValueAsString(productFilterHolder);
 
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -71,25 +73,17 @@ public class ProductsCall {
 
 
 
-    public Long getProductPages(Stock stock, Category category, String prompt, Visibility visibility) throws IOException, InterruptedException {
+    public Long getProductPages(ProductFilterHolder productFilterHolder) throws IOException, InterruptedException {
 
         String JWT = sessionCrafter.extractSession("JWT", String.class);
 
-        HttpClient client = HttpClient.newHttpClient();
-
-        String url = String.format(
-                "http://localhost:8080/api/product/getPages/%s/%s/%s/%s",
-                stock,
-                category,
-                prompt,
-                visibility
-        );
+        String json = mapper.writeValueAsString(productFilterHolder);
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
+                .uri(URI.create("http://localhost:8080/api/product/getPages"))
                 .header("Content-Type", "application/json")
                 .header("Authorization","Bearer " + JWT)
-                .GET()
+                .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
         HttpResponse<String> response = client.send(
@@ -112,8 +106,6 @@ public class ProductsCall {
 
         String JWT = sessionCrafter.extractSession("JWT", String.class);
 
-        HttpClient client = HttpClient.newHttpClient();
-        ObjectMapper mapper = new ObjectMapper();
 
         String json = mapper.writeValueAsString(id);
 
@@ -144,10 +136,8 @@ public class ProductsCall {
 
         String JWT = sessionCrafter.extractSession("JWT", String.class);
 
-        ObjectMapper mapper = new ObjectMapper();
 
 
-        HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/api/product/getProductsForAddOrder"))
@@ -177,11 +167,6 @@ public class ProductsCall {
     public List<OrderAddProducts> getExistingData(Long id) throws IOException, InterruptedException {
 
         String JWT = sessionCrafter.extractSession("JWT", String.class);
-
-        ObjectMapper mapper = new ObjectMapper();
-
-
-        HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:8080/api/product/getExistingData/" + id))
@@ -213,12 +198,10 @@ public class ProductsCall {
         String JWT = sessionCrafter.extractSession("JWT", String.class);
 
 
-        ObjectMapper mapper = new ObjectMapper();
 
         String url = String.format("http://localhost:8080/api/product/getProductMiniStats/%s/%s",fromDate,toDate);
 
 
-        HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))

@@ -2,6 +2,7 @@ package com.example.demo.Pages.Products.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.CurrentFilterDisplay;
 import com.example.demo.ControllerModels.Filter.Prodcut.ProductFilterHolder;
 import com.example.demo.ControllerModels.Products.ProductPageData;
 import com.example.demo.ControllerModels.Products.ProductPageMiniStat;
@@ -47,6 +48,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     ProductPageFilters productPageFilters;
     ProductPageProductFeed productPageProductFeed;
     ProductPageMiniStats productPageMiniStat;
+    CurrentFilterDisplay currentFilterDisplay;
 
 
     // call to pagannation
@@ -87,7 +89,9 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         this.productPageFilters = new ProductPageFilters(commonComponents,common,commonCalls);
         this.productPageProductFeed = new ProductPageProductFeed(commonComponents,common,productService);
         this.productPageMiniStat = new ProductPageMiniStats(commonComponents,common);
+        this.currentFilterDisplay = new CurrentFilterDisplay(commonComponents,common);
 
+        this.productPageFilters.setCurrentFilterDisplay(currentFilterDisplay);
 
         this.paganation = new Paganation();
 
@@ -111,7 +115,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
 
 
-        totalPages = Math.toIntExact(productService.loadProductPageCount(stockChoise,categoryChoise,promtChoise,visibilityChoise));
+        totalPages = Math.toIntExact(productService.loadProductPageCount(filterData));
 
     }
 
@@ -125,25 +129,12 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
         removeAll();
 
-
-
-
-//        if(data == null || data.isDataStale()){
-//            data = productService.loadProductData(Stock.ALL, Category.ALL,"ALL",Visibility.Visible,1,20);
-//            System.out.println(data.getProductFeedModelList());
-//        }
-//
-//        else{
-//            System.out.println("data good");
-//        }
-
-
         int page = Integer.parseInt(beforeEnterEvent.getRouteParameters().get("page").orElse(null));
 
         if(page <= 0){
             this.pageChoise = 1;
             UI.getCurrent().navigate("Products/1");
-            updateView(verticalLayout);
+            updateView();
             longConsumer.accept(1);
 
         }
@@ -152,12 +143,12 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
             if(totalPages < page){
                 this.pageChoise = 1;
                 UI.getCurrent().navigate("Products/1");
-                updateView(verticalLayout);
+                updateView();
                 longConsumer.accept(1);
             }
             else {
                 this.pageChoise = page;
-                updateView(verticalLayout);
+                updateView();
                 longConsumer.accept(page);
             }
 
@@ -166,7 +157,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
 
         else if(page == 1){
-            loadData(verticalLayout);
+            loadData();
         }
 
 
@@ -188,60 +179,64 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
         productPageFilters.setFilterConsumer(promt->{
             filterData.setPrompt(promt);
-            updateView(verticalLayout);
+            updateView();
         });
 
         productPageFilters.setStockConsumer(stock -> {
-
-            this.stockChoise = stock;
-
-            updateView(verticalLayout);
+            filterData.setStockChoice(stock);
+            updateView();
         });
 
 
         productPageFilters.setCategoryConsumer(e->{
-
-            this.categoryChoise = e;
-
-            updateView(verticalLayout);
-
-        });
-
-
-
-        paganation.setOnPageChange(page -> {
-
-
-            if(totalPages!=1) {
-                this.pageChoise = page;
-                updateView(verticalLayout);
-            }
-
+            filterData.setCategory(e);
+            updateView();
 
         });
 
         productPageFilters.setVisibilityConsumer(e->{
-            this.visibilityChoise = e;
-            updateView(verticalLayout);
+            filterData.setVisibility(e);
+            updateView();
+        });
+
+        productPageFilters.setFromDateConsumer(e->{
+            filterData.setCreatedFrom(e);
+            updateView();
+        });
+        productPageFilters.setToDateConsumer(e->{
+            filterData.setCreatedTo(e);
+            updateView();
+        });
+        productPageFilters.setDiscountConsumer(e->{
+            filterData.setDiscount(e);
+            updateView();
+        });
+        productPageFilters.setPriceConsumer(e->{
+            filterData.setPrice(e);
+            updateView();
+        });
+        productPageFilters.setMaterialId(e->{
+            filterData.setMaterialId(e);
+            updateView();
         });
 
 
+        paganation.setOnPageChange(page -> {
+            page = page -1;
+            filterData.setPage(page);
+            updateView();
+        });
+
+
+
+
         productPageFilters.setClearFilters(e->{
+            loadData();
+        });
 
-            stockChoise = Stock.ALL;
-            categoryChoise = Category.ALL;
-            promtChoise = "ALL";
-            visibilityChoise = Visibility.Visible;
-
-
-            filterHolder.removeAll();
-            filterHolder.add(
-                    productPageBriefExplanation.briefPageExplanation(),
-                    productPageFilters.filters());
-
-            loadData(verticalLayout);
-
-
+        currentFilterDisplay.setReloadController(e->{
+            filterData = (ProductFilterHolder) e;
+            updateView();
         });
 
 
@@ -256,7 +251,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
     //get default data
     @SneakyThrows
-    public void loadData(VerticalLayout verticalLayout){
+    public void loadData(){
 
         filterData = new ProductFilterHolder();
 
@@ -293,8 +288,8 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
     // updata data according to filters
     @SneakyThrows
-    public void updateView(VerticalLayout verticalLayout){
-        totalPages = Math.toIntExact(productService.loadProductPageCount(stockChoise,categoryChoise,promtChoise,visibilityChoise));
+    public void updateView(){
+        totalPages = Math.toIntExact(productService.loadProductPageCount(filterData));
 
 
         connectAll.removeAll();

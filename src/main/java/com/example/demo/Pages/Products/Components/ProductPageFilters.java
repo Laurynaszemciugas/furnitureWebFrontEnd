@@ -74,12 +74,13 @@ public class ProductPageFilters {
     public ProductPageFilters(CommonComponents commonComponents, Common common, CommonCalls commonCalls) {
         this.commonComponents = commonComponents;
         this.common = common;
-        this.currentFilterDisplay = new CurrentFilterDisplay(commonComponents,common);
         this.commonCalls = commonCalls;
 
         materialList.addAll(commonCalls.getMaterialNames());
 
     }
+
+
 
 
 

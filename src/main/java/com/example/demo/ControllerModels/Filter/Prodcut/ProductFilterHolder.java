@@ -20,7 +20,7 @@ public class ProductFilterHolder {
     private String prompt = "ALL";
     private Stock stockChoice = Stock.ALL;
     private Category category = Category.ALL;
-    private Visibility visibility = Visibility.ALL;
+    private Visibility visibility = Visibility.Visible;
     private LocalDate createdFrom = LocalDate.of(1000,12,12);
     private LocalDate createdTo = LocalDate.of(1000,12,12);
     private Long discount = 0L;

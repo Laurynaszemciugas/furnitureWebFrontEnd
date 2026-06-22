@@ -50,8 +50,8 @@ public class ProductService {
 //    }
 
     @SneakyThrows
-    public Long loadProductPageCount(Stock stock, Category category, String prompt, Visibility visibility){
-        return productsCall.getProductPages(stock,category,prompt,visibility);
+    public Long loadProductPageCount(ProductFilterHolder productFilterHolder){
+        return productsCall.getProductPages(productFilterHolder);
     }
 
 

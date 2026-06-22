@@ -130,6 +130,10 @@ public class ProductEditRightSideFields {
         this.grids = new Grids(commonComponents,common);
         this.materialAndDetails = new MaterialAndDetails(commonComponents,common,commonCalls,grids);
 
+
+
+
+
         bindFields();
 
 
@@ -328,6 +332,8 @@ public class ProductEditRightSideFields {
 
 
     public void loadData(Product productEditDto){
+        Double sumPrice = 0.0;
+
 
 
 
@@ -351,7 +357,9 @@ public class ProductEditRightSideFields {
 
         price.setValue(productEditDto.getPrice());
         discount.setValue(productEditDto.getDiscount());
-        materialCost.setValue(productEditDto.getMaterialCost());
+
+        materialCost.setValue(sumPrice);
+
 
         stockQuantity.setValue(productEditDto.getStockQuantity() != null ? (double) productEditDto.getStockQuantity() : 0.0);
         lowThreshold.setValue(productEditDto.getLowStockThreshold() != null ? (double) productEditDto.getLowStockThreshold() : 0.0);
@@ -394,6 +402,12 @@ public class ProductEditRightSideFields {
             upgradeMaterialGrid();
         }
 
+        for(var s : listMaterialGrids){
+            sumPrice+= (s.getAmountOfMaterial().getValue()* s.getUnitPrice());
+        }
+
+        materialCost.setValue(sumPrice);
+
         updateSelectedTags(productEditDto);
 
 
@@ -405,9 +419,6 @@ public class ProductEditRightSideFields {
     public void saveDate(Button save, Product product){
 
         save.addClickListener(e -> {
-
-            System.out.println("ssssssssssssssssssss");
-
 
             if (binder.validate().isOk()) {
 
