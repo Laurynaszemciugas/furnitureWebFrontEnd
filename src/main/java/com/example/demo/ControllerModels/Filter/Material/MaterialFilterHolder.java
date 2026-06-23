@@ -25,7 +25,7 @@ public class MaterialFilterHolder {
     private Stock stockChoice = Stock.ALL;
     private String promtChoice = "ALL";
     private int page = 0;
-    private int pageCount = 10;
+    private int pageCount = 5;
 
 
 }

@@ -595,6 +595,18 @@ background-color: #d4edda;
     transform: translate(-50%, -50%) scale(1);
 }
 
+.color-button {
+    background: transparent;
+    border: none;
+    border-radius: 5px;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.2s ease;
+}
+
+.color-button:hover {
+    border-bottom-color: #3b82f6;
+}
+
 .transparent-button {
     background: transparent;
     color: black;

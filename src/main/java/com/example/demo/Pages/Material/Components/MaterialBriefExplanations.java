@@ -28,7 +28,7 @@ public class MaterialBriefExplanations {
 
         v.add(
                 commonComponents.biefPageExplanation("Materials"),
-                commonComponents.buttonThemeAndIcon("Add material","", ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White"));
+                commonComponents.buttonThemeAndIcon("Add material","MaterialAdd", ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White"));
         return v;
     }
 

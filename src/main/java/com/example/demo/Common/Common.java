@@ -150,7 +150,9 @@ public class Common {
     }
 
     public void customNavigate(String navigateTo) {
-        UI.getCurrent().navigate(navigateTo);
+        if(navigateTo != null) {
+            UI.getCurrent().navigate(navigateTo);
+        }
     }
 
     public void customActionsForNotification(String message, Warnings warning, String navigateInCaseOfSuccess) {

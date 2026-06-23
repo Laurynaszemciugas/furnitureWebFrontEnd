@@ -119,7 +119,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
         addUIData();
 
-        ordersService.setOrderIsSaved(e->{
+        ordersService.setSuccess(e->{
             ordersRightSide.hideRightSide();
             setNewPage();
             updateUIData();

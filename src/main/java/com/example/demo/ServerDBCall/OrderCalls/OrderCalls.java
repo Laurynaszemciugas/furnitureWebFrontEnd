@@ -144,39 +144,39 @@ public class OrderCalls {
     }
 
 
-    public ErrorResponse saveModifiedOrder(Orders order) throws IOException, InterruptedException {
-
-        String JWT = sessionCrafter.extractSession("JWT", String.class);
-
-        System.out.println(JWT);
-
-        ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(order);
-
-
-        HttpClient client = HttpClient.newHttpClient();
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/order/saveModifiedOrder"))
-                .header("Authorization","Bearer " + JWT)
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
-
-        HttpResponse<String> response = client.send(
-                request,
-                HttpResponse.BodyHandlers.ofString()
-        );
-
-        if (response.statusCode() != 200) {
-            throw new RuntimeException(response.body());
-        }
-
-
-        return mapper.readValue(response.body(),ErrorResponse.class);
-
-
-    }
+//    public ErrorResponse saveModifiedOrder(Orders order) throws IOException, InterruptedException {
+//
+//        String JWT = sessionCrafter.extractSession("JWT", String.class);
+//
+//        System.out.println(JWT);
+//
+//        ObjectMapper mapper = new ObjectMapper();
+//        String json = mapper.writeValueAsString(order);
+//
+//
+//        HttpClient client = HttpClient.newHttpClient();
+//
+//        HttpRequest request = HttpRequest.newBuilder()
+//                .uri(URI.create("http://localhost:8080/api/order/saveModifiedOrder"))
+//                .header("Authorization","Bearer " + JWT)
+//                .header("Content-Type", "application/json")
+//                .POST(HttpRequest.BodyPublishers.ofString(json))
+//                .build();
+//
+//        HttpResponse<String> response = client.send(
+//                request,
+//                HttpResponse.BodyHandlers.ofString()
+//        );
+//
+//        if (response.statusCode() != 200) {
+//            throw new RuntimeException(response.body());
+//        }
+//
+//
+//        return mapper.readValue(response.body(),ErrorResponse.class);
+//
+//
+//    }
 
     public ErrorResponse saveNewOrder(Orders order) throws IOException, InterruptedException {
 

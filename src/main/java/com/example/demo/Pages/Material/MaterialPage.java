@@ -106,39 +106,47 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
 
         materialFilters.setMaterialTypeConsumer(e->{
+            setNewPage();
             filterData.setMaterialTypeChoice(e);
             filterFeed();
         });
         materialFilters.setActiveInactiveConsumer(e->{
+            setNewPage();
             filterData.setActiveInactive(e);
             filterFeed();
         });
         materialFilters.setStockAmountConsumer(e->{
+            setNewPage();
             filterData.setStockAmountChoice(e);
             filterFeed();
         });
         materialFilters.setMinThresholdConsumer(e->{
+            setNewPage();
             filterData.setMinThresholdChoice(e);
             filterFeed();
         });
         materialFilters.setUnitPriceConsumer(e->{
+            setNewPage();
             filterData.setUnitPriceChoice(e);
             filterFeed();
         });
         materialFilters.setFromDateConsumer(e->{
+            setNewPage();
             filterData.setFromDateChoice(e);
-            System.out.println(e);
             filterFeed();
         });
         materialFilters.setToDateConsumer(e->{
+            setNewPage();
             filterData.setTodDateChoice(e);
             filterFeed();
         });
         materialFilters.setStockConsumer(e->{
+            setNewPage();
             filterData.setStockChoice(e);
             filterFeed();
         });
         materialFilters.setPrompConsumer(e->{
+            setNewPage();
             filterData.setPromtChoice(e);
             filterFeed();
         });
@@ -149,6 +157,7 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
         });
         //needed
         currentFilterDisplay.setReloadController(e->{
+            setNewPage();
             filterData = (MaterialFilterHolder) e;
             filterFeed();
         });
@@ -191,7 +200,6 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
     public void filterFeed(){
 
-        setNewPage();
 
         verticalLayout.removeAll();
 
