@@ -157,7 +157,6 @@ public class OrderGridProductRemoveAdd {
 
             button.addClickListener(ee->{
                 selectedProducts.removeIf(item-> item.equals(e));
-                System.out.println("updating");
                 updateGrid(orderItems, selectedProducts);
                 calculateTotal(selectedProducts);
 

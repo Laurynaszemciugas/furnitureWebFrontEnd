@@ -10,7 +10,6 @@ import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.ProductCategory;
 import com.example.demo.Enums.Status;
 import com.example.demo.Enums.Visibility;
-import com.example.demo.ServerDBCall.OrderCalls.OrderCalls;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -39,7 +38,6 @@ public class OrdersLeftSide {
 
     CommonComponents commonComponents;
     Common common;
-    OrderCalls orderCalls;
 
 
 
@@ -48,10 +46,9 @@ public class OrdersLeftSide {
         this.consumer = consumer;
     }
 
-    public OrdersLeftSide(CommonComponents commonComponents, Common common, OrderCalls orderCalls) {
+    public OrdersLeftSide(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
-        this.orderCalls = orderCalls;
 
 
     }

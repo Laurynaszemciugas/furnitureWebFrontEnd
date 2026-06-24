@@ -195,7 +195,6 @@ public class AssignEmployees {
 
 
                 if (isAlreadySelected) {
-                    System.out.println("here");
                     return "newColor";
                 }
             }

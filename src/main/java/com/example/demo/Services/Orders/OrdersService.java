@@ -10,7 +10,6 @@ import com.example.demo.ControllerModels.OrderAdd.ConsumerData;
 import com.example.demo.ControllerModels.Orders.OrdersFeedData;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.Warnings;
-import com.example.demo.ServerDBCall.OrderCalls.OrderCalls;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -25,90 +25,46 @@ import java.util.function.Consumer;
 @Setter
 public class OrdersService {
 
-    OrderCalls orderCalls;
-    CommonComponents commonComponents;
-    Common common;
     HttpCallLogic httpCallLogic;
 
     Consumer<Boolean> success;
-    ObjectMapper mapper = new ObjectMapper();
 
-    public OrdersService(OrderCalls orderCalls, CommonComponents commonComponents, Common common, HttpCallLogic httpCallLogic) {
-        this.orderCalls = orderCalls;
-        this.commonComponents = commonComponents;
-        this.common = common;
+    public OrdersService(HttpCallLogic httpCallLogic) {
         this.httpCallLogic = httpCallLogic;
     }
 
     @SneakyThrows
     public List<OrdersFeedData> getOrderFeedData(OrderFilterHolder orderFilterHolder){
-        return orderCalls.getOrders(orderFilterHolder);
+        return Arrays.stream(httpCallLogic.HttpCall("order/getAllOrders", HttpMethod.POST,orderFilterHolder, OrdersFeedData[].class,false)).toList();
     }
 
     @SneakyThrows
     public Long getPageCount(OrderFilterHolder orderFilterHolder){
-        return orderCalls.getPageCount(orderFilterHolder);
-    }
-
-    @SneakyThrows
-    public List<ConsumerData> getConsumers(){
-        return orderCalls.getConsumer();
+                return httpCallLogic.HttpCall("order/getAmountOfPages", HttpMethod.POST,orderFilterHolder, Long.class,false);
     }
 
     @SneakyThrows
     public void saveNewOrder(Orders orders) {
 
-        check(httpCallLogic.HttpCall("order/saveNewOrder", HttpMethod.POST,orders, ErrorResponse.class),"Orders");
-//        try {
-//
-//            ErrorResponse answer = orderCalls.saveNewOrder(orders);
-//            common.customActionsForNotification(answer.getMessage(),answer.getWarning(),"Orders");
-//
-//        } catch (RuntimeException ex) {
-//
-//            ObjectMapper mapper = new ObjectMapper();
-//
-//            ErrorResponse error = mapper.readValue(
-//                    ex.getMessage(),
-//                    ErrorResponse.class
-//            );
-//
-//            common.customActionsForNotification(error.getMessage(),error.getWarning(),"Orders");
-//        }
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("order/saveNewOrder", HttpMethod.POST,orders, ErrorResponse.class,false),"Orders",success,true);
+
     }
 
     @SneakyThrows
     public void saveEditedData(Orders orders){
 
-
-            check(httpCallLogic.HttpCall("order/saveModifiedOrder", HttpMethod.POST,orders, ErrorResponse.class),null);
-           // common.customActionsForNotification(answer.getMessage(),answer.getWarning(),"Orders");
-
-
-
-
-
-
+            httpCallLogic.checkResponse(
+                    httpCallLogic.HttpCall("order/saveModifiedOrder", HttpMethod.POST,orders, ErrorResponse.class,false), null,success,true);
 
     }
 
+    @SneakyThrows
+    public Orders getSelectedOrder(Long id){
 
-    public void check(ErrorResponse response, String navigateInCaseOfSuccess){
-
-        System.out.println(response.getWarning() + " " + response.getMessage());
-        common.customActionsForNotification(response.getMessage(),response.getWarning(),navigateInCaseOfSuccess);
-
-        // only if UI needs to get some information without going to another page
-        if(response.getWarning() != Warnings.ERROR && navigateInCaseOfSuccess == null){
-            success.accept(true);
-        }
+          return httpCallLogic.HttpCall("order/getOrderFromId", HttpMethod.GET,id, Orders.class,true);
 
     }
-
-
-
-
-
 
 
     }

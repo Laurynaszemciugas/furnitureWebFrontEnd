@@ -12,6 +12,7 @@ import com.example.demo.Enums.Stock;
 import com.example.demo.Enums.Visibility;
 import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.example.demo.ServerDBCall.MaterialCalls.MaterialCalls;
+import com.example.demo.Services.CommonService.CommonService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -61,7 +62,7 @@ public class ProductPageFilters {
 
     CurrentFilterDisplay currentFilterDisplay;
 
-    CommonCalls commonCalls;
+    CommonService commonService;
 
     Consumer<String> clearFilters;
 
@@ -71,12 +72,12 @@ public class ProductPageFilters {
     List<ComboBoxMaterial> materialList = new ArrayList<>();
 
     @SneakyThrows
-    public ProductPageFilters(CommonComponents commonComponents, Common common, CommonCalls commonCalls) {
+    public ProductPageFilters(CommonComponents commonComponents, Common common, CommonService commonService) {
         this.commonComponents = commonComponents;
         this.common = common;
-        this.commonCalls = commonCalls;
+        this.commonService = commonService;
 
-        materialList.addAll(commonCalls.getMaterialNames());
+        materialList.addAll(commonService.getMaterialNames());
 
     }
 

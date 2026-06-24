@@ -15,7 +15,7 @@ public class ErrorDisplay {
         this.commonComponents = commonComponents;
     }
 
-    public boolean customActionsForNotification(String message, Warnings warning){
+    public boolean customActionsForNotification(String message, Warnings warning, boolean showCorrectAnswer){
         NotificationVariant notificationVariant = NotificationVariant.ERROR;
 
         switch (warning){
@@ -28,7 +28,9 @@ public class ErrorDisplay {
                 times = 0;
             }
             case OK ->{
-                commonComponents.showNotification(message,4000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
+                if(showCorrectAnswer) {
+                    commonComponents.showNotification(message, 4000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
+                }
                 times = 0;
                 return true;
 
@@ -43,7 +45,9 @@ public class ErrorDisplay {
                 }
             }
         }
-        commonComponents.showNotification(message,4000, Notification.Position.BOTTOM_CENTER, notificationVariant);
+
+
+            commonComponents.showNotification(message, 4000, Notification.Position.BOTTOM_CENTER, notificationVariant);
 
         return  false;
     }

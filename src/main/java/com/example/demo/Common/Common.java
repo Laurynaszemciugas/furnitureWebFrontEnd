@@ -155,8 +155,8 @@ public class Common {
         }
     }
 
-    public void customActionsForNotification(String message, Warnings warning, String navigateInCaseOfSuccess) {
-        boolean canNavigate = errorDisplay.customActionsForNotification(message, warning);
+    public void customActionsForNotification(String message, Warnings warning, String navigateInCaseOfSuccess, boolean showCorrectAnswer) {
+        boolean canNavigate = errorDisplay.customActionsForNotification(message, warning, showCorrectAnswer);
 
         if (canNavigate) {
             customNavigate(navigateInCaseOfSuccess);

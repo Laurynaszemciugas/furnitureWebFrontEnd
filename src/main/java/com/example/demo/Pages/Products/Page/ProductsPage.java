@@ -17,6 +17,7 @@ import com.example.demo.Pages.Products.Components.ProductPageMiniStats;
 import com.example.demo.Pages.Products.Components.ProductPageProductFeed;
 import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.example.demo.ServerDBCall.MaterialCalls.MaterialCalls;
+import com.example.demo.Services.CommonService.CommonService;
 import com.example.demo.Services.Products.ProductService;
 
 import com.vaadin.flow.component.UI;
@@ -40,7 +41,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     Common common;
     ProductService productService;
     Paganation paganation;
-    CommonCalls commonCalls;
+    CommonService commonService;
 
 
     // all stuff that make this page
@@ -78,15 +79,15 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     public ProductsPage(CommonComponents commonComponents,
                         Common common,
                         ProductService productService,
-                        CommonCalls commonCalls) {
+                        CommonService commonService) {
 
 
         this.commonComponents = commonComponents;
         this.common = common;
         this.productService = productService;
-        this.commonCalls = commonCalls;
+        this.commonService = commonService;
         this.productPageBriefExplanation = new ProductPageBriefExplanation(commonComponents,common);
-        this.productPageFilters = new ProductPageFilters(commonComponents,common,commonCalls);
+        this.productPageFilters = new ProductPageFilters(commonComponents,common,commonService);
         this.productPageProductFeed = new ProductPageProductFeed(commonComponents,common,productService);
         this.productPageMiniStat = new ProductPageMiniStats(commonComponents,common);
         this.currentFilterDisplay = new CurrentFilterDisplay(commonComponents,common);

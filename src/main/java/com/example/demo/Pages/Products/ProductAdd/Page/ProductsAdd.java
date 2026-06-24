@@ -12,6 +12,7 @@ import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Main.
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ReviewCrafter;
 import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.example.demo.ServerDBCall.ProductAdd.ProductAddCall;
+import com.example.demo.Services.CommonService.CommonService;
 import com.example.demo.Services.ProductAdd.ProductAddService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -35,7 +36,7 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
 
     CommonComponents commonComponents;
     Common common;
-    CommonCalls commonCalls;
+    CommonService commonService;
     ProductAddService productAddService;
     ProductAddCall productAddCall;
 
@@ -51,19 +52,19 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
 
     public ProductsAdd(CommonComponents commonComponents,
                        Common common,
-                       CommonCalls commonCalls,
+                       CommonService commonService,
                        ProductAddService productAddService,
                        ProductAddCall productAddCall,
                        ObjectConverter objectConverter) {
         this.commonComponents = commonComponents;
         this.common = common;
-        this.commonCalls = commonCalls;
+        this.commonService = commonService;
         this.productAddService = productAddService;
         this.productAddCall = productAddCall;
         this.objectConverter = objectConverter;
 
 
-        this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonCalls,objectConverter);
+        this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonService,objectConverter);
         this.productEditImage = new ProductEditImage(commonComponents,common);
         this.reviewCrafter = new ReviewCrafter(commonComponents,common);
 

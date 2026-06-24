@@ -7,6 +7,7 @@ import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
 import com.example.demo.DTOS.ComboBoxMaterial;
 import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
+import com.example.demo.Services.CommonService.CommonService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
@@ -27,19 +28,19 @@ public class MaterialAndDetails {
 
     CommonComponents commonComponents;
     Common common;
-    CommonCalls commonCalls;
+    CommonService commonService;
     Grids grids;
 
     List<ComboBoxMaterial> materialNames = new ArrayList<>();
 
 
     @SneakyThrows
-    public MaterialAndDetails(CommonComponents commonComponents, Common common,CommonCalls commonCalls,Grids grids) {
+    public MaterialAndDetails(CommonComponents commonComponents, Common common,CommonService commonService,Grids grids) {
         this.commonComponents = commonComponents;
         this.common = common;
-        this.commonCalls = commonCalls;
+        this.commonService = commonService;
         this.grids = grids;
-        materialNames.addAll(commonCalls.getMaterialNames());
+        materialNames.addAll(commonService.getMaterialNames());
     }
 
 
@@ -136,18 +137,14 @@ public class MaterialAndDetails {
     public void extendDataOfTheDataMaterial(Long id,List<ListMaterialGrid> listMaterialGrids){
         for(var s : listMaterialGrids) {
             if(s.getId().equals(id)) {
-                try {
-                    Materials materialData = commonCalls.getMaterialDataAccordingToId(id);
+                    Materials materialData = commonService.getMaterialDataAccordingToId(id);
                     s.getUnit().setValue(materialData.getUnit());
                     s.setUnitPrice(materialData.getUnitPrice());
                     s.setStockLevel(materialData.getInStock());
                     System.out.println(s.getUnitPrice());
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
 
-                }
+
+
             }
         }
     }
@@ -169,6 +166,8 @@ public class MaterialAndDetails {
 
             List<ProductMaterials> productMaterials = new ArrayList<>();
 
+            Double sumMaterialPrice = 0.0;
+
             for(var s : listMaterialGrids){
                 ProductMaterials materials = new ProductMaterials();
                 materials.setId(s.getId());
@@ -177,16 +176,13 @@ public class MaterialAndDetails {
 
                 productMaterials.add(materials);
 
+                sumMaterialPrice += (s.getUnitPrice() * s.getAmountOfMaterial().getValue());
+
             }
 
-            try {
-                materialCost.setValue(Double.valueOf(String.format("%.2f",commonCalls.getEstimatedMaterialPrice(productMaterials))));
 
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
+            materialCost.setValue(Double.valueOf(String.format("%.2f",sumMaterialPrice)));
+
 
             grids.upgradeMaterialGrid(productFeedModelGrid,listMaterialGrids);
 

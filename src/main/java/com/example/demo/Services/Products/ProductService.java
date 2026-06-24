@@ -1,8 +1,11 @@
 package com.example.demo.Services.Products;
 
+import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.ControllerModels.Common.MiniStatHolder;
+import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
 import com.example.demo.ControllerModels.Filter.Prodcut.ProductFilterHolder;
 import com.example.demo.ControllerModels.Orders.OrderAddProducts;
+import com.example.demo.ControllerModels.Orders.OrdersFeedData;
 import com.example.demo.ControllerModels.Products.ProductFeedModel;
 import com.example.demo.ControllerModels.Products.ProductPageData;
 import com.example.demo.ControllerModels.Products.ProductPageMiniStat;
@@ -12,68 +15,58 @@ import com.example.demo.Enums.Visibility;
 import com.example.demo.ServerDBCall.ProductAdd.ProductAddCall;
 import com.example.demo.ServerDBCall.ProductPage.ProductsCall;
 import lombok.SneakyThrows;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class ProductService {
 
 
-    ProductsCall productsCall;
+    HttpCallLogic httpCallLogic;
 
-    public ProductService(ProductsCall productsCall) {
-        this.productsCall = productsCall;
+    public ProductService(HttpCallLogic httpCallLogic) {
+        this.httpCallLogic = httpCallLogic;
     }
-
-
 
     // good for specific data need
+    @SneakyThrows
     public List<ProductFeedModel> loadProductFeedModel(ProductFilterHolder productFilterHolder) throws IOException, InterruptedException {
-        return productsCall.getAllProducts(productFilterHolder);
+        return Arrays.stream(
+                httpCallLogic.HttpCall("product/getProducts", HttpMethod.POST,productFilterHolder, ProductFeedModel[].class,false)).toList();
     }
-
-
-//    // good for default but there is only one record
-//    public ProductPageData loadProductData(Stock stock, Category category,String prompt, Visibility visibility, int page, int size) throws IOException, InterruptedException {
-//
-//        ProductPageData productPageData = new ProductPageData();
-//            productPageData.setProductFeedModelList(loadProductFeedModel(stock,category,prompt,visibility,page,size));
-//
-//        productPageData.setCreatedAt(LocalDateTime.now());
-//
-//        return productPageData;
-//
-//    }
 
     @SneakyThrows
     public Long loadProductPageCount(ProductFilterHolder productFilterHolder){
-        return productsCall.getProductPages(productFilterHolder);
+        return httpCallLogic.HttpCall("product/getPages", HttpMethod.POST,productFilterHolder, Long.class,false);
     }
 
 
+    @SneakyThrows
     public String removeProductById(Long id){
-        return  productsCall.removeProduct(id);
+        return httpCallLogic.HttpCall("product/removeProduct", HttpMethod.POST, id, String.class,false);
     }
 
 
     @SneakyThrows
     public List<OrderAddProducts> getProductsForAddOrder(){
-        return productsCall.getProductsForAddOrder();
+        return Arrays.stream(httpCallLogic.HttpCall("product/getProductsForAddOrder", HttpMethod.GET, null, OrderAddProducts[].class,false)).toList();
     }
 
     @SneakyThrows
     public List<OrderAddProducts> getExisitingData(Long id){
-        return productsCall.getExistingData(id);
+        return Arrays.stream(httpCallLogic.HttpCall("product/getExistingData", HttpMethod.GET, id, OrderAddProducts[].class,true)).toList();
     }
 
 
     @SneakyThrows
     public MiniStatHolder getMiniStats(LocalDate from, LocalDate to){
-        return productsCall.getMiniStatData(from,to);
+        return httpCallLogic.HttpCall("product/getProductMiniStats", HttpMethod.GET, String.format("%s/%s",from,to), MiniStatHolder.class,true);
     }
 
 

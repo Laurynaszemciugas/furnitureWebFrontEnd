@@ -14,7 +14,6 @@ import com.example.demo.Pages.Orders.Components.OrdersLeftSide;
 import com.example.demo.Pages.Orders.Components.OrdersRightSide;
 import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
-import com.example.demo.ServerDBCall.OrderCalls.OrderCalls;
 import com.example.demo.ServerDBCall.ProductPage.ProductsCall;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.Products.ProductService;
@@ -34,7 +33,6 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
     CommonComponents commonComponents;
     Common common;
-    OrderCalls orderCalls;
     EmployeeCalls employeeCalls;
     ProductsCall productsCall;
     Paganation paganation;
@@ -59,16 +57,15 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
 
 
-    public OrdersPage(CommonComponents commonComponents, Common common, OrderCalls orderCalls,EmployeeCalls employeeCalls,OrdersService ordersService,ProductService productService,ProductsCall productsCall) {
+    public OrdersPage(CommonComponents commonComponents, Common common,EmployeeCalls employeeCalls,OrdersService ordersService,ProductService productService,ProductsCall productsCall) {
         this.commonComponents = commonComponents;
         this.common = common;
-        this.orderCalls = orderCalls;
         this.ordersService = ordersService;
         this.productsCall = productsCall;
 
         this.productService = productService;
-        this.ordersRightSide = new OrdersRightSide(commonComponents,common,orderCalls,employeeCalls,productService);
-        this.ordersLeftSide = new OrdersLeftSide(commonComponents,common,orderCalls);
+        this.ordersRightSide = new OrdersRightSide(commonComponents,common,employeeCalls,productService,ordersService);
+        this.ordersLeftSide = new OrdersLeftSide(commonComponents,common);
         this.orderFilters = new OrderFilters(commonComponents, common,employeeCalls,productsCall);
         this.briefOrderPageExplanation = new BriefOrderPageExplanation(commonComponents,common);
         this.paganation = new Paganation();
@@ -210,7 +207,6 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
         //needed
         currentFilterDisplay.setReloadController(e->{
-            System.out.println("reset");
             filterData = (OrderFilterHolder) e;
             setNewPage();
             updateUIData();

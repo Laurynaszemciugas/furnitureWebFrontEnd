@@ -14,7 +14,7 @@ import com.example.demo.Enums.PayMethod;
 import com.example.demo.Enums.PayStatus;
 import com.example.demo.Pages.Orders.Components.OrderProductAddRemove.OrderAddProductListAddRemove;
 import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
-import com.example.demo.ServerDBCall.OrderCalls.OrderCalls;
+import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.accordion.Accordion;
@@ -49,12 +49,10 @@ public class OrdersRightSide {
 
     CommonComponents commonComponents;
     Common common;
-    OrderCalls orderCalls;
     EmployeeCalls employeeCalls;
     AssignEmployees assignEmployees;
     ProductService productService;
-    ObjectConverter objectConverter;
-
+    OrdersService ordersService;
 
     // refrence to the leftside component
     OrdersLeftSide ordersLeftSide;
@@ -94,17 +92,17 @@ public class OrdersRightSide {
     public OrdersRightSide(
             CommonComponents commonComponents,
             Common common,
-            OrderCalls orderCalls,
             EmployeeCalls employeeCalls,
-            ProductService productService
+            ProductService productService,
+            OrdersService ordersService
     ) {
         this.commonComponents = commonComponents;
         this.common = common;
-        this.orderCalls = orderCalls;
         this.employeeCalls = employeeCalls;
         this.assignEmployees = new AssignEmployees(commonComponents,common,employeeCalls);
         this.orderAddProductListAddRemove = new OrderAddProductListAddRemove(commonComponents,common,productService);
         this.productService = productService;
+        this.ordersService = ordersService;
 
 
         listEmployees.addAll(employeeCalls.getMiniEmployeeData());
@@ -126,7 +124,6 @@ public class OrdersRightSide {
         rightSide.setVisible(false);
         rightSide.addClassName("island-dis");
         rightSide.getStyle().set("position","relative");
-
 
 
         status = commonComponents.spanCrafter("","stock-badge");
@@ -187,13 +184,10 @@ public class OrdersRightSide {
 
             rightSide.setVisible(true);
             rightSide.addClassName("island-dis");
-            try {
-                selectedOrder = orderCalls.getAnOrderFromId(e);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
+
+            //get order data
+                selectedOrder = ordersService.getSelectedOrder(e);
+
 
             String orderStatus = selectedOrder.getOrderStatus() !=null ? selectedOrder.getOrderStatus().getDisplayName() : "None";
             status.getStyle().set("padding","8px");
@@ -468,7 +462,6 @@ public class OrdersRightSide {
            else{
                for(var s : selectedOrder.getProductsData()){
                    if(s.getId().equals(id)){
-                       System.out.println(e.getValue());
                        s.setAmountOfProduct(e.getValue().longValue());
                    }
                }
@@ -632,7 +625,6 @@ public class OrdersRightSide {
            selectedOrder.setOrderNote(note.getValue());
 
 
-            System.out.println(selectedOrder.getOrderNote());
         });
 
 
@@ -708,10 +700,8 @@ public class OrdersRightSide {
         payStatusComboBox.addValueChangeListener(e->{
 
             if(e.isFromClient()) {
-                System.out.println(e.getValue());
                 selectedOrder.setPayStatus(e.getValue());
                 commonComponents.showNotification("Order was set as " + e.getValue(), 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
-                System.out.println(selectedOrder.getPayStatus());
             }
         });
 

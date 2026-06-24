@@ -15,6 +15,7 @@ import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Compo
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ProductEditImage;
 import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.example.demo.ServerDBCall.ProductEdit.ProductEdItCall;
+import com.example.demo.Services.CommonService.CommonService;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -49,7 +50,7 @@ public class ProductEditRightSideFields {
 
     CommonComponents commonComponents;
     Common common;
-    CommonCalls commonCalls;
+    CommonService commonService;
     Grids grids;
 
 
@@ -120,15 +121,15 @@ public class ProductEditRightSideFields {
 
     public ProductEditRightSideFields(CommonComponents commonComponents,
                                       Common common,
-                                      CommonCalls commonCalls,
+                                      CommonService commonService,
                                       ObjectConverter objectConverter
     ) {
         this.commonComponents = commonComponents;
         this.common = common;
-        this.commonCalls = commonCalls;
+        this.commonService = commonService;
         this.objectConverter = objectConverter;
         this.grids = new Grids(commonComponents,common);
-        this.materialAndDetails = new MaterialAndDetails(commonComponents,common,commonCalls,grids);
+        this.materialAndDetails = new MaterialAndDetails(commonComponents,common,commonService,grids);
 
 
 
@@ -498,47 +499,6 @@ public class ProductEditRightSideFields {
             }
         });
     }
-
-
-    public void checkIfDataCorrect(List<ProductMaterials> materials,Product product){
-
-        int errorCount = 0;
-
-        boolean dataCorrect;
-        String errorMessage;
-
-        try {
-            errorMessage = commonCalls.checkIfMaterialsAreInStock(materials);
-            dataCorrect = errorMessage.equalsIgnoreCase("");
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        } catch (InterruptedException ex) {
-            throw new RuntimeException(ex);
-        }
-        boolean imageError = (product.getImages() == null || product.getImages().isEmpty());
-
-        if(!dataCorrect){
-            errorCount++;
-        }
-        if(imageError){
-            errorCount++;
-        }
-
-        System.out.println(errorCount + " erors");
-        if(!dataCorrect || imageError) {
-            if(!dataCorrect) {
-                    showDialog(errorMessage,product,errorCount);
-            }
-            if(imageError){
-                    showNoImageError(product,errorCount);
-            }
-        }
-        else {
-            consumer.accept(product);
-            UI.getCurrent().navigate("Products/1");
-        }
-    }
-
 
 
     public void showDialog(String error,Product product, int errorCount){
