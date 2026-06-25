@@ -13,15 +13,12 @@ import com.vaadin.flow.router.HasErrorParameter;
 import com.vaadin.flow.server.VaadinSession;
 import jakarta.servlet.http.HttpServletResponse;
 
-@Tag("div")
-public class GlobalErrorView extends VerticalLayout implements HasErrorParameter<Exception> {
+@Tag("Div")
+public class GlobalErrorView extends Div implements HasErrorParameter<Exception> {
 
 
     public GlobalErrorView() {
-        setPadding(false);
-        setSpacing(false);
         setSizeFull();
-        setAlignItems(FlexComponent.Alignment.CENTER);
 
         add(new Span("23131"));
 
@@ -34,7 +31,7 @@ public class GlobalErrorView extends VerticalLayout implements HasErrorParameter
 
 
 
-            //event.getUI().getPage().setLocation("/Login");
+            event.getUI().getPage().setLocation("/Login");
 
             add(new H2("Redirecting to login..."));
 
