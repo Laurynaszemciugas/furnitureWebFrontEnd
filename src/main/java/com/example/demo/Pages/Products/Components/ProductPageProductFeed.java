@@ -8,7 +8,6 @@ import com.example.demo.Enums.Category;
 import com.example.demo.Enums.ProductCategory;
 import com.example.demo.Enums.Stock;
 import com.example.demo.Enums.Visibility;
-import com.example.demo.ServerDBCall.ProductPage.ProductsCall;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;

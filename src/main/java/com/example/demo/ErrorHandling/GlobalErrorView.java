@@ -45,7 +45,7 @@ public class GlobalErrorView extends Div implements HasErrorParameter<Exception>
             return HttpServletResponse.SC_UNAUTHORIZED;
         }
 
-        add(createServerErrorPage());
+        add(createUnauthorizedPage());
         return HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
     }
 
@@ -81,41 +81,6 @@ public class GlobalErrorView extends Div implements HasErrorParameter<Exception>
         return card;
     }
 
-    private VerticalLayout createServerErrorPage() {
-        VerticalLayout card = createCard();
-
-        H1 code = new H1("500");
-        code.getStyle()
-                .set("margin", "0")
-                .set("font-size", "70px")
-                .set("color", "#dc2626");
-
-        H2 title = new H2("Something went wrong");
-        title.getStyle()
-                .set("margin", "0")
-                .set("color", "#111827");
-
-        Paragraph text = new Paragraph("An unexpected error happened.");
-        text.getStyle()
-                .set("color", "#6b7280")
-                .set("margin", "0");
-
-        Button homeButton = new Button("Go home", e -> {
-            UI.getCurrent().navigate("");
-        });
-
-        homeButton.getStyle()
-                .set("background", "#2563eb")
-                .set("color", "white")
-                .set("border", "none")
-                .set("border-radius", "10px")
-                .set("padding", "10px 24px")
-                .set("cursor", "pointer");
-
-        card.add(code, title, text, homeButton);
-
-        return card;
-    }
 
     private VerticalLayout createCard() {
         VerticalLayout card = new VerticalLayout();

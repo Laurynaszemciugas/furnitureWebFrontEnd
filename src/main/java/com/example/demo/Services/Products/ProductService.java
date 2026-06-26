@@ -13,7 +13,6 @@ import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Stock;
 import com.example.demo.Enums.Visibility;
 import com.example.demo.ServerDBCall.ProductAdd.ProductAddCall;
-import com.example.demo.ServerDBCall.ProductPage.ProductsCall;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;

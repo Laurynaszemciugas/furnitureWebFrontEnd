@@ -89,42 +89,9 @@ public class HttpCallLogic {
         String bod = body.length() > 100 ? " Body to long " : body;
         System.out.println("BODY: >>>" + bod + "<<<");
 
-        boolean successStatus = status >= 200 && status < 300;
 
         if(status == 401){
-            common.customNavigate("Login");
             throw new UnauthorizedException("Session expired. Please login again.");
-
-        }
-
-        if (!successStatus) {
-
-
-
-
-            if (body == null || body.isBlank()) {
-                throw new RuntimeException("HTTP error " + status + " from " + fullUrl + " with empty body");
-            }
-
-            if (responseType == ErrorResponse.class) {
-                return mapper.readValue(body, responseType);
-            }
-
-            throw new RuntimeException("HTTP error " + status + " from " + fullUrl + " body: " + body);
-        }
-
-        if (body == null || body.isBlank()) {
-
-            if (responseType.isArray()) {
-                Object emptyArray = Array.newInstance(responseType.getComponentType(), 0);
-                return responseType.cast(emptyArray);
-            }
-
-            return null;
-        }
-
-        if (responseType == String.class) {
-            return responseType.cast(body);
         }
 
         return mapper.readValue(body, responseType);
@@ -145,7 +112,7 @@ public class HttpCallLogic {
 
     }
 
-    public <T,R> R checkResponseNoGetValue(ErrorResponse response, String navigateInCaseOfSuccess){
+    public <R> R checkResponseNoGetValue(ErrorResponse response, String navigateInCaseOfSuccess){
 
         common.customActionsForNotification(response.getMessage(),response.getWarning(),navigateInCaseOfSuccess,false);
 
@@ -158,31 +125,6 @@ public class HttpCallLogic {
 
     }
 
-    private <R> R getDefaultValue(Class<R> responseType) {
-
-        if (responseType.isArray()) {
-            Object emptyArray = Array.newInstance(responseType.getComponentType(), 0);
-            return responseType.cast(emptyArray);
-        }
-
-        if (responseType == String.class) {
-            return responseType.cast("");
-        }
-
-        if (responseType == Long.class) {
-            return responseType.cast(1L);
-        }
-
-        if (responseType == Integer.class) {
-            return responseType.cast(0);
-        }
-
-        if (responseType == Boolean.class) {
-            return responseType.cast(false);
-        }
-
-        return null;
-    }
 
 
 

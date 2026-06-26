@@ -3,12 +3,14 @@ package com.example.demo.Pages.Products.Page;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.CurrentFilterDisplay;
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.Filter.Prodcut.ProductFilterHolder;
 import com.example.demo.ControllerModels.Products.ProductPageData;
 import com.example.demo.ControllerModels.Products.ProductPageMiniStat;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Stock;
 import com.example.demo.Enums.Visibility;
+import com.example.demo.Exseptions.UnauthorizedException;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Common.Paganation;
 import com.example.demo.Pages.Products.Components.ProductPageBriefExplanation;
@@ -50,6 +52,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     ProductPageProductFeed productPageProductFeed;
     ProductPageMiniStats productPageMiniStat;
     CurrentFilterDisplay currentFilterDisplay;
+    SessionCrafter sessionCrafter;
 
 
     // call to pagannation
@@ -61,17 +64,12 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     VerticalLayout filterHolder = new VerticalLayout();
     VerticalLayout briefExplanation = new VerticalLayout();
 
-    private Stock stockChoise = Stock.ALL;
-    private Category categoryChoise = Category.ALL;
     private int pageChoise = 1;
-    private String promtChoise = "ALL";
-    private Visibility visibilityChoise = Visibility.Visible;
 
     private int totalPages = 0;
 
 
-    // page data
-    ProductPageData data = new ProductPageData();
+
 
     ProductFilterHolder filterData = new ProductFilterHolder();
 
@@ -91,6 +89,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         this.productPageProductFeed = new ProductPageProductFeed(commonComponents,common,productService);
         this.productPageMiniStat = new ProductPageMiniStats(commonComponents,common);
         this.currentFilterDisplay = new CurrentFilterDisplay(commonComponents,common);
+        this.sessionCrafter = new SessionCrafter();
 
         this.productPageFilters.setCurrentFilterDisplay(currentFilterDisplay);
 
@@ -131,6 +130,10 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         removeAll();
 
         int page = Integer.parseInt(beforeEnterEvent.getRouteParameters().get("page").orElse(null));
+
+        if(sessionCrafter.extractSession("JWT",String.class) == null){
+            throw new UnauthorizedException("User not found");
+        }
 
         if(page <= 0){
             this.pageChoise = 1;
@@ -305,7 +308,10 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         verticalLayout.removeAll();
         verticalLayout.add(
                 briefExplanation,
-                productPageMiniStat.miniStatHolder(productService.getMiniStats(common.dateCrafter(0,0,0,0,true),common.dateCrafter(0,0,0,0,true))),
+                productPageMiniStat.miniStatHolder(
+                        productService.getMiniStats(
+                                common.dateCrafter(0,0,0,0,true),
+                                common.dateCrafter(0,1,1,0,true))),
                 connectAll
         );
 

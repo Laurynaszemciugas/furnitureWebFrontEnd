@@ -14,7 +14,6 @@ import com.example.demo.Pages.Orders.Components.OrdersLeftSide;
 import com.example.demo.Pages.Orders.Components.OrdersRightSide;
 import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
-import com.example.demo.ServerDBCall.ProductPage.ProductsCall;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -34,7 +33,6 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
     CommonComponents commonComponents;
     Common common;
     EmployeeCalls employeeCalls;
-    ProductsCall productsCall;
     Paganation paganation;
 
     OrdersRightSide ordersRightSide;
@@ -57,16 +55,15 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
 
 
-    public OrdersPage(CommonComponents commonComponents, Common common,EmployeeCalls employeeCalls,OrdersService ordersService,ProductService productService,ProductsCall productsCall) {
+    public OrdersPage(CommonComponents commonComponents, Common common,EmployeeCalls employeeCalls,OrdersService ordersService,ProductService productService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.ordersService = ordersService;
-        this.productsCall = productsCall;
 
         this.productService = productService;
         this.ordersRightSide = new OrdersRightSide(commonComponents,common,employeeCalls,productService,ordersService);
         this.ordersLeftSide = new OrdersLeftSide(commonComponents,common);
-        this.orderFilters = new OrderFilters(commonComponents, common,employeeCalls,productsCall);
+        this.orderFilters = new OrderFilters(commonComponents, common,employeeCalls,productService);
         this.briefOrderPageExplanation = new BriefOrderPageExplanation(commonComponents,common);
         this.paganation = new Paganation();
 

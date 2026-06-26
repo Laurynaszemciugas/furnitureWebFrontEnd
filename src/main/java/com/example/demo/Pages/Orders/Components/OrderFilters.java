@@ -15,7 +15,7 @@ import com.example.demo.Enums.Stock;
 import com.example.demo.Pages.Orders.OrderAdd.OrderAdd;
 import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
-import com.example.demo.ServerDBCall.ProductPage.ProductsCall;
+import com.example.demo.Services.Products.ProductService;
 import com.sun.jdi.LongValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -44,6 +44,7 @@ public class OrderFilters {
 
     CommonComponents commonComponents;
     Common common;
+    ProductService productService;
 
     Consumer<OrderStatus> orderStatusConsumer;
     Consumer<Double> fromCostConsumer;
@@ -62,20 +63,19 @@ public class OrderFilters {
 
 
     EmployeeCalls employeeCalls;
-    ProductsCall productsCall;
 
     List<ComboBoxEmployees> comboBoxEmployees = new ArrayList<>();
     List<OrderAddProducts> productFeedModelList = new ArrayList<>();
 
     @SneakyThrows
-    public OrderFilters(CommonComponents commonComponents, Common common, EmployeeCalls employeeCalls,ProductsCall productsCall) {
+    public OrderFilters(CommonComponents commonComponents, Common common, EmployeeCalls employeeCalls,ProductService productService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.employeeCalls = employeeCalls;
-        this.productsCall = productsCall;
+        this.productService = productService;
 
         comboBoxEmployees.addAll(employeeCalls.getMiniEmployeeData());
-        productFeedModelList.addAll(productsCall.getProductsForAddOrder());
+        productFeedModelList.addAll(productService.getProductsForAddOrder());
 
     }
 
