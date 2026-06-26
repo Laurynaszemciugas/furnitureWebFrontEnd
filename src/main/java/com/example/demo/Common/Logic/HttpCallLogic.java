@@ -2,25 +2,20 @@ package com.example.demo.Common.Logic;
 
 import com.example.demo.Common.Common;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
-import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
-import com.example.demo.ControllerModels.Orders.OrdersFeedData;
+import com.example.demo.ControllerModels.Error.FrontEndError;
 import com.example.demo.Enums.Warnings;
-import com.example.demo.Exseptions.UnauthorizedException;
+import com.example.demo.Exseptions.HttpCallException;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.function.Consumer;
 
 @Service
@@ -44,6 +39,14 @@ public class HttpCallLogic {
     public <R,T> R HttpCall(String endpoint, HttpMethod httpMethod, T data, Class<R> responseType, boolean pathVariable ){
 
         String jwt = sessionCrafter.extractSession("JWT", String.class);
+
+//        if (jwt == null || jwt.isBlank()) {
+//            throw new HttpCallException(new FrontEndError(
+//                    "You are not lossssgged in.",
+//                    "Please log in again.",
+//                    401
+//            ));
+//        }
 
         HttpRequest.BodyPublisher bodyPublisher;
 
@@ -90,9 +93,25 @@ public class HttpCallLogic {
         System.out.println("BODY: >>>" + bod + "<<<");
 
 
+        // unuthorized so basically JWT token
+
         if(status == 401){
-            throw new UnauthorizedException("Session expired. Please login again.");
+            throw new HttpCallException(new FrontEndError(
+                    "You are not logged in.",
+                    "Please log in again.",
+                    status));
+
         }
+
+
+        // server is offline
+        if(status == 502){
+            throw new HttpCallException(new FrontEndError(
+                    "Server isn't responding",
+                    "Please try again later.",
+                    status));
+        }
+
 
         return mapper.readValue(body, responseType);
 

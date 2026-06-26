@@ -1,7 +1,6 @@
 package com.example.demo.Common.Logic;
 
 import com.vaadin.flow.server.VaadinSession;
-import org.springframework.stereotype.Service;
 
 public class SessionCrafter {
 

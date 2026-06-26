@@ -1,7 +1,6 @@
 package com.example.demo.ErrorHandling;
 
-import com.example.demo.Common.CommonComponents;
-import com.example.demo.Exseptions.UnauthorizedException;
+import com.example.demo.Exseptions.HttpCallException;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -16,8 +15,9 @@ import com.vaadin.flow.router.ErrorParameter;
 import com.vaadin.flow.router.HasErrorParameter;
 import jakarta.servlet.http.HttpServletResponse;
 
-@Tag("div")
-public class GlobalErrorView extends Div implements HasErrorParameter<Exception> {
+import java.nio.channels.ClosedChannelException;
+
+public class GlobalErrorView extends VerticalLayout implements HasErrorParameter<Exception> {
 
 
 
@@ -25,11 +25,10 @@ public class GlobalErrorView extends Div implements HasErrorParameter<Exception>
     public GlobalErrorView() {
         setSizeFull();
 
-        getStyle()
-                .set("display", "flex")
-                .set("align-items", "center")
-                .set("justify-content", "center")
-                .set("background", "#f5f7fb");
+        setJustifyContentMode(JustifyContentMode.CENTER);
+        setAlignItems(Alignment.CENTER);
+
+
 
 
 
@@ -38,32 +37,84 @@ public class GlobalErrorView extends Div implements HasErrorParameter<Exception>
     @Override
     public int setErrorParameter(BeforeEnterEvent event, ErrorParameter<Exception> parameter) {
 
+
+
+
         removeAll();
 
-        if (hasCause(parameter.getException(), UnauthorizedException.class)) {
-            add(createUnauthorizedPage());
-            return HttpServletResponse.SC_UNAUTHORIZED;
+        HttpCallException ex = getHttpCallException(parameter.getException());
+
+        if(ex != null){
+            Integer code = ex.getError().getStatus();
+            String message = ex.getError().getMessage();
+            String instuctions = ex.getError().getInstructions();
+
+            add(createUnauthorizedPage(code,message,instuctions));
         }
 
-        add(createUnauthorizedPage());
+
+        ClosedChannelException closedChannel = findCause(parameter.getException(), ClosedChannelException.class);
+        if(closedChannel != null){
+            add(createUnauthorizedPage(502,"Server isn't responding","Please try again later"));
+        }
+
+
+
+
+
+
         return HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
     }
 
-    private VerticalLayout createUnauthorizedPage() {
+    // find pre set exseption default class btw
+    private <T extends Throwable> T findCause(Throwable throwable, Class<T> wantedClass) {
+        while (throwable != null) {
+            if (wantedClass.isAssignableFrom(throwable.getClass())) {
+                return wantedClass.cast(throwable);
+            }
+
+            throwable = throwable.getCause();
+        }
+
+        return null;
+    }
+
+
+    // find specific created exseption this is working example also basic default method example btw
+    private HttpCallException getHttpCallException(Throwable throwable) {
+        while (throwable != null) {
+            if (throwable instanceof HttpCallException ex) {
+                return ex;
+            }
+
+
+            throwable = throwable.getCause();
+        }
+
+        return null;
+    }
+
+
+
+
+
+
+    // ui creation
+    private VerticalLayout createUnauthorizedPage(Integer errCode, String message, String instructions) {
         VerticalLayout card = createCard();
 
-        H1 code = new H1("401");
+        H1 code = new H1(errCode.toString());
         code.getStyle()
                 .set("margin", "0")
                 .set("font-size", "70px")
                 .set("color", "#2563eb");
 
-        H2 title = new H2("Unauthorized");
+        H2 title = new H2(message);
         title.getStyle()
                 .set("margin", "0")
                 .set("color", "#111827");
 
-        Paragraph text = new Paragraph("You need to login before accessing this page.");
+        Paragraph text = new Paragraph(instructions);
         text.getStyle()
                 .set("color", "#6b7280")
                 .set("margin", "0");
@@ -100,17 +151,5 @@ public class GlobalErrorView extends Div implements HasErrorParameter<Exception>
         return card;
     }
 
-    private boolean hasCause(Throwable throwable, Class<?> wantedClass) {
-        Throwable current = throwable;
 
-        while (current != null) {
-            if (wantedClass.isAssignableFrom(current.getClass())) {
-                return true;
-            }
-
-            current = current.getCause();
-        }
-
-        return false;
-    }
 }
