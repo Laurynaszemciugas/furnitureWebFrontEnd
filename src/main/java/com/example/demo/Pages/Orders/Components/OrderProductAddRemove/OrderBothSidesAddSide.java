@@ -13,7 +13,7 @@ import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.PayMethod;
 import com.example.demo.Enums.PayStatus;
 import com.example.demo.Pages.Orders.Components.AssignEmployees;
-import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
+import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.button.Button;
@@ -45,7 +45,7 @@ public class OrderBothSidesAddSide {
     CommonComponents commonComponents;
     Common common;
     AssignEmployees assignEmployees;
-    EmployeeCalls employeeCalls;
+    EmployeeService employeeService;
     OrderAddProductListAddRemove orderAddProductListAddRemove;
     ProductService productService;
 
@@ -69,12 +69,12 @@ public class OrderBothSidesAddSide {
 
     Consumer<Orders> consumer;
 
-    public OrderBothSidesAddSide(CommonComponents commonComponents, Common common, EmployeeCalls employeeCalls,ProductService productService) {
+    public OrderBothSidesAddSide(CommonComponents commonComponents, Common common, EmployeeService employeeService,ProductService productService) {
         this.commonComponents = commonComponents;
         this.common = common;
-        this.employeeCalls = employeeCalls;
+        this.employeeService = employeeService;
         this.productService = productService;
-        this.assignEmployees = new AssignEmployees(commonComponents,common,employeeCalls);
+        this.assignEmployees = new AssignEmployees(commonComponents,common,employeeService);
         this.orderAddProductListAddRemove = new OrderAddProductListAddRemove(commonComponents,common,productService);
 
 

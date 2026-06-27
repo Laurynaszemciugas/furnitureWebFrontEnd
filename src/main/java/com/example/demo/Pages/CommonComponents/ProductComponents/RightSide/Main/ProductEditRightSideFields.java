@@ -13,7 +13,6 @@ import com.example.demo.Enums.Visibility;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.Grids;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.MaterialAndDetails;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ProductEditImage;
-import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.example.demo.ServerDBCall.ProductEdit.ProductEdItCall;
 import com.example.demo.Services.CommonService.CommonService;
 import com.vaadin.flow.component.HasComponents;
@@ -54,7 +53,6 @@ public class ProductEditRightSideFields {
     Grids grids;
 
 
-    ProductEdItCall productEdItCall;
 
     ProductEditImage productEditImage;
 

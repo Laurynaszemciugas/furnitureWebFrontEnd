@@ -13,8 +13,7 @@ import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.Stock;
 import com.example.demo.Pages.Orders.OrderAdd.OrderAdd;
-import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
-import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
+import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.example.demo.Services.Products.ProductService;
 import com.sun.jdi.LongValue;
 import com.vaadin.flow.component.button.Button;
@@ -62,19 +61,19 @@ public class OrderFilters {
 
 
 
-    EmployeeCalls employeeCalls;
+    EmployeeService employeeService;
 
     List<ComboBoxEmployees> comboBoxEmployees = new ArrayList<>();
     List<OrderAddProducts> productFeedModelList = new ArrayList<>();
 
     @SneakyThrows
-    public OrderFilters(CommonComponents commonComponents, Common common, EmployeeCalls employeeCalls,ProductService productService) {
+    public OrderFilters(CommonComponents commonComponents, Common common, EmployeeService employeeService, ProductService productService) {
         this.commonComponents = commonComponents;
         this.common = common;
-        this.employeeCalls = employeeCalls;
+        this.employeeService = employeeService;
         this.productService = productService;
 
-        comboBoxEmployees.addAll(employeeCalls.getMiniEmployeeData());
+        comboBoxEmployees.addAll(employeeService.getMiniEmployeeData());
         productFeedModelList.addAll(productService.getProductsForAddOrder());
 
     }

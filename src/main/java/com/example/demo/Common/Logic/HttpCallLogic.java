@@ -40,6 +40,7 @@ public class HttpCallLogic {
 
         String jwt = sessionCrafter.extractSession("JWT", String.class);
 
+        // un // this if want to work normally it is just quite difficult with it on to trobulshute pages
 //        if (jwt == null || jwt.isBlank()) {
 //            throw new HttpCallException(new FrontEndError(
 //                    "You are not lossssgged in.",
@@ -120,13 +121,13 @@ public class HttpCallLogic {
 
 
 
-    public <T> void checkResponse(ErrorResponse response, String navigateInCaseOfSuccess, Consumer<T> consumer, T valueInCaseOfSuccess){
+    public <T> void checkResponse(ErrorResponse response, String navigateInCaseOfSuccess, Consumer<T> consumer, T consumerValueInCaseOfSuccess){
 
         common.customActionsForNotification(response.getMessage(),response.getWarning(),navigateInCaseOfSuccess,true);
 
         // only if UI needs to get some information without going to another page
         if(response.getWarning() != Warnings.ERROR && navigateInCaseOfSuccess == null){
-            consumer.accept(valueInCaseOfSuccess);
+            consumer.accept(consumerValueInCaseOfSuccess);
         }
 
     }

@@ -6,7 +6,7 @@ import com.example.demo.ControllerModels.Orders.OrderAddProducts;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Orders.Components.AssignEmployees;
 import com.example.demo.Pages.Orders.Components.OrderProductAddRemove.OrderBothSidesAddSide;
-import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
+import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -28,7 +28,7 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
     Common common;
     ProductService productService;
     AssignEmployees assignEmployees;
-    EmployeeCalls employeeCalls;
+    EmployeeService employeeService;
     OrdersService ordersService;
 
     OrderBothSidesAddSide orderBothSidesAddSide;
@@ -38,17 +38,17 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
             CommonComponents commonComponents,
             Common common,
             ProductService productService,
-            EmployeeCalls employeeCalls,
+            EmployeeService employeeService,
             OrdersService ordersService
             ) {
 
         this.commonComponents = commonComponents;
         this.common = common;
         this.productService = productService;
-        this.employeeCalls = employeeCalls;
-        this.assignEmployees = new AssignEmployees(commonComponents,common,employeeCalls);
+        this.employeeService = employeeService;
+        this.assignEmployees = new AssignEmployees(commonComponents,common,employeeService);
         this.ordersService = ordersService;
-        this.orderBothSidesAddSide = new OrderBothSidesAddSide(commonComponents,common,employeeCalls,productService);
+        this.orderBothSidesAddSide = new OrderBothSidesAddSide(commonComponents,common,employeeService,productService);
 
         setPadding(false);
         setSpacing(false);

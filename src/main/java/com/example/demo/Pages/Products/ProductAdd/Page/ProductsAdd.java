@@ -10,7 +10,6 @@ import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ProductEditImage;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Main.ProductEditRightSideFields;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ReviewCrafter;
-import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
 import com.example.demo.ServerDBCall.ProductAdd.ProductAddCall;
 import com.example.demo.Services.CommonService.CommonService;
 import com.example.demo.Services.ProductAdd.ProductAddService;
@@ -99,13 +98,7 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
         verticalLayout.getStyle().set("margin-top", "5px");
 
         productEditRightSideFields.setConsumer(e->{
-            try {
-                productAddCall.addNewOrder(e);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
+                productAddService.addNewOrder(e);
         });
 
         verticalLayout.add(

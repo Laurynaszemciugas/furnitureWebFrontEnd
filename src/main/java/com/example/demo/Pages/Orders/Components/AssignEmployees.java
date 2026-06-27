@@ -8,9 +8,8 @@ import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.DTOS.ComboBoxEmployees;
 import com.example.demo.Enums.EmployeeCategory;
 import com.example.demo.Enums.OrderStatus;
-import com.example.demo.ServerDBCall.EmployeeCalls.EmployeeCalls;
+import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.vaadin.flow.component.HasComponents;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -26,7 +25,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import lombok.SneakyThrows;
-import org.springframework.core.annotation.Order;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +33,7 @@ public class AssignEmployees {
 
     CommonComponents commonComponents;
     Common common;
-    EmployeeCalls employeeCalls;
+    EmployeeService employeeService;
 
 
     List<ComboBoxEmployees> listEmployees = new ArrayList<>();
@@ -45,12 +43,12 @@ public class AssignEmployees {
     String employeeProfilePic;
 
     @SneakyThrows
-    public AssignEmployees(CommonComponents commonComponents, Common common, EmployeeCalls employeeCalls) {
+    public AssignEmployees(CommonComponents commonComponents, Common common,  EmployeeService employeeService) {
         this.commonComponents = commonComponents;
         this.common = common;
-        this.employeeCalls = employeeCalls;
+        this.employeeService = employeeService;
 
-        listEmployees.addAll(employeeCalls.getMiniEmployeeData());
+        listEmployees.addAll(employeeService.getMiniEmployeeData());
 
     }
 

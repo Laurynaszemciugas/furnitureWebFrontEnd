@@ -10,8 +10,6 @@ import com.example.demo.Enums.Category;
 import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.Stock;
 import com.example.demo.Enums.Visibility;
-import com.example.demo.ServerDBCall.CommonCalls.CommonCalls;
-import com.example.demo.ServerDBCall.MaterialCalls.MaterialCalls;
 import com.example.demo.Services.CommonService.CommonService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
