@@ -1,4 +1,4 @@
-package com.example.demo.Pages.Material.Components;
+package com.example.demo.Pages.Material.Page.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;

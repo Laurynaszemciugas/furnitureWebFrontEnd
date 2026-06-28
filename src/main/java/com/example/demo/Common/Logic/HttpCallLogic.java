@@ -4,7 +4,7 @@ import com.example.demo.Common.Common;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Error.FrontEndError;
 import com.example.demo.Enums.Warnings;
-import com.example.demo.Exseptions.HttpCallException;
+import com.example.demo.ErrorHandling.Exseptions.HttpCallException;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;

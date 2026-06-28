@@ -4,9 +4,7 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.CurrentFilterDisplay;
 import com.example.demo.Common.Logic.SessionCrafter;
-import com.example.demo.ControllerModels.Error.FrontEndError;
 import com.example.demo.ControllerModels.Filter.Prodcut.ProductFilterHolder;
-import com.example.demo.Exseptions.HttpCallException;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Common.Paganation;
 import com.example.demo.Pages.Products.Components.ProductPageBriefExplanation;
@@ -16,7 +14,6 @@ import com.example.demo.Pages.Products.Components.ProductPageProductFeed;
 import com.example.demo.Services.CommonService.CommonService;
 import com.example.demo.Services.Products.ProductService;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -118,6 +115,9 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
         totalPages = Math.toIntExact(productService.loadProductPageCount(filterData));
 
+        briefExplanation.removeAll();
+        filterHolder.removeAll();
+
         briefExplanation.add(
                 productPageBriefExplanation.briefPageExplanation()
         );
@@ -134,7 +134,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
         if (page <= 0) {
             this.pageChoise = 1;
-            UI.getCurrent().navigate("Products/1");
+            common.customNavigate("Products/1");
 
             updateView();
             longConsumer.accept(1);
@@ -144,7 +144,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         if (page > 1) {
             if (totalPages < page) {
                 this.pageChoise = 1;
-                UI.getCurrent().navigate("Products/1");
+                common.customNavigate("Products/1");
                 updateView();
                 longConsumer.accept(1);
                 return;
@@ -226,6 +226,10 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
             updateView();
         });
 
+
+        productService.setSuccess(e->{
+            updateView();
+        });
 
 
 

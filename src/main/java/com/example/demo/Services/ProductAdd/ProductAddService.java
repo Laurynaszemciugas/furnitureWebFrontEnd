@@ -6,7 +6,7 @@ import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.Enums.*;
-import com.example.demo.ServerDBCall.ProductAdd.ProductAddCall;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +24,7 @@ public class ProductAddService {
         this.httpCallLogic = httpCallLogic;
     }
 
+    @SneakyThrows
     public void addNewOrder(Product product){
 
         httpCallLogic.checkResponse(

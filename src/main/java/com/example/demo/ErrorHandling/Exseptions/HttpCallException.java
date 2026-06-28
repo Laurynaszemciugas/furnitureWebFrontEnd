@@ -1,4 +1,4 @@
-package com.example.demo.Exseptions;
+package com.example.demo.ErrorHandling.Exseptions;
 
 
 import com.example.demo.ControllerModels.Error.FrontEndError;

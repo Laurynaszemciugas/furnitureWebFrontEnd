@@ -20,6 +20,7 @@ public class MaterialImageData {
     private String imageUrl;
     private ImageLogic imageLogic;
 
+    @ToString.Exclude
     private byte[] imageData;
 
     private Materials materials;

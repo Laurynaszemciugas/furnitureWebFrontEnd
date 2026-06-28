@@ -22,8 +22,10 @@ public class LoginService {
 
     public void getJWTToken(User user){
 
+
+
             String jwt  = httpCallLogic.checkResponseNoGetValue(
-                    httpCallLogic.HttpCall("auth/signin", HttpMethod.POST, user, ErrorResponse.class, false),"sssss");
+                    httpCallLogic.HttpCall("auth/signin", HttpMethod.POST, user, ErrorResponse.class, false),sessionCrafter.extractSession("lastSeen",String.class));
 
 
             if(jwt != null){

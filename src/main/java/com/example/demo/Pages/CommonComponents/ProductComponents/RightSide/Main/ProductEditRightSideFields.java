@@ -13,7 +13,6 @@ import com.example.demo.Enums.Visibility;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.Grids;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.MaterialAndDetails;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ProductEditImage;
-import com.example.demo.ServerDBCall.ProductEdit.ProductEdItCall;
 import com.example.demo.Services.CommonService.CommonService;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.UI;
@@ -30,15 +29,11 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import lombok.SneakyThrows;
-import org.springframework.beans.BeanUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -317,7 +312,7 @@ public class ProductEditRightSideFields {
 
         HorizontalLayout buttonSave = new HorizontalLayout();
         save = commonComponents.normalThemeButtonNoNavigate("Save", ButtonVariant.LUMO_PRIMARY);
-        goBack = new Button("Cancel",e-> UI.getCurrent().navigate("Products/1"));
+        goBack = new Button("Cancel",e-> common.customNavigate("Products/1"));
         buttonSave.add(goBack,save);
 
         left.add(buttonSave);
@@ -490,8 +485,7 @@ public class ProductEditRightSideFields {
 
 
                 consumer.accept(product);
-                UI.getCurrent().navigate("Products/1");
-
+                common.customNavigate("Products/1");
             } else {
                 System.out.println("Validation failed");
             }
@@ -519,7 +513,7 @@ public class ProductEditRightSideFields {
 
         dialog.addConfirmListener(event -> {
                 consumer.accept(product);
-                UI.getCurrent().navigate("Products/1");
+                common.customNavigate("Products/1");
         });
 
         dialog.addCancelListener(event -> {
@@ -553,7 +547,7 @@ public class ProductEditRightSideFields {
 
 
                 consumer.accept(product);
-                UI.getCurrent().navigate("Products/1");
+                common.customNavigate("Products/1");
         });
 
         dialog.addCancelListener(event -> {

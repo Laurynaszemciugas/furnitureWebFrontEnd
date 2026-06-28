@@ -141,11 +141,8 @@ public class ProductPageProductFeed {
             common.deleteConfirmation(productName);
 
                 common.setBooleanConsumer(answer->{
-                    if(answer) {
-                        String message = productService.removeProductById(id);
-                        commonComponents.showNotification("Product" + productName + " " + message, 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
-                        common.reloadPage();
-                    }
+                        productService.removeProductById(id);
+
                 });
 
 

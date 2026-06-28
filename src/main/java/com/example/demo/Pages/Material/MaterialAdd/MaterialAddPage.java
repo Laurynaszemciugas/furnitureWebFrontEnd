@@ -2,10 +2,14 @@ package com.example.demo.Pages.Material.MaterialAdd;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.ControllerModels.Common.CommonImagesData;
 import com.example.demo.Enums.*;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ProductEditImage;
+import com.example.demo.Pages.Material.MaterialAdd.Components.ColorSelector;
+import com.example.demo.Pages.Material.MaterialAdd.Components.MaterialAddBriefExplanation;
+import com.example.demo.Pages.Material.MaterialAdd.Components.RightSideAddMaterials;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -34,35 +38,27 @@ public class MaterialAddPage extends VerticalLayout implements BeforeEnterObserv
     CommonComponents commonComponents;
     Common common;
     ProductEditImage productEditImage;
+    ObjectConverter objectConverter;
 
-    // fields to enter data
-    TextField materialName = new TextField("Material name");
-    ComboBox<MaterialType> materialType = new ComboBox<>("Material type");
-    TextField materialUrl = new TextField("Material URL");
-    ComboBox<ActiveInactive> materialStatus = new ComboBox<>("Material status");
 
-    TextArea description = new TextArea("Description");
-    TextArea careInstuctions = new TextArea("Care instructions");
 
-    TextField materialColor = new TextField("Material color");
-    ComboBox<MaterialType> materialFinishType = new ComboBox("Material finish type");
-    ComboBox<MaterialTextures> materialTexture = new ComboBox("Material texture");
-    ComboBox<MaterialGrainPatterns> materialGrainPattern = new ComboBox("Material grain patern");
-
-    NumberField materialPrice = new NumberField("Material price");
-    NumberField materialUnitWeight = new NumberField("Material unit weight 'grams'");
-    IntegerField materialMinThreshold = new IntegerField("Material min threshold");
-    ComboBox<MaterialUnits> materialUnit = new ComboBox<>("Material unit");
+    // classes for the page
+    MaterialAddBriefExplanation materialAddBriefExplanation;
+    RightSideAddMaterials rightSideAddMaterials;
 
 
 
 
-
-
-    public MaterialAddPage(CommonComponents commonComponents, Common common) {
+    public MaterialAddPage(CommonComponents commonComponents, Common common, ObjectConverter objectConverter) {
         this.commonComponents = commonComponents;
         this.common = common;
+
+
         this.productEditImage = new ProductEditImage(commonComponents,common);
+        this.materialAddBriefExplanation = new MaterialAddBriefExplanation(commonComponents,common);
+        this.rightSideAddMaterials = new RightSideAddMaterials(commonComponents,common,objectConverter);
+
+        this.rightSideAddMaterials.setProductEditImage(productEditImage);
 
         setPadding(false);
         setSpacing(false);
@@ -71,44 +67,25 @@ public class MaterialAddPage extends VerticalLayout implements BeforeEnterObserv
 
 
 
-        add(mainLayout());
+
     }
 
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
 
+        removeAll();
+
+
+
+        add(mainLayout());
+
+
     }
 
 
 
-    public HorizontalLayout colorSelector(TextField textField) {
-        HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.setWidthFull();
-        horizontalLayout.setSpacing(false);
-        horizontalLayout.setPadding(false);
-        horizontalLayout.setAlignItems(Alignment.BASELINE);
 
-        Input colorPicker = new Input();
-        colorPicker.addClassName("color-button");
-        colorPicker.setHeight("55px");
-        colorPicker.setType("color");
-        colorPicker.setValue("#1e88e5");
-
-
-        textField.addValueChangeListener(e->{
-           colorPicker.setValue(e.getValue());
-        });
-
-        colorPicker.addValueChangeListener(e->{
-            textField.setValue(e.getValue());
-        });
-
-
-        horizontalLayout.add(colorPicker,textField);
-
-        return horizontalLayout;
-    }
 
 
 
@@ -121,7 +98,7 @@ public class MaterialAddPage extends VerticalLayout implements BeforeEnterObserv
 
 
         verticalLayout.add(
-                briefExplanation(),
+                rightSideAddMaterials.briefExplanation(),
                 leftRighJoin()
         );
 
@@ -148,7 +125,7 @@ public class MaterialAddPage extends VerticalLayout implements BeforeEnterObserv
 
     public VerticalLayout rightSide(){
 
-        configueFields();
+        rightSideAddMaterials.configueFields();
 
         VerticalLayout rightSide = new VerticalLayout();
         rightSide.setPadding(false);
@@ -156,119 +133,16 @@ public class MaterialAddPage extends VerticalLayout implements BeforeEnterObserv
 
 
         rightSide.add(
-                basicInfo(),
-                appearance(),
-                pricingExtendedDetails()
+                rightSideAddMaterials.basicInfo(),
+                rightSideAddMaterials.appearance(),
+                rightSideAddMaterials.pricingExtendedDetails()
         );
 
         return rightSide;
 
     }
 
-    public VerticalLayout basicInfo(){
 
-        VerticalLayout verticalLayout = new VerticalLayout();
-        verticalLayout.setWidthFull();
-        verticalLayout.addClassName("island");
-
-        verticalLayout.add(
-                commonComponents.spanCrafterWordNoHide("Basic information","activityFeed-name"),
-                commonComponents.doubleValueRow(materialName,materialType),
-                commonComponents.doubleValueRow(materialUrl,materialStatus),
-                description,
-                careInstuctions
-        );
-
-
-
-        return  verticalLayout;
-    }
-
-    public VerticalLayout appearance(){
-
-        VerticalLayout verticalLayout = new VerticalLayout();
-        verticalLayout.setWidthFull();
-        verticalLayout.addClassName("island");
-
-        verticalLayout.add(
-                commonComponents.spanCrafterWordNoHide("Appearance","activityFeed-name"),
-                commonComponents.doubleValueRow(colorSelector(materialColor),materialTexture),
-                commonComponents.doubleValueRow(materialFinishType,materialGrainPattern)
-        );
-
-
-
-        return  verticalLayout;
-    }
-
-    public VerticalLayout pricingExtendedDetails(){
-
-        VerticalLayout verticalLayout = new VerticalLayout();
-        verticalLayout.setWidthFull();
-        verticalLayout.addClassName("island");
-
-        verticalLayout.add(
-                commonComponents.spanCrafterWordNoHide("Pricing & expanded details","activityFeed-name"),
-                commonComponents.doubleValueRow(materialPrice,materialUnitWeight),
-                commonComponents.doubleValueRow(materialMinThreshold,materialUnit)
-        );
-
-
-
-        return  verticalLayout;
-    }
-
-
-    public void configueFields(){
-        // fields
-        materialName.setWidthFull();
-
-        materialType.setWidthFull();
-        materialType.setItems(MaterialType.values());
-        materialType.setItemLabelGenerator(MaterialType::getDisplayName);
-
-        materialUrl.setWidthFull();
-
-        materialStatus.setWidthFull();
-        materialStatus.setItems(Arrays.stream(ActiveInactive.values()).filter(e->e != ActiveInactive.ALL).toList());
-        materialStatus.setValue(ActiveInactive.ACTIVE);
-        materialStatus.setItemLabelGenerator(ActiveInactive::getGetDisplayNames);
-
-        description.setWidthFull();
-        description.setHeight("100px");
-
-        careInstuctions.setWidthFull();
-        careInstuctions.setHeight("80px");
-
-        materialColor.setWidthFull();
-
-        materialTexture.setWidthFull();
-        materialTexture.setItems(MaterialTextures.values());
-        materialTexture.setItemLabelGenerator(MaterialTextures::getDisplayName);
-
-        materialFinishType.setWidthFull();
-        materialFinishType.setItems(MaterialType.values());
-        materialFinishType.setItemLabelGenerator(MaterialType::getDisplayName);
-
-        materialGrainPattern.setWidthFull();
-        materialGrainPattern.setItems(MaterialGrainPatterns.values());
-        materialGrainPattern.setItemLabelGenerator(MaterialGrainPatterns::getDisplayName);
-
-        materialPrice.setWidthFull();
-        materialPrice.setStepButtonsVisible(true);
-        materialPrice.setStep(0.5);
-
-        materialUnitWeight.setWidthFull();
-        materialUnitWeight.setStepButtonsVisible(true);
-        materialUnitWeight.setStep(0.1);
-
-        materialMinThreshold.setWidthFull();
-        materialMinThreshold.setStepButtonsVisible(true);
-
-        materialUnit.setWidthFull();
-        materialUnit.setItems(MaterialUnits.values());
-        materialUnit.setItemLabelGenerator(MaterialUnits::getSymbol);
-    }
 
     public HorizontalLayout leftRighJoin(){
 
@@ -299,33 +173,7 @@ public class MaterialAddPage extends VerticalLayout implements BeforeEnterObserv
 
 
 
-    public HorizontalLayout briefExplanation(){
 
-        HorizontalLayout h = new HorizontalLayout();
-        h.setWidthFull();
-        h.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-
-        HorizontalLayout buttonHolder = new HorizontalLayout();
-
-        Button cancel = commonComponents.normalThemeButton("Cancel","Materials", ButtonVariant.LUMO_ICON);
-        Button createOrder = commonComponents.normalThemeButtonNoNavigate("Create Material", ButtonVariant.LUMO_PRIMARY);
-
-
-        buttonHolder.add(
-                cancel,
-                createOrder
-        );
-
-
-        h.add(
-                commonComponents.biefPageExplanation("Create new material"),
-                buttonHolder
-
-        );
-
-
-        return h;
-    }
 
 
 

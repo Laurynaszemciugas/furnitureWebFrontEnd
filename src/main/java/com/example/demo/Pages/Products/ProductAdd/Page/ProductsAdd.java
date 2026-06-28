@@ -10,7 +10,6 @@ import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ProductEditImage;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Main.ProductEditRightSideFields;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ReviewCrafter;
-import com.example.demo.ServerDBCall.ProductAdd.ProductAddCall;
 import com.example.demo.Services.CommonService.CommonService;
 import com.example.demo.Services.ProductAdd.ProductAddService;
 import com.vaadin.flow.component.UI;
@@ -37,7 +36,6 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
     Common common;
     CommonService commonService;
     ProductAddService productAddService;
-    ProductAddCall productAddCall;
 
     ObjectConverter objectConverter;
 
@@ -53,13 +51,11 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
                        Common common,
                        CommonService commonService,
                        ProductAddService productAddService,
-                       ProductAddCall productAddCall,
                        ObjectConverter objectConverter) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.commonService = commonService;
         this.productAddService = productAddService;
-        this.productAddCall = productAddCall;
         this.objectConverter = objectConverter;
 
 

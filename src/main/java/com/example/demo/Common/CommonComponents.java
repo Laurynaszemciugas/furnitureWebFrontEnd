@@ -1,5 +1,6 @@
 package com.example.demo.Common;
 
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -25,6 +26,11 @@ import java.time.format.DateTimeFormatter;
 public class CommonComponents {
 
 
+    SessionCrafter sessionCrafter;
+
+    public CommonComponents() {
+        this.sessionCrafter = new SessionCrafter();
+    }
 
     // components like icons images buttonns spans ect
 
@@ -152,6 +158,7 @@ public class CommonComponents {
         button.setIcon(iconCrafter(icon,"30px","white"));
 
         button.addClickListener(e->{
+            sessionCrafter.createSession("lastSeen",navigate);
             UI.getCurrent().navigate(navigate);
         });
 

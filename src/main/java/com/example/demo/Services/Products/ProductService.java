@@ -2,32 +2,28 @@ package com.example.demo.Services.Products;
 
 import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.ControllerModels.Common.MiniStatHolder;
-import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
+import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Filter.Prodcut.ProductFilterHolder;
 import com.example.demo.ControllerModels.Orders.OrderAddProducts;
-import com.example.demo.ControllerModels.Orders.OrdersFeedData;
 import com.example.demo.ControllerModels.Products.ProductFeedModel;
-import com.example.demo.ControllerModels.Products.ProductPageData;
-import com.example.demo.ControllerModels.Products.ProductPageMiniStat;
-import com.example.demo.Enums.Category;
-import com.example.demo.Enums.Stock;
-import com.example.demo.Enums.Visibility;
-import com.example.demo.ServerDBCall.ProductAdd.ProductAddCall;
+
+import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Service
+@Setter
 public class ProductService {
 
 
     HttpCallLogic httpCallLogic;
+    Consumer<Boolean> success;
 
     public ProductService(HttpCallLogic httpCallLogic) {
         this.httpCallLogic = httpCallLogic;
@@ -35,7 +31,7 @@ public class ProductService {
 
     // good for specific data need
     @SneakyThrows
-    public List<ProductFeedModel> loadProductFeedModel(ProductFilterHolder productFilterHolder) throws IOException, InterruptedException {
+    public List<ProductFeedModel> loadProductFeedModel(ProductFilterHolder productFilterHolder) {
         return Arrays.stream(
                 httpCallLogic.HttpCall("product/getProducts", HttpMethod.POST,productFilterHolder, ProductFeedModel[].class,false)).toList();
     }
@@ -47,8 +43,9 @@ public class ProductService {
 
 
     @SneakyThrows
-    public String removeProductById(Long id){
-        return httpCallLogic.HttpCall("product/removeProduct", HttpMethod.POST, id, String.class,false);
+    public void removeProductById(Long id){
+         httpCallLogic.checkResponse(
+                 httpCallLogic.HttpCall("product/removeProduct", HttpMethod.POST, id, ErrorResponse.class,false),"Products/1",success,true);
     }
 
 

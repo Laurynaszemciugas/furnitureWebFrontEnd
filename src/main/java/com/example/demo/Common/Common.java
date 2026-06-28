@@ -1,6 +1,7 @@
 package com.example.demo.Common;
 
 import com.example.demo.Common.Logic.ErrorDisplay;
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Enums.Warnings;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
@@ -23,6 +24,7 @@ public class Common {
 
     CommonComponents commonComponents;
     ErrorDisplay errorDisplay;
+    SessionCrafter sessionCrafter;
 
     Consumer<Boolean> booleanConsumer;
 
@@ -30,6 +32,7 @@ public class Common {
     public Common(CommonComponents commonComponents) {
         this.commonComponents = commonComponents;
         this.errorDisplay = new ErrorDisplay(commonComponents);
+        this.sessionCrafter = new SessionCrafter();
     }
 
     public String dateFormatter(LocalDate date, String yyyymmdd) {
@@ -150,9 +153,16 @@ public class Common {
     }
 
     public void customNavigate(String navigateTo) {
+        // if null user is not navigated to nowhere
+
         if(navigateTo != null) {
+            sessionCrafter.createSession("lastSeen",navigateTo);
             UI.getCurrent().navigate(navigateTo);
         }
+    }
+
+    public void reNavigateUsingSession(){
+        UI.getCurrent().navigate(sessionCrafter.extractSession("lastSeen",String.class));
     }
 
     public void customActionsForNotification(String message, Warnings warning, String navigateInCaseOfSuccess, boolean showCorrectAnswer) {

@@ -1,4 +1,4 @@
-package com.example.demo.Pages.Material;
+package com.example.demo.Pages.Material.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -6,10 +6,10 @@ import com.example.demo.Common.CurrentFilterDisplay;
 import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
 import com.example.demo.MainLayout.MainLayout;
-import com.example.demo.Pages.Material.Components.MaterialBriefExplanations;
-import com.example.demo.Pages.Material.Components.MaterialFilters;
-import com.example.demo.Pages.Material.Components.MaterialGrid;
-import com.example.demo.Pages.Material.Components.MaterialMiniStats;
+import com.example.demo.Pages.Material.Page.Components.MaterialBriefExplanations;
+import com.example.demo.Pages.Material.Page.Components.MaterialFilters;
+import com.example.demo.Pages.Material.Page.Components.MaterialGrid;
+import com.example.demo.Pages.Material.Page.Components.MaterialMiniStats;
 import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;

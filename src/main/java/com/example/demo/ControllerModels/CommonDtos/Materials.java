@@ -1,9 +1,7 @@
 package com.example.demo.ControllerModels.CommonDtos;
 
 
-import com.example.demo.Enums.ActiveInactive;
-import com.example.demo.Enums.MaterialType;
-import com.example.demo.Enums.Stock;
+import com.example.demo.Enums.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -33,6 +31,13 @@ public class Materials {
 
     @JsonIgnore
     private User user;
+
+    private String materialUrl;
+    private String careInstructions;
+    private String materialColor;
+    private MaterialTextures materialTextures;
+    private MaterialType materialFinishType;
+    private MaterialGrainPatterns materialGrainPatterns;
 
 
     private LocalDateTime created;

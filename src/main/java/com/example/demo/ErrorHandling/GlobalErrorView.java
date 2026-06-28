@@ -1,11 +1,10 @@
 package com.example.demo.ErrorHandling;
 
-import com.example.demo.Exseptions.HttpCallException;
-import com.vaadin.flow.component.Tag;
+import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.ErrorHandling.Exseptions.HttpCallException;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Paragraph;
@@ -19,10 +18,11 @@ import java.nio.channels.ClosedChannelException;
 
 public class GlobalErrorView extends VerticalLayout implements HasErrorParameter<Exception> {
 
-
+    SessionCrafter sessionCrafter;
 
 
     public GlobalErrorView() {
+
         setSizeFull();
 
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -118,6 +118,10 @@ public class GlobalErrorView extends VerticalLayout implements HasErrorParameter
         text.getStyle()
                 .set("color", "#6b7280")
                 .set("margin", "0");
+
+
+
+
 
         Button loginButton = new Button("Go to login", e -> {
             UI.getCurrent().navigate("Login");

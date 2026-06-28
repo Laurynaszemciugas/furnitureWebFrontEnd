@@ -98,15 +98,7 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
         productEditRightSideFields.setConsumer(e->{
 
 
-            System.out.println("Edit time");
-
-            System.out.println("after pressing save");
-            for(var s : e.getImages()){
-                System.out.println(s.getImageName() + " " + s.getImageLogic());
-            }
-
             productEditService.updateProductEdit(e);
-
 
         });
 
