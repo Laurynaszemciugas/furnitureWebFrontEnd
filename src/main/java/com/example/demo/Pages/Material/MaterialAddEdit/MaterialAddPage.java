@@ -1,34 +1,23 @@
-package com.example.demo.Pages.Material.MaterialAdd;
+package com.example.demo.Pages.Material.MaterialAddEdit;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.ControllerModels.Common.CommonImagesData;
-import com.example.demo.Enums.*;
 import com.example.demo.MainLayout.MainLayout;
-import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ProductEditImage;
-import com.example.demo.Pages.Material.MaterialAdd.Components.ColorSelector;
-import com.example.demo.Pages.Material.MaterialAdd.Components.MaterialAddBriefExplanation;
-import com.example.demo.Pages.Material.MaterialAdd.Components.RightSideAddMaterials;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.html.Input;
+import com.example.demo.Common.Logic.ProductEditImage;
+import com.example.demo.Pages.Material.MaterialAddEdit.Components.MaterialAddBriefExplanation;
+import com.example.demo.Pages.Material.MaterialAddEdit.Components.RightSideMaterials;
+import com.example.demo.Services.Material.MaterialService;
 
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.IntegerField;
-import com.vaadin.flow.component.textfield.NumberField;
-import com.vaadin.flow.component.textfield.TextArea;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Route(value = "MaterialAdd", layout = MainLayout.class)
@@ -39,24 +28,27 @@ public class MaterialAddPage extends VerticalLayout implements BeforeEnterObserv
     Common common;
     ProductEditImage productEditImage;
     ObjectConverter objectConverter;
+    MaterialService materialService;
 
 
 
     // classes for the page
     MaterialAddBriefExplanation materialAddBriefExplanation;
-    RightSideAddMaterials rightSideAddMaterials;
+    RightSideMaterials rightSideAddMaterials;
 
 
 
 
-    public MaterialAddPage(CommonComponents commonComponents, Common common, ObjectConverter objectConverter) {
+    public MaterialAddPage(CommonComponents commonComponents, Common common, ObjectConverter objectConverter, MaterialService materialService) {
         this.commonComponents = commonComponents;
         this.common = common;
 
+        this.objectConverter = objectConverter;
+        this.materialService = materialService;
 
         this.productEditImage = new ProductEditImage(commonComponents,common);
         this.materialAddBriefExplanation = new MaterialAddBriefExplanation(commonComponents,common);
-        this.rightSideAddMaterials = new RightSideAddMaterials(commonComponents,common,objectConverter);
+        this.rightSideAddMaterials = new RightSideMaterials(commonComponents,common,materialService,objectConverter);
 
         this.rightSideAddMaterials.setProductEditImage(productEditImage);
 

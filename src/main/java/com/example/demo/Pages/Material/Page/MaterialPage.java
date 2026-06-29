@@ -175,7 +175,6 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
     }
 
     public void reloadData(){
-        setNewPage();
 
         verticalLayout.removeAll();
 

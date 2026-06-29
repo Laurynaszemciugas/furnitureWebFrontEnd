@@ -1,12 +1,14 @@
-package com.example.demo.Pages.Material.MaterialAdd.Components;
+package com.example.demo.Pages.Material.MaterialAddEdit.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ObjectConverter;
+import com.example.demo.ControllerModels.Common.CommonImagesData;
 import com.example.demo.ControllerModels.CommonDtos.MaterialImageData;
 import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.Enums.*;
-import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ProductEditImage;
+import com.example.demo.Common.Logic.ProductEditImage;
+import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -22,11 +24,12 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Setter
-public class RightSideAddMaterials {
+public class RightSideMaterials {
 
     CommonComponents commonComponents;
     Common common;
@@ -58,14 +61,19 @@ public class RightSideAddMaterials {
 
     ProductEditImage productEditImage;
 
+    MaterialService materialService;
+
     Materials mat = new Materials();
 
 
-    public RightSideAddMaterials(CommonComponents commonComponents, Common common,ObjectConverter objectConverter) {
+    List<CommonImagesData> newImages = null;
+
+    public RightSideMaterials(CommonComponents commonComponents, Common common, MaterialService materialService, ObjectConverter objectConverter) {
 
         this.commonComponents = commonComponents;
         this.common = common;
         this.colorSelector = new ColorSelector();
+        this.materialService = materialService;
         this.objectConverter = objectConverter;
 
 
@@ -73,6 +81,23 @@ public class RightSideAddMaterials {
         configueFields();
         binder();
 
+    }
+
+
+    public void setProductEditImage(ProductEditImage productEditImage) {
+        this.productEditImage = productEditImage;
+        if (this.productEditImage != null) {
+            productEditImage.setListConsumer(list -> {
+                newImages = new ArrayList<>();
+                newImages.addAll(list);
+            });
+
+            productEditImage.setMainChange(list -> {
+                newImages = new ArrayList<>();
+                newImages.addAll(list);
+            });
+
+        }
     }
 
 
@@ -90,18 +115,7 @@ public class RightSideAddMaterials {
         Button createOrder = commonComponents.normalThemeButtonNoNavigate("Create Material", ButtonVariant.LUMO_PRIMARY);
 
 
-        productEditImage.setMainChange(e->{
-            mat.setImages(objectConverter.convert(e,MaterialImageData.class));
-            System.out.println("main change");
-        });
 
-        productEditImage.setListConsumer(e->{
-            mat.setImages(objectConverter.convert(e,MaterialImageData.class));
-
-
-            System.out.println(mat);
-            System.out.println("image was added or removed");
-        });
 
         createOrder.addClickListener(e->{
 
@@ -124,6 +138,21 @@ public class RightSideAddMaterials {
                 mat.setMaterialGrainPatterns(materialGrainPattern.getValue());
 
 
+                if(newImages !=null){
+                    System.out.println("changing pictures");
+                    for(var s : newImages){
+                        s.setImageUrl(common.imageMaker(s.getImageData(),s.getImageType()));
+                    }
+
+                    mat.setImages(objectConverter.convert(newImages, MaterialImageData.class));
+
+                }
+
+
+                System.out.println(mat.getMaterialName());
+
+
+                materialService.saveNewMaterial(mat);
 
 
                 System.out.println("ss");

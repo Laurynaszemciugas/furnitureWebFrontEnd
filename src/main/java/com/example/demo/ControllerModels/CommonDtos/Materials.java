@@ -35,6 +35,7 @@ public class Materials {
     private String materialUrl;
     private String careInstructions;
     private String materialColor;
+
     private MaterialTextures materialTextures;
     private MaterialType materialFinishType;
     private MaterialGrainPatterns materialGrainPatterns;

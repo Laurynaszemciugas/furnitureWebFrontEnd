@@ -1,4 +1,4 @@
-package com.example.demo.Pages.Material.MaterialAdd.Components;
+package com.example.demo.Pages.Material.MaterialAddEdit.Components;
 
 import com.vaadin.flow.component.html.Input;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;

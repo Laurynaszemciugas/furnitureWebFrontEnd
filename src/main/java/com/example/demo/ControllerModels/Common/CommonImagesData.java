@@ -22,7 +22,6 @@ public class CommonImagesData {
     private ImageLogic imageLogic;
     @ToString.Exclude
     private byte[] imageData;
-    private LocalDateTime created;
 
 
 }

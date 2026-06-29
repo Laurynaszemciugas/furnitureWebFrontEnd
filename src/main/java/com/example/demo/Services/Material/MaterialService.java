@@ -3,6 +3,7 @@ package com.example.demo.Services.Material;
 import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.ControllerModels.Common.MiniStatHolder;
 import com.example.demo.ControllerModels.CommonDtos.Materials;
+import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
 import com.example.demo.ControllerModels.Material.MaterialMiniStat;
@@ -45,6 +46,14 @@ public class MaterialService {
     public MiniStatHolder getMiniStats(LocalDate fromDate, LocalDate toDate) {
 
         return httpCallLogic.HttpCall("material/getMaterialMiniStats", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), MiniStatHolder.class,true);
+
+    }
+
+
+    @SneakyThrows
+    public void saveNewMaterial(Materials mat) {
+
+         httpCallLogic.HttpCall("material/createNewMaterial", HttpMethod.POST, mat, ErrorResponse.class,false);
 
     }
 

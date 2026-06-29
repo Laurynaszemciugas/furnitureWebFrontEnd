@@ -227,7 +227,6 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         filterData = new OrderFilterHolder();
 
 
-        paganation.updateUIFromExternal(1);
 
         HorizontalLayout sidesHolder = new HorizontalLayout();
         sidesHolder.setWidthFull();

@@ -1,9 +1,8 @@
-package com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components;
+package com.example.demo.Common.Logic;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Common.CommonImagesData;
-import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.Enums.ImageLogic;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -164,12 +163,14 @@ public class ProductEditImage {
                     String fileName = metadata.fileName();
                     String mimeType = metadata.contentType();
 
+                    System.out.println("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+                    System.out.println(mimeType);
+
                     CommonImagesData imagesData = new CommonImagesData();
                     imagesData.setUuId(UUID.randomUUID().toString());
                     imagesData.setImageName(fileName);
                     imagesData.setImageUrl("none");
                     imagesData.setImageType(mimeType);
-                    imagesData.setCreated(LocalDateTime.now());
                     if(!mainFound) {
                         imagesData.setImageLogic(ImageLogic.Main);
                         mainFound = true;

@@ -16,7 +16,7 @@ public class MaterialFilterHolder {
 
 
     private MaterialType materialTypeChoice = MaterialType.ALL;
-    private ActiveInactive activeInactive = ActiveInactive.ALL;
+    private ActiveInactive activeInactive = ActiveInactive.ACTIVE;
     private Long stockAmountChoice = 0L;
     private Long minThresholdChoice = 0L;
     private Double unitPriceChoice = 0.0;

@@ -7,23 +7,18 @@ import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.ControllerModels.Common.CommonImagesData;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.MainLayout.MainLayout;
-import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ProductEditImage;
+import com.example.demo.Common.Logic.ProductEditImage;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Main.ProductEditRightSideFields;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ReviewCrafter;
 import com.example.demo.Services.CommonService.CommonService;
 import com.example.demo.Services.ProductAdd.ProductAddService;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

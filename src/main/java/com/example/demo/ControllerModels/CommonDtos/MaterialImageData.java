@@ -22,6 +22,7 @@ public class MaterialImageData {
 
     @ToString.Exclude
     private byte[] imageData;
+    private String imageType;
 
     private Materials materials;
 

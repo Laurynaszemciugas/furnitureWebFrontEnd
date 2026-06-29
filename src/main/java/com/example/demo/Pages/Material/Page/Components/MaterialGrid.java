@@ -95,7 +95,7 @@ public class MaterialGrid {
             if(e.getMaterialType() != null) {
                 switch (e.getMaterialType()) {
 
-                    case WOOD, BAMBOO, RATTAN, WICKER, CORK -> {
+                    case WOOD, RATTAN, CORK -> {
                         span.getStyle()
                                 .set("background", "rgba(56, 189, 248, 0.15)")
                                 .set("color", "#38bdf8") // sky blue
@@ -116,7 +116,7 @@ public class MaterialGrid {
                                 .set("border", "1px solid rgba(168,85,247,0.3)");
                     }
 
-                    case LEATHER, FAUX_LEATHER, FABRIC, VELVET, LINEN, COTTON -> {
+                    case LEATHER, FABRIC, VELVET, LINEN, COTTON -> {
                         span.getStyle()
                                 .set("background", "rgba(14, 165, 233, 0.15)")
                                 .set("color", "#0ea5e9") // cyan-blue
@@ -137,7 +137,7 @@ public class MaterialGrid {
                                 .set("border", "1px solid rgba(100,116,139,0.3)");
                     }
 
-                    case MDF, PLYWOOD, PARTICLE_BOARD, LAMINATE -> {
+                    case  PLYWOOD, PARTICLE_BOARD, LAMINATE -> {
                         span.getStyle()
                                 .set("background", "rgba(20, 184, 166, 0.15)")
                                 .set("color", "#14b8a6") // teal

@@ -28,5 +28,4 @@ public class User {
 
     private String fullName;
     private String imageUrl;
-    private String phoneNumber;
 }
