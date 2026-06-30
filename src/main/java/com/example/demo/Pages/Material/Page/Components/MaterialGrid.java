@@ -6,6 +6,7 @@ import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.Stock;
+import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
@@ -26,10 +27,13 @@ public class MaterialGrid {
     CommonComponents commonComponents;
     Common common;
 
+    MaterialService materialService;
 
-    public MaterialGrid(CommonComponents commonComponents, Common common) {
+
+    public MaterialGrid(CommonComponents commonComponents, Common common,MaterialService materialService) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.materialService = materialService;
     }
 
     public VerticalLayout gridHolder(List<MaterialBriefDto> materiaData){
@@ -224,13 +228,20 @@ public class MaterialGrid {
 
             HorizontalLayout h = new HorizontalLayout();
             Button edit = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.PENCIL,"Black");
+
+
+            edit.addClickListener(editValue->{
+                System.out.println(e.getId());
+            });
+
+
             Button delete = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.TRASH,"Red");
 
             delete.addClickListener(deleteValue->{
                 common.deleteConfirmation(e.getName());
                common.setBooleanConsumer(canDelete->{
                    if(canDelete){
-                       System.out.println("deleting material");
+                       materialService.removeProduct(e.getId());
                    }
                });
             });

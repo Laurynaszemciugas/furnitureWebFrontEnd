@@ -43,7 +43,7 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
         this.paganation = new Paganation();
         this.materialMiniStats = new MaterialMiniStats(commonComponents,common);
         this.materialFilters = new MaterialFilters(commonComponents,common);
-        this.materialGrid = new MaterialGrid(commonComponents,common);
+        this.materialGrid = new MaterialGrid(commonComponents,common,materialService);
         this.materialBriefExplanations = new MaterialBriefExplanations(commonComponents,common);
         this.materialService = materialService;
         this.currentFilterDisplay = new CurrentFilterDisplay(commonComponents,common);
@@ -160,6 +160,10 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
             setNewPage();
             filterData = (MaterialFilterHolder) e;
             filterFeed();
+        });
+
+        materialService.setSuccess(e->{
+            reloadData();
         });
 
         paganation.setOnPageChange(e->{

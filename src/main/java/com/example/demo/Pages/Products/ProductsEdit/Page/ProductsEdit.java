@@ -112,9 +112,7 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
         h.getStyle().set("flex-wrap","wrap");
 
         Product product = productEditService.productEditDtoLoad(Long.valueOf(productId));
-        if(product == null){
-            UI.getCurrent().navigate("make a no page found page");
-        }
+
 
         HorizontalLayout images = productEditImage.images(objectConverter.convert(product.getImages(),CommonImagesData.class));
         Div holder = new Div(images,productEditImage.uploadStuff(),

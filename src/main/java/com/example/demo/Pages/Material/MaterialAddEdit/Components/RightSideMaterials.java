@@ -81,6 +81,8 @@ public class RightSideMaterials {
         configueFields();
         binder();
 
+
+
     }
 
 
@@ -101,9 +103,63 @@ public class RightSideMaterials {
     }
 
 
+    public void loadData(Materials materials){
+
+        if(materials != null){
+
+            if(!materials.getImages().isEmpty()) {
+                productEditImage.loadData(objectConverter.convert(materials.getImages(), CommonImagesData.class));
+            }
+
+            materialName.setValue(materials.getMaterialName() == null ? "" : materials.getMaterialName());
+
+            materialType.setValue(materials.getMaterialType());
+
+            materialUrl.setValue(materials.getMaterialUrl() == null ? "" : materials.getMaterialUrl());
+
+            materialStatus.setValue(materials.getEnabled());
+
+            description.setValue(materials.getDescription() == null ? "" : materials.getDescription());
+
+            careInstuctions.setValue(materials.getCareInstructions() == null ? "" : materials.getCareInstructions());
+
+            materialColor.setValue(materials.getMaterialColor() == null ? "" : materials.getMaterialColor());
+
+            materialFinishType.setValue(materials.getMaterialFinishType());
+
+            materialTexture.setValue(materials.getMaterialTextures());
+
+            materialGrainPattern.setValue(materials.getMaterialGrainPatterns());
+
+            materialPrice.setValue(materials.getUnitPrice());
+
+            materialUnitWeight.setValue(materials.getMaterialWeight());
+
+            materialMinThreshold.setValue(
+                    materials.getMinThresHold() == null ? null : materials.getMinThresHold().intValue()
+            );
+
+            materialStock.setValue(
+                    materials.getInStock() == null ? null : materials.getInStock().intValue()
+            );
+
+            materialUnit.setValue(materials.getUnit() == null ? "" : materials.getUnit());
 
 
-    public HorizontalLayout briefExplanation(){
+        }
+
+
+
+
+
+
+    }
+
+
+
+
+    public HorizontalLayout briefExplanation(String name){
+
 
         HorizontalLayout h = new HorizontalLayout();
         h.setWidthFull();
@@ -113,8 +169,6 @@ public class RightSideMaterials {
 
         Button cancel = commonComponents.normalThemeButton("Cancel","Materials", ButtonVariant.LUMO_ICON);
         Button createOrder = commonComponents.normalThemeButtonNoNavigate("Create Material", ButtonVariant.LUMO_PRIMARY);
-
-
 
 
         createOrder.addClickListener(e->{
@@ -155,7 +209,6 @@ public class RightSideMaterials {
                 materialService.saveNewMaterial(mat);
 
 
-                System.out.println("ss");
             }
             else{
                 commonComponents.showNotification("Form is not filled properly",4000, Notification.Position.BOTTOM_CENTER, NotificationVariant.ERROR);
@@ -171,7 +224,7 @@ public class RightSideMaterials {
 
 
         h.add(
-                commonComponents.biefPageExplanation("Create new material"),
+                commonComponents.biefPageExplanation(name),
                 buttonHolder
 
         );
@@ -383,6 +436,69 @@ public class RightSideMaterials {
                 .bind(v -> null, (v, value) -> {});
     }
 
+
+    public VerticalLayout leftSide(){
+
+        VerticalLayout leftSide = new VerticalLayout();
+        leftSide.setWidthFull();
+        leftSide.addClassName("island");
+        List<CommonImagesData> s = new ArrayList<>();
+        leftSide.add(
+
+                productEditImage.images(s),
+                productEditImage.uploadStuff()
+        );
+
+
+
+        return leftSide;
+
+    }
+
+    public VerticalLayout rightSide(){
+
+
+        VerticalLayout rightSide = new VerticalLayout();
+        rightSide.setPadding(false);
+        rightSide.setWidthFull();
+
+
+        rightSide.add(
+                basicInfo(),
+                appearance(),
+                pricingExtendedDetails()
+        );
+
+        return rightSide;
+
+    }
+
+
+
+    public HorizontalLayout leftRighJoin(Materials materials){
+
+        loadData(materials);
+
+        HorizontalLayout leftRighJoin = new HorizontalLayout();
+        leftRighJoin.addClassName("layout-flex");
+        leftRighJoin.setWidthFull();
+
+        VerticalLayout leftSide = leftSide();
+        leftSide.setWidth("500px");
+        VerticalLayout rightSide = rightSide();
+        rightSide.setWidth("910px");
+
+        leftRighJoin.add(
+                leftSide,
+                rightSide
+        );
+        leftRighJoin.expand(leftSide);
+
+
+
+        return leftRighJoin;
+
+    }
 
 
 }

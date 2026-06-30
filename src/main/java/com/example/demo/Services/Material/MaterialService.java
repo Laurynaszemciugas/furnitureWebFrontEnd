@@ -8,6 +8,7 @@ import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
 import com.example.demo.ControllerModels.Material.MaterialMiniStat;
 import com.example.demo.DTOS.ComboBoxMaterial;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -15,11 +16,14 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Service
+@Setter
 public class MaterialService {
 
     HttpCallLogic httpCallLogic;
+    Consumer<Boolean> success;
 
     public MaterialService(HttpCallLogic httpCallLogic) {
         this.httpCallLogic = httpCallLogic;
@@ -53,7 +57,24 @@ public class MaterialService {
     @SneakyThrows
     public void saveNewMaterial(Materials mat) {
 
-         httpCallLogic.HttpCall("material/createNewMaterial", HttpMethod.POST, mat, ErrorResponse.class,false);
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("material/createNewMaterial", HttpMethod.POST, mat, ErrorResponse.class,false),null,success,true);
+
+    }
+
+    @SneakyThrows
+    public void removeProduct(Long id) {
+
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("material/deleteMaterial", HttpMethod.GET, id, ErrorResponse.class,true),null,success,true);
+
+    }
+
+    @SneakyThrows
+    public Materials getEditProduct(Long id) {
+
+
+               return  httpCallLogic.HttpCall("material/deleteMaterial", HttpMethod.GET, id, Materials.class,true);
 
     }
 

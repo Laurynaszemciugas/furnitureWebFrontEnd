@@ -70,7 +70,7 @@ public class OrderAddProductListAddRemove {
         orderItems = new Grid<>(OrderAddProducts.class,false);
 
         if(orders.getProductsData()!=null) {
-            selectedProducts = productService.getExisitingData(orders.getId());
+            selectedProducts = new ArrayList<>(productService.getExisitingData(orders.getId()));
         }
 
         orderGridProductRemoveAdd.updateGrid(orderItems, selectedProducts);

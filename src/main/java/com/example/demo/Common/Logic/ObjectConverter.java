@@ -25,4 +25,19 @@ public class ObjectConverter {
 
     }
 
+    @SneakyThrows
+    public <T,S> T normalConvert(S from, Class<T> tClass){
+
+        T converted;
+
+            T to = tClass.getDeclaredConstructor().newInstance();
+            BeanUtils.copyProperties(from,to);
+
+            converted = to;
+
+        return converted;
+
+    }
+
+
 }
