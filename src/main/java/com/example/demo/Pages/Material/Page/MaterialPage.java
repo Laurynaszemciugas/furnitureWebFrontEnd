@@ -57,9 +57,6 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
         setAlignItems(FlexComponent.Alignment.CENTER);
 
 
-        filterMemory.setWidthFull();
-        filterMemory.setPadding(false);
-
         filterMemory.removeAll();
         filterMemory.setWidthFull();
         filterMemory.setPadding(false);

@@ -492,7 +492,7 @@ public class RightSideMaterials {
         VerticalLayout leftSide = leftSide();
         leftSide.setWidth("500px");
         VerticalLayout rightSide = rightSide();
-        rightSide.setWidth("910px");
+        rightSide.setWidth("900px");
 
         leftRighJoin.add(
                 leftSide,

@@ -99,7 +99,7 @@ public class MainLayout extends AppLayout {
                 common.normalButtons("Products/1","Products",VaadinIcon.PACKAGE),
                 common.normalButtons("Orders","Orders",VaadinIcon.CLIPBOARD),
                 common.normalButtons("Materials","Materials",VaadinIcon.STOCK),
-                common.normalButtons("bob","Employees",VaadinIcon.MENU),
+                common.normalButtons("Employees","Employees",VaadinIcon.USERS),
                 common.normalButtons("bob","Reports",VaadinIcon.MENU),
                 common.normalButtons("bob","Quick actions",VaadinIcon.MENU),
                 common.normalButtons("bob","Settings",VaadinIcon.MENU),
