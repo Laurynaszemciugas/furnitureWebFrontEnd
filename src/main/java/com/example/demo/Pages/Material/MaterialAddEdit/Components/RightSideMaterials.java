@@ -27,6 +27,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Setter
 public class RightSideMaterials {
@@ -68,6 +69,8 @@ public class RightSideMaterials {
 
     List<CommonImagesData> newImages = null;
 
+    Consumer<Materials> materialsConsumer;
+
     public RightSideMaterials(CommonComponents commonComponents, Common common, MaterialService materialService, ObjectConverter objectConverter) {
 
         this.commonComponents = commonComponents;
@@ -105,7 +108,11 @@ public class RightSideMaterials {
 
     public void loadData(Materials materials){
 
+
+
         if(materials != null){
+
+            mat.setId(materials.getId());
 
             if(!materials.getImages().isEmpty()) {
                 productEditImage.loadData(objectConverter.convert(materials.getImages(), CommonImagesData.class));
@@ -168,7 +175,7 @@ public class RightSideMaterials {
         HorizontalLayout buttonHolder = new HorizontalLayout();
 
         Button cancel = commonComponents.normalThemeButton("Cancel","Materials", ButtonVariant.LUMO_ICON);
-        Button createOrder = commonComponents.normalThemeButtonNoNavigate("Create Material", ButtonVariant.LUMO_PRIMARY);
+        Button createOrder = commonComponents.normalThemeButtonNoNavigate("Save", ButtonVariant.LUMO_PRIMARY);
 
 
         createOrder.addClickListener(e->{
@@ -203,10 +210,9 @@ public class RightSideMaterials {
                 }
 
 
-                System.out.println(mat.getMaterialName());
 
 
-                materialService.saveNewMaterial(mat);
+                materialsConsumer.accept(mat);
 
 
             }

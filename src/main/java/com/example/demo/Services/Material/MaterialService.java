@@ -71,13 +71,17 @@ public class MaterialService {
     }
 
     @SneakyThrows
-    public Materials getEditProduct(Long id) {
-
-
-               return  httpCallLogic.HttpCall("material/deleteMaterial", HttpMethod.GET, id, Materials.class,true);
+    public Materials getMaterial(Long id) {
+               return  httpCallLogic.HttpCall("material/getMaterial", HttpMethod.GET, id, Materials.class,true);
 
     }
 
+
+    @SneakyThrows
+    public void editProduct(Materials mat) {
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("material/editExistingMaterial", HttpMethod.POST, mat, ErrorResponse.class,false),null,success,true);
+    }
 
 
 

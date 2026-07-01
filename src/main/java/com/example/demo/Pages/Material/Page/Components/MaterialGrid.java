@@ -190,10 +190,12 @@ public class MaterialGrid {
             span.addClassName("stock-badge");
             span.getStyle().set("width", "fit-content");
 
-            switch (e.getStock()){
-                case In_Stock -> span.addClassName("stock-in");
-                case No_Stock -> span.addClassName("stock-out");
-                case Low_Stock -> span.addClassName("stock-low");
+            if(e.getStock() != null) {
+                switch (e.getStock()) {
+                    case In_Stock -> span.addClassName("stock-in");
+                    case No_Stock -> span.addClassName("stock-out");
+                    case Low_Stock -> span.addClassName("stock-low");
+                }
             }
 
 
@@ -231,7 +233,8 @@ public class MaterialGrid {
 
 
             edit.addClickListener(editValue->{
-                System.out.println(e.getId());
+
+                common.customNavigate("MaterialEdit/" +e.getId());
             });
 
 
