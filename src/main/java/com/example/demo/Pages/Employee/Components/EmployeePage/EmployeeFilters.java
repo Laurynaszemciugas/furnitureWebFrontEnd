@@ -1,10 +1,9 @@
-package com.example.demo.Pages.Employee.Components;
+package com.example.demo.Pages.Employee.Components.EmployeePage;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.CurrentFilterDisplay;
 import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
-import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
 import com.example.demo.Enums.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -15,7 +14,6 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import lombok.Setter;
@@ -175,7 +173,7 @@ public class EmployeeFilters {
 
         }
 
-        TextField search = commonComponents.textFieldCrafter("Search products...","",VaadinIcon.SEARCH);
+        TextField search = commonComponents.textFieldCrafter("Search employees...","",VaadinIcon.SEARCH);
         search.addValueChangeListener(e->{
             String value = e.getValue().isBlank() ? "ALL" : e.getValue();
             getPrompConsumer.accept(value);
@@ -192,7 +190,7 @@ public class EmployeeFilters {
 
 
 
-        Span name = commonComponents.spanCrafter("Materials list","stat-value");
+        Span name = commonComponents.spanCrafter("Employees list","stat-value");
 
         HorizontalLayout h2 = new HorizontalLayout();
         h2.addClassName("layout-flex");

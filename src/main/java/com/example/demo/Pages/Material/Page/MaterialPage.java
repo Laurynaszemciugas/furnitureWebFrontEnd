@@ -222,8 +222,8 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
     public VerticalLayout gridFilterHolder(){
         VerticalLayout v = new VerticalLayout();
+        v.setPadding(false);
         v.setWidthFull();
-        v.addClassName("island");
 
         v.add(
                 materialGrid.gridHolder(materialService.getUserMaterialsList(filterData)),

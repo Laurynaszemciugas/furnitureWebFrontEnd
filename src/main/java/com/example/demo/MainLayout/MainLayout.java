@@ -92,8 +92,7 @@ public class MainLayout extends AppLayout {
             UI.getCurrent().getPage().reload();
         });
 
-        Button button = new Button("32423");
-        button.getStyle().set("background-color","green").set("cursor", "pointer");;
+
         leftSideBar.add(
                 common.normalButtons("DashBoard","DashBoard",VaadinIcon.DASHBOARD),
                 common.normalButtons("Products/1","Products",VaadinIcon.PACKAGE),

@@ -1,4 +1,4 @@
-package com.example.demo.Pages.Employee.Components;
+package com.example.demo.Pages.Employee.Components.EmployeePage;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -27,10 +27,10 @@ public class EmployeeMiniStats {
         miniStatHolders.setWidthFull();
 
         miniStatHolders.add(
-                miniStatCrafter.miniStats(VaadinIcon.CUBES, "Total material", miniStatHolder.getFirst(), "All materials", "Black", "rgba(239, 68, 68, 0.18)"),
-                miniStatCrafter.miniStats(VaadinIcon.CHECK, ActiveInactive.ACTIVE.getGetDisplayNames(), miniStatHolder.getSecond(), "Usable materials", "Black", "rgba(59, 130, 246, 0.18)"),
-                miniStatCrafter.miniStats(VaadinIcon.EYE_SLASH, ActiveInactive.INACTIVE.getGetDisplayNames(), miniStatHolder.getThird(), "Non Usable materials", "Black", "rgba(234, 179, 8, 0.18)"),
-                miniStatCrafter.miniStats(VaadinIcon.PAPERCLIP, "Recently added", miniStatHolder.getFourth(), "This month", "Black", "rgba(249, 115, 22, 0.18)")
+                miniStatCrafter.miniStats(VaadinIcon.USERS, "Total employees", miniStatHolder.getFirst(), "All employees", "Black", "rgba(239, 68, 68, 0.18)"),
+                miniStatCrafter.miniStats(VaadinIcon.USER_STAR, ActiveInactive.ACTIVE.getGetDisplayNames(), miniStatHolder.getSecond(), "Active employee", "Black", "rgba(59, 130, 246, 0.18)"),
+                miniStatCrafter.miniStats(VaadinIcon.USER_CLOCK, ActiveInactive.INACTIVE.getGetDisplayNames(), miniStatHolder.getThird(), "Inactive employees", "Black", "rgba(234, 179, 8, 0.18)"),
+                miniStatCrafter.miniStats(VaadinIcon.USER_CHECK, "Recently added", miniStatHolder.getFourth(), "This month", "Black", "rgba(249, 115, 22, 0.18)")
         );
 
         return miniStatHolders;

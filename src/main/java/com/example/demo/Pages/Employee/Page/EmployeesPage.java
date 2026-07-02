@@ -6,12 +6,11 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.CurrentFilterDisplay;
 import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
-import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
 import com.example.demo.MainLayout.MainLayout;
-import com.example.demo.Pages.Employee.Components.EmployeeBriefExplanations;
-import com.example.demo.Pages.Employee.Components.EmployeeFilters;
-import com.example.demo.Pages.Employee.Components.EmployeeGrid;
-import com.example.demo.Pages.Employee.Components.EmployeeMiniStats;
+import com.example.demo.Pages.Employee.Components.EmployeePage.EmployeeBriefExplanations;
+import com.example.demo.Pages.Employee.Components.EmployeePage.EmployeeFilters;
+import com.example.demo.Pages.Employee.Components.EmployeePage.EmployeeGrid;
+import com.example.demo.Pages.Employee.Components.EmployeePage.EmployeeMiniStats;
 import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -26,7 +25,10 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
     Common common;
     EmployeeService employeeService;
 
+    VerticalLayout verticalLayout = new VerticalLayout();
+
     VerticalLayout filterMemory = new VerticalLayout();
+
 
     Paganation paganation;
     CurrentFilterDisplay currentFilterDisplay;
@@ -38,7 +40,7 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
 
     EmployeeFilterHolder filterData = new EmployeeFilterHolder();
 
-    VerticalLayout verticalLayout = new VerticalLayout();
+
 
     public EmployeesPage(CommonComponents commonComponents, Common common, EmployeeService employeeService) {
         this.commonComponents = commonComponents;
@@ -65,6 +67,9 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
         filterMemory.removeAll();
         filterMemory.setWidthFull();
         filterMemory.setPadding(false);
+
+
+
         filterMemory.add(
                 employeeBriefExplanations.briefExplanation(),
                 employeeMiniStats.miniStatHolder(employeeService.getMiniStats(
@@ -173,6 +178,8 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
 
         );
 
+
+
         verticalLayout.add(
                 filterMemory,
                 gridFilterHolder()
@@ -196,8 +203,8 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
 
     public VerticalLayout gridFilterHolder(){
         VerticalLayout v = new VerticalLayout();
+        v.setPadding(false);
         v.setWidthFull();
-        v.addClassName("island");
 
         v.add(
                 employeeGrid.gridHolder(employeeService.getEmployeeFeed(filterData)),

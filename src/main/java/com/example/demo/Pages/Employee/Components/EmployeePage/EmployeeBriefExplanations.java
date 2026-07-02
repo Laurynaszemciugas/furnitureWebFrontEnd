@@ -1,4 +1,4 @@
-package com.example.demo.Pages.Employee.Components;
+package com.example.demo.Pages.Employee.Components.EmployeePage;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -28,7 +28,7 @@ public class EmployeeBriefExplanations {
 
         v.add(
                 commonComponents.biefPageExplanation("Employees"),
-                commonComponents.buttonThemeAndIcon("Add employee","ss", ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White"));
+                commonComponents.buttonThemeAndIcon("Add employee","EmployeesAdd", ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White"));
         return v;
     }
 
