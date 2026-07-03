@@ -204,6 +204,7 @@ public class CommonComponents {
         HorizontalLayout valueRow = new HorizontalLayout(component1, component2);
         valueRow.setAlignItems(FlexComponent.Alignment.BASELINE);
         valueRow.addClassName("stat-row");
+        valueRow.getStyle().set("gap", "25px");
 
         valueRow.setWidthFull();
 
