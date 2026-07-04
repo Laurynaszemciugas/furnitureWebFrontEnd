@@ -80,7 +80,6 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
 
         removeAll();
-
         add(mainLayout());
 
     }

@@ -7,6 +7,9 @@ import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.DashBoard.Components.*;
 import com.example.demo.Services.Dashboard.DashBoardService;
 import com.example.demo.ChartsGraphs.DashBoard.DashBoardCharts;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -51,7 +54,9 @@ public class DashBoardPage extends VerticalLayout implements BeforeEnterObserver
         }
 
 
-        add(mainLayout());
+        add(
+                loadingOverlay(),
+                mainLayout());
 
     }
 
@@ -88,6 +93,22 @@ public class DashBoardPage extends VerticalLayout implements BeforeEnterObserver
 
 
 
+    }
+
+
+    private Component loadingOverlay() {
+        Div overlay = new Div();
+        overlay.addClassName("loading-overlay");
+
+        Div loader = new Div();
+        loader.addClassName("modern-loader");
+
+        Span text = new Span("Loading dashboard...");
+        text.addClassName("loading-text");
+
+        overlay.add(loader, text);
+
+        return overlay;
     }
 
 

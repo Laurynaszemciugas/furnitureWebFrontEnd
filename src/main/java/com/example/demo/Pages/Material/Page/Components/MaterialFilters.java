@@ -63,6 +63,7 @@ public class MaterialFilters {
 
     public VerticalLayout filters(){
         VerticalLayout v = new VerticalLayout();
+        v.addClassName("smooth-panel");
         v.setPadding(false);
 
 

@@ -630,3 +630,419 @@ background-color: #d4edda;
         color: #3b82f6;
         border-bottom-color: #3b82f6;
 }
+
+
+
+
+.animation-page {
+    min-height: 100vh;
+    padding: 40px;
+    background:
+            radial-gradient(circle at top left, rgba(37, 99, 235, 0.16), transparent 35rem),
+            #f5f7fb;
+    font-family: Inter, system-ui, sans-serif;
+    color: #0f172a;
+    overflow-x: hidden;
+}
+
+/*
+   PAGE LOADING OVERLAY
+
+   This appears first, then fades away automatically.
+   Pure CSS example.
+*/
+
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 18px;
+    background: #f8fafc;
+    animation: hideLoader 1.6s ease forwards;
+}
+
+.modern-loader {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    border: 5px solid #dbeafe;
+    border-top-color: #2563eb;
+    animation: spin 0.8s linear infinite;
+}
+
+.loading-text {
+    color: #64748b;
+    font-weight: 800;
+    animation: pulseText 1s ease-in-out infinite;
+}
+
+@keyframes hideLoader {
+    0%, 65% {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    100% {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulseText {
+    0%, 100% {
+        opacity: 0.45;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/*
+   PAGE ENTER ANIMATION
+
+   When the page loads, the header slides up smoothly.
+*/
+
+.page-header {
+    max-width: 850px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.7s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.page-header h1 {
+    margin: 16px 0 10px;
+    font-size: clamp(36px, 6vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -0.07em;
+}
+
+.page-header p {
+    max-width: 620px;
+    color: #64748b;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.badge {
+    width: fit-content;
+    padding: 8px 13px;
+    border-radius: 999px;
+    color: #2563eb;
+    background: rgba(37, 99, 235, 0.1);
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/*
+   BUTTON MOVEMENT
+
+   Smooth button hover + click feeling.
+*/
+
+.animated-button {
+    margin-top: 10px;
+    border: none;
+    border-radius: 16px;
+    color: white;
+    font-weight: 900;
+    background: linear-gradient(135deg, #2563eb, #0ea5e9);
+    box-shadow: 0 18px 35px rgba(37, 99, 235, 0.26);
+    transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            filter 0.2s ease;
+}
+
+.animated-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 24px 45px rgba(37, 99, 235, 0.34);
+    filter: brightness(1.04);
+}
+
+.animated-button:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+/*
+   SKELETON LOADING CARD
+
+   Use this while data is loading.
+*/
+
+.skeleton-card {
+    max-width: 720px;
+    padding: 22px;
+    margin-bottom: 26px;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.06);
+    animation: fadeUp 0.7s cubic-bezier(.2, .8, .2, 1) 0.1s both;
+}
+
+.skeleton-top {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.skeleton-avatar,
+.skeleton-line {
+    position: relative;
+    overflow: hidden;
+    background: #e2e8f0;
+}
+
+.skeleton-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 18px;
+}
+
+.skeleton-lines {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+}
+
+.skeleton-line {
+    height: 14px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+}
+
+.skeleton-avatar::after,
+.skeleton-line::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.7),
+            transparent
+    );
+    animation: shimmer 1.2s infinite;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.w-85 {
+    width: 85%;
+}
+
+.w-70 {
+    width: 70%;
+}
+
+.w-40 {
+    width: 40%;
+}
+
+@keyframes shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/*
+   STAGGERED CARD LOADING
+
+   Each card appears after the previous one.
+*/
+
+.animated-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 26px;
+}
+
+.animated-card {
+    padding: 22px;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.06);
+    animation: cardEnter 0.65s cubic-bezier(.2, .8, .2, 1) both;
+    transition:
+            transform 0.22s ease,
+            box-shadow 0.22s ease,
+            border-color 0.22s ease;
+}
+
+.animated-card:nth-child(1) {
+    animation-delay: 0.15s;
+}
+
+.animated-card:nth-child(2) {
+    animation-delay: 0.25s;
+}
+
+.animated-card:nth-child(3) {
+    animation-delay: 0.35s;
+}
+
+.animated-card:nth-child(4) {
+    animation-delay: 0.45s;
+}
+
+.animated-card:hover {
+    transform: translateY(-8px) scale(1.015);
+    border-color: rgba(37, 99, 235, 0.35);
+    box-shadow: 0 30px 65px rgba(37, 99, 235, 0.16);
+}
+
+.card-icon {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 18px;
+    border-radius: 20px;
+    display: grid;
+    place-items: center;
+    color: #2563eb;
+    background: rgba(37, 99, 235, 0.1);
+}
+
+.card-title {
+    color: #64748b;
+    font-weight: 800;
+}
+
+.animated-card h2 {
+    margin: 8px 0 0;
+    font-size: 34px;
+    letter-spacing: -0.05em;
+}
+
+/*
+   BIG SMOOTH PANEL
+.smooth-panel:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 34px 80px rgba(37, 99, 235, 0.14);
+}
+   Nice hover animation with transform only.
+*/
+
+.smooth-panel {
+
+    animation: fadeUp 0.7s cubic-bezier(.2, .8, .2, 1) 0.55s both;
+    transition:
+            transform 0.28s ease,
+            box-shadow 0.28s ease;
+}
+
+
+
+.panel-text h2 {
+    margin: 18px 0 10px;
+    font-size: 38px;
+    letter-spacing: -0.055em;
+}
+
+.panel-text p {
+    color: #64748b;
+    font-size: 16px;
+    line-height: 1.65;
+}
+
+.fake-chart {
+    height: 210px;
+    padding: 18px;
+    border-radius: 26px;
+    display: flex;
+    align-items: end;
+    gap: 14px;
+    background: #f1f5f9;
+}
+
+.bar {
+    flex: 1;
+    height: var(--height);
+    border-radius: 999px;
+    background: linear-gradient(180deg, #0ea5e9, #2563eb);
+    box-shadow: 0 14px 28px rgba(37, 99, 235, 0.22);
+    animation: growBar 1s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+/*
+   MAIN KEYFRAMES
+*/
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cardEnter {
+    from {
+        opacity: 0;
+        transform: translateY(26px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes growBar {
+    from {
+        height: 0;
+    }
+
+    to {
+        height: var(--height);
+    }
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1000px) {
+    .animated-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .smooth-panel {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .animation-page {
+        padding: 18px;
+    }
+
+    .animated-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .smooth-panel {
+        padding: 20px;
+    }
+}

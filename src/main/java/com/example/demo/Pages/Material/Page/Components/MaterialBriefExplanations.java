@@ -21,6 +21,7 @@ public class MaterialBriefExplanations {
     public HorizontalLayout briefExplanation(){
 
         HorizontalLayout v = new HorizontalLayout();
+        v.addClassName("smooth-panel");
         v.setWidthFull();
         v.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 

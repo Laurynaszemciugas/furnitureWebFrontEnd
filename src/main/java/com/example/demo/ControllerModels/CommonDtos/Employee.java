@@ -28,7 +28,6 @@ public class Employee {
     private LocalDate dateOfBirth;
     private String address;
     private String jobTittle;
-    private String employeeId;
     private EmploymentType employmentType;
 
     private String profileImage;

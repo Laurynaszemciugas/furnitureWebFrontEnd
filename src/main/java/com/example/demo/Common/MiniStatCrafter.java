@@ -20,6 +20,7 @@ public class MiniStatCrafter {
         HorizontalLayout h = new HorizontalLayout();
         h.setAlignItems(FlexComponent.Alignment.CENTER);
         h.addClassName("island");
+        h.addClassName("animated-card");
         h.getStyle().set("flex", "1 1 302px");
         h.getStyle().set("max-width", "620px");
         h.getStyle().set("min-width", "302px");
