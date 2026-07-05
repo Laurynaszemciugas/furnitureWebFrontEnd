@@ -36,9 +36,29 @@ public class HttpCallLogic {
     HttpClient client = HttpClient.newHttpClient();
 
     @SneakyThrows
-    public <R,T> R HttpCall(String endpoint, HttpMethod httpMethod, T data, Class<R> responseType, boolean pathVariable ){
-
+    public <R,T> R HttpCall(
+            String endpoint,
+            HttpMethod httpMethod,
+            T data,
+            Class<R> responseType,
+            boolean pathVariable
+    ) {
         String jwt = sessionCrafter.extractSession("JWT", String.class);
+
+        return HttpCallWithJwt(
+                endpoint,
+                httpMethod,
+                data,
+                responseType,
+                pathVariable,
+                jwt
+        );
+    }
+
+
+    @SneakyThrows
+    public <R,T> R HttpCallWithJwt(String endpoint, HttpMethod httpMethod, T data, Class<R> responseType, boolean pathVariable, String jwt ){
+
 
         // un // this if want to work normally it is just quite difficult with it on to trobulshute pages
 //        if (jwt == null || jwt.isBlank()) {
@@ -86,7 +106,7 @@ public class HttpCallLogic {
         int status = response.statusCode();
 
         // small data show
-        System.out.println("=============================" + common.dateFormatter(LocalDateTime.now(),"MMMM d, yyyy ● h:mma") + "=============================");
+        System.out.println("============================="  + "=============================");
         System.out.println("HTTP CALL: " + httpMethod + " " + fullUrl);
         System.out.println("STATUS: " + status);
         System.out.println("BODY LENGTH: " + (body == null ? "null" : body.length()));

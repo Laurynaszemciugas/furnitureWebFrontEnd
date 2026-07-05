@@ -261,6 +261,92 @@ public class CommonComponents {
 
 
 
+    // grid shimmer
+    public VerticalLayout shimmer(int size) {
+
+        VerticalLayout table = new VerticalLayout();
+        table.setWidthFull();
+        table.setPadding(false);
+        table.setSpacing(false);
+
+        for (int i = 0; i < size; i++) {
+            table.add(shimmerRow());
+        }
+
+        return table;
+    }
+
+    public HorizontalLayout shimmerRow() {
+
+        HorizontalLayout row = new HorizontalLayout();
+        row.addClassName("skeleton-card");
+        row.setWidthFull();
+        row.setAlignItems(FlexComponent.Alignment.CENTER);
+        row.setSpacing(true);
+
+        row.getStyle().set("max-width", "none");
+
+        Div avatar = new Div();
+        avatar.addClassNames("skeleton", "skeleton-avatar");
+
+        VerticalLayout materialColumn = new VerticalLayout();
+        materialColumn.setPadding(false);
+        materialColumn.setSpacing(false);
+        materialColumn.setWidth("260px");
+
+        Div materialName = line("w-70");
+        Div materialPrice = line("w-40");
+
+        materialColumn.add(materialName, materialPrice);
+
+        Div type = line("w-10");
+        Div description = line("w-10");
+        Div status = line("w-5");
+
+        VerticalLayout stockColumn = new VerticalLayout();
+        stockColumn.setPadding(false);
+        stockColumn.setSpacing(false);
+        stockColumn.setWidth("170px");
+
+        Div stockBadge = line("w-70");
+        Div currentStock = line("w-85");
+        Div minThreshold = line("w-70");
+
+        stockColumn.add(stockBadge, currentStock, minThreshold);
+
+        Div created = line("w-10");
+
+        HorizontalLayout actions = new HorizontalLayout();
+        actions.setPadding(false);
+        actions.setSpacing(true);
+
+        Div deleteButton = line("w-5");
+        Div editButton = line("w-5");
+
+        actions.add(deleteButton, editButton);
+
+        row.add(
+                avatar,
+                materialColumn,
+                type,
+                description,
+                status,
+                stockColumn,
+                created,
+                actions
+        );
+
+        row.expand(materialColumn);
+
+        return row;
+    }
+
+    private Div line(String widthClass) {
+        Div div = new Div();
+        div.addClassNames("skeleton", "skeleton-line", widthClass);
+        return div;
+    }
+
 
 
 

@@ -31,10 +31,9 @@ public class MaterialService {
 
 
 
-    @SneakyThrows
-    public List<MaterialBriefDto> getUserMaterialsList(MaterialFilterHolder materialFilterHolder) {
+    public List<MaterialBriefDto> getUserMaterialsList(MaterialFilterHolder materialFilterHolder,String jwt) {
 
-        return Arrays.stream(httpCallLogic.HttpCall("material/getAllMaterialForFeed", HttpMethod.POST,materialFilterHolder, MaterialBriefDto[].class,false)).toList();
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("material/getAllMaterialForFeed", HttpMethod.POST,materialFilterHolder, MaterialBriefDto[].class,false,jwt)).toList();
 
     }
 

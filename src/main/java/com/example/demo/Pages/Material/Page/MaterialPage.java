@@ -3,8 +3,10 @@ package com.example.demo.Pages.Material.Page;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.CurrentFilterDisplay;
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
+import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Material.Page.Components.MaterialBriefExplanations;
 import com.example.demo.Pages.Material.Page.Components.MaterialFilters;
@@ -12,13 +14,18 @@ import com.example.demo.Pages.Material.Page.Components.MaterialGrid;
 import com.example.demo.Pages.Material.Page.Components.MaterialMiniStats;
 import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Route(value = "Materials", layout = MainLayout.class)
 public class MaterialPage extends VerticalLayout implements BeforeEnterObserver {
@@ -38,7 +45,11 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
     MaterialService materialService;
     CurrentFilterDisplay currentFilterDisplay;
 
+    SessionCrafter sessionCrafter;
+
     MaterialFilterHolder filterData = new MaterialFilterHolder();
+
+    Div gridHolder = new Div();
 
     public MaterialPage(CommonComponents commonComponents, Common common,MaterialService materialService) {
         this.commonComponents = commonComponents;
@@ -51,6 +62,8 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
         this.materialService = materialService;
         this.currentFilterDisplay = new CurrentFilterDisplay(commonComponents,common);
 
+        this.sessionCrafter = new SessionCrafter();
+
         materialFilters.setCurrentFilterDisplay(currentFilterDisplay);
 
 
@@ -59,11 +72,13 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
         setSizeFull();
         setAlignItems(FlexComponent.Alignment.CENTER);
 
+        gridHolder.setWidthFull();
 
         filterMemory.setWidthFull();
         filterMemory.setPadding(false);
 
         addClassName("animation-page");
+
 
     }
 
@@ -184,12 +199,21 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
         );
 
+
+
+
+        loadGridValues();
+
+
         verticalLayout.add(
                 filterMemory,
-                gridFilterHolder()
+                gridHolder
 
         );
     }
+
+
+
 
     public void filterFeed(){
 
@@ -206,17 +230,38 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
         );
 
+        loadGridValues();
+
         verticalLayout.add(
                 filterMemory,
-                gridFilterHolder()
+                gridHolder
 
         );
 
-//        verticalLayout.add(
-//                filterMemory,
-//                gridFilterHolder()
-//
-//        );
+    }
+
+    public void loadGridValues(){
+        UI ui = UI.getCurrent();
+        String jwt = sessionCrafter.extractSession("JWT", String.class);
+
+        gridHolder.removeAll();
+        gridHolder.add(
+                commonComponents.shimmer(5)
+        );
+
+        CompletableFuture
+                .supplyAsync(()->{
+
+                    List<MaterialBriefDto> items = materialService.getUserMaterialsList(filterData,jwt);
+                    common.timer(250);
+                    return items;
+                })
+                .thenAccept(e->{
+                    ui.access(() -> {
+                        gridHolder.removeAll();
+                        gridHolder.add(gridFilterHolder(e));
+                    });
+                });
     }
 
 
@@ -229,13 +274,16 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
 
 
-    public VerticalLayout gridFilterHolder(){
+
+
+
+    public VerticalLayout gridFilterHolder(List<MaterialBriefDto> filterStuff){
         VerticalLayout v = new VerticalLayout();
         v.setPadding(false);
         v.setWidthFull();
 
         v.add(
-                materialGrid.gridHolder(materialService.getUserMaterialsList(filterData)),
+                materialGrid.gridHolder(filterStuff),
                 paganation.buttonHolder(Math.toIntExact(materialService.getPageCount(filterData)))
 
         );
