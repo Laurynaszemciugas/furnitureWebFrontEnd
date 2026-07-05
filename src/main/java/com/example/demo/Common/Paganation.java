@@ -31,6 +31,7 @@ public class Paganation {
         button.setVisible(false);
         button.addThemeVariants(ButtonVariant.LUMO_ICON);
 //        button.addClassName("pagination-button");
+        button.addClassName("animated-card");
 
         button.addClickListener(e->{
             currentPage = Integer.parseInt(button.getText());

@@ -48,6 +48,8 @@ public class MaterialFilters {
     Consumer<MaterialFilterHolder> clearFilters;
 
 
+    boolean firstLoad = true;
+
     public MaterialFilters(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
@@ -63,7 +65,15 @@ public class MaterialFilters {
 
     public VerticalLayout filters(){
         VerticalLayout v = new VerticalLayout();
-        v.addClassName("smooth-panel");
+
+        if(firstLoad){
+            v.addClassName("smooth-panel");
+            firstLoad = false;
+        }
+        else{
+            v.removeClassName("smooth-panel");
+        }
+
         v.setPadding(false);
 
 
@@ -151,9 +161,14 @@ public class MaterialFilters {
         );
 
 
+
+
+
         List<Button> buttonList = List.of(all,inStock,lowStock,NoStock);
 
         for(var s : buttonList){
+
+
 
 
             currentFilterDisplay.setReloadButtons(ee->{
@@ -177,6 +192,22 @@ public class MaterialFilters {
 
 
 
+        }
+
+        if(filterData.getStockChoice().equals(Stock.In_Stock)){
+            buttonList.forEach(button->
+                    button.removeClassName("active"));
+            inStock.addClassName("active");
+        }
+        if(filterData.getStockChoice().equals(Stock.Low_Stock)){
+            buttonList.forEach(button->
+                    button.removeClassName("active"));
+            lowStock.addClassName("active");
+        }
+        if(filterData.getStockChoice().equals(Stock.No_Stock)){
+            buttonList.forEach(button->
+                    button.removeClassName("active"));
+            NoStock.addClassName("active");
         }
 
         TextField search = commonComponents.textFieldCrafter("Search products...","",VaadinIcon.SEARCH);

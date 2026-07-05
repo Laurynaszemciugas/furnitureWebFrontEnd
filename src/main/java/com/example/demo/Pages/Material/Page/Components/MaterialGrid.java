@@ -39,7 +39,7 @@ public class MaterialGrid {
     public VerticalLayout gridHolder(List<MaterialBriefDto> materiaData){
 
         VerticalLayout vv = new VerticalLayout();
-        vv.addClassName("animated-card");
+        vv.addClassName("smooth-panel");
         vv.setPadding(false);
         vv.setSpacing(false);
         vv.setWidthFull();

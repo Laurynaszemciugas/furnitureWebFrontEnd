@@ -11,6 +11,9 @@ import com.example.demo.Pages.Material.Page.Components.MaterialFilters;
 import com.example.demo.Pages.Material.Page.Components.MaterialGrid;
 import com.example.demo.Pages.Material.Page.Components.MaterialMiniStats;
 import com.example.demo.Services.Material.MaterialService;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -57,21 +60,10 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
         setAlignItems(FlexComponent.Alignment.CENTER);
 
 
-        filterMemory.removeAll();
         filterMemory.setWidthFull();
         filterMemory.setPadding(false);
-        filterMemory.add(
-                materialBriefExplanations.briefExplanation(),
 
-                materialMiniStats.miniStatHolder(
-                        materialService.getMiniStats(common.dateCrafter(0,0,0,0,true),
-                                common.dateCrafter(0,1,1,0,true))),
-
-                materialFilters.filters()
-
-        );
-
-
+        addClassName("animation-page");
 
     }
 
@@ -93,7 +85,7 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
     public VerticalLayout mainLayout() {
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top", "5px");
-        verticalLayout.addClassName("main-island");
+        //verticalLayout.addClassName("main-island");
 
 
         reloadData();
@@ -176,6 +168,8 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
     public void reloadData(){
 
+
+
         verticalLayout.removeAll();
 
         filterData = new MaterialFilterHolder();
@@ -202,11 +196,27 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
         verticalLayout.removeAll();
 
+        filterMemory.removeAll();
+        filterMemory.add(
+                materialBriefExplanations.briefExplanation(),
+                materialMiniStats.miniStatHolder(
+                        materialService.getMiniStats(common.dateCrafter(0,0,0,0,true),
+                                common.dateCrafter(0,1,1,0,true))),
+                materialFilters.filters()
+
+        );
+
         verticalLayout.add(
                 filterMemory,
                 gridFilterHolder()
 
         );
+
+//        verticalLayout.add(
+//                filterMemory,
+//                gridFilterHolder()
+//
+//        );
     }
 
 

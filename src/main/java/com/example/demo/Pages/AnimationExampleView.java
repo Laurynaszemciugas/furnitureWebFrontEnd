@@ -130,7 +130,7 @@ public class AnimationExampleView extends Div {
 
     private Component smoothPanel() {
         Div panel = new Div();
-       // panel.addClassName("smooth-panel");
+        panel.addClassName("smooth-panel");
 
         Div left = new Div();
         left.addClassName("panel-text");

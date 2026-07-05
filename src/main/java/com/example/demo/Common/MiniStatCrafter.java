@@ -11,6 +11,9 @@ public class MiniStatCrafter {
     CommonComponents commonComponents;
     Common common;
 
+
+    int times = 0;
+
     public MiniStatCrafter(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
@@ -20,7 +23,16 @@ public class MiniStatCrafter {
         HorizontalLayout h = new HorizontalLayout();
         h.setAlignItems(FlexComponent.Alignment.CENTER);
         h.addClassName("island");
-        h.addClassName("animated-card");
+
+        if(times <= 3){
+            h.addClassName("animated-card");
+            times++;
+        }
+        else{
+            h.removeClassName("animated-card");
+        }
+
+
         h.getStyle().set("flex", "1 1 302px");
         h.getStyle().set("max-width", "620px");
         h.getStyle().set("min-width", "302px");
