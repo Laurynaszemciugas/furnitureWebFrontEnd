@@ -1,4 +1,4 @@
-package com.example.demo.Pages.Employee.Components.EmployeePage;
+package com.example.demo.Pages.Employee.Components.EmployeePageComponents;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -214,7 +214,7 @@ public class EmployeeGrid {
 
             edit.addClickListener(editValue->{
 
-//                common.customNavigate("MaterialEdit/" +e.getId());
+                common.customNavigate("EmployeesEdit/" +e.getId());
             });
 
 
@@ -223,9 +223,9 @@ public class EmployeeGrid {
             delete.addClickListener(deleteValue->{
                 common.deleteConfirmation(e.getFullName());
                common.setBooleanConsumer(canDelete->{
-//                   if(canDelete){
-//                       materialService.removeProduct(e.getId());
-//                   }
+                   if(canDelete){
+                       employeeService.deleteEmployee(e.getId());
+                   }
                });
             });
 

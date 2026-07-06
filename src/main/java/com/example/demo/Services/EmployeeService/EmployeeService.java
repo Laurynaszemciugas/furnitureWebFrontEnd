@@ -2,7 +2,10 @@ package com.example.demo.Services.EmployeeService;
 
 import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.ControllerModels.Common.MiniStatHolder;
+import com.example.demo.ControllerModels.CommonDtos.Employee;
+import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.ControllerModels.Employee.EmployeeBriefDto;
+import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
 import com.example.demo.DTOS.ComboBoxEmployees;
 import com.example.demo.DTOS.ComboBoxMaterial;
@@ -49,6 +52,29 @@ public class EmployeeService {
         return httpCallLogic.HttpCall("employee/getTotalPages", HttpMethod.POST,employeeFilterHolder, Long.class,false);
     }
 
+
+    @SneakyThrows
+    public void saveNewEmployee(Employee employee) {
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("employee/saveNewEmployee", HttpMethod.POST, employee, ErrorResponse.class,false),null,success,true);
+    }
+
+    @SneakyThrows
+    public void editExistingEmployee(Employee employee) {
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("employee/editEmployee", HttpMethod.POST, employee, ErrorResponse.class,false),null,success,true);
+    }
+
+    @SneakyThrows
+    public void deleteEmployee(Long id) {
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("employee/deleteEmployee", HttpMethod.GET, id, ErrorResponse.class,true),null,success,true);
+    }
+
+    @SneakyThrows
+    public Employee getEmployee(Long id) {
+        return httpCallLogic.HttpCall("employee/getEmployee", HttpMethod.GET,id, Employee.class,true);
+    }
 
 
 

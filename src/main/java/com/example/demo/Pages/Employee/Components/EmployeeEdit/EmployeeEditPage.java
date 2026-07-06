@@ -1,4 +1,5 @@
-package com.example.demo.Pages.Employee.EmployeeAdd;
+package com.example.demo.Pages.Employee.Components.EmployeeEdit;
+
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -12,8 +13,8 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
-@Route(value = "EmployeesAdd", layout = MainLayout.class)
-public class EmployeeAddPage extends VerticalLayout implements BeforeEnterObserver {
+@Route(value = "EmployeesEdit/:item", layout = MainLayout.class)
+public class EmployeeEditPage extends VerticalLayout implements BeforeEnterObserver {
 
 
 
@@ -28,12 +29,12 @@ public class EmployeeAddPage extends VerticalLayout implements BeforeEnterObserv
 
 
 
+    int itemChoice = 0;
 
 
 
 
-
-    public EmployeeAddPage(CommonComponents commonComponents, Common common, EmployeeService employeeService) {
+    public EmployeeEditPage(CommonComponents commonComponents, Common common, EmployeeService employeeService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.employeeService = employeeService;
@@ -57,6 +58,9 @@ public class EmployeeAddPage extends VerticalLayout implements BeforeEnterObserv
 
         removeAll();
 
+        int page = Math.toIntExact( Integer.parseInt(beforeEnterEvent.getRouteParameters().get("item").orElse(null)));
+
+        this.itemChoice  = page;
 
         add(mainLayout());
 
@@ -71,13 +75,13 @@ public class EmployeeAddPage extends VerticalLayout implements BeforeEnterObserv
 
 
         addEditComponents.setEmp(e->{
-            employeeService.saveNewEmployee(e);
+            employeeService.editExistingEmployee(e);
         });
 
 
         verticalLayout.add(
                 addEditComponents.briefExplanation("Add new employee"),
-                addEditComponents.employeeInformation(null)
+                addEditComponents.employeeInformation(employeeService.getEmployee((long) itemChoice))
         );
 
         return verticalLayout;

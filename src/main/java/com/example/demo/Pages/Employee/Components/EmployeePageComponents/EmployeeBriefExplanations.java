@@ -1,4 +1,4 @@
-package com.example.demo.Pages.Employee.Components.EmployeePage;
+package com.example.demo.Pages.Employee.Components.EmployeePageComponents;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;

@@ -1,4 +1,4 @@
-package com.example.demo.Pages.Employee.Components.EmployeeAddPage;
+package com.example.demo.Pages.Employee.Components.EmployeeAddEditPage;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -14,18 +14,13 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.*;
-import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.server.streams.InMemoryUploadHandler;
-import com.vaadin.flow.server.streams.UploadHandler;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -69,6 +64,8 @@ public class EmployeeAddEditComponents {
 
     Consumer<Employee> emp;
 
+    boolean dataExists = false;
+
     private final Binder<Void> binder = new Binder<>();
 
 
@@ -79,7 +76,7 @@ public class EmployeeAddEditComponents {
         this.singlePhotoLogic = new SinglePhotoLogic(commonComponents,common);
 
 
-        binder();
+
 
     }
 
@@ -125,6 +122,7 @@ public class EmployeeAddEditComponents {
                 employee.setGmail(accountGmail.getValue());
 
                 User user = new User();
+                user.setGmail(emailAddress.getValue());
                 user.setId(Long.valueOf(employeeId.getValue()));
                 user.setPassword(password.getValue());
                 user.setName(name.getValue());
@@ -301,34 +299,41 @@ public class EmployeeAddEditComponents {
 
     }
 
-    public void loadData(Employee employee){
+    public void loadData(Employee emp){
 
 
 
 
-        if(employee != null){
+        if(emp != null){
 
 
-            name.setValue(employee.getName());
-            lastName.setValue(employee.getLastName());
-            emailAddress.setValue(employee.getGmail());
-            phoneNumber.setValue(employee.getPhoneNumber());
-            dateOfBirth.setValue(employee.getDateOfBirth());
-            address.setValue(employee.getAddress());
-            singlePhotoLogic.setImageData(employee.getProfileImage());
 
-            department.setValue(employee.getEmployeeDepartment());
-            role.setValue(employee.getEmployeeCategory());
-            employmentType.setValue(employee.getEmploymentType());
-            hourlySalary.setValue(employee.getHourlyRate());
-            employeeId.setValue(Math.toIntExact(employee.getId()));
-            dateOfJoining.setValue(employee.getCreated());
+            dataExists = true;
 
-            accountGmail.setValue(employee.getGmail());
+            employee.setId(emp.getId());
+
+            name.setValue(emp.getName());
+            lastName.setValue(emp.getLastName());
+            emailAddress.setValue(emp.getGmail());
+            phoneNumber.setValue(emp.getPhoneNumber());
+            dateOfBirth.setValue(emp.getDateOfBirth());
+            address.setValue(emp.getAddress());
+            singlePhotoLogic.setImageData(emp.getProfileImage());
+
+            department.setValue(emp.getEmployeeDepartment());
+            role.setValue(emp.getEmployeeCategory());
+            employmentType.setValue(emp.getEmploymentType());
+            hourlySalary.setValue(emp.getHourlyRate());
+            employeeId.setValue(Math.toIntExact(emp.getId()));
+            dateOfJoining.setValue(emp.getCreated());
+
+            accountGmail.setValue(emp.getGmail());
 
 
 
         }
+
+        binder();
 
     }
 
@@ -373,7 +378,7 @@ public class EmployeeAddEditComponents {
         role.setItems(EmployeeCategory.values());
 
         hourlySalary.setWidthFull();
-        hourlySalary.setStep(1);
+        hourlySalary.setStep(0.01);
         hourlySalary.setMin(0.01);
         hourlySalary.setStepButtonsVisible(true);
 
@@ -402,17 +407,20 @@ public class EmployeeAddEditComponents {
         binder.forField(name)
                 .asRequired("Employee name is required")
                 .withValidator(v -> v.length() >= 2, "Employee name must be at least 2 characters")
-                .bind(v -> null, (v, value) -> {});
+                .bind(v -> null, (v, value) -> {
+                });
 
         binder.forField(lastName)
                 .asRequired("Employee lastname is required")
                 .withValidator(v -> v.length() >= 2, "Employee lastname must be at least 2 characters")
-                .bind(v -> null, (v, value) -> {});
+                .bind(v -> null, (v, value) -> {
+                });
 
         binder.forField(emailAddress)
                 .asRequired("Email address is required")
                 .withValidator(this::isValidEmail, "Invalid email address")
-                .bind(v -> null, (v, value) -> {});
+                .bind(v -> null, (v, value) -> {
+                });
 
         binder.forField(hourlySalary)
                 .asRequired("Hourly salary is required")
@@ -420,12 +428,14 @@ public class EmployeeAddEditComponents {
                         salary -> salary > 0.0,
                         "Hourly salary must be greater than 0"
                 )
-                .bind(v -> null, (v, value) -> {});
+                .bind(v -> null, (v, value) -> {
+                });
 
         binder.forField(phoneNumber)
                 .asRequired("Phone number is required")
                 .withValidator(v -> v.matches("^[0-9+\\- ]{6,20}$"), "Invalid phone number")
-                .bind(v -> null, (v, value) -> {});
+                .bind(v -> null, (v, value) -> {
+                });
 
         binder.forField(dateOfBirth)
                 .asRequired("Date of birth is required")
@@ -433,53 +443,63 @@ public class EmployeeAddEditComponents {
                         date -> date.isBefore(LocalDate.now()),
                         "Date of birth must be in the past"
                 )
-                .bind(v -> null, (v, value) -> {});
+                .bind(v -> null, (v, value) -> {
+                });
 
         binder.forField(address)
                 .asRequired("Address is required")
                 .withValidator(v -> v.length() >= 5, "Address must be at least 5 characters")
-                .bind(v -> null, (v, value) -> {});
+                .bind(v -> null, (v, value) -> {
+                });
 
 
         // JOB INFORMATION
         binder.forField(department)
                 .asRequired("Department is required")
-                .bind(v -> null, (v, value) -> {});
+                .bind(v -> null, (v, value) -> {
+                });
 
         binder.forField(role)
                 .asRequired("Role is required")
-                .bind(v -> null, (v, value) -> {});
+                .bind(v -> null, (v, value) -> {
+                });
 
 
         binder.forField(employeeId)
                 .asRequired("Employee id is required")
-                .bind(v -> null, (v, value) -> {});
-
+                .bind(v -> null, (v, value) -> {
+                });
 
 
         binder.forField(employmentType)
                 .asRequired("Employment type is required")
-                .bind(v -> null, (v, value) -> {});
+                .bind(v -> null, (v, value) -> {
+                });
 
 
         // ACCOUNT INFORMATION
         binder.forField(accountGmail)
                 .asRequired("Account gmail is required")
                 .withValidator(this::isValidEmail, "Invalid account gmail")
-                .bind(v -> null, (v, value) -> {});
+                .bind(v -> null, (v, value) -> {
+                });
 
-        binder.forField(password)
-                .asRequired("Password is required")
-                .withValidator(v -> v.length() >= 8, "Password must be at least 8 characters")
-                .bind(v -> null, (v, value) -> {});
+        if (!dataExists) {
+            binder.forField(password)
+                    .asRequired("Password is required")
+                    .withValidator(v -> v.length() >= 8, "Password must be at least 8 characters")
+                    .bind(v -> null, (v, value) -> {
+                    });
 
-        binder.forField(confirmPassword)
-                .asRequired("Confirm password is required")
-                .withValidator(
-                        confirm -> confirm.equals(password.getValue()),
-                        "Passwords do not match"
-                )
-                .bind(v -> null, (v, value) -> {});
+            binder.forField(confirmPassword)
+                    .asRequired("Confirm password is required")
+                    .withValidator(
+                            confirm -> confirm.equals(password.getValue()),
+                            "Passwords do not match"
+                    )
+                    .bind(v -> null, (v, value) -> {
+                    });
+        }
     }
 
     private boolean isValidEmail(String email) {
