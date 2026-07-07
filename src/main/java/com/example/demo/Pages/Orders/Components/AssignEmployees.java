@@ -6,7 +6,7 @@ import com.example.demo.ControllerModels.CommonDtos.Employee;
 import com.example.demo.ControllerModels.CommonDtos.EmployeeJoin.OrderEmployees;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.DTOS.ComboBoxEmployees;
-import com.example.demo.Enums.EmployeeCategory;
+import com.example.demo.Enums.EmployeeRole;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.vaadin.flow.component.HasComponents;
@@ -39,7 +39,7 @@ public class AssignEmployees {
     List<ComboBoxEmployees> listEmployees = new ArrayList<>();
     Long employeeId;
     String employeeName;
-    EmployeeCategory employeeCategoryNew;
+    EmployeeRole employeeCategoryNew;
     String employeeProfilePic;
 
     @SneakyThrows
@@ -286,7 +286,7 @@ public class AssignEmployees {
     }
 
 
-    public HorizontalLayout loadEmployees(Long id, String name, EmployeeCategory employeeCategory, String profilePic, Orders selectedOrder) {
+    public HorizontalLayout loadEmployees(Long id, String name, EmployeeRole employeeCategory, String profilePic, Orders selectedOrder) {
 
         HorizontalLayout h = new HorizontalLayout();
         h.setAlignItems(FlexComponent.Alignment.CENTER);

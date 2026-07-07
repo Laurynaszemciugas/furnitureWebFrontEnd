@@ -1,20 +1,18 @@
-package com.example.demo.Pages.Employee.Components.EmployeeEdit;
-
+package com.example.demo.Pages.Employee.EmployeeAddEdit;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.MainLayout.MainLayout;
-import com.example.demo.Pages.Employee.Components.EmployeeAddEditPage.EmployeeAddEditComponents;
+import com.example.demo.Pages.Employee.EmployeeAddEdit.Components.EmployeeAddEditComponents;
 import com.example.demo.Services.EmployeeService.EmployeeService;
-import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
-@Route(value = "EmployeesEdit/:item", layout = MainLayout.class)
-public class EmployeeEditPage extends VerticalLayout implements BeforeEnterObserver {
+@Route(value = "EmployeesAdd", layout = MainLayout.class)
+public class EmployeeAddPage extends VerticalLayout implements BeforeEnterObserver {
 
 
 
@@ -29,12 +27,12 @@ public class EmployeeEditPage extends VerticalLayout implements BeforeEnterObser
 
 
 
-    int itemChoice = 0;
 
 
 
 
-    public EmployeeEditPage(CommonComponents commonComponents, Common common, EmployeeService employeeService) {
+
+    public EmployeeAddPage(CommonComponents commonComponents, Common common, EmployeeService employeeService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.employeeService = employeeService;
@@ -58,9 +56,6 @@ public class EmployeeEditPage extends VerticalLayout implements BeforeEnterObser
 
         removeAll();
 
-        int page = Math.toIntExact( Integer.parseInt(beforeEnterEvent.getRouteParameters().get("item").orElse(null)));
-
-        this.itemChoice  = page;
 
         add(mainLayout());
 
@@ -75,13 +70,13 @@ public class EmployeeEditPage extends VerticalLayout implements BeforeEnterObser
 
 
         addEditComponents.setEmp(e->{
-            employeeService.editExistingEmployee(e);
+            employeeService.saveNewEmployee(e);
         });
 
 
         verticalLayout.add(
                 addEditComponents.briefExplanation("Add new employee"),
-                addEditComponents.employeeInformation(employeeService.getEmployee((long) itemChoice))
+                addEditComponents.employeeInformation(null)
         );
 
         return verticalLayout;

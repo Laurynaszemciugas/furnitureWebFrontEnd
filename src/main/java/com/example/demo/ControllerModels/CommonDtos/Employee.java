@@ -1,7 +1,7 @@
 package com.example.demo.ControllerModels.CommonDtos;
 
 import com.example.demo.Enums.EmployeeAcIn;
-import com.example.demo.Enums.EmployeeCategory;
+import com.example.demo.Enums.EmployeeRole;
 import com.example.demo.Enums.EmployeeDepartment;
 import com.example.demo.Enums.EmploymentType;
 import lombok.*;
@@ -32,7 +32,7 @@ public class Employee {
 
     private String profileImage;
     private EmployeeAcIn employeeAcIn;
-    private EmployeeCategory employeeCategory;
+    private EmployeeRole employeeCategory;
     private EmployeeDepartment employeeDepartment;
     private User user;
     private LocalDateTime created;

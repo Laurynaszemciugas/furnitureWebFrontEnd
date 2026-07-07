@@ -1,4 +1,4 @@
-package com.example.demo.Pages.Employee.Components.EmployeePageComponents;
+package com.example.demo.Pages.Employee.Page.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -35,13 +35,15 @@ public class EmployeeFilters {
     // filter consumers
     Consumer<EmployeeAcIn> employeeAcInConsumer;
     Consumer<String> getPrompConsumer;
-    Consumer<EmployeeCategory> employeeCategoryConsumer;
+    Consumer<EmployeeRole> employeeCategoryConsumer;
     Consumer<EmployeeDepartment> employeeDepartmentConsumer;
     Consumer<Double> hourlyRateConsumer;
     Consumer<LocalDate> fromJoinedConsumer;
     Consumer<LocalDate> toJoinedConsumer;
     Consumer<EmployeeFilterHolder> clearFilters;
 
+
+    boolean firstLoad = true;
 
     public EmployeeFilters(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
@@ -60,6 +62,13 @@ public class EmployeeFilters {
         VerticalLayout v = new VerticalLayout();
         v.setPadding(false);
 
+        if(firstLoad){
+            v.addClassName("smooth-panel");
+            firstLoad = false;
+        }
+        else{
+            v.removeClassName("smooth-panel");
+        }
 
         // get current filter display
         v.add(currentFilterDisplay.getFilters());
@@ -173,6 +182,26 @@ public class EmployeeFilters {
 
         }
 
+        if(filterData.getEmployeeAcIn().equals(EmployeeAcIn.ACTIVE)){
+            buttonList.forEach(button->
+                    button.removeClassName("active"));
+            employeeAcInConsumer.accept(EmployeeAcIn.ACTIVE);
+            active.addClassName("active");
+        }
+        if(filterData.getEmployeeAcIn().equals(EmployeeAcIn.INACTIVE)){
+            buttonList.forEach(button->
+                    button.removeClassName("active"));
+            employeeAcInConsumer.accept(EmployeeAcIn.INACTIVE);
+            inactive.addClassName("active");
+        }
+        if(filterData.getEmployeeAcIn().equals(EmployeeAcIn.ON_LEAVE)){
+            buttonList.forEach(button->
+                    button.removeClassName("active"));
+            employeeAcInConsumer.accept(EmployeeAcIn.ON_LEAVE);
+            onLeave.addClassName("active");
+        }
+
+
         TextField search = commonComponents.textFieldCrafter("Search employees...","",VaadinIcon.SEARCH);
         search.addValueChangeListener(e->{
             String value = e.getValue().isBlank() ? "ALL" : e.getValue();
@@ -223,12 +252,12 @@ public class EmployeeFilters {
 
 
         // ========================== employee category ============================
-        ComboBox<EmployeeCategory> employeeCategoryComboBox = new ComboBox<>("Employee category");
+        ComboBox<EmployeeRole> employeeCategoryComboBox = new ComboBox<>("Employee category");
         employeeCategoryComboBox.setWidthFull();
-        employeeCategoryComboBox.setItems(EmployeeCategory.values());
+        employeeCategoryComboBox.setItems(EmployeeRole.values());
         currentFilterDisplay.setComponentValue("employeeCategory",filterData,employeeCategoryComboBox);
         employeeCategoryComboBox.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(),EmployeeCategory.All,null,filterData,"employeeCategory","Employee category",employeeCategoryConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(), EmployeeRole.ALL,null,filterData,"employeeCategory","Employee category",employeeCategoryConsumer);
         });
 
 

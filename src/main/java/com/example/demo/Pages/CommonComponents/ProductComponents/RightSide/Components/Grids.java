@@ -101,7 +101,7 @@ public class Grids {
 
         productFeedModelGrid.addComponentColumn(row ->{
 
-            Button remove = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.PRIMARY, VaadinIcon.TRASH,"White");
+            Button remove = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.PRIMARY, VaadinIcon.TRASH,"RED");
 
             HorizontalLayout h = new HorizontalLayout();
             h.setWidthFull();
@@ -139,7 +139,7 @@ public class Grids {
 
         extraDetailsGrid.addComponentColumn(row ->{
 
-            Button remove = commonComponents.buttonThemeAndIconNoNavigate("",ButtonVariant.PRIMARY,VaadinIcon.TRASH,"White");
+            Button remove = commonComponents.buttonThemeAndIconNoNavigate("",ButtonVariant.PRIMARY,VaadinIcon.TRASH,"RED");
 
             HorizontalLayout h = new HorizontalLayout();
             h.setWidthFull();

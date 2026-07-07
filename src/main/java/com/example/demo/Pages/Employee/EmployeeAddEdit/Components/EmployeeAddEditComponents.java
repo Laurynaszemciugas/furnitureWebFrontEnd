@@ -1,11 +1,12 @@
-package com.example.demo.Pages.Employee.Components.EmployeeAddEditPage;
+package com.example.demo.Pages.Employee.EmployeeAddEdit.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SinglePhotoLogic;
 import com.example.demo.ControllerModels.CommonDtos.Employee;
 import com.example.demo.ControllerModels.CommonDtos.User;
-import com.example.demo.Enums.EmployeeCategory;
+import com.example.demo.Enums.EmployeeAcIn;
+import com.example.demo.Enums.EmployeeRole;
 import com.example.demo.Enums.EmployeeDepartment;
 import com.example.demo.Enums.EmploymentType;
 import com.vaadin.flow.component.button.Button;
@@ -25,6 +26,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 @Setter
@@ -48,9 +50,9 @@ public class EmployeeAddEditComponents {
     // job information
 
     ComboBox<EmployeeDepartment> department  = new ComboBox<>("Department");
-    ComboBox<EmployeeCategory> role = new ComboBox<>("Role");
+    ComboBox<EmployeeRole> role = new ComboBox<>("Role");
     NumberField hourlySalary = new NumberField("Hourly salary");
-    IntegerField employeeId = new IntegerField("Employee id");
+    ComboBox<EmployeeAcIn> acInComboBox = new ComboBox("Activity");
     DateTimePicker dateOfJoining = new DateTimePicker("Date of joining");
     ComboBox<EmploymentType> employmentType = new ComboBox<>("Employment type");
 
@@ -121,9 +123,10 @@ public class EmployeeAddEditComponents {
 
                 employee.setGmail(accountGmail.getValue());
 
+                employee.setEmployeeAcIn(acInComboBox.getValue());
+
                 User user = new User();
                 user.setGmail(emailAddress.getValue());
-                user.setId(Long.valueOf(employeeId.getValue()));
                 user.setPassword(password.getValue());
                 user.setName(name.getValue());
                 user.setLastName(lastName.getValue());
@@ -246,8 +249,8 @@ public class EmployeeAddEditComponents {
                 department,
                 role,
                 employmentType,
+                acInComboBox,
                 hourlySalary,
-                employeeId,
                 dateOfJoining
         );
 
@@ -312,6 +315,7 @@ public class EmployeeAddEditComponents {
 
             employee.setId(emp.getId());
 
+
             name.setValue(emp.getName());
             lastName.setValue(emp.getLastName());
             emailAddress.setValue(emp.getGmail());
@@ -324,7 +328,7 @@ public class EmployeeAddEditComponents {
             role.setValue(emp.getEmployeeCategory());
             employmentType.setValue(emp.getEmploymentType());
             hourlySalary.setValue(emp.getHourlyRate());
-            employeeId.setValue(Math.toIntExact(emp.getId()));
+            acInComboBox.setValue(emp.getEmployeeAcIn());
             dateOfJoining.setValue(emp.getCreated());
 
             accountGmail.setValue(emp.getGmail());
@@ -364,18 +368,29 @@ public class EmployeeAddEditComponents {
 
         emailAddress.setWidthFull();
 
+        emailAddress.addValueChangeListener(e->{
+           accountGmail.setValue(e.getValue());
+        });
+
         dateOfBirth.setWidthFull();
 
         phoneNumber.setWidthFull();
 
 
-        employeeId.setWidthFull();
+
+        acInComboBox.setWidthFull();
+        acInComboBox.setItems(Arrays.stream(EmployeeAcIn.values()).filter(e -> !e.equals(EmployeeAcIn.ALL)).toList());
+        acInComboBox.setItemLabelGenerator(EmployeeAcIn::getDisplayName);
+        acInComboBox.setValue(EmployeeAcIn.ACTIVE);
 
         department.setWidthFull();
-        department.setItems(EmployeeDepartment.values());
+        department.setItems(Arrays.stream(EmployeeDepartment.values()).filter(e -> !e.equals(EmployeeDepartment.ALL)).toList());
+        department.setItemLabelGenerator(EmployeeDepartment::getDisplayName);
+
 
         role.setWidthFull();
-        role.setItems(EmployeeCategory.values());
+        role.setItems(Arrays.stream(EmployeeRole.values()).filter(e -> !e.equals(EmployeeRole.ALL)).toList());
+        role.setItemLabelGenerator(EmployeeRole::getDisplayName);
 
         hourlySalary.setWidthFull();
         hourlySalary.setStep(0.01);
@@ -387,7 +402,8 @@ public class EmployeeAddEditComponents {
         dateOfJoining.setValue(LocalDateTime.now());
 
         employmentType.setWidthFull();
-        employmentType.setItems(EmploymentType.values());
+        employmentType.setItems(Arrays.stream(EmploymentType.values()).filter(e -> !e.equals(EmploymentType.ALL)).toList());
+        employmentType.setItemLabelGenerator(EmploymentType::getDisplayName);
 
         accountGmail.setWidthFull();
 
@@ -465,8 +481,8 @@ public class EmployeeAddEditComponents {
                 });
 
 
-        binder.forField(employeeId)
-                .asRequired("Employee id is required")
+        binder.forField(acInComboBox)
+                .asRequired("Employee status is required")
                 .bind(v -> null, (v, value) -> {
                 });
 

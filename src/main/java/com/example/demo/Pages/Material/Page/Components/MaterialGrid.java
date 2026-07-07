@@ -231,7 +231,7 @@ public class MaterialGrid {
 
 
             HorizontalLayout h = new HorizontalLayout();
-            Button edit = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.PENCIL,"Black");
+            Button edit = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.PENCIL,"BLUE");
 
 
             edit.addClickListener(editValue->{

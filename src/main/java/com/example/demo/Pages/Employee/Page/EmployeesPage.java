@@ -1,22 +1,29 @@
-package com.example.demo.Pages.Employee.MainPage;
+package com.example.demo.Pages.Employee.Page;
 
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.CurrentFilterDisplay;
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
+import com.example.demo.ControllerModels.Employee.EmployeeBriefDto;
 import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
 import com.example.demo.MainLayout.MainLayout;
-import com.example.demo.Pages.Employee.Components.EmployeePageComponents.EmployeeBriefExplanations;
-import com.example.demo.Pages.Employee.Components.EmployeePageComponents.EmployeeFilters;
-import com.example.demo.Pages.Employee.Components.EmployeePageComponents.EmployeeGrid;
-import com.example.demo.Pages.Employee.Components.EmployeePageComponents.EmployeeMiniStats;
+import com.example.demo.Pages.Employee.Page.Components.EmployeeBriefExplanations;
+import com.example.demo.Pages.Employee.Page.Components.EmployeeFilters;
+import com.example.demo.Pages.Employee.Page.Components.EmployeeGrid;
+import com.example.demo.Pages.Employee.Page.Components.EmployeeMiniStats;
 import com.example.demo.Services.EmployeeService.EmployeeService;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Route(value = "Employees", layout = MainLayout.class)
 public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver {
@@ -40,6 +47,10 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
 
     EmployeeFilterHolder filterData = new EmployeeFilterHolder();
 
+    SessionCrafter sessionCrafter;
+
+
+    Div gridHolder = new Div();
 
 
     public EmployeesPage(CommonComponents commonComponents, Common common, EmployeeService employeeService) {
@@ -53,6 +64,7 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
 
         this.paganation = new Paganation();
         this.currentFilterDisplay = new CurrentFilterDisplay(commonComponents,common);
+        this.sessionCrafter = new SessionCrafter();
 
 
         employeeFilters.setCurrentFilterDisplay(currentFilterDisplay);
@@ -70,13 +82,10 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
 
 
 
-        filterMemory.add(
-                employeeBriefExplanations.briefExplanation(),
-                employeeMiniStats.miniStatHolder(employeeService.getMiniStats(
-                                common.dateCrafter(0,0,0,0,true),
-                                common.dateCrafter(0,1,1,0,true))),
-                employeeFilters.filters()
-        );
+        addClassName("animation-page");
+
+
+        gridHolder.setWidthFull();
 
 
     }
@@ -95,7 +104,6 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
 
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top", "5px");
-        verticalLayout.addClassName("main-island");
 
         reloadData();
 
@@ -103,49 +111,49 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
         employeeFilters.setEmployeeAcInConsumer(e->{
             setNewPage();
             filterData.setEmployeeAcIn(e);
-            filterFeed();
+            reloadFeed();
         });
         employeeFilters.setGetPrompConsumer(e->{
             setNewPage();
             filterData.setPromt(e);
-            filterFeed();
+            reloadFeed();
         });
 
         employeeFilters.setEmployeeCategoryConsumer(e->{
             setNewPage();
             filterData.setEmployeeCategory(e);
-            filterFeed();
+            reloadFeed();
         });
         employeeFilters.setEmployeeDepartmentConsumer(e->{
             setNewPage();
             filterData.setEmployeeDepartment(e);
-            filterFeed();
+            reloadFeed();
         });
         employeeFilters.setHourlyRateConsumer(e->{
             setNewPage();
             filterData.setHourlyRate(e);
-            filterFeed();
+            reloadFeed();
         });
         employeeFilters.setFromJoinedConsumer(e->{
             setNewPage();
             filterData.setFromJoined(e);
-            filterFeed();
+            reloadFeed();
         });
         employeeFilters.setToJoinedConsumer(e->{
             setNewPage();
             filterData.setToJoined(e);
-            filterFeed();
+            reloadFeed();
         });
         paganation.setOnPageChange(e->{
             e = e-1;
             filterData.setPage(e);
-            filterFeed();
+            reloadFeed();
         });
         //needed
         currentFilterDisplay.setReloadController(e->{
             setNewPage();
             filterData = (EmployeeFilterHolder) e;
-            filterFeed();
+            reloadData();
         });
 
         employeeService.setSuccess(e->{
@@ -180,39 +188,86 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
 
 
 
+        loadGridValues();
+
+
         verticalLayout.add(
                 filterMemory,
-                gridFilterHolder()
+                gridHolder
 
         );
     }
 
-
-    public void filterFeed(){
-
+    public void reloadFeed(){
 
         verticalLayout.removeAll();
 
+
+        filterMemory.removeAll();
+        filterMemory.add(
+                employeeBriefExplanations.briefExplanation(),
+                employeeMiniStats.miniStatHolder(
+                        employeeService.getMiniStats(common.dateCrafter(0,0,0,0,true),
+                                common.dateCrafter(0,1,1,0,true))),
+                employeeFilters.filters()
+
+        );
+
+
+
+        loadGridValues();
+
+
         verticalLayout.add(
                 filterMemory,
-                gridFilterHolder()
+                gridHolder
 
         );
     }
 
 
-    public VerticalLayout gridFilterHolder(){
+
+
+
+
+
+    public VerticalLayout gridFilterHolder(List<EmployeeBriefDto> items){
         VerticalLayout v = new VerticalLayout();
         v.setPadding(false);
         v.setWidthFull();
 
         v.add(
-                employeeGrid.gridHolder(employeeService.getEmployeeFeed(filterData)),
+                employeeGrid.gridHolder(items),
                 paganation.buttonHolder(Math.toIntExact(employeeService.getPageCount(filterData)))
 
         );
 
         return v;
+    }
+
+
+    public void loadGridValues(){
+        UI ui = UI.getCurrent();
+        String jwt = sessionCrafter.extractSession("JWT", String.class);
+
+        gridHolder.removeAll();
+        gridHolder.add(
+                commonComponents.shimmer(5)
+        );
+
+        CompletableFuture
+                .supplyAsync(()->{
+
+                    List<EmployeeBriefDto> items = employeeService.getEmployeeFeed(filterData,jwt);
+                    common.timer(250);
+                    return items;
+                })
+                .thenAccept(e->{
+                    ui.access(() -> {
+                        gridHolder.removeAll();
+                        gridHolder.add(gridFilterHolder(e));
+                    });
+                });
     }
 
 

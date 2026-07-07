@@ -208,14 +208,12 @@ public class MaterialAndDetails {
     public TextField specName(String name){
         TextField textField = new TextField();
         textField.setValue(name);
-        textField.setPlaceholder("Material");
         return textField;
     }
 
     public TextArea specDescription(String name){
         TextArea textArea = new TextArea();
         textArea.setValue(name);
-        textArea.setPlaceholder("Wool");
         textArea.setWidthFull();
         return textArea;
     }

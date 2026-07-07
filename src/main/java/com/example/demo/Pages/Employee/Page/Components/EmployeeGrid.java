@@ -1,4 +1,4 @@
-package com.example.demo.Pages.Employee.Components.EmployeePageComponents;
+package com.example.demo.Pages.Employee.Page.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -34,6 +34,7 @@ public class EmployeeGrid {
     public VerticalLayout gridHolder(List<EmployeeBriefDto> materiaData){
 
         VerticalLayout vv = new VerticalLayout();
+        vv.addClassName("smooth-panel");
         vv.setPadding(false);
         vv.setSpacing(false);
         vv.setWidthFull();
@@ -87,27 +88,105 @@ public class EmployeeGrid {
         // ======================== Material type =====================================
         grid.addComponentColumn(e->{
 
-            Span span = commonComponents.spanCrafter(e.getEmployeeCategory() == null ? "Unknown" : String.valueOf(e.getEmployeeCategory()),"stat-example");
+            Span span = commonComponents.spanCrafter(e.getEmployeeCategory() == null ? "Unknown" : String.valueOf(e.getEmployeeCategory().getDisplayName()),"stat-example");
             span.getStyle().set("width", "fit-content");
             span.addClassName("stock-badge");
+
+
 
 
             if (e.getEmployeeCategory() != null) {
                 switch (e.getEmployeeCategory()) {
 
-                    case Supervisor -> {
+                    case INTERN -> {
+                        span.getStyle()
+                                .set("background", "rgba(245, 158, 11, 0.15)")
+                                .set("color", "#f59e0b")
+                                .set("border", "1px solid rgba(245,158,11,0.3)");
+                    }
+
+                    case JUNIOR_WORKER -> {
+                        span.getStyle()
+                                .set("background", "rgba(34, 197, 94, 0.15)")
+                                .set("color", "#22c55e")
+                                .set("border", "1px solid rgba(34,197,94,0.3)");
+                    }
+
+
+                    case ASSEMBLER -> {
+                        span.getStyle()
+                                .set("background", "rgba(6, 182, 212, 0.15)")
+                                .set("color", "#06b6d4")
+                                .set("border", "1px solid rgba(6,182,212,0.3)");
+                    }
+
+                    case CARPENTER -> {
+                        span.getStyle()
+                                .set("background", "rgba(180, 83, 9, 0.15)")
+                                .set("color", "#b45309")
+                                .set("border", "1px solid rgba(180,83,9,0.3)");
+                    }
+
+
+
+                    case PAINTER -> {
+                        span.getStyle()
+                                .set("background", "rgba(168, 85, 247, 0.15)")
+                                .set("color", "#a855f7")
+                                .set("border", "1px solid rgba(168,85,247,0.3)");
+                    }
+
+                    case FINISHER -> {
+                        span.getStyle()
+                                .set("background", "rgba(20, 184, 166, 0.15)")
+                                .set("color", "#14b8a6")
+                                .set("border", "1px solid rgba(20,184,166,0.3)");
+                    }
+
+                    case QUALITY_CHECKER -> {
+                        span.getStyle()
+                                .set("background", "rgba(132, 204, 22, 0.15)")
+                                .set("color", "#84cc16")
+                                .set("border", "1px solid rgba(132,204,22,0.3)");
+                    }
+
+                    case WAREHOUSE_WORKER -> {
+                        span.getStyle()
+                                .set("background", "rgba(100, 116, 139, 0.15)")
+                                .set("color", "#64748b")
+                                .set("border", "1px solid rgba(100,116,139,0.3)");
+                    }
+
+                    case LOGISTICS_WORKER -> {
+                        span.getStyle()
+                                .set("background", "rgba(249, 115, 22, 0.15)")
+                                .set("color", "#f97316")
+                                .set("border", "1px solid rgba(249,115,22,0.3)");
+                    }
+
+                    case DELIVERY_DRIVER -> {
                         span.getStyle()
                                 .set("background", "rgba(59, 130, 246, 0.15)")
-                                .set("color", "#3b82f6") // blue
+                                .set("color", "#3b82f6")
                                 .set("border", "1px solid rgba(59,130,246,0.3)");
                     }
 
-                    case Intern -> {
+
+
+                    case SUPERVISOR -> {
                         span.getStyle()
-                                .set("background", "rgba(245, 158, 11, 0.15)")
-                                .set("color", "#f59e0b") // amber
-                                .set("border", "1px solid rgba(245,158,11,0.3)");
+                                .set("background", "rgba(37, 99, 235, 0.15)")
+                                .set("color", "#2563eb")
+                                .set("border", "1px solid rgba(37,99,235,0.3)");
                     }
+
+                    case MANAGER -> {
+                        span.getStyle()
+                                .set("background", "rgba(239, 68, 68, 0.15)")
+                                .set("color", "#ef4444")
+                                .set("border", "1px solid rgba(239,68,68,0.3)");
+                    }
+
 
                 }
             }
@@ -121,7 +200,8 @@ public class EmployeeGrid {
 
 
             Span span = commonComponents.spanCrafterWordNoHide(e.getEmployeeDepartment() == null ? "Unknown" : e.getEmployeeDepartment().toString(),"stat-title");
-
+            span.addClassName("stock-badge");
+            span.getStyle().set("width", "fit-content");
 
             if(e.getEmployeeDepartment() != null) {
                 switch (e.getEmployeeDepartment()) {
@@ -186,7 +266,7 @@ public class EmployeeGrid {
 
 
 
-            Span span = commonComponents.spanCrafter(e.getHourlyRate() == null ? "Unknown" : e.getHourlyRate() + " Eur","stat-title");
+            Span span = commonComponents.spanCrafter(e.getHourlyRate() == null ? "Unknown" : e.getHourlyRate() + " Eur","activityFeed-name");
 
 
             return  span;
@@ -209,12 +289,12 @@ public class EmployeeGrid {
 
 
             HorizontalLayout h = new HorizontalLayout();
-            Button edit = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.PENCIL,"Black");
+            Button edit = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.PENCIL,"Blue");
 
 
             edit.addClickListener(editValue->{
 
-                common.customNavigate("EmployeesEdit/" +e.getId());
+                common.customNavigate("EmployeesEdit/" + e.getId());
             });
 
 

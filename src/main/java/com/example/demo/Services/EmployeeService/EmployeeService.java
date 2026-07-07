@@ -43,8 +43,8 @@ public class EmployeeService {
     }
 
     @SneakyThrows
-    public List<EmployeeBriefDto> getEmployeeFeed(EmployeeFilterHolder employeeFilterHolder) {
-        return Arrays.stream(httpCallLogic.HttpCall("employee/getAllEmployeeForFeed", HttpMethod.POST,employeeFilterHolder, EmployeeBriefDto[].class,false)).toList();
+    public List<EmployeeBriefDto> getEmployeeFeed(EmployeeFilterHolder employeeFilterHolder, String jwt) {
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("employee/getAllEmployeeForFeed", HttpMethod.POST,employeeFilterHolder, EmployeeBriefDto[].class,false,jwt)).toList();
     }
 
     @SneakyThrows

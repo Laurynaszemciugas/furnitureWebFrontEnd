@@ -2,7 +2,7 @@ package com.example.demo.ControllerModels.Filter.Employee;
 
 
 import com.example.demo.Enums.EmployeeAcIn;
-import com.example.demo.Enums.EmployeeCategory;
+import com.example.demo.Enums.EmployeeRole;
 import com.example.demo.Enums.EmployeeDepartment;
 import lombok.*;
 
@@ -17,7 +17,7 @@ public class EmployeeFilterHolder {
 
     private EmployeeAcIn employeeAcIn = EmployeeAcIn.ALL;
     private String promt = "ALL";
-    private EmployeeCategory employeeCategory = EmployeeCategory.All;
+    private EmployeeRole employeeCategory = EmployeeRole.ALL;
     private EmployeeDepartment employeeDepartment = EmployeeDepartment.ALL;
     private Double hourlyRate = 0.0;
     private LocalDate fromJoined = LocalDate.of(1000,12,12);

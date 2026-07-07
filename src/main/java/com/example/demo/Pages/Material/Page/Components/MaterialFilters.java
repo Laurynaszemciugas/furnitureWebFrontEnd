@@ -173,6 +173,8 @@ public class MaterialFilters {
 
             currentFilterDisplay.setReloadButtons(ee->{
 
+                System.out.println("reloadddddddddddddddddddd");
+
                 if(filterData.getStockChoice().equals(Stock.ALL)) {
                     stockConsumer.accept(Stock.ALL);
                     buttonList.forEach(button ->
@@ -181,11 +183,42 @@ public class MaterialFilters {
                 }
             });
 
+
+
             s.addClickListener(e->{
 
-                buttonList.forEach(button->
-                        button.removeClassName("active"));
-                s.addClassName("active");
+                if(filterData.getStockChoice().equals(Stock.ALL)){
+                    stockConsumer.accept(Stock.ALL);
+                    buttonList.forEach(button->
+                            button.removeClassName("active"));
+
+                    all.addClassName("active");
+
+                }
+
+                if(filterData.getStockChoice().equals(Stock.In_Stock)){
+                    stockConsumer.accept(Stock.In_Stock);
+                    buttonList.forEach(button->
+                            button.removeClassName("active"));
+
+                    inStock.addClassName("active");
+
+                }
+                if(filterData.getStockChoice().equals(Stock.Low_Stock)){
+                    stockConsumer.accept(Stock.Low_Stock);
+                    buttonList.forEach(button->
+                            button.removeClassName("active"));
+
+                    lowStock.addClassName("active");
+                }
+                if(filterData.getStockChoice().equals(Stock.No_Stock)){
+                    stockConsumer.accept(Stock.No_Stock);
+                    buttonList.forEach(button->
+                            button.removeClassName("active"));
+
+                    NoStock.addClassName("active");
+                }
+
 
             });
 
@@ -194,21 +227,7 @@ public class MaterialFilters {
 
         }
 
-        if(filterData.getStockChoice().equals(Stock.In_Stock)){
-            buttonList.forEach(button->
-                    button.removeClassName("active"));
-            inStock.addClassName("active");
-        }
-        if(filterData.getStockChoice().equals(Stock.Low_Stock)){
-            buttonList.forEach(button->
-                    button.removeClassName("active"));
-            lowStock.addClassName("active");
-        }
-        if(filterData.getStockChoice().equals(Stock.No_Stock)){
-            buttonList.forEach(button->
-                    button.removeClassName("active"));
-            NoStock.addClassName("active");
-        }
+
 
         TextField search = commonComponents.textFieldCrafter("Search products...","",VaadinIcon.SEARCH);
         search.addValueChangeListener(e->{

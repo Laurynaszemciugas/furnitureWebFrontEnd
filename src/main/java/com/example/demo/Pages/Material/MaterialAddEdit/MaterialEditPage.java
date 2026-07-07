@@ -94,6 +94,8 @@ public class MaterialEditPage extends VerticalLayout implements BeforeEnterObser
 
 
         rightSideAddMaterials.setMaterialsConsumer(e->{
+
+            System.out.println("pogersssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
             materialService.editProduct(e);
         });
 
