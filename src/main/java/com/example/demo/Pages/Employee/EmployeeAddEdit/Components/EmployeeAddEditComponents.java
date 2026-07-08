@@ -83,17 +83,31 @@ public class EmployeeAddEditComponents {
     }
 
 
-    public HorizontalLayout briefExplanation(String pageName){
+    public HorizontalLayout briefExplanation(String pageName, String buttonName){
 
 
         HorizontalLayout h = new HorizontalLayout();
         h.setWidthFull();
         h.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        h.addClassName("smooth-panel");
 
         HorizontalLayout buttonHolder = new HorizontalLayout();
 
         Button cancel = commonComponents.normalThemeButton("Cancel","Employees", ButtonVariant.LUMO_ICON);
-        Button createOrder = commonComponents.normalThemeButtonNoNavigate("Save", ButtonVariant.LUMO_PRIMARY);
+        Button createOrder = commonComponents.normalThemeButtonNoNavigate(buttonName, ButtonVariant.LUMO_PRIMARY);
+
+        buttonHolder.add(
+                cancel,
+                createOrder
+        );
+
+        h.add(
+                commonComponents.biefPageExplanation(pageName),
+                buttonHolder
+
+        );
+
+
 
         singlePhotoLogic.setNewImage(e->{
                 employee.setProfileImage(e);
@@ -135,6 +149,8 @@ public class EmployeeAddEditComponents {
 
                 emp.accept(employee);
 
+                common.customNavigate("Employees");
+
             }
             else{
                 commonComponents.showNotification("Form is not filled properly",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.ERROR);
@@ -145,17 +161,10 @@ public class EmployeeAddEditComponents {
         });
 
 
-        buttonHolder.add(
-                cancel,
-                createOrder
-        );
 
 
-        h.add(
-                commonComponents.biefPageExplanation(pageName),
-                buttonHolder
 
-        );
+
 
 
         return h;
@@ -171,6 +180,8 @@ public class EmployeeAddEditComponents {
         v.setWidthFull();
         v.addClassName("island");
 
+
+        v.addClassName("animated-card");
 
 
         VerticalLayout h1 = new VerticalLayout();
@@ -239,6 +250,8 @@ public class EmployeeAddEditComponents {
         v.setWidthFull();
         v.addClassName("island");
 
+        v.addClassName("animated-card");
+
         FormLayout formLayout = new FormLayout();
 
         formLayout.getStyle()
@@ -274,6 +287,8 @@ public class EmployeeAddEditComponents {
         VerticalLayout v = new VerticalLayout();
         v.setWidthFull();
         v.addClassName("island");
+
+        v.addClassName("animated-card");
 
         FormLayout formLayout = new FormLayout();
 
@@ -346,10 +361,11 @@ public class EmployeeAddEditComponents {
 
         loadData(employee);
 
-        VerticalLayout alLInfo = new VerticalLayout();
-        alLInfo.setPadding(false);
+        VerticalLayout allInfo = new VerticalLayout();
 
-        alLInfo.add(
+        allInfo.setPadding(false);
+
+        allInfo.add(
                 personalInfo(),
                 jobInformation(),
                 accountInformation()
@@ -357,7 +373,7 @@ public class EmployeeAddEditComponents {
 
 
 
-        return  alLInfo;
+        return  allInfo;
 
     }
 

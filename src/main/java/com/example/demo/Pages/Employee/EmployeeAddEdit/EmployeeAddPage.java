@@ -45,6 +45,7 @@ public class EmployeeAddPage extends VerticalLayout implements BeforeEnterObserv
         setAlignItems(FlexComponent.Alignment.CENTER);
 
 
+        addClassName("animation-page");
 
         addEditComponents.configureFields();
 
@@ -65,7 +66,6 @@ public class EmployeeAddPage extends VerticalLayout implements BeforeEnterObserv
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top", "5px");
-        verticalLayout.addClassName("main-island");
 
 
 
@@ -75,7 +75,7 @@ public class EmployeeAddPage extends VerticalLayout implements BeforeEnterObserv
 
 
         verticalLayout.add(
-                addEditComponents.briefExplanation("Add new employee"),
+                addEditComponents.briefExplanation("Add new employee","Create new"),
                 addEditComponents.employeeInformation(null)
         );
 

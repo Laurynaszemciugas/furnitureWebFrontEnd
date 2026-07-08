@@ -53,6 +53,7 @@ public class MaterialEditPage extends VerticalLayout implements BeforeEnterObser
         setAlignItems(FlexComponent.Alignment.CENTER);
 
 
+        addClassName("animation-page");
 
 
     }
@@ -86,7 +87,6 @@ public class MaterialEditPage extends VerticalLayout implements BeforeEnterObser
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top", "5px");
-        verticalLayout.addClassName("main-island");
 
 
         Materials mat = new Materials();
@@ -94,14 +94,12 @@ public class MaterialEditPage extends VerticalLayout implements BeforeEnterObser
 
 
         rightSideAddMaterials.setMaterialsConsumer(e->{
-
-            System.out.println("pogersssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
             materialService.editProduct(e);
         });
 
 
         verticalLayout.add(
-                rightSideAddMaterials.briefExplanation("Edit existing Material"),
+                rightSideAddMaterials.briefExplanation("Edit existing Material","Save"),
                 rightSideAddMaterials.leftRighJoin(materialService.getMaterial((long) itemChoice))
         );
 

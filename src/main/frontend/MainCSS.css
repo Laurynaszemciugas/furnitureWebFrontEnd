@@ -824,6 +824,69 @@ background-color: #d4edda;
     animation-delay: 0.45s;
 }
 
+.animated-card:nth-child(5) {
+    animation-delay: 0.55s;
+}
+
+.animated-card:nth-child(6) {
+    animation-delay: 0.65s;
+}
+
+/*
+   comes from left or right
+
+*/
+
+.fromLeftToRight {
+
+    animation: leftToRight 0.7s cubic-bezier(.2, .8, .2, 1) 0.25s both;
+    transition:
+            transform 0.28s ease,
+            box-shadow 0.28s ease;
+}
+
+
+@keyframes leftToRight{
+
+    from{
+        opacity:0;
+        transform: translateX(-26px);
+}
+
+    to{
+        opacity: 1;
+        transform: translateX(0);
+}
+
+
+}
+
+
+.fromRightToLeft {
+
+    animation: rightToLeft 0.7s cubic-bezier(.2, .8, .2, 1) 0.25s both;
+    transition:
+            transform 0.28s ease,
+            box-shadow 0.28s ease;
+}
+
+
+@keyframes rightToLeft{
+
+    from{
+        opacity:0;
+        transform: translateX(26px);
+}
+
+    to{
+        opacity: 1;
+        transform: translateX(0);
+}
+
+
+}
+
+
 
 /*
    BIG SMOOTH PANEL

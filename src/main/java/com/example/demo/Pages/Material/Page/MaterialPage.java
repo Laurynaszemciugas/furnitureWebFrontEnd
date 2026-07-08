@@ -111,47 +111,47 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
         materialFilters.setMaterialTypeConsumer(e->{
             setNewPage();
             filterData.setMaterialTypeChoice(e);
-            reloadFeed();
+            loadGridValues();
         });
         materialFilters.setActiveInactiveConsumer(e->{
             setNewPage();
             filterData.setActiveInactive(e);
-            reloadFeed();
+            loadGridValues();
         });
         materialFilters.setStockAmountConsumer(e->{
             setNewPage();
             filterData.setStockAmountChoice(e);
-            reloadFeed();
+            loadGridValues();
         });
         materialFilters.setMinThresholdConsumer(e->{
             setNewPage();
             filterData.setMinThresholdChoice(e);
-            reloadFeed();
+            loadGridValues();
         });
         materialFilters.setUnitPriceConsumer(e->{
             setNewPage();
             filterData.setUnitPriceChoice(e);
-            reloadFeed();
+            loadGridValues();
         });
         materialFilters.setFromDateConsumer(e->{
             setNewPage();
             filterData.setFromDateChoice(e);
-            reloadFeed();
+            loadGridValues();
         });
         materialFilters.setToDateConsumer(e->{
             setNewPage();
             filterData.setTodDateChoice(e);
-            reloadFeed();
+            loadGridValues();
         });
         materialFilters.setStockConsumer(e->{
             setNewPage();
             filterData.setStockChoice(e);
-            reloadFeed();
+            loadGridValues();
         });
         materialFilters.setPrompConsumer(e->{
             setNewPage();
             filterData.setPromtChoice(e);
-            reloadFeed();
+            loadGridValues();
         });
         //clear
         materialFilters.setClearFilters(e->{
@@ -163,7 +163,7 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
         currentFilterDisplay.setReloadController(e->{
             setNewPage();
             filterData = (MaterialFilterHolder) e;
-            reloadFeed();
+            loadGridValues();
         });
 
         materialService.setSuccess(e->{
@@ -173,7 +173,7 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
         paganation.setOnPageChange(e->{
             e = e-1;
             filterData.setPage(e);
-            reloadFeed();
+            loadGridValues();
         });
 
 
@@ -213,30 +213,7 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
         );
     }
 
-    public void reloadFeed(){
 
-
-
-
-
-
-//        filterMemory.removeAll();
-//        filterMemory.add(
-//                materialBriefExplanations.briefExplanation(),
-//                materialMiniStats.miniStatHolder(
-//                        materialService.getMiniStats(common.dateCrafter(0,0,0,0,true),
-//                                common.dateCrafter(0,1,1,0,true))),
-//                materialFilters.filters()
-//
-//        );
-
-
-
-        loadGridValues();
-
-
-
-    }
 
 
 

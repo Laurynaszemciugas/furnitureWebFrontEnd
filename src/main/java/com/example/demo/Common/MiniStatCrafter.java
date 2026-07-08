@@ -33,9 +33,9 @@ public class MiniStatCrafter {
         }
 
 
-        h.getStyle().set("flex", "1 1 302px");
+        h.getStyle().set("flex", "1 1 252px");
         h.getStyle().set("max-width", "620px");
-        h.getStyle().set("min-width", "302px");
+        h.getStyle().set("min-width", "252px");
 
         VerticalLayout iconHolder = new VerticalLayout();
         iconHolder.setHeight("90px");

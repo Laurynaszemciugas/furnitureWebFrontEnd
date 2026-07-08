@@ -96,6 +96,11 @@ public class Paganation {
 
         for(int i = 1; i <= totalPages; i++){
 
+            if(totalPages == 1){
+                buttonList.get(0).setVisible(false);
+                break;
+            }
+
             boolean good = i == 1 || i == totalPages || Math.abs(i-currentPage) <=1;
 
             if(good){
@@ -108,6 +113,8 @@ public class Paganation {
 
 
         }
+
+
 
     }
 

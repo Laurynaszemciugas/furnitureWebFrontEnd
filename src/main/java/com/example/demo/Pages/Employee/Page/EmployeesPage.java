@@ -111,43 +111,43 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
         employeeFilters.setEmployeeAcInConsumer(e->{
             setNewPage();
             filterData.setEmployeeAcIn(e);
-            reloadFeed();
+            loadGridValues();
         });
         employeeFilters.setGetPrompConsumer(e->{
             setNewPage();
             filterData.setPromt(e);
-            reloadFeed();
+            loadGridValues();
         });
 
         employeeFilters.setEmployeeCategoryConsumer(e->{
             setNewPage();
             filterData.setEmployeeCategory(e);
-            reloadFeed();
+            loadGridValues();
         });
         employeeFilters.setEmployeeDepartmentConsumer(e->{
             setNewPage();
             filterData.setEmployeeDepartment(e);
-            reloadFeed();
+            loadGridValues();
         });
         employeeFilters.setHourlyRateConsumer(e->{
             setNewPage();
             filterData.setHourlyRate(e);
-            reloadFeed();
+            loadGridValues();
         });
         employeeFilters.setFromJoinedConsumer(e->{
             setNewPage();
             filterData.setFromJoined(e);
-            reloadFeed();
+            loadGridValues();
         });
         employeeFilters.setToJoinedConsumer(e->{
             setNewPage();
             filterData.setToJoined(e);
-            reloadFeed();
+            loadGridValues();
         });
         paganation.setOnPageChange(e->{
             e = e-1;
             filterData.setPage(e);
-            reloadFeed();
+            loadGridValues();
         });
         //needed
         currentFilterDisplay.setReloadController(e->{
@@ -198,32 +198,7 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
         );
     }
 
-    public void reloadFeed(){
 
-        verticalLayout.removeAll();
-
-
-        filterMemory.removeAll();
-        filterMemory.add(
-                employeeBriefExplanations.briefExplanation(),
-                employeeMiniStats.miniStatHolder(
-                        employeeService.getMiniStats(common.dateCrafter(0,0,0,0,true),
-                                common.dateCrafter(0,1,1,0,true))),
-                employeeFilters.filters()
-
-        );
-
-
-
-        loadGridValues();
-
-
-        verticalLayout.add(
-                filterMemory,
-                gridHolder
-
-        );
-    }
 
 
 

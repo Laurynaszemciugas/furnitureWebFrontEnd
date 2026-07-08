@@ -55,6 +55,7 @@ public class MaterialAddPage extends VerticalLayout implements BeforeEnterObserv
         setSizeFull();
         setAlignItems(FlexComponent.Alignment.CENTER);
 
+        addClassName("animation-page");
 
 
 
@@ -87,7 +88,7 @@ public class MaterialAddPage extends VerticalLayout implements BeforeEnterObserv
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top", "5px");
-        verticalLayout.addClassName("main-island");
+
 
 
 
@@ -98,7 +99,7 @@ public class MaterialAddPage extends VerticalLayout implements BeforeEnterObserv
 
 
         verticalLayout.add(
-                rightSideAddMaterials.briefExplanation("Create new Material"),
+                rightSideAddMaterials.briefExplanation("Create new Material","Create new"),
                 rightSideAddMaterials.leftRighJoin(null)
         );
 

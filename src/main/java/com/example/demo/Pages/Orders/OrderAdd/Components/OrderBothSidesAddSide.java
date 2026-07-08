@@ -1,28 +1,20 @@
-package com.example.demo.Pages.Orders.Components.OrderProductAddRemove;
+package com.example.demo.Pages.Orders.OrderAdd.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.Common.Logic.ObjectConverter;
-import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
-import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.ControllerModels.CommonDtos.User;
-import com.example.demo.ControllerModels.OrderAdd.ConsumerData;
-import com.example.demo.ControllerModels.Orders.OrderAddProducts;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.PayMethod;
 import com.example.demo.Enums.PayStatus;
-import com.example.demo.Pages.Orders.Components.AssignEmployees;
+import com.example.demo.Pages.Orders.Page.Components.AssignEmployees;
 import com.example.demo.Services.EmployeeService.EmployeeService;
-import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -34,8 +26,6 @@ import com.vaadin.flow.data.binder.Binder;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 @Setter

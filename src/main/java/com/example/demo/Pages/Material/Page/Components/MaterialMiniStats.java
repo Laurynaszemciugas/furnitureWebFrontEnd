@@ -4,7 +4,6 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.MiniStatCrafter;
 import com.example.demo.ControllerModels.Common.MiniStatHolder;
-import com.example.demo.ControllerModels.Material.MaterialMiniStat;
 import com.example.demo.Enums.ActiveInactive;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;

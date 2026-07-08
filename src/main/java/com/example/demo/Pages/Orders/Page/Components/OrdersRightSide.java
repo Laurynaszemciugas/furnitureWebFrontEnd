@@ -1,4 +1,4 @@
-package com.example.demo.Pages.Orders.Components;
+package com.example.demo.Pages.Orders.Page.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -8,7 +8,7 @@ import com.example.demo.DTOS.ComboBoxEmployees;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.PayMethod;
 import com.example.demo.Enums.PayStatus;
-import com.example.demo.Pages.Orders.Components.OrderProductAddRemove.OrderAddProductListAddRemove;
+import com.example.demo.Pages.Orders.OrderAdd.Components.OrderAddProductListAddRemove;
 import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.Products.ProductService;

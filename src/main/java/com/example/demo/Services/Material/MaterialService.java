@@ -6,7 +6,6 @@ import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
-import com.example.demo.ControllerModels.Material.MaterialMiniStat;
 import com.example.demo.DTOS.ComboBoxMaterial;
 import lombok.Setter;
 import lombok.SneakyThrows;

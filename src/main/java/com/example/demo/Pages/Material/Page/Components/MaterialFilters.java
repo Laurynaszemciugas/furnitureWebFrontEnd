@@ -166,16 +166,13 @@ public class MaterialFilters {
 
         List<Button> buttonList = List.of(all,inStock,lowStock,NoStock);
 
-        for(var s : buttonList){
+        for(var s : buttonList) {
 
 
+            currentFilterDisplay.setReloadButtons(ee -> {
 
 
-            currentFilterDisplay.setReloadButtons(ee->{
-
-                System.out.println("reloadddddddddddddddddddd");
-
-                if(filterData.getStockChoice().equals(Stock.ALL)) {
+                if (filterData.getStockChoice().equals(Stock.ALL)) {
                     stockConsumer.accept(Stock.ALL);
                     buttonList.forEach(button ->
                             button.removeClassName("active"));
@@ -184,48 +181,23 @@ public class MaterialFilters {
             });
 
 
+            s.addClickListener(e -> {
 
-            s.addClickListener(e->{
-
-                if(filterData.getStockChoice().equals(Stock.ALL)){
-                    stockConsumer.accept(Stock.ALL);
-                    buttonList.forEach(button->
-                            button.removeClassName("active"));
-
-                    all.addClassName("active");
-
-                }
-
-                if(filterData.getStockChoice().equals(Stock.In_Stock)){
-                    stockConsumer.accept(Stock.In_Stock);
-                    buttonList.forEach(button->
-                            button.removeClassName("active"));
-
-                    inStock.addClassName("active");
-
-                }
-                if(filterData.getStockChoice().equals(Stock.Low_Stock)){
-                    stockConsumer.accept(Stock.Low_Stock);
-                    buttonList.forEach(button->
-                            button.removeClassName("active"));
-
-                    lowStock.addClassName("active");
-                }
-                if(filterData.getStockChoice().equals(Stock.No_Stock)){
-                    stockConsumer.accept(Stock.No_Stock);
-                    buttonList.forEach(button->
-                            button.removeClassName("active"));
-
-                    NoStock.addClassName("active");
-                }
-
+                buttonList.forEach(button ->
+                        button.removeClassName("active"));
+                s.addClassName("active");
 
             });
 
-
-
-
         }
+
+
+
+
+
+
+
+
 
 
 

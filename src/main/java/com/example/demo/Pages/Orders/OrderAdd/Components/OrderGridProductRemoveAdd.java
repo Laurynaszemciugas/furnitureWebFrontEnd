@@ -1,4 +1,4 @@
-package com.example.demo.Pages.Orders.Components.OrderProductAddRemove;
+package com.example.demo.Pages.Orders.OrderAdd.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -22,7 +22,6 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 import java.util.function.Consumer;
 
 @Setter

@@ -165,17 +165,19 @@ public class RightSideMaterials {
 
 
 
-    public HorizontalLayout briefExplanation(String name){
+    public HorizontalLayout briefExplanation(String name, String buttonName){
 
 
         HorizontalLayout h = new HorizontalLayout();
         h.setWidthFull();
         h.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
+        h.addClassName("smooth-panel");
+
         HorizontalLayout buttonHolder = new HorizontalLayout();
 
         Button cancel = commonComponents.normalThemeButton("Cancel","Materials", ButtonVariant.LUMO_ICON);
-        Button createOrder = commonComponents.normalThemeButtonNoNavigate("Save", ButtonVariant.LUMO_PRIMARY);
+        Button createOrder = commonComponents.normalThemeButtonNoNavigate(buttonName, ButtonVariant.LUMO_PRIMARY);
 
 
         createOrder.addClickListener(e->{
@@ -446,8 +448,9 @@ public class RightSideMaterials {
     public VerticalLayout leftSide(){
 
         VerticalLayout leftSide = new VerticalLayout();
+        leftSide.setPadding(false);
         leftSide.setWidthFull();
-        leftSide.addClassName("island");
+        leftSide.addClassName("fromLeftToRight");
         List<CommonImagesData> s = new ArrayList<>();
         leftSide.add(
 
@@ -467,6 +470,8 @@ public class RightSideMaterials {
         VerticalLayout rightSide = new VerticalLayout();
         rightSide.setPadding(false);
         rightSide.setWidthFull();
+
+        rightSide.addClassName("fromRightToLeft");
 
 
         rightSide.add(
@@ -490,15 +495,15 @@ public class RightSideMaterials {
         leftRighJoin.setWidthFull();
 
         VerticalLayout leftSide = leftSide();
-        leftSide.setWidth("500px");
+        leftSide.setWidth("650px");
         VerticalLayout rightSide = rightSide();
-        rightSide.setWidth("900px");
+        rightSide.setWidth("700px");
 
         leftRighJoin.add(
                 leftSide,
                 rightSide
         );
-        leftRighJoin.expand(leftSide);
+        leftRighJoin.expand(rightSide);
 
 
 

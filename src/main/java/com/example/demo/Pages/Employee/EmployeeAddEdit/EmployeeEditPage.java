@@ -79,7 +79,7 @@ public class EmployeeEditPage extends VerticalLayout implements BeforeEnterObser
 
 
         verticalLayout.add(
-                addEditComponents.briefExplanation("Add new employee"),
+                addEditComponents.briefExplanation("Add new employee", "Save"),
                 addEditComponents.employeeInformation(employeeService.getEmployee((long) itemChoice))
         );
 

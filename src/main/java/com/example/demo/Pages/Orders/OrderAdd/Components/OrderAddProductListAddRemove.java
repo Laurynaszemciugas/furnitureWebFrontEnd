@@ -1,8 +1,7 @@
-package com.example.demo.Pages.Orders.Components.OrderProductAddRemove;
+package com.example.demo.Pages.Orders.OrderAdd.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.Product;
@@ -21,8 +20,6 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import lombok.SneakyThrows;
-import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.List;

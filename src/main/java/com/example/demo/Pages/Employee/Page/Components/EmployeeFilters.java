@@ -182,24 +182,7 @@ public class EmployeeFilters {
 
         }
 
-        if(filterData.getEmployeeAcIn().equals(EmployeeAcIn.ACTIVE)){
-            buttonList.forEach(button->
-                    button.removeClassName("active"));
-            employeeAcInConsumer.accept(EmployeeAcIn.ACTIVE);
-            active.addClassName("active");
-        }
-        if(filterData.getEmployeeAcIn().equals(EmployeeAcIn.INACTIVE)){
-            buttonList.forEach(button->
-                    button.removeClassName("active"));
-            employeeAcInConsumer.accept(EmployeeAcIn.INACTIVE);
-            inactive.addClassName("active");
-        }
-        if(filterData.getEmployeeAcIn().equals(EmployeeAcIn.ON_LEAVE)){
-            buttonList.forEach(button->
-                    button.removeClassName("active"));
-            employeeAcInConsumer.accept(EmployeeAcIn.ON_LEAVE);
-            onLeave.addClassName("active");
-        }
+
 
 
         TextField search = commonComponents.textFieldCrafter("Search employees...","",VaadinIcon.SEARCH);

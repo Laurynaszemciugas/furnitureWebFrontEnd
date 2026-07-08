@@ -3,6 +3,7 @@ package com.example.demo.Services.Orders;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.HttpCallLogic;
+import com.example.demo.ControllerModels.Common.MiniStatHolder;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
@@ -34,8 +35,8 @@ public class OrdersService {
     }
 
     @SneakyThrows
-    public List<OrdersFeedData> getOrderFeedData(OrderFilterHolder orderFilterHolder){
-        return Arrays.stream(httpCallLogic.HttpCall("order/getAllOrders", HttpMethod.POST,orderFilterHolder, OrdersFeedData[].class,false)).toList();
+    public List<OrdersFeedData> getOrderFeedData(OrderFilterHolder orderFilterHolder,String jwt){
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("order/getAllOrders", HttpMethod.POST,orderFilterHolder, OrdersFeedData[].class,false,jwt)).toList();
     }
 
     @SneakyThrows
@@ -63,6 +64,14 @@ public class OrdersService {
     public Orders getSelectedOrder(Long id){
 
           return httpCallLogic.HttpCall("order/getOrderFromId", HttpMethod.GET,id, Orders.class,true);
+
+    }
+
+
+    @SneakyThrows
+    public MiniStatHolder getMiniStats(LocalDate fromDate, LocalDate toDate) {
+
+        return httpCallLogic.HttpCall("order/getMiniStats", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), MiniStatHolder.class,true);
 
     }
 

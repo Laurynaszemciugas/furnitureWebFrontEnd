@@ -1,4 +1,4 @@
-package com.example.demo.Pages.Orders.Components;
+package com.example.demo.Pages.Orders.Page.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -14,6 +14,8 @@ public class BriefOrderPageExplanation {
     Common common;
 
 
+    boolean firstLoad = true;
+
     public BriefOrderPageExplanation(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
@@ -22,8 +24,18 @@ public class BriefOrderPageExplanation {
     public HorizontalLayout briefExplanation(){
 
         HorizontalLayout v = new HorizontalLayout();
+
+        if(firstLoad){
+            v.addClassName("smooth-panel");
+            firstLoad = false;
+        }
+        else{
+            v.removeClassName("smooth-panel");
+        }
+
         v.setWidthFull();
         v.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+
 
 
 
