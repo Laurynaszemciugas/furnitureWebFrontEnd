@@ -113,7 +113,6 @@ public class OrdersRightSide {
     public VerticalLayout rightSideOrderInfo(){
         rightSide = new VerticalLayout();
         rightSide.setVisible(false);
-        rightSide.addClassName("island-dis");
         rightSide.getStyle().set("position","relative");
 
 
@@ -128,7 +127,7 @@ public class OrdersRightSide {
         Span orderId = commonComponents.spanCrafter("","activityFeed-name");
 
         VerticalLayout userData = new VerticalLayout();
-        userData.addClassName("island");
+        //userData.addClassName("island");
         userData.setPadding(false);
         userData.setWidthFull();
 
@@ -174,7 +173,8 @@ public class OrdersRightSide {
         ordersLeftSide.setConsumer(e->{
 
             rightSide.setVisible(true);
-            rightSide.addClassName("island-dis");
+            rightSide.addClassName("addLeftSide");
+            rightSide.removeClassName("removeLeftSide");
 
             //get order data
                 selectedOrder = ordersService.getSelectedOrder(e);
@@ -324,6 +324,8 @@ public class OrdersRightSide {
 
         );
 
+        userData.addClassName("island");
+
 
 
 
@@ -343,6 +345,17 @@ public class OrdersRightSide {
         );
 
 
+        VerticalLayout buttons = new VerticalLayout();
+        buttons.setWidthFull();
+        buttons.setPadding(false);
+        buttons.addClassName("island");
+
+        buttons.add(
+                commonComponents.spanCrafter("Order settings","activityFeed-name"),
+                orderStatusButtons(),
+                actionButtons()
+        );
+
 
         rightSide.add(
                 status,
@@ -354,8 +367,7 @@ public class OrdersRightSide {
                 timeLineHoder,
                 employeeAssigmentHolder,
                 noteHolder,
-                orderStatusButtons(),
-                actionButtons()
+                buttons
 
         );
 
@@ -635,6 +647,7 @@ public class OrdersRightSide {
     public HorizontalLayout actionButtons(){
 
         HorizontalLayout h = new HorizontalLayout();
+
         h.setWidthFull();
         h.addClassName("layout-flex");
 
@@ -656,6 +669,15 @@ public class OrdersRightSide {
             changeStatusDisplay(OrderStatus.In_Progress);
         });
 
+        Button cancelled = commonComponents.buttonThemeAndIconNoNavigate("Mark as Cancelled", ButtonVariant.LUMO_ERROR, VaadinIcon.CLOSE,"red");
+
+        cancelled.addClickListener(e->{
+            selectedOrder.setOrderStatus(OrderStatus.CANCELLED);
+            commonComponents.showNotification("Order was set to Cancelled",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
+            changeStatusDisplay(OrderStatus.CANCELLED);
+        });
+
+
         Button finished = commonComponents.buttonThemeAndIconNoNavigate("Mark as Finished", ButtonVariant.LUMO_SUCCESS, VaadinIcon.CHECK,"green");
 
         finished.addClickListener(e->{
@@ -668,6 +690,7 @@ public class OrdersRightSide {
         h.add(
                 pending,
                 inProgress,
+                cancelled,
                 finished
         );
 
@@ -721,20 +744,22 @@ public class OrdersRightSide {
         status.removeClassName("status-in-progress");
         status.removeClassName("status-pending");
         status.removeClassName("status-finished");
+        status.removeClassName("status-cancelled");
         status.removeClassName("status-none");
 
         switch (selectedOrder.getOrderStatus()) {
             case In_Progress -> status.addClassName("status-in-progress");
             case Pending -> status.addClassName("status-pending");
             case Finished -> status.addClassName("status-finished");
+            case CANCELLED -> status.addClassName("status-cancelled");
         }
     }
 
 
 
     public void hideRightSide() {
-        rightSide.removeClassName("island-dis");
-       rightSide.setVisible(false);
+        rightSide.addClassName("removeLeftSide");
+        rightSide.removeClassName("addLeftSide");
     }
 
 

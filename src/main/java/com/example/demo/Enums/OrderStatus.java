@@ -5,6 +5,7 @@ public enum OrderStatus {
     In_Progress("In Progress"),
     Finished("Finished"),
     Pending("Pending"),
+    CANCELLED("Cancelled"),
     ALL("All");
 
     private String displayName;

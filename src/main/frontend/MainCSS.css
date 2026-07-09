@@ -133,95 +133,43 @@ vaadin-button {
 
 
 
-
-.island-dis {
-    background: #fff;
-    border: 1px solid #eaeaea;
-    border-radius: 14px;
-    box-shadow:
-        0 1px 2px rgba(0,0,0,0.04),
-        0 6px 20px rgba(0,0,0,0.06);
-
-    padding: 16px;
-    overflow: hidden;
-
-    animation: island-appear 0.4s ease forwards;
-}
-
-@keyframes island-appear {
-    from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-.island-dis.hide {
-    overflow: hidden;
-    pointer-events: none;
-
-    animation: island-remove 0.3s ease forwards;
-}
-
-@keyframes island-remove {
-    from {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-
-        max-height: 500px; /* bigger than content */
-        padding-top: 16px;
-        padding-bottom: 16px;
-        margin-top: 8px;
-        margin-bottom: 8px;
-    }
-
-    to {
-        opacity: 0;
-        transform: translateY(15px) scale(0.95);
-
-        max-height: 0;
-        padding-top: 0;
-        padding-bottom: 0;
-        margin-top: 0;
-        margin-bottom: 0;
-        border-width: 0;
-    }
-}
-
-
-
-
 .island-hover {
-    background: #ffffff;
-    border: 1px solid #eaeaea;
-    border-radius: 14px;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    border: 1px solid rgba(59, 130, 246, 0.16);
+    border-radius: 18px;
+
     box-shadow:
-        0 1px 2px rgba(0,0,0,0.04),
-        0 6px 20px rgba(0,0,0,0.06);
-    padding: 16px;
+        0 2px 6px rgba(15, 23, 42, 0.04),
+        0 14px 35px rgba(37, 99, 235, 0.08);
 
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-            will-change: transform;
+    padding: 18px;
+    transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        border-color 0.22s ease,
+        background 0.22s ease;
 
+    will-change: transform;
 }
-
 
 .island-hover:hover {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    background: linear-gradient(180deg, #ffffff 0%, #f3f8ff 100%);
+    border-color: rgba(59, 130, 246, 0.35);
+
     box-shadow:
-        0 4px 10px rgba(0,0,0,0.08),
-        0 10px 25px rgba(0,0,0,0.10);
-    border-color: #dcdcdc;
+        0 6px 16px rgba(37, 99, 235, 0.12),
+        0 18px 45px rgba(37, 99, 235, 0.16);
+
     cursor: pointer;
 }
 
 .island-hover:active {
-    transform: translateY(1px);
+    transform: translateY(-1px) scale(0.995);
+
     box-shadow:
-        0 2px 6px rgba(0,0,0,0.08);
+        0 3px 8px rgba(37, 99, 235, 0.10),
+        0 10px 22px rgba(37, 99, 235, 0.12);
 }
 
 
@@ -477,6 +425,13 @@ background-color: #d4edda;
     background: rgba(245, 158, 11, 0.15);
     color: grey;
     border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* Cancelled - RED */
+.status-cancelled {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 
@@ -795,17 +750,17 @@ background-color: #d4edda;
 
 /*
    STAGGERED CARD LOADING
-
+transition:
+            transform 0.22s ease,
+            box-shadow 0.22s ease,
+            border-color 0.22s ease;
    Each card appears after the previous one.
 */
 
 
 .animated-card {
     animation: cardEnter 0.65s cubic-bezier(.2, .8, .2, 1) both;
-    transition:
-            transform 0.22s ease,
-            box-shadow 0.22s ease,
-            border-color 0.22s ease;
+
 }
 
 .animated-card:nth-child(1) {
@@ -885,6 +840,80 @@ background-color: #d4edda;
 
 
 }
+
+
+/*
+
+    Order lists animations remove add right
+
+*/
+
+.addLeftSide{
+overflow: hidden;
+     animation: addLeftSideAnimation 0.7s cubic-bezier(.2, .8, .2, 1) 0.25s both;
+        transition:
+                transform 0.28s ease,
+                box-shadow 0.28s ease;
+
+
+}
+
+.removeLeftSide{
+overflow: hidden;
+ animation: removeLeftSideAnimation 0.7s cubic-bezier(.2, .8, .2, 1) 0.25s both;
+        transition:
+                transform 0.28s ease,
+                box-shadow 0.28s ease;
+}
+
+@keyframes addLeftSideAnimation{
+
+from{
+
+    min-width: 0;
+    max-width: 0;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    border-width:0;
+
+}
+
+
+to{
+
+   opacity: 1;
+   max-width: 1000px;
+
+
+}
+
+}
+
+
+@keyframes removeLeftSideAnimation{
+
+from{
+
+    opacity: 1;
+    max-width: 1000px;
+
+}
+
+
+to{
+
+    min-width: 0;
+    max-width: 0;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    border-width: 0;
+
+}
+
+}
+
 
 
 

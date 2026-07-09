@@ -48,6 +48,8 @@ public class OrderFilters {
     Consumer<Long> employeeId;
     Consumer<Long> productId;
 
+
+
     CurrentFilterDisplay currentFilterDisplay;
     OrderFilterHolder filterData = new OrderFilterHolder();
 
@@ -260,6 +262,21 @@ public class OrderFilters {
             );
         });
 
+
+        Button cancelledButtons = commonComponents.normalButtonNoNavigate("Cancelled", "transparent-button");
+        cancelledButtons.addClickListener(e->{
+            currentFilterDisplay.filterSetter(
+                    OrderStatus.CANCELLED,
+                    OrderStatus.ALL,
+                    null,
+                    filterData,
+                    "orderStatusChoice",
+                    "Order status",
+                    orderStatusConsumer
+            );
+        });
+
+
         Button finishedButton = commonComponents.normalButtonNoNavigate("Finished", "transparent-button");
         finishedButton.addClickListener(e->{
             currentFilterDisplay.filterSetter(
@@ -273,7 +290,7 @@ public class OrderFilters {
             );
         });
 
-        List<Button> buttons = List.of(allButton,pendingButton,inProgressButton,finishedButton);
+        List<Button> buttons = List.of(allButton,pendingButton,inProgressButton,cancelledButtons,finishedButton);
 
         for(var s : buttons){
 
@@ -304,6 +321,7 @@ public class OrderFilters {
                 allButton,
                 pendingButton,
                 inProgressButton,
+                cancelledButtons,
                 finishedButton
 
         );

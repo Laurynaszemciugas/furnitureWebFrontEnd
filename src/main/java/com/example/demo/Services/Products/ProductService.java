@@ -31,9 +31,9 @@ public class ProductService {
 
     // good for specific data need
     @SneakyThrows
-    public List<ProductFeedModel> loadProductFeedModel(ProductFilterHolder productFilterHolder) {
+    public List<ProductFeedModel> loadProductFeedModel(ProductFilterHolder productFilterHolder, String jwt) {
         return Arrays.stream(
-                httpCallLogic.HttpCall("product/getProducts", HttpMethod.POST,productFilterHolder, ProductFeedModel[].class,false)).toList();
+                httpCallLogic.HttpCallWithJwt("product/getProducts", HttpMethod.POST,productFilterHolder, ProductFeedModel[].class,false,jwt)).toList();
     }
 
     @SneakyThrows

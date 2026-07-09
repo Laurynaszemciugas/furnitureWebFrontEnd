@@ -1,6 +1,8 @@
 package com.example.demo.Common;
 
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.Filter.Common.FilterMeta;
+import com.vaadin.copilot.shaded.guava.base.Objects;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasValue;
@@ -18,7 +20,9 @@ import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -27,6 +31,7 @@ public class CurrentFilterDisplay {
 
     CommonComponents commonComponents;
     Common common;
+    SessionCrafter sessionCrafter;
 
     VerticalLayout v = new VerticalLayout();
     HorizontalLayout h = new HorizontalLayout();
@@ -38,6 +43,7 @@ public class CurrentFilterDisplay {
     public CurrentFilterDisplay(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.sessionCrafter = new SessionCrafter();
 
         v.setVisible(false);
         h.addClassName("layout-flex");
@@ -261,6 +267,39 @@ public class CurrentFilterDisplay {
 
 
 
+    @SneakyThrows
+    public <T> void preLoadFilters(Class<T> tClass, String sessionName){
+
+        T stuff = sessionCrafter.extractSession(sessionName,tClass);
+
+        System.out.println("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
+        System.out.println(stuff);
+
+        if(stuff == null){
+
+        }
+        else{
+
+        List<Field> fields = Arrays.stream(tClass.getDeclaredFields()).toList();
+
+        T defaultValues = tClass.getDeclaredConstructor().newInstance();
+
+        for(var s : fields) {
+
+            s.setAccessible(true);
+
+            Object givenValue = s.get(stuff);
+            Object defaultVal = s.get(defaultValues);
+
+            if (Objects.equal(defaultVal, givenValue)) {
+                continue;
+            } else {
+                addFilter(s.getName(), s.get(stuff), s.getName(), stuff, s.get(defaultValues));
+            }
+        }
+        }
+
+    }
 
 
 

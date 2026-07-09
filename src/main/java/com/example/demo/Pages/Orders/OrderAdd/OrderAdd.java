@@ -59,7 +59,7 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
 
         listOfProducts.addAll(productService.getProductsForAddOrder());
 
-
+        addClassName("animation-page");
 
 
     }
@@ -78,7 +78,6 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top", "5px");
-        verticalLayout.addClassName("main-island");
 
         verticalLayout.add(
                     orderBothSidesAddSide.briefPageExplanation(),

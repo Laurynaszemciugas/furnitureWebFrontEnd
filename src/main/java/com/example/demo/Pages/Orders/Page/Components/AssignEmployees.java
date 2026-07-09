@@ -55,6 +55,9 @@ public class AssignEmployees {
     public VerticalLayout employeeAssignment(Orders selectedOrder, VerticalLayout employeeHolder){
 
         VerticalLayout v = new VerticalLayout();
+
+        v.addClassName("animated-card");
+
         v.addClassName("island");
         v.setPadding(false);
         v.setWidthFull();

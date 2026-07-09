@@ -62,9 +62,7 @@ public class OrdersLeftSide {
         }
 
 
-//        Scroller scroller = new Scroller(feed);
-//        scroller.setMaxHeight("800px");
-//        scroller.setWidthFull();
+
 
 
         return feed;

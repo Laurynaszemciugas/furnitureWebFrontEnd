@@ -18,7 +18,7 @@ public class ProductPageBriefExplanation {
     CommonComponents commonComponents;
     Common common;
 
-
+    boolean firstLoad = true;
 
     public ProductPageBriefExplanation(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
@@ -32,6 +32,14 @@ public class ProductPageBriefExplanation {
     public HorizontalLayout briefPageExplanation(){
         HorizontalLayout left = commonComponents.biefPageExplanation("Inventory management");
 
+
+        if(firstLoad){
+            left.addClassName("smooth-panel");
+            firstLoad = false;
+        }
+        else{
+            left.removeClassName("smooth-panel");
+        }
 
 
         HorizontalLayout right =new HorizontalLayout(

@@ -74,6 +74,9 @@ public class OrderBothSidesAddSide {
 
     public HorizontalLayout briefPageExplanation(){
         HorizontalLayout h = new HorizontalLayout();
+
+        h.addClassName("smooth-panel");
+
         h.setWidthFull();
         h.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
@@ -129,6 +132,9 @@ public class OrderBothSidesAddSide {
 
         VerticalLayout v = new VerticalLayout();
         v.setWidthFull();
+
+
+
         v.setPadding(false);
 
         employeeHolder.removeAll();
@@ -156,6 +162,9 @@ public class OrderBothSidesAddSide {
     public VerticalLayout consumerInformation(){
         VerticalLayout v = new VerticalLayout();
         v.setWidthFull();
+
+        v.addClassName("animated-card");
+
         v.addClassName("island");
 
         FormLayout first = new FormLayout();
@@ -187,6 +196,9 @@ public class OrderBothSidesAddSide {
 
     public VerticalLayout orderSettings(){
         VerticalLayout v = new VerticalLayout();
+
+        v.addClassName("animated-card");
+
         v.setWidthFull();
         v.setMaxHeight("700px");
         v.addClassName("island");
@@ -227,6 +239,9 @@ public class OrderBothSidesAddSide {
 
     public VerticalLayout orderNote(){
         VerticalLayout v = new VerticalLayout();
+
+        v.addClassName("animated-card");
+
         v.setWidthFull();
         v.setHeight("405px");
         v.addClassName("island");

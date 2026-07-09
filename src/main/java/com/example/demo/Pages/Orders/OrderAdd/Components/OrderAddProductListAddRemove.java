@@ -60,6 +60,8 @@ public class OrderAddProductListAddRemove {
 
 
         VerticalLayout v = new VerticalLayout();
+        v.addClassName("animated-card");
+
         v.setWidthFull();
         v.addClassName("island");
 

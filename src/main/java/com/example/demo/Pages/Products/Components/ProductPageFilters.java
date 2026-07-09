@@ -69,6 +69,8 @@ public class ProductPageFilters {
 
     List<ComboBoxMaterial> materialList = new ArrayList<>();
 
+    boolean firstLoad = true;
+
     @SneakyThrows
     public ProductPageFilters(CommonComponents commonComponents, Common common, CommonService commonService) {
         this.commonComponents = commonComponents;
@@ -87,10 +89,21 @@ public class ProductPageFilters {
 
 
 
-    public VerticalLayout filters(){
+    public VerticalLayout filters(ProductFilterHolder filterSaved){
+
+        filterData = filterSaved;
 
 
         VerticalLayout allHolder = new VerticalLayout();
+
+        if(firstLoad){
+            allHolder.addClassName("smooth-panel");
+            firstLoad = false;
+        }
+        else{
+            allHolder.removeClassName("smooth-panel");
+        }
+
         allHolder.setPadding(false);
         allHolder.setWidthFull();
         // get current filter display

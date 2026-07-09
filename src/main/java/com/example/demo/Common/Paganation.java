@@ -96,7 +96,7 @@ public class Paganation {
 
         for(int i = 1; i <= totalPages; i++){
 
-            if(totalPages == 1){
+            if(totalPages == 0){
                 buttonList.get(0).setVisible(false);
                 break;
             }
