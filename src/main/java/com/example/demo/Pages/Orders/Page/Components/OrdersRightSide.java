@@ -170,7 +170,7 @@ public class OrdersRightSide {
 
         // CONSUMMER
 
-        ordersLeftSide.setConsumer(e->{
+        ordersLeftSide.setOrderList(e->{
 
             rightSide.setVisible(true);
             rightSide.addClassName("addLeftSide");

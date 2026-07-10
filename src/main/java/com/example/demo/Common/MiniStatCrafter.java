@@ -43,6 +43,7 @@ public class MiniStatCrafter {
         iconHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         iconHolder.setAlignItems(FlexComponent.Alignment.CENTER);
         iconHolder.addClassName("statIconBack");
+
         iconHolder.getStyle().set("background-color",backgroundColor);
         Icon icon = commonComponents.iconCrafter(selectedIcon,"30px",iconColor);
         iconHolder.add(icon);
