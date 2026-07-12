@@ -6,6 +6,8 @@ public enum OrderStatus {
     Finished("Finished"),
     Pending("Pending"),
     CANCELLED("Cancelled"),
+    NEW("New"),
+    LACK_OF_SUPPLY("Lack of supply"),
     ALL("All");
 
     private String displayName;

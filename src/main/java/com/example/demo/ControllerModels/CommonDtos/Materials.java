@@ -5,6 +5,7 @@ import com.example.demo.Enums.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,9 @@ public class Materials {
     private MaterialTextures materialTextures;
     private MaterialType materialFinishType;
     private MaterialGrainPatterns materialGrainPatterns;
+
+    public LocalDate deliveryDate;
+    public Long defaultTimePeriod;
 
 
     private LocalDateTime created;

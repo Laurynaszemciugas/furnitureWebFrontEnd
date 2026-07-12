@@ -25,6 +25,8 @@ public class Orders {
     private Double totalPrice;
     private OrderStatus orderStatus;
     private String orderNote;
+    private String userNote;
+    private String serverNote;
     private LocalDateTime estimatedDueDate;
     private String phoneNumber;
     private PayStatus payStatus;

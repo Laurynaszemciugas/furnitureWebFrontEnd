@@ -8,6 +8,7 @@ import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
 import com.example.demo.ControllerModels.OrderAdd.ConsumerData;
+import com.example.demo.ControllerModels.Orders.NewOrderFeedData;
 import com.example.demo.ControllerModels.Orders.OrdersFeedData;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.Warnings;
@@ -75,6 +76,19 @@ public class OrdersService {
 
     }
 
+    @SneakyThrows
+    public Long getNewOrderCount() {
+
+        return httpCallLogic.HttpCall("order/getNewOrderCount", HttpMethod.GET,"", Long.class,false);
+
+    }
+
+    @SneakyThrows
+    public List<NewOrderFeedData> getSelectedNewOrdersGridData(Long id) {
+
+        return Arrays.stream(httpCallLogic.HttpCall("order/getGridStuff", HttpMethod.GET,id, NewOrderFeedData[].class,true)).toList();
+
+    }
 
     }
 

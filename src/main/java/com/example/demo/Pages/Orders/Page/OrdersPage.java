@@ -8,6 +8,7 @@ import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
+import com.example.demo.ControllerModels.Orders.NewOrderFeedData;
 import com.example.demo.ControllerModels.Orders.OrdersFeedData;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Orders.Page.Components.*;
@@ -17,20 +18,28 @@ import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.datetimepicker.DateTimePicker;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import org.springframework.core.annotation.Order;
 
 import javax.swing.plaf.PanelUI;
+import java.awt.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -271,14 +280,13 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         );
 
         leftSide.add(
-                filterMemory,
                 feedHolder,
                 paganation.buttonHolder(Math.toIntExact(ordersService.getPageCount(filterData))));
 
         VerticalLayout right = ordersRightSide.rightSideOrderInfo();
 
         // LEFT SIDE
-        leftSide.setWidth("250px");
+        leftSide.setWidth("200px");
 
         // RIGHT SIDE
         right.setWidth("1000px");
@@ -295,11 +303,14 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
                 briefOrderPageExplanation.briefExplanation(),
                 newOrders(),
                 orderMiniStats.miniStatHolder(ordersService.getMiniStats(common.dateCrafter(0,0,0,0,true),common.dateCrafter(0,1,0,0,true))),
+                filterMemory,
                 sidesHolder);
     }
 
 
     public VerticalLayout newOrders(){
+
+        Long amountOfNewOrderValue = ordersService.getNewOrderCount();
 
         VerticalLayout main = new VerticalLayout();
         main.setPadding(false);
@@ -312,7 +323,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         v.addClassName("island");
 
 
-        Span amount = new Span("1");
+        Span amount = new Span(amountOfNewOrderValue.toString());
 
         Div amountOfNewOrders = new Div();
         amountOfNewOrders.add(amount);
@@ -352,7 +363,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         iconHolder.add(icon,amountOfNewOrders);
 
 
-        Span ordersText = commonComponents.spanCrafterWordNoHide("4 new order waiting for approval","activityFeed-name");
+        Span ordersText = commonComponents.spanCrafterWordNoHide(amountOfNewOrderValue + " new order waiting for approval","activityFeed-name");
 
         HorizontalLayout bellTextHolder = new HorizontalLayout();
         bellTextHolder.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -367,6 +378,10 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
         Button reviewOrders = new Button("Review orders");
         reviewOrders.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+        if(amountOfNewOrderValue == 0){
+            reviewOrders.setEnabled(false);
+        }
 
         reviewOrders.addClickListener(e->{
 
@@ -401,11 +416,10 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
     public HorizontalLayout reviewLeftRight(){
         reviewLeftRightSide.setWidthFull();
-        reviewLeftRightSide.addClassName("island");
         reviewLeftRightSide.addClassName("layout-flex");
 
         VerticalLayout left = newOrderLeftSide();
-        left.setWidth("250px");
+        left.setWidth("200px");
         VerticalLayout right = newOrderRightSide();
         right.setWidth("1000px");
 
@@ -427,10 +441,10 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
     public VerticalLayout newOrderLeftSide(){
 
         VerticalLayout v = new VerticalLayout();
+        v.setPadding(false);
 
         String jwt = sessionCrafter.extractSession("JWT", String.class);
         v.setWidthFull();
-        v.addClassName("island");
 
         v.add(
                 ordersLeftSide.newOrderFeedHolder(ordersService.getOrderFeedData(filterData,jwt))
@@ -449,14 +463,50 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
         VerticalLayout v = new VerticalLayout();
 
-        Span titleOfTePreview = new Span();
+        Span titleOfTePreview = commonComponents.spanCrafter("","activityFeed-name");
+
+        HorizontalLayout constumerMiniInfo = new HorizontalLayout();
+        constumerMiniInfo.setWidthFull();
+
+
 
         ordersLeftSide.setNewOrderList(e->{
+
+            // clear the layout
+            v.removeAll();
+            constumerMiniInfo.removeAll();
+
             newSelectedOrder = ordersService.getSelectedOrder(e);
 
             titleOfTePreview.setText( "Order preview - NWO-"+ newSelectedOrder.getId());
+            String customerName =
+                    newSelectedOrder.getOrderPlacedBy() == null
+                            || newSelectedOrder.getOrderPlacedBy().getFullName() == null
+                            || newSelectedOrder.getOrderPlacedBy().getFullName().isBlank()
+                            ? "Unknown"
+                            : newSelectedOrder.getOrderPlacedBy().getFullName();
+
+            constumerMiniInfo.add(
+                    cardCrafter(
+                            VaadinIcon.USER,
+                            "Customer",
+                            customerName,
+                            newSelectedOrder.getOrderCreatedByGmail(),
+                            newSelectedOrder.getPhoneNumber()
+                    )
+            );
+            constumerMiniInfo.add(cardCrafter(VaadinIcon.LOCATION_ARROW_CIRCLE,"Delivery address",newSelectedOrder.getBillingAddress(),"",""));
+            constumerMiniInfo.add(locationCard(VaadinIcon.CALENDAR,"Due date",newSelectedOrder.getEstimatedDueDate()));
+
 
             v.setVisible(true);
+
+            v.add(
+                    titleOfTePreview,
+                    constumerMiniInfo,
+                    newOrdersGrid(newSelectedOrder.getId())
+            );
+
         });
 
         v.setWidthFull();
@@ -464,9 +514,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         v.setVisible(false);
 
 
-        v.add(
-                titleOfTePreview
-        );
+
 
 
 
@@ -477,8 +525,299 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
     }
 
+    public HorizontalLayout cardCrafter(VaadinIcon icon, String title, String info1, String info2, String info3){
+
+        HorizontalLayout v = new HorizontalLayout();
+        v.setSpacing(true);
+        v.setPadding(false);
+        v.setWidthFull();
+        v.addClassName("island");
+
+        // ICON
+        VerticalLayout iconHolder = new VerticalLayout();
+        iconHolder.setWidth("40px");
+        iconHolder.setPadding(false);
+        iconHolder.setSpacing(false);
+
+        iconHolder.add(commonComponents.iconCrafter(icon, "20px", "black"));
+
+        // TEXT
+        VerticalLayout text = new VerticalLayout();
+        text.setPadding(false);
+        text.setSpacing(false);
+
+        Span line1 = commonComponents.spanCrafter(title, "stat-title");
+        Span line2 = commonComponents.spanCrafter(info1, "stat-description");
+        Span line3 = commonComponents.spanCrafter(info2, "stat-description");
+        Span line4 = commonComponents.spanCrafter(info3, "stat-description");
+
+        text.add(line1, line2, line3, line4);
+
+        v.add(iconHolder, text);
+
+        return v;
+    }
 
 
+    public HorizontalLayout locationCard(VaadinIcon icon, String title, LocalDateTime localDateTime){
+
+        HorizontalLayout v = new HorizontalLayout();
+        v.setSpacing(true);
+        v.setPadding(false);
+        v.setWidthFull();
+        v.addClassName("island");
+
+        // ICON
+        VerticalLayout iconHolder = new VerticalLayout();
+        iconHolder.setWidth("40px");
+        iconHolder.setPadding(false);
+        iconHolder.setSpacing(false);
+
+        iconHolder.add(commonComponents.iconCrafter(icon, "20px", "black"));
+
+        // TEXT
+        VerticalLayout text = new VerticalLayout();
+        text.setPadding(false);
+        text.setSpacing(false);
+
+        Span line1 = commonComponents.spanCrafter(title, "stat-title");
+        DateTimePicker dateTimePicker = new DateTimePicker();
+        dateTimePicker.setValue(localDateTime);
+        Button changeDate = new Button("Change date");
+        changeDate.setEnabled(false);
+
+        dateTimePicker.addValueChangeListener(e->{
+            changeDate.setEnabled(true);
+        });
+
+        changeDate.addClickListener(e->{
+            newSelectedOrder.setEstimatedDueDate(dateTimePicker.getValue());
+            commonComponents.showNotification("Data changed to " + dateTimePicker.getValue(),3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.SUCCESS);
+        });
+
+
+        text.add(line1, dateTimePicker, changeDate);
+
+        v.add(iconHolder, text);
+
+        return v;
+    }
+
+    public VerticalLayout newOrdersGrid(Long id){
+
+        VerticalLayout v = new VerticalLayout();
+        v.setWidthFull();
+        v.setPadding(false);
+
+        Grid<NewOrderFeedData> ordersGrid = new Grid<>(NewOrderFeedData.class,false);
+
+        List<NewOrderFeedData> stuff = ordersService.getSelectedNewOrdersGridData(id);
+        ordersGrid.setItems(stuff);
+
+        ordersGrid.addComponentColumn(e->{
+
+            HorizontalLayout h = new HorizontalLayout();
+            h.setAlignItems(Alignment.CENTER);
+
+            Image image = commonComponents.imageCrafter(e.getMainImage(),"70px","70px","10px");
+            Span span = commonComponents.spanCrafter(e.getName(),"s");
+
+            h.add(
+                    image,
+                    span
+            );
+
+            return h;
+
+        }).setAutoWidth(true).setHeader("Item");
+
+
+        ordersGrid.addComponentColumn(e->{
+
+            Span span = commonComponents.spanCrafter(e.getSku(),"s");
+
+
+            return span;
+
+        }).setAutoWidth(true).setHeader("SKU");
+
+        ordersGrid.addComponentColumn(e->{
+
+            VerticalLayout vv = new VerticalLayout();
+
+
+
+            Span span = commonComponents.spanCrafter( "Ordered: " + e.getQuantity().toString(),"s");
+            Span span2 = commonComponents.spanCrafter("Remaining: " + e.getRemainingAmount().toString(),"s");
+
+            vv.add(
+                    span,
+                    span2
+            );
+
+
+            return vv;
+
+        }).setAutoWidth(true).setHeader("Quantity/Stock");
+
+
+        ordersGrid.addComponentColumn(e->{
+
+            Span span = commonComponents.spanCrafter(e.getUnitPrice() + " Eur","s");
+
+
+            return span;
+
+        }).setAutoWidth(true).setHeader("Unit price");
+
+        ordersGrid.addComponentColumn(e->{
+
+            Span span = commonComponents.spanCrafter(e.getTotal() + " Eur","s");
+
+
+            return span;
+
+        }).setAutoWidth(true).setHeader("Total");
+
+
+        ordersGrid.addComponentColumn(e->{
+
+            Long taken = e.getQuantity();
+            Long remaining = e.getRemainingAmount();
+
+            Span span = commonComponents.spanCrafter( "","s");
+            span.addClassName("stock-badge");
+            span.getStyle()
+                    .set("width", "fit-content");
+
+
+            if(taken < remaining) {
+                span.addClassName("stock-in");
+                span.setText("Pass");
+            }
+            else{
+                span.addClassName("stock-out");
+                span.setText("Not enough stock");
+            }
+
+
+            return span;
+
+        }).setAutoWidth(true).setHeader("Exists");
+
+
+
+
+        HorizontalLayout sumHolder = new HorizontalLayout();
+        sumHolder.setWidthFull();
+        sumHolder.setJustifyContentMode(JustifyContentMode.END);
+
+        Double sum = stuff.stream().mapToDouble(NewOrderFeedData::getTotal).sum();
+
+        Span totalSum = commonComponents.spanCrafter("Total- " +  sum + " Eur"  ,"activityFeed-name");
+        sumHolder.add(
+                totalSum
+        );
+
+        HorizontalLayout actionHolder = new HorizontalLayout();
+        actionHolder.setWidthFull();
+        actionHolder.setJustifyContentMode(JustifyContentMode.END);
+
+        Button reject = new Button("Reject");
+        reject.addThemeVariants(ButtonVariant.ERROR);
+
+        Button accept = new Button("Accept order");
+        accept.addThemeVariants(ButtonVariant.PRIMARY);
+
+
+        actionHolder.add(
+                reject,accept
+        );
+
+
+
+        v.add(ordersGrid,
+                sumHolder,
+                noteCrafter("User note",newSelectedOrder.getUserNote(),"User"),
+                noteCrafter("System note",newSelectedOrder.getServerNote(),"System"),
+                actionHolder);
+
+
+        return v;
+
+
+    }
+
+
+    public HorizontalLayout noteHolder(){
+        HorizontalLayout h = new HorizontalLayout();
+        h.setWidthFull();
+
+
+        return  h;
+    }
+
+
+    public VerticalLayout noteCrafter(String noteTitleValue,String note, String byWho){
+        VerticalLayout v = new VerticalLayout();
+        v.setWidthFull();
+        v.setPadding(false);
+        v.setSpacing(false);
+
+        HorizontalLayout iconTextHolder = new HorizontalLayout();
+        iconTextHolder.setWidthFull();
+        iconTextHolder.setPadding(false);
+        iconTextHolder.setSpacing(true);
+        iconTextHolder.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        VerticalLayout icon = new VerticalLayout(
+                commonComponents.iconCrafter(
+                        VaadinIcon.CLIPBOARD_TEXT,
+                        "20px",
+                        "black"
+                )
+        );
+
+        icon.setPadding(false);
+        icon.setSpacing(false);
+        icon.setWidth("fit-content");
+
+        Span noteTitle = commonComponents.spanCrafter(
+                noteTitleValue,
+                "activityFeed-name"
+        );
+
+        noteTitle.getStyle().set("width", "fit-content");
+
+        VerticalLayout spanHolder = new VerticalLayout(noteTitle);
+        spanHolder.setPadding(false);
+        spanHolder.setSpacing(false);
+        spanHolder.setWidth("fit-content");
+
+        iconTextHolder.add(icon, spanHolder);
+
+        TextArea textArea = new TextArea();
+        textArea.setReadOnly(true);
+        textArea.setWidthFull();
+
+        if(note == null) {
+            textArea.setValue("No note was provided by " + byWho);
+
+        }
+        else{
+            textArea.setValue(note);
+        }
+
+
+
+
+        v.add(
+                iconTextHolder,
+                textArea
+        );
+
+        return v;
+    }
 
 
     public void updateFeed(){

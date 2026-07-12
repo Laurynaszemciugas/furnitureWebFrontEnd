@@ -12,6 +12,7 @@ import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -56,6 +57,10 @@ public class RightSideMaterials {
     IntegerField materialMinThreshold = new IntegerField("Material min threshold");
     IntegerField materialStock = new IntegerField("Material stock");
     TextField materialUnit = new TextField("Material unit");
+
+    DatePicker deliveryDate = new DatePicker("Delivery date");
+    IntegerField defaultRestockPeriod = new IntegerField("Default restock period");
+
 
 
     Binder<Void> binder = new Binder<>();
@@ -152,6 +157,10 @@ public class RightSideMaterials {
 
             materialUnit.setValue(materials.getUnit() == null ? "" : materials.getUnit());
 
+            deliveryDate.setValue(materials.getDeliveryDate());
+
+            defaultRestockPeriod.setValue(Math.toIntExact(materials.getDefaultTimePeriod() == null ? 0 : materials.getDefaultTimePeriod()));
+
 
         }
 
@@ -199,6 +208,9 @@ public class RightSideMaterials {
                 mat.setMaterialTextures(materialTexture.getValue());
                 mat.setMaterialFinishType(materialFinishType.getValue());
                 mat.setMaterialGrainPatterns(materialGrainPattern.getValue());
+
+                mat.setDefaultTimePeriod(Long.valueOf(defaultRestockPeriod.getValue()));
+                mat.setDeliveryDate(deliveryDate.getValue());
 
 
                 if(newImages !=null){
@@ -297,6 +309,22 @@ public class RightSideMaterials {
         return  verticalLayout;
     }
 
+    public VerticalLayout reStockData(){
+
+        VerticalLayout verticalLayout = new VerticalLayout();
+        verticalLayout.setWidthFull();
+        verticalLayout.addClassName("island");
+
+        verticalLayout.add(
+                commonComponents.spanCrafterWordNoHide("Delivery & Fallback","activityFeed-name"),
+                commonComponents.doubleValueRow(deliveryDate,defaultRestockPeriod)
+        );
+
+
+
+        return  verticalLayout;
+    }
+
 
     public void configueFields(){
         // fields
@@ -349,6 +377,14 @@ public class RightSideMaterials {
 
 
         materialUnit.setWidthFull();
+
+        deliveryDate.setWidthFull();
+        defaultRestockPeriod.setWidthFull();
+        defaultRestockPeriod.setStep(1);
+        defaultRestockPeriod.setStepButtonsVisible(true);
+
+
+
     }
 
 
@@ -410,7 +446,7 @@ public class RightSideMaterials {
         binder.forField(materialPrice)
                 .asRequired("Material price is required")
                 .withValidator(
-                        value -> value == null || value >= 0,
+                        value -> value == null || value > 0,
                         "Material price cannot be negative"
                 )
                 .bind(v -> null, (v, value) -> {});
@@ -418,7 +454,7 @@ public class RightSideMaterials {
         binder.forField(materialUnitWeight)
                 .asRequired("Material unit weight is required")
                 .withValidator(
-                        value -> value == null || value >= 0,
+                        value -> value == null || value > 0,
                         "Material unit weight cannot be negative"
                 )
                 .bind(v -> null, (v, value) -> {});
@@ -434,14 +470,25 @@ public class RightSideMaterials {
         binder.forField(materialStock)
                 .asRequired("Material stock is required")
                 .withValidator(
-                        value -> value == null || value >= 0,
+                        value -> value == null || value > 0,
                         "Material stock cannot be negative"
                 )
                 .bind(v -> null, (v, value) -> {});
 
-        binder.forField(materialUnit)
-                .asRequired("Material unit is required")
+        binder.forField(deliveryDate)
+                .asRequired("Delivery date is required")
                 .bind(v -> null, (v, value) -> {});
+
+        binder.forField(defaultRestockPeriod)
+                .asRequired("Default restock is required")
+                .withValidator(
+                        value -> value == null || value > 0,
+                        "Default restock cannot be negative"
+                )
+                .bind(v -> null, (v, value) -> {});
+
+
+
     }
 
 
@@ -477,7 +524,8 @@ public class RightSideMaterials {
         rightSide.add(
                 basicInfo(),
                 appearance(),
-                pricingExtendedDetails()
+                pricingExtendedDetails(),
+                reStockData()
         );
 
         return rightSide;
