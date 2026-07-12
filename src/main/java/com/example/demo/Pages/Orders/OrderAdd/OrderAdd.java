@@ -9,6 +9,7 @@ import com.example.demo.Pages.Orders.OrderAdd.Components.OrderBothSidesAddSide;
 import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.Products.ProductService;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -60,6 +61,8 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
         listOfProducts.addAll(productService.getProductsForAddOrder());
 
         addClassName("animation-page");
+
+
 
 
     }

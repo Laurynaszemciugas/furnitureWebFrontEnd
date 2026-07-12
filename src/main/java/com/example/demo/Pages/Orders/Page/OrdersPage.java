@@ -271,7 +271,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
 
 
-        updateFeed();
+
 
         filterMemory.removeAll();
         filterMemory.add(
@@ -297,14 +297,15 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
 
 
-
-
         verticalLayout.add(
                 briefOrderPageExplanation.briefExplanation(),
                 newOrders(),
                 orderMiniStats.miniStatHolder(ordersService.getMiniStats(common.dateCrafter(0,0,0,0,true),common.dateCrafter(0,1,0,0,true))),
                 filterMemory,
                 sidesHolder);
+
+        updateFeed();
+
     }
 
 

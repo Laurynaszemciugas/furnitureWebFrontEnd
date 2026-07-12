@@ -56,7 +56,7 @@ public class MaterialService {
     public void saveNewMaterial(Materials mat) {
 
         httpCallLogic.checkResponse(
-                httpCallLogic.HttpCall("material/createNewMaterial", HttpMethod.POST, mat, ErrorResponse.class,false),null,success,true);
+                httpCallLogic.HttpCall("material/createNewMaterial", HttpMethod.POST, mat, ErrorResponse.class,false),"Materials",success,true);
 
     }
 
@@ -78,7 +78,7 @@ public class MaterialService {
     @SneakyThrows
     public void editProduct(Materials mat) {
         httpCallLogic.checkResponse(
-                httpCallLogic.HttpCall("material/editExistingMaterial", HttpMethod.POST, mat, ErrorResponse.class,false),null,success,true);
+                httpCallLogic.HttpCall("material/editExistingMaterial", HttpMethod.POST, mat, ErrorResponse.class,false),"Materials",success,true);
     }
 
 

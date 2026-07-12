@@ -25,6 +25,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +60,7 @@ public class RightSideMaterials {
     TextField materialUnit = new TextField("Material unit");
 
     DatePicker deliveryDate = new DatePicker("Delivery date");
-    IntegerField defaultRestockPeriod = new IntegerField("Default restock period");
+    IntegerField defaultRestockPeriod = new IntegerField("Default restock period 'Days'");
 
 
 
@@ -416,6 +417,11 @@ public class RightSideMaterials {
                 .asRequired("Material status is required")
                 .bind(v -> null, (v, value) -> {});
 
+
+        binder.forField(materialUnit)
+                .asRequired("Material unit is required")
+                .bind(v -> null, (v, value) -> {});
+
         binder.forField(description)
                 .asRequired("Description is required")
                 .withValidator(
@@ -447,7 +453,7 @@ public class RightSideMaterials {
                 .asRequired("Material price is required")
                 .withValidator(
                         value -> value == null || value > 0,
-                        "Material price cannot be negative"
+                        "Material price cannot be negative or 0"
                 )
                 .bind(v -> null, (v, value) -> {});
 
@@ -455,7 +461,7 @@ public class RightSideMaterials {
                 .asRequired("Material unit weight is required")
                 .withValidator(
                         value -> value == null || value > 0,
-                        "Material unit weight cannot be negative"
+                        "Material unit weight cannot be negative or 0"
                 )
                 .bind(v -> null, (v, value) -> {});
 
@@ -463,7 +469,7 @@ public class RightSideMaterials {
                 .asRequired("Material min threshold is required")
                 .withValidator(
                         value -> value == null || value >= 0,
-                        "Material min threshold cannot be negative"
+                        "Material min threshold cannot be negative or 0"
                 )
                 .bind(v -> null, (v, value) -> {});
 
@@ -471,19 +477,27 @@ public class RightSideMaterials {
                 .asRequired("Material stock is required")
                 .withValidator(
                         value -> value == null || value > 0,
-                        "Material stock cannot be negative"
+                        "Material stock cannot be negative or 0"
                 )
                 .bind(v -> null, (v, value) -> {});
 
+
+
         binder.forField(deliveryDate)
-                .asRequired("Delivery date is required")
+                .asRequired("Default restock date is required")
+                .withValidator(
+                        value -> value != null && !value.isAfter(LocalDate.now()),
+                        "Default restock date cannot be after today"
+                )
                 .bind(v -> null, (v, value) -> {});
+
+
 
         binder.forField(defaultRestockPeriod)
                 .asRequired("Default restock is required")
                 .withValidator(
                         value -> value == null || value > 0,
-                        "Default restock cannot be negative"
+                        "Default restock cannot be negative or 0"
                 )
                 .bind(v -> null, (v, value) -> {});
 

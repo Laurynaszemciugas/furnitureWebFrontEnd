@@ -95,6 +95,9 @@ public class MaterialAddPage extends VerticalLayout implements BeforeEnterObserv
 
         rightSideAddMaterials.setMaterialsConsumer(e->{
             materialService.saveNewMaterial(e);
+
+
+
         });
 
 

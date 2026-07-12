@@ -56,13 +56,13 @@ public class EmployeeService {
     @SneakyThrows
     public void saveNewEmployee(Employee employee) {
         httpCallLogic.checkResponse(
-                httpCallLogic.HttpCall("employee/saveNewEmployee", HttpMethod.POST, employee, ErrorResponse.class,false),null,success,true);
+                httpCallLogic.HttpCall("employee/saveNewEmployee", HttpMethod.POST, employee, ErrorResponse.class,false),"Employees",success,true);
     }
 
     @SneakyThrows
     public void editExistingEmployee(Employee employee) {
         httpCallLogic.checkResponse(
-                httpCallLogic.HttpCall("employee/editEmployee", HttpMethod.POST, employee, ErrorResponse.class,false),null,success,true);
+                httpCallLogic.HttpCall("employee/editEmployee", HttpMethod.POST, employee, ErrorResponse.class,false),"Employees",success,true);
     }
 
     @SneakyThrows
