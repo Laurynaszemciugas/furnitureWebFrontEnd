@@ -539,35 +539,52 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
     }
 
-    public HorizontalLayout cardCrafter(VaadinIcon icon, String title, String info1, String info2, String info3){
-
+    public HorizontalLayout cardCrafter(
+            VaadinIcon icon,
+            String title,
+            String info1,
+            String info2,
+            String info3
+    ) {
         HorizontalLayout v = new HorizontalLayout();
         v.setSpacing(true);
         v.setPadding(false);
         v.setWidthFull();
         v.addClassName("island");
 
-        // ICON
         VerticalLayout iconHolder = new VerticalLayout();
         iconHolder.setWidth("40px");
+        iconHolder.setMinWidth("40px");
         iconHolder.setPadding(false);
         iconHolder.setSpacing(false);
+        iconHolder.getStyle().set("flex-shrink", "0");
 
         iconHolder.add(commonComponents.iconCrafter(icon, "20px", "black"));
 
-        // TEXT
         VerticalLayout text = new VerticalLayout();
         text.setPadding(false);
         text.setSpacing(false);
+        text.setWidthFull();
+
+        // Important: allows the text section to shrink
+        text.getStyle()
+                .set("min-width", "0")
+                .set("overflow", "hidden");
 
         Span line1 = commonComponents.spanCrafter(title, "stat-title");
         Span line2 = commonComponents.spanCrafter(info1, "stat-description");
         Span line3 = commonComponents.spanCrafter(info2, "stat-description");
         Span line4 = commonComponents.spanCrafter(info3, "stat-description");
 
+        line1.getStyle().set("white-space", "normal").set("overflow-wrap", "anywhere");
+        line2.getStyle().set("white-space", "normal").set("overflow-wrap", "anywhere");
+        line3.getStyle().set("white-space", "normal").set("overflow-wrap", "anywhere");
+        line4.getStyle().set("white-space", "normal").set("overflow-wrap", "anywhere");
+
         text.add(line1, line2, line3, line4);
 
         v.add(iconHolder, text);
+        v.expand(text);
 
         return v;
     }
