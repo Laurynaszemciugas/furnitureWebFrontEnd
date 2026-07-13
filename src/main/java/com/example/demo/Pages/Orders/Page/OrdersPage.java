@@ -10,6 +10,7 @@ import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.ControllerModels.Orders.NewOrderFeedData;
 import com.example.demo.ControllerModels.Orders.OrdersFeedData;
+import com.example.demo.Enums.OrderStatus;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Orders.Page.Components.*;
 import com.example.demo.Services.EmployeeService.EmployeeService;
@@ -75,6 +76,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
     Div feedHolder = new Div();
     HorizontalLayout reviewLeftRightSide = new HorizontalLayout();
+
 
     Orders newSelectedOrder = new Orders();
 
@@ -366,6 +368,10 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
         Span ordersText = commonComponents.spanCrafterWordNoHide(amountOfNewOrderValue + " new order waiting for approval","activityFeed-name");
 
+        if(amountOfNewOrderValue == 0){
+            ordersText.setText("No new orders received");
+        }
+
         HorizontalLayout bellTextHolder = new HorizontalLayout();
         bellTextHolder.setAlignItems(FlexComponent.Alignment.CENTER);
         bellTextHolder.setPadding(false);
@@ -447,8 +453,14 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         String jwt = sessionCrafter.extractSession("JWT", String.class);
         v.setWidthFull();
 
+        OrderFilterHolder newFilter = new OrderFilterHolder();
+        newFilter.setOrderStatusChoice(OrderStatus.NEW);
+        newFilter.setPage(0);
+        newFilter.setPageCount(4);
+
         v.add(
-                ordersLeftSide.newOrderFeedHolder(ordersService.getOrderFeedData(filterData,jwt))
+                ordersLeftSide.newOrderFeedHolder(ordersService.getOrderFeedData(newFilter, jwt)),
+                paganation.buttonHolder(Math.toIntExact(ordersService.getPageCount(newFilter)))
         );
 
 
@@ -506,6 +518,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
                     titleOfTePreview,
                     constumerMiniInfo,
                     newOrdersGrid(newSelectedOrder.getId())
+
             );
 
         });

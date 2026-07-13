@@ -41,6 +41,11 @@ public class OrdersService {
     }
 
     @SneakyThrows
+    public List<OrdersFeedData> getNewOrderFeed(OrderFilterHolder orderFilterHolder){
+        return Arrays.stream(httpCallLogic.HttpCall("order/getAllNewOrders", HttpMethod.POST,orderFilterHolder, OrdersFeedData[].class,false)).toList();
+    }
+
+    @SneakyThrows
     public Long getPageCount(OrderFilterHolder orderFilterHolder){
                 return httpCallLogic.HttpCall("order/getAmountOfPages", HttpMethod.POST,orderFilterHolder, Long.class,false);
     }
