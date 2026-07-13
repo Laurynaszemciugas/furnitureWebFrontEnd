@@ -434,6 +434,17 @@ background-color: #d4edda;
     border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
+.status-new {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.status-lack-of-supply {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
 
 .pagination-button,
 .pagination-button-active {
@@ -848,70 +859,57 @@ transition:
 
 */
 
-.addLeftSide{
-overflow: hidden;
-     animation: addLeftSideAnimation 0.7s cubic-bezier(.2, .8, .2, 1) 0.25s both;
-        transition:
-                transform 0.28s ease,
-                box-shadow 0.28s ease;
-
-
-}
-
-.removeLeftSide{
-overflow: hidden;
- animation: removeLeftSideAnimation 0.7s cubic-bezier(.2, .8, .2, 1) 0.25s both;
-        transition:
-                transform 0.28s ease,
-                box-shadow 0.28s ease;
-}
-
-@keyframes addLeftSideAnimation{
-
-from{
-
+.addLeftSide {
+    overflow: hidden;
     min-width: 0;
-    max-width: 0;
-    margin: 0;
-    padding: 0;
-    opacity: 0;
-    border-width:0;
-
+    animation: addLeftSideAnimation 0.7s cubic-bezier(.2, .8, .2, 1) both;
 }
 
-
-to{
-
-   opacity: 1;
-   max-width: 1000px;
-
-
-}
-
-}
-
-
-@keyframes removeLeftSideAnimation{
-
-from{
-
-    opacity: 1;
-    max-width: 1000px;
-
-}
-
-
-to{
-
+.removeLeftSide {
+    overflow: hidden;
     min-width: 0;
-    max-width: 0;
-    margin: 0;
-    padding: 0;
-    opacity: 0;
-    border-width: 0;
-
+    pointer-events: none;
+    animation: removeLeftSideAnimation 0.7s cubic-bezier(.2, .8, .2, 1) both;
 }
 
+@keyframes addLeftSideAnimation {
+    from {
+        width: 0;
+        max-width: 0;
+        max-height: 0;
+        flex-basis: 0;
+        margin: 0;
+        padding: 0;
+        opacity: 0;
+        border-width: 0;
+    }
+
+    to {
+        width: 100%;
+        max-width: 1000px;
+        max-height: 3000px;
+        opacity: 1;
+    }
+}
+
+@keyframes removeLeftSideAnimation {
+    from {
+        width: 100%;
+        max-width: 1000px;
+        max-height: 3000px;
+        opacity: 1;
+    }
+
+    to {
+        width: 0;
+        max-width: 0;
+        max-height: 0;
+        flex-basis: 0;
+        margin: 0;
+        padding: 0;
+        opacity: 0;
+        border-width: 0;
+    }
 }
 
 

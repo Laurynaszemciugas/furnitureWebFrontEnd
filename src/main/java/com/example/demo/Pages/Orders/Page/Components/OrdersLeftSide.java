@@ -93,6 +93,9 @@ public class OrdersLeftSide {
             case In_Progress -> status.addClassName("status-in-progress");
             case Pending -> status.addClassName("status-pending");
             case Finished -> status.addClassName("status-finished");
+            case CANCELLED -> status.addClassName("status-cancelled");
+            case LACK_OF_SUPPLY -> status.addClassName("status-lack-of-supply");
+            default -> status.addClassName("status-none");
         }
 
         HorizontalLayout firstLayer = new HorizontalLayout();
@@ -216,6 +219,8 @@ public class OrdersLeftSide {
             case In_Progress -> status.addClassName("status-in-progress");
             case Pending -> status.addClassName("status-pending");
             case Finished -> status.addClassName("status-finished");
+            case NEW -> status.addClassName("status-new");
+            default -> status.addClassName("status-none");
         }
 
         HorizontalLayout firstLayer = new HorizontalLayout();
@@ -224,7 +229,7 @@ public class OrdersLeftSide {
         firstLayer.setAlignItems(FlexComponent.Alignment.CENTER);
         firstLayer.setWidthFull();
         firstLayer.add(
-                commonComponents.spanCrafter(String.format("%s-%d", "NEW", orderId),"stat-blue"),
+                commonComponents.spanCrafter(String.format("%s-%d", "NWO", orderId),"stat-blue"),
                 status
         );
 
