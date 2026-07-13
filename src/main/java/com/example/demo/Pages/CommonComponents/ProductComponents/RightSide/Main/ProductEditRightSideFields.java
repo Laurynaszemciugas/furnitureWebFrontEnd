@@ -17,6 +17,7 @@ import com.example.demo.Services.CommonService.CommonService;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -71,12 +72,16 @@ public class ProductEditRightSideFields {
     private NumberField stockQuantity = new NumberField("Stock Quantity");
     private NumberField lowThreshold = new NumberField("Low Stock Threshold");
 
+    private Checkbox manualStock = new Checkbox("Manual stock yes/no");
+
     private ComboBox<Category> category = new ComboBox<>("Category");
     private ComboBox<Tags> tags = new ComboBox<>("Tags");
 
 
     private ComboBox<Status> status = new ComboBox<>("Status");
     private ComboBox<Visibility> visibility = new ComboBox<>("Visibility");
+
+
 
 
     Button save;
@@ -183,6 +188,13 @@ public class ProductEditRightSideFields {
 
         pricingInventoryTwo.add(stockQuantity, lowThreshold);
 
+        FormLayout pricingInventoryThree = new FormLayout();
+        pricingInventoryTwo.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("0", 2)
+        );
+
+        pricingInventoryThree.add(manualStock);
+
 
 
         tagsSelected.setWidthFull();
@@ -193,9 +205,28 @@ public class ProductEditRightSideFields {
         if( visibility.getValue() != null && visibility.getValue().equals(Visibility.NonVisible)) {
             status.setEnabled(false);
         }
-        materialCost.setReadOnly(true);
-        stockQuantity.setReadOnly(true);
-        lowThreshold.setReadOnly(true);
+
+        if(productEditDtos.isStockCalculatedManually()) {
+            materialCost.setReadOnly(false);
+            stockQuantity.setReadOnly(false);
+        }
+        else{
+            materialCost.setReadOnly(true);
+            stockQuantity.setReadOnly(true);
+        }
+
+        manualStock.addValueChangeListener(e->{
+
+            if(e.getValue()){
+                materialCost.setReadOnly(false);
+                stockQuantity.setReadOnly(false);
+            }
+            else{
+                materialCost.setReadOnly(true);
+                stockQuantity.setReadOnly(true);
+            }
+
+        });
 
 
 
@@ -283,6 +314,7 @@ public class ProductEditRightSideFields {
                 commonComponents.spanCrafterWordNoHide("Pricing & Inventory","activityFeed-name"),
                 pricingInventoryOne,
                 pricingInventoryTwo,
+                pricingInventoryThree,
                 commonComponents.spanCrafterWordNoHide("Categories & Tags","activityFeed-name"),
                 categoryTags,
                 commonComponents.spanCrafterWordNoHide("Selected Tags","stat-title"),
@@ -329,6 +361,7 @@ public class ProductEditRightSideFields {
 
 
 
+        manualStock.setValue(productEditDto.isStockCalculatedManually());
 
         category.setItems(Category.values());
         tags.setItems(Tags.values());
@@ -482,6 +515,7 @@ public class ProductEditRightSideFields {
             }
             product.setExtraDetails(extraDetails);
 
+                product.setStockCalculatedManually(manualStock.getValue());
 
                 consumer.accept(product);
                 common.customNavigate("Products/1");
