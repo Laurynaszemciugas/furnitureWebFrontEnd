@@ -37,8 +37,11 @@ public class NewOrderFeed {
     SessionCrafter sessionCrafter;
     OrdersLeftSide ordersLeftSide;
 
+    Div newOrderHolder = new Div();
 
     VerticalLayout rightSide = new VerticalLayout();
+
+    HorizontalLayout v = new HorizontalLayout();
 
     boolean firstLoad = true;
 
@@ -52,6 +55,7 @@ public class NewOrderFeed {
 
         reviewLeftRightSide.setVisible(false);
 
+        newOrderHolder.setWidthFull();
 
     }
 
@@ -70,7 +74,7 @@ public class NewOrderFeed {
     public VerticalLayout newOrders(){
 
 
-        Long amountOfNewOrderValue = ordersService.getNewOrderCount();
+
 
         VerticalLayout main = new VerticalLayout();
 
@@ -86,7 +90,27 @@ public class NewOrderFeed {
         main.setPadding(false);
         main.setWidthFull();
 
-        HorizontalLayout v = new HorizontalLayout();
+
+
+        reloadSS();
+
+        main.add(
+                v,
+                reviewLeftRight()
+        );
+
+
+        return main;
+
+
+    }
+
+    public void reloadSS(){
+
+        v.removeAll();
+
+        Long amountOfNewOrderValue = ordersService.getNewOrderCount();
+
         v.setAlignItems(FlexComponent.Alignment.CENTER);
         v.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         v.setWidthFull();
@@ -137,6 +161,7 @@ public class NewOrderFeed {
 
         if(amountOfNewOrderValue == 0){
             ordersText.setText("No new orders received");
+            reviewLeftRightSide.setVisible(false);
         }
 
         HorizontalLayout bellTextHolder = new HorizontalLayout();
@@ -181,16 +206,6 @@ public class NewOrderFeed {
                 bellTextHolder,
                 reviewOrders
         );
-
-        main.add(
-                v,
-                reviewLeftRight()
-        );
-
-
-        return main;
-
-
     }
 
 
@@ -228,17 +243,17 @@ public class NewOrderFeed {
         VerticalLayout v = new VerticalLayout();
         v.setPadding(false);
 
-        String jwt = sessionCrafter.extractSession("JWT", String.class);
+
         v.setWidthFull();
 
-        OrderFilterHolder newFilter = new OrderFilterHolder();
-        newFilter.setOrderStatusChoice(OrderStatus.NEW);
-        newFilter.setPage(0);
-        newFilter.setPageCount(4);
+
+
+
+        reloadData();
 
         v.add(
-                ordersLeftSide.newOrderFeedHolder(ordersService.getOrderFeedData(newFilter, jwt)),
-                paganation.buttonHolder(Math.toIntExact(ordersService.getPageCount(newFilter)))
+                newOrderHolder
+
         );
 
 
@@ -553,8 +568,24 @@ public class NewOrderFeed {
         Button reject = new Button("Reject");
         reject.addThemeVariants(ButtonVariant.ERROR);
 
+        reject.addClickListener(e->{
+           ordersService.rejectNewOrder(newSelectedOrder.getId());
+            hideRightSide();
+            reloadData();
+            reloadSS();
+            scrollToTop();
+        });
+
         Button accept = new Button("Accept order");
         accept.addThemeVariants(ButtonVariant.PRIMARY);
+
+        accept.addClickListener(e->{
+            ordersService.acceptNewOrder(newSelectedOrder.getId());
+            hideRightSide();
+            reloadData();
+            reloadSS();
+            scrollToTop();
+        });
 
 
         actionHolder.add(
@@ -586,6 +617,24 @@ public class NewOrderFeed {
             });
         });
     """);
+    }
+
+    public void reloadData(){
+
+
+        newOrderHolder.removeAll();
+
+        String jwt = sessionCrafter.extractSession("JWT", String.class);
+        OrderFilterHolder newFilter = new OrderFilterHolder();
+        newFilter.setOrderStatusChoice(OrderStatus.NEW);
+        newFilter.setPage(0);
+        newFilter.setPageCount(4);
+
+        newOrderHolder.add(
+                ordersLeftSide.newOrderFeedHolder(ordersService.getOrderFeedData(newFilter, jwt)),
+                paganation.buttonHolder(Math.toIntExact(ordersService.getPageCount(newFilter)))
+        );
+
     }
 
 

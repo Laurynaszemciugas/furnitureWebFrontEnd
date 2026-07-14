@@ -68,6 +68,15 @@ public class OrdersRightSide {
     Span addressAuto;
 
     ComboBox<PayStatus> payStatusComboBox = new ComboBox<>("Paid/Unpaid");
+
+    Button finished = new Button();
+    Button cancelled = new Button();
+    Button inProgress = new Button();
+    Button pending = new Button();
+
+
+
+
     ComboBox<PayMethod> payMethodComboBox = new ComboBox<>("Pay method");
     TextArea address = new TextArea("Address");
 
@@ -267,6 +276,42 @@ public class OrdersRightSide {
 
             payStatusComboBox.setValue(selectedOrder.getPayStatus() == null ? null : selectedOrder.getPayStatus());
             payMethodComboBox.setValue(selectedOrder.getPayMethod() == null ? null : selectedOrder.getPayMethod());
+
+            if(selectedOrder.getOrderStatus().equals(OrderStatus.LACK_OF_SUPPLY)){
+                finished.setEnabled(false);
+                cancelled.setEnabled(false);
+                inProgress.setEnabled(false);
+                pending.setEnabled(false);
+            }
+
+            if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished)){
+                finished.setEnabled(true);
+                cancelled.setEnabled(true);
+                inProgress.setEnabled(true);
+                pending.setEnabled(true);
+            }
+
+            if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished) || selectedOrder.getOrderStatus().equals(OrderStatus.LACK_OF_SUPPLY)){
+                payStatusComboBox.setReadOnly(true);
+                payMethodComboBox.setReadOnly(true);
+                address.setReadOnly(true);
+
+
+
+            }
+
+            else{
+                payStatusComboBox.setReadOnly(false);
+                payMethodComboBox.setReadOnly(false);
+
+                finished.setEnabled(true);
+                cancelled.setEnabled(true);
+                inProgress.setEnabled(true);
+                pending.setEnabled(true);
+                address.setReadOnly(false);
+
+            }
+
         });
 
 
@@ -421,14 +466,14 @@ public class OrdersRightSide {
         });
 
         h.getElement().addEventListener("mouseenter", e -> {
-            if(!selectedOrder.getOrderStatus().equals(OrderStatus.Finished)){
+            if(!selectedOrder.getOrderStatus().equals(OrderStatus.Finished) || !selectedOrder.getOrderStatus().equals(OrderStatus.LACK_OF_SUPPLY) ){
                 button.setVisible(true);
             }
         });
 
 
         h.getElement().addEventListener("mouseleave", e -> {
-            if(!selectedOrder.getOrderStatus().equals(OrderStatus.Finished)){
+            if(!selectedOrder.getOrderStatus().equals(OrderStatus.Finished) || !selectedOrder.getOrderStatus().equals(OrderStatus.LACK_OF_SUPPLY)){
                 button.setVisible(false);
             }
 
@@ -444,8 +489,10 @@ public class OrdersRightSide {
         amountCounter.setStepButtonsVisible(true);
         amountCounter.setValue(Math.toIntExact(amount == null ? 0 : amount));
 
-        if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished)){
+        if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished) || selectedOrder.getOrderStatus().equals(OrderStatus.LACK_OF_SUPPLY)){
+
             amountCounter.setReadOnly(true);
+
         }
 
 
@@ -528,7 +575,7 @@ public class OrdersRightSide {
         dueDateForChange = commonComponents.spanCrafter(common.dateFormatter(dueDate,"MMMM d, yyyy ● h:mma"),"stat-title");
         Button editDate = commonComponents.buttonThemeAndIconNoNavigate("Edit", ButtonVariant.LUMO_ICON, VaadinIcon.PENCIL,"Blue");
 
-        if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished)){
+        if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished) || selectedOrder.getOrderStatus().equals(OrderStatus.LACK_OF_SUPPLY)){
             editDate.setEnabled(false);
         }
 
@@ -621,7 +668,7 @@ public class OrdersRightSide {
         if(text != null) {
             note.setValue(text);
         }
-        if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished)){
+        if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished) || selectedOrder.getOrderStatus().equals(OrderStatus.LACK_OF_SUPPLY)){
             note.setReadOnly(true);
         }
         note.addValueChangeListener(e->{
@@ -653,7 +700,7 @@ public class OrdersRightSide {
 
         h.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
-        Button pending = commonComponents.buttonThemeAndIconNoNavigate("Mark as Pending", ButtonVariant.LUMO_ICON, VaadinIcon.CLOCK,"Blue");
+         pending = commonComponents.buttonThemeAndIconNoNavigate("Mark as Pending", ButtonVariant.LUMO_ICON, VaadinIcon.CLOCK,"Blue");
 
         pending.addClickListener(e->{
            selectedOrder.setOrderStatus(OrderStatus.Pending);
@@ -661,7 +708,7 @@ public class OrdersRightSide {
             changeStatusDisplay(OrderStatus.Pending);
         });
 
-        Button inProgress = commonComponents.buttonThemeAndIconNoNavigate("Mark as In Progress", ButtonVariant.LUMO_PRIMARY, VaadinIcon.HOURGLASS_START,"White");
+         inProgress = commonComponents.buttonThemeAndIconNoNavigate("Mark as In Progress", ButtonVariant.LUMO_PRIMARY, VaadinIcon.HOURGLASS_START,"White");
 
         inProgress.addClickListener(e->{
             selectedOrder.setOrderStatus(OrderStatus.In_Progress);
@@ -669,7 +716,7 @@ public class OrdersRightSide {
             changeStatusDisplay(OrderStatus.In_Progress);
         });
 
-        Button cancelled = commonComponents.buttonThemeAndIconNoNavigate("Mark as Cancelled", ButtonVariant.LUMO_ERROR, VaadinIcon.CLOSE,"red");
+         cancelled = commonComponents.buttonThemeAndIconNoNavigate("Mark as Cancelled", ButtonVariant.LUMO_ERROR, VaadinIcon.CLOSE,"red");
 
         cancelled.addClickListener(e->{
             selectedOrder.setOrderStatus(OrderStatus.CANCELLED);
@@ -678,13 +725,15 @@ public class OrdersRightSide {
         });
 
 
-        Button finished = commonComponents.buttonThemeAndIconNoNavigate("Mark as Finished", ButtonVariant.LUMO_SUCCESS, VaadinIcon.CHECK,"green");
+         finished = commonComponents.buttonThemeAndIconNoNavigate("Mark as Finished", ButtonVariant.LUMO_SUCCESS, VaadinIcon.CHECK,"green");
 
         finished.addClickListener(e->{
             selectedOrder.setOrderStatus(OrderStatus.Finished);
             commonComponents.showNotification("Order was set to Finished",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
             changeStatusDisplay(OrderStatus.Finished);
         });
+
+
 
 
         h.add(

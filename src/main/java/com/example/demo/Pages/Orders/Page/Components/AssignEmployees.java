@@ -83,7 +83,7 @@ public class AssignEmployees {
 
         Button addEmployee = commonComponents.buttonThemeAndIconNoNavigate("Add employee", ButtonVariant.LUMO_PRIMARY, VaadinIcon.PLUS, "White");
 
-        if (OrderStatus.Finished.equals(selectedOrder.getOrderStatus())) {
+        if (OrderStatus.Finished.equals(selectedOrder.getOrderStatus()) || OrderStatus.LACK_OF_SUPPLY.equals(selectedOrder.getOrderStatus()) ) {
             addEmployee.setEnabled(false);
         }
 
@@ -299,19 +299,19 @@ public class AssignEmployees {
         Button button = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.TRASH, "Blue");
         button.setVisible(false);
 
-        if (OrderStatus.Finished.equals(selectedOrder.getOrderStatus())) {
+        if (OrderStatus.Finished.equals(selectedOrder.getOrderStatus()) || OrderStatus.LACK_OF_SUPPLY.equals(selectedOrder.getOrderStatus()) ) {
             button.setEnabled(false);
         }
 
         h.getElement().addEventListener("mouseenter", e -> {
-            if (!OrderStatus.Finished.equals(selectedOrder.getOrderStatus())) {
+            if (!OrderStatus.Finished.equals(selectedOrder.getOrderStatus()) || !OrderStatus.LACK_OF_SUPPLY.equals(selectedOrder.getOrderStatus())) {
                 button.setVisible(true);
             }
         });
 
 
         h.getElement().addEventListener("mouseleave", e -> {
-            if (!OrderStatus.Finished.equals(selectedOrder.getOrderStatus())) {
+            if (!OrderStatus.Finished.equals(selectedOrder.getOrderStatus()) || !OrderStatus.LACK_OF_SUPPLY.equals(selectedOrder.getOrderStatus())) {
                 button.setVisible(false);
             }
 

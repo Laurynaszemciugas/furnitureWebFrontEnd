@@ -95,5 +95,21 @@ public class OrdersService {
 
     }
 
+    @SneakyThrows
+    public void rejectNewOrder(Long id){
+
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("order/rejectNewOrder", HttpMethod.GET,id, ErrorResponse.class,true), null,success,true);
+
+    }
+
+    @SneakyThrows
+    public void acceptNewOrder(Long id){
+
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("order/acceptNewOrder", HttpMethod.GET,id, ErrorResponse.class,true), null,success,true);
+
+    }
+
     }
 
