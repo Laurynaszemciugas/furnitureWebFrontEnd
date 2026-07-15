@@ -801,9 +801,9 @@ public class OrdersRightSide {
             case Pending -> status.addClassName("status-pending");
             case Finished -> status.addClassName("status-finished");
             case CANCELLED -> status.addClassName("status-cancelled");
+            case LACK_OF_SUPPLY -> status.addClassName("status-lack-of-supply");
         }
     }
-
 
 
     public void hideRightSide() {

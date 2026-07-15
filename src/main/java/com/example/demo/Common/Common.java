@@ -234,6 +234,17 @@ public class Common {
     }
 
 
+    public String hexToRgba(String hex, double opacity) {
+        hex = hex.replace("#", "");
+
+        int red = Integer.parseInt(hex.substring(0, 2), 16);
+        int green = Integer.parseInt(hex.substring(2, 4), 16);
+        int blue = Integer.parseInt(hex.substring(4, 6), 16);
+
+        return "rgba(" + red + ", " + green + ", " + blue + ", " + opacity + ")";
+    }
+
+
 
     public void reloadPage(){
         UI.getCurrent().getPage().reload();

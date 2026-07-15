@@ -7,6 +7,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Hr;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
@@ -33,6 +34,14 @@ public class CommonComponents {
     }
 
     // components like icons images buttonns spans ect
+
+
+    public Hr lineCrafter(String width){
+        Hr hr = new Hr();
+        hr.setWidth(width);
+
+        return hr;
+    }
 
     public Image imageCrafter(String imageUrl, String width, String height, String borderRadius){
         String src = "" ;

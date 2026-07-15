@@ -161,8 +161,6 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
         ordersRightSide.setOrderConsumer(e->{
             ordersService.saveEditedData(e);
-
-
         });
 
 
@@ -257,6 +255,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
 
     public void addUIData(){
+
 
         verticalLayout.removeAll();
 

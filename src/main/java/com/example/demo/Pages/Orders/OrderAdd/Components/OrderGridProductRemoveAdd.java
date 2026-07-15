@@ -113,16 +113,6 @@ public class OrderGridProductRemoveAdd {
 
             quantity.addValueChangeListener(ee->{
 
-                if(ee.getValue() == null || ee.getValue() <= 0 || ee.getValue() >= 100){
-                    quantity.setInvalid(true);
-                    quantity.setErrorMessage("Invalid input");
-
-                    commonComponents.showNotification("Value must be between 1 and 99",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.ERROR);
-
-                    return;
-                }
-
-
                 if(ee.isFromClient()) {
                     e.setAmountSelected(Long.valueOf(String.valueOf(ee.getValue())));
                     updateGrid(orderItems, selectedProducts);
