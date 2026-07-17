@@ -15,6 +15,8 @@ import com.example.demo.ControllerModels.Orders.OrdersFeedData;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.Warnings;
 import com.example.demo.Pages.Reports.Common.ReportMiniStatHolder;
+import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.RecentOrdersReportPage;
+import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.TopCustomerDto;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
@@ -135,6 +137,23 @@ public class OrdersService {
         return httpCallLogic.HttpCall("order/getOrderMiniStatData", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), ReportMiniStatHolder.class,true);
 
     }
+
+    @SneakyThrows
+    public List<TopCustomerDto> getOrderTopCustomer(LocalDate fromDate, LocalDate toDate) {
+
+        return Arrays.stream(httpCallLogic.HttpCall("order/getOrderTopConsumers", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), TopCustomerDto[].class,true)).toList();
+
+    }
+
+    @SneakyThrows
+    public List<RecentOrdersReportPage> getRecentOrderList(LocalDate fromDate, LocalDate toDate) {
+
+        return Arrays.stream(httpCallLogic.HttpCall("order/getRecentOrders", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), RecentOrdersReportPage[].class,true)).toList();
+
+    }
+
+
+
 
 
     }

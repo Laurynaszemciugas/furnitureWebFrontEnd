@@ -40,10 +40,10 @@ public class OrderReportMiniStatCrafter {
         String backgroundColor = common.hexToRgba(color,0.15);
 
         miniStatHolders.add(
-                miniStatCrafter.miniStats(VaadinIcon.CART, "Total orders", items.getValue1ThisMonth(), new Span("123w"), color, backgroundColor),
-                miniStatCrafter.miniStats(VaadinIcon.CLOCK, "Finished orders", items.getValue2ThisMonth(), new Span("123w"), color, backgroundColor),
-                miniStatCrafter.miniStats(VaadinIcon.CHECK, "In progress orders", items.getValue3ThisMonth(), new Span("123w"), color, backgroundColor),
-                miniStatCrafter.miniStats(VaadinIcon.MONEY, "Total revenue",items.getValue4ThisMonth(), new Span("123sasaasasw"), color, backgroundColor)
+                miniStatCrafter.miniStats(VaadinIcon.CART, "Total orders", items.getValue1ThisMonth(),common.lastMonthTrend(items.getValue1ThisMonth(),items.getValue1LastMonth(),fromDate,true), color, backgroundColor),
+                miniStatCrafter.miniStats(VaadinIcon.CLOCK, "Finished orders", items.getValue2ThisMonth(), common.lastMonthTrend(items.getValue2ThisMonth(),items.getValue2LastMonth(),fromDate,true), color, backgroundColor),
+                miniStatCrafter.miniStats(VaadinIcon.CHECK, "In progress orders", items.getValue3ThisMonth(), common.lastMonthTrend(items.getValue3ThisMonth(),items.getValue3LastMonth(),fromDate,true), color, backgroundColor),
+                miniStatCrafter.miniStats(VaadinIcon.MONEY, "Total revenue",items.getValue4ThisMonth() + " Eur", common.lastMonthTrend(items.getValue4ThisMonth(),items.getValue4LastMonth(),fromDate,true), color, backgroundColor)
         );
 
         return miniStatHolders;

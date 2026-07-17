@@ -8,9 +8,11 @@ import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import lombok.Setter;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -114,6 +116,71 @@ public class Common {
         return value;
     }
 
+    public HorizontalLayout lastMonthTrend(
+            Object now,
+            Object was,
+            LocalDate chosenDate,
+            boolean useValueComparison
+    ){
+
+        HorizontalLayout h = new HorizontalLayout();
+
+        if(useValueComparison) {
+
+            String moreThanZeroColor = "Green";
+            String lessThanZeroColor = "Red";
+
+            Span span = new Span();
+            Span comparedSpan = new Span();
+
+            double nowValue = toDouble(now);
+            double wasValue = toDouble(was);
+
+
+            LocalDate preFrom = chosenDate.withDayOfMonth(1).minusMonths(1);
+
+            LocalDate preTo = preFrom.plusMonths(1).minusDays(1);
+
+
+            double changePercent = diffrenceCalculator(nowValue, wasValue);
+
+            String moreLess = "";
+
+            if (changePercent > 0 && nowValue > wasValue) {
+                span.getStyle().set("color", moreThanZeroColor);
+                moreLess = "▲";
+            } else if (changePercent < 0 && nowValue < wasValue) {
+                span.getStyle().set("color", lessThanZeroColor);
+                moreLess = "▼";
+            } else {
+                span.getStyle().set("color", "gray");
+                moreLess = "▼";
+            }
+            String formatedText = String.format("%s %.2f%s ", moreLess, changePercent, "%");
+            String formatedVs = String.format("vs %s - %s", dateFormatter(preFrom, "MMMM d"), dateFormatter(preTo, "MMMM d, yyyy"));
+
+            span.setText(formatedText);
+            span.addClassName("stat-description");
+            comparedSpan.setText(formatedVs);
+            comparedSpan.addClassName("stat-description");
+
+
+            h.setPadding(false);
+            h.getStyle().set("gap", "10px");
+
+            h.add(span, comparedSpan);
+        }
+        else{
+            Span span = new Span();
+            span.setText(String.valueOf(was));
+            h.add(span);
+        }
+
+
+
+        return h;
+    }
+
 
     public void trendColoring(
             String moreThanZeroColor,
@@ -126,6 +193,9 @@ public class Common {
 
         double nowValue = toDouble(now);
         double wasValue = toDouble(was);
+
+
+
 
 
         if (changePercent > 0 && nowValue > wasValue) {
