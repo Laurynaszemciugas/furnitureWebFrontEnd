@@ -1,4 +1,4 @@
-package com.example.demo.ControllerModels.DashBoard;
+package com.example.demo.ControllerModels.Common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +11,9 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DashBoardGraphData {
+public class GraphDataDateValue {
 
-    private String localDate;
+    private LocalDate localDate;
     private double value;
 
 

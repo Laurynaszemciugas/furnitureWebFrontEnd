@@ -106,7 +106,12 @@ public class OrderGridProductRemoveAdd {
             quantity.setValue(e.getAmountSelected() == null ? 1: e.getAmountSelected().intValue());
             quantity.setStepButtonsVisible(true);
 
-            if(orders.getOrderStatus() != null && orders.getOrderStatus().equals(OrderStatus.Finished) || orders.getOrderStatus().equals(OrderStatus.LACK_OF_SUPPLY)){
+
+
+            OrderStatus status = orders.getOrderStatus();
+
+            if (status == OrderStatus.Finished
+                    || status == OrderStatus.LACK_OF_SUPPLY) {
                 quantity.setEnabled(false);
                 quantity.addClassName("no-gray-disabled");
             }
@@ -166,7 +171,9 @@ public class OrderGridProductRemoveAdd {
 
             });
 
-            if(orders.getOrderStatus() != null && orders.getOrderStatus().equals(OrderStatus.Finished) || orders.getOrderStatus().equals(OrderStatus.LACK_OF_SUPPLY)){
+            OrderStatus status = orders.getOrderStatus();
+            if (status == OrderStatus.Finished
+                    || status == OrderStatus.LACK_OF_SUPPLY) {
                 button.setEnabled(false);
             }
 

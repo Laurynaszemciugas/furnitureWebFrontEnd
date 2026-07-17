@@ -1,5 +1,6 @@
 package com.example.demo.ControllerModels.DashBoard;
 
+import com.example.demo.ControllerModels.Common.GraphDataDateValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,7 @@ public class DashBoardPageData {
     DashBoardMaterialStock miniStatTwo;
     DashBoardMaterialUsageInfo miniStatThree;
     DashBoardEmployeeMiniInfo miniStatFour;
-    List<DashBoardGraphData> graphData;
+    List<GraphDataDateValue> graphData;
     List<ActivityFeedModel> loadActivityList;
     List<MaterialLowNo> loadMaterialLowNoStock;
     List<TopEmployeesModel> loadTopEmployees;

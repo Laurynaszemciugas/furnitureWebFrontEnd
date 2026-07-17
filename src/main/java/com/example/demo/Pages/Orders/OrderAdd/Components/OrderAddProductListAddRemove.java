@@ -82,7 +82,10 @@ public class OrderAddProductListAddRemove {
 
         totalValueOfItems = commonComponents.spanCrafterWordNoHide(String.format("%s: %.2f %s","Total", 0.0,"Eur"),"stat-example");
         Button addProduct = commonComponents.buttonThemeAndIconNoNavigate("Add product", ButtonVariant.LUMO_PRIMARY, VaadinIcon.PLUS,"white");
-        if(orders.getOrderStatus() != null && orders.getOrderStatus().equals(OrderStatus.Finished) || orders.getOrderStatus().equals(OrderStatus.LACK_OF_SUPPLY)){
+        OrderStatus status = orders.getOrderStatus();
+
+        if (status == OrderStatus.Finished
+                || status == OrderStatus.LACK_OF_SUPPLY) {
             addProduct.setEnabled(false);
         }
 

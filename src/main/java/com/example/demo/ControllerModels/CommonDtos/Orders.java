@@ -7,6 +7,7 @@ import com.example.demo.Enums.PayMethod;
 import com.example.demo.Enums.PayStatus;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class Orders {
     private PayMethod payMethod;
     private String billingAddress;
     private LocalDateTime created;
+    private LocalDate createdDate;
     private String orderCreatedByName; // fallback if user doesnt have an account
     private String orderCreatedByGmail; // fallback if user doesnt have an account
 

@@ -3,15 +3,18 @@ package com.example.demo.Services.Orders;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.HttpCallLogic;
+import com.example.demo.ControllerModels.Common.GraphDataDateValue;
 import com.example.demo.ControllerModels.Common.MiniStatHolder;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
 import com.example.demo.ControllerModels.OrderAdd.ConsumerData;
 import com.example.demo.ControllerModels.Orders.NewOrderFeedData;
+import com.example.demo.ControllerModels.Orders.OrderReportPieChart;
 import com.example.demo.ControllerModels.Orders.OrdersFeedData;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.Warnings;
+import com.example.demo.Pages.Reports.Common.ReportMiniStatHolder;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
@@ -110,6 +113,29 @@ public class OrdersService {
                 httpCallLogic.HttpCall("order/acceptNewOrder", HttpMethod.GET,id, ErrorResponse.class,true), null,success,true);
 
     }
+
+    // Order report
+    @SneakyThrows
+    public OrderReportPieChart getReportPagePieChart(LocalDate fromDate, LocalDate toDate) {
+
+        return httpCallLogic.HttpCall("order/getOrderByStatus", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), OrderReportPieChart.class,true);
+
+    }
+
+    @SneakyThrows
+    public List<GraphDataDateValue> getReportPageLineChart(LocalDate fromDate, LocalDate toDate) {
+
+        return Arrays.stream(httpCallLogic.HttpCall("order/getOrderByLineChart", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), GraphDataDateValue[].class,true)).toList();
+
+    }
+
+    @SneakyThrows
+    public ReportMiniStatHolder getOrderMiniStatData(LocalDate fromDate, LocalDate toDate) {
+
+        return httpCallLogic.HttpCall("order/getOrderMiniStatData", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), ReportMiniStatHolder.class,true);
+
+    }
+
 
     }
 

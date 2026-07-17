@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderReportMiniStatHolder {
+public class ReportMiniStatHolder {
 
     private Object value1ThisMonth;
     private Object value1LastMonth;

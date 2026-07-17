@@ -3,7 +3,7 @@ package com.example.demo.Pages.DashBoard.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ChartsGraphs.DashBoard.DashBoardCharts;
-import com.example.demo.ControllerModels.DashBoard.DashBoardGraphData;
+import com.example.demo.ControllerModels.Common.GraphDataDateValue;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class GraphStatistics {
 
 
     // grapth for smth
-    public VerticalLayout graph(List<DashBoardGraphData> list){
+    public VerticalLayout graph(List<GraphDataDateValue> list){
 
         VerticalLayout graph = new VerticalLayout(
                 commonComponents.doubleValueRow(

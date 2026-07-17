@@ -2,18 +2,14 @@ package com.example.demo.Pages.Reports.ReportsPages.OrderReports;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.Common.MiniStatHolder;
-import com.example.demo.Enums.Export;
 import com.example.demo.Enums.OrderStatus;
+import com.example.demo.Enums.Widths;
 import com.example.demo.MainLayout.MainLayout;
-import com.example.demo.Pages.Reports.Common.OrderReport.OrderReportMiniStatCrafter;
-import com.example.demo.Pages.Reports.Common.ReportsMiniStatCrafter;
-import com.example.demo.Pages.Reports.Page.Components.BriefReportPageExplanation;
-import com.example.demo.Pages.Reports.Page.Components.MiniReportCard;
+import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.OrderReportMiniStatCrafter;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.BriefOrderReportPageExplanation;
+import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.OrderReportCharts;
+import com.example.demo.Services.Orders.OrdersService;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -28,17 +24,24 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
     CommonComponents commonComponents;
     Common common;
     BriefOrderReportPageExplanation biefExplanation;
+    OrdersService ordersService;
+
+    OrderReportCharts charts;
 
     OrderReportMiniStatCrafter orderReportMiniStatCrafter;
 
 
-    public OrderReportPage(CommonComponents commonComponents, Common common) {
+    public OrderReportPage(CommonComponents commonComponents, Common common, OrdersService ordersService) {
 
         this.commonComponents = commonComponents;
         this.common = common;
-        this.biefExplanation = new BriefOrderReportPageExplanation(commonComponents,common);
+        this.biefExplanation = new BriefOrderReportPageExplanation(commonComponents, common);
 
-        this.orderReportMiniStatCrafter = new OrderReportMiniStatCrafter(commonComponents,common);
+        this.orderReportMiniStatCrafter = new OrderReportMiniStatCrafter(commonComponents, common,ordersService);
+
+        this.ordersService = ordersService;
+
+        this.charts = new OrderReportCharts(ordersService);
 
 
         setPadding(false);
@@ -61,26 +64,30 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
 
     }
 
-    public VerticalLayout mainLayout() {
-        VerticalLayout verticalLayout = new VerticalLayout();
-        verticalLayout.setMaxWidth("1650px");
-        verticalLayout.getStyle().set("margin-top", "5px");
+    public HorizontalLayout mainLayout() {
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.setMaxWidth("1650px");
+        layout.setPadding(true);
+        layout.getStyle().set("margin-top", "5px");
+
+        layout.addClassName("layout-flex");
 
 
-
-        verticalLayout.add(
-        biefExplanation.briefExplanation(),
+        layout.add(
+                biefExplanation.briefExplanation(),
                 filters(),
-                orderReportMiniStatCrafter.miniStatHolder("#035afc")
+                orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#035afc", Widths.FULL_WIDTH),
+                charts.ordersByStatusChart(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
+                charts.OrderRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH)
         );
 
-        return verticalLayout;
+        return layout;
     }
 
-    public HorizontalLayout filters(){
+    public HorizontalLayout filters() {
         HorizontalLayout h = new HorizontalLayout();
+        h.setWidthFull();
         h.addClassName("layout-flex");
-        h.setPadding(false);
 
         ComboBox<OrderStatus> status = new ComboBox<>();
         status.setPlaceholder("Status");
@@ -89,7 +96,7 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
         costumer.setPlaceholder("Costumer");
 
 
-        h.add(status,costumer);
+        h.add(status, costumer);
 
 
         return h;
@@ -100,6 +107,6 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
 
 
 
-
-
 }
+
+

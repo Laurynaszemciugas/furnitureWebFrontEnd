@@ -1,9 +1,11 @@
 package com.example.demo.Services.Dashboard;
 
 
+import com.example.demo.ControllerModels.Common.GraphDataDateValue;
 import com.example.demo.ControllerModels.DashBoard.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -144,12 +146,12 @@ public class DashBoardService {
     }
 
 
-    public List<DashBoardGraphData> dashBoardGraphDataList(){
+    public List<GraphDataDateValue> dashBoardGraphDataList(){
 
-        List<DashBoardGraphData> list = new ArrayList<>();
-        list.add(new DashBoardGraphData("2025-12-10",45));
-        list.add(new DashBoardGraphData("2025-02-10",100));
-        list.add(new DashBoardGraphData("2025-12-10",45));
+        List<GraphDataDateValue> list = new ArrayList<>();
+        list.add(new GraphDataDateValue(LocalDate.now(),45));
+        list.add(new GraphDataDateValue(LocalDate.now(),100));
+        list.add(new GraphDataDateValue(LocalDate.now(),45));
 
         return list;
 

@@ -35,6 +35,10 @@ public class Common {
         this.sessionCrafter = new SessionCrafter();
     }
 
+
+
+
+
     public String dateFormatter(LocalDate date, String yyyymmdd) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(yyyymmdd);
@@ -42,6 +46,16 @@ public class Common {
 
         return formattedDate;
     }
+
+    public LocalDate currentMonthStart(){
+        return dateCrafter(0,0,0,0,true);
+    }
+
+    public LocalDate nextMonthDate(){
+        return dateCrafter(0,1,1,0,true);
+    }
+
+
 
     public LocalDate dateCrafter(int minusMonth, int plusMonth, int minusDays, int plusDays, boolean startOfMonth) {
 
