@@ -7,6 +7,7 @@ import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
 import com.example.demo.DTOS.ComboBoxMaterial;
+import com.example.demo.Pages.Reports.Common.ReportMiniStatHolder;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
@@ -79,6 +80,16 @@ public class MaterialService {
     public void editProduct(Materials mat) {
         httpCallLogic.checkResponse(
                 httpCallLogic.HttpCall("material/editExistingMaterial", HttpMethod.POST, mat, ErrorResponse.class,false),"Materials",success,true);
+    }
+
+    // report page
+
+
+    @SneakyThrows
+    public ReportMiniStatHolder getProductMiniStatData(LocalDate fromDate, LocalDate toDate) {
+
+        return httpCallLogic.HttpCall("material/getProductsMiniStatData", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), ReportMiniStatHolder.class,true);
+
     }
 
 

@@ -50,7 +50,7 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
 
         this.ordersService = ordersService;
 
-        this.charts = new OrderReportCharts(ordersService);
+        this.charts = new OrderReportCharts(commonComponents,common,ordersService);
 
 
         setPadding(false);
@@ -84,101 +84,17 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
 
         layout.add(
                 biefExplanation.briefExplanation(),
-                filters(),
                 orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#035afc", Widths.FULL_WIDTH),
                 charts.ordersByStatusChart(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
                 charts.OrderRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
-                topCustomerOrder(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
-                recentOrdersList(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH)
+                charts.topCustomerOrder(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
+                charts.recentOrdersList(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH)
         );
 
         return layout;
     }
 
-    public HorizontalLayout filters() {
-        HorizontalLayout h = new HorizontalLayout();
-        h.setWidthFull();
-        h.addClassName("layout-flex");
 
-        ComboBox<OrderStatus> status = new ComboBox<>();
-        status.setPlaceholder("Status");
-
-        ComboBox<String> costumer = new ComboBox<>();
-        costumer.setPlaceholder("Costumer");
-
-
-        h.add(status, costumer);
-
-
-        return h;
-
-
-    }
-
-    public VerticalLayout topCustomerOrder(LocalDate from, LocalDate to, Widths widths){
-
-        List<TopCustomerDto> list = ordersService.getOrderTopCustomer(from,to);
-
-        VerticalLayout v = new VerticalLayout();
-        v.addClassName("island");
-
-        v.setWidth(widths.getWidth());
-
-        Span span = commonComponents.spanCrafter("Top customers","activityFeed-name");
-
-        Grid<TopCustomerDto> grid = new Grid<>(TopCustomerDto.class);
-        grid.setItems(list);
-        grid.setWidthFull();
-
-        HorizontalLayout buttonHolder = new HorizontalLayout();
-        buttonHolder.setWidthFull();
-        buttonHolder.setJustifyContentMode(JustifyContentMode.CENTER);
-        Button button = new Button("View all customers");
-
-        buttonHolder.add(button);
-
-
-        v.add(
-                span,
-                grid,
-                buttonHolder
-        );
-
-        return  v;
-    }
-
-
-    public VerticalLayout recentOrdersList(LocalDate from, LocalDate to, Widths widths){
-
-        List<RecentOrdersReportPage> list = ordersService.getRecentOrderList(from,to);
-
-        VerticalLayout v = new VerticalLayout();
-        v.addClassName("island");
-
-        v.setWidth(widths.getWidth());
-
-        Span span = commonComponents.spanCrafter("Recent orders summary","activityFeed-name");
-
-        Grid<RecentOrdersReportPage> grid = new Grid<>(RecentOrdersReportPage.class);
-        grid.setItems(list);
-        grid.setWidthFull();
-
-        HorizontalLayout buttonHolder = new HorizontalLayout();
-        buttonHolder.setWidthFull();
-        buttonHolder.setJustifyContentMode(JustifyContentMode.CENTER);
-        Button button = new Button("View all orders");
-
-        buttonHolder.add(button);
-
-
-        v.add(
-                span,
-                grid,
-                buttonHolder
-        );
-
-        return  v;
-    }
 
 
 }

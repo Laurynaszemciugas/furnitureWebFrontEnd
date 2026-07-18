@@ -1,23 +1,35 @@
 package com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components;
 
+import com.example.demo.Common.Common;
+import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Common.GraphDataDateValue;
 import com.example.demo.ControllerModels.Orders.OrderReportPieChart;
 import com.example.demo.Enums.Widths;
+import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.RecentOrdersReportPage;
+import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.TopCustomerDto;
 import com.example.demo.Services.Orders.OrdersService;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class OrderReportCharts {
 
-
+    CommonComponents commonComponents;
+    Common common;
     OrdersService ordersService;
 
-    public OrderReportCharts(OrdersService ordersService) {
+    public OrderReportCharts(CommonComponents commonComponents, Common common, OrdersService ordersService) {
+        this.commonComponents = commonComponents;
+        this.common = common;
         this.ordersService = ordersService;
     }
-
 
     public Div ordersByStatusChart(
 
@@ -38,7 +50,7 @@ public class OrderReportCharts {
 
         chartDiv.setWidth(widths.getWidth());
 
-        chartDiv.setMinHeight("320px");
+        chartDiv.setMinHeight("480px");
 
         chartDiv.getStyle()
                 .set("background-color", "white")
@@ -591,6 +603,187 @@ public class OrderReportCharts {
         chartDiv.getElement().executeJs(javascript);
 
         return chartDiv;
+    }
+
+
+
+    public VerticalLayout topCustomerOrder(LocalDate from, LocalDate to, Widths widths){
+
+        List<TopCustomerDto> list = ordersService.getOrderTopCustomer(from,to);
+
+        VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
+
+        v.setWidth(widths.getWidth());
+
+        Span span = commonComponents.spanCrafter("Top customers","activityFeed-name");
+
+        Grid<TopCustomerDto> grid = new Grid<>(TopCustomerDto.class,false);
+        grid.setItems(list);
+        grid.setWidthFull();
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+
+            span1.setText(e.getId().toString());
+
+            return span1;
+
+        }).setHeader("Id").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+
+            span1.setText(e.getName());
+
+            return span1;
+
+        }).setHeader("Customer").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+
+            span1.setText(e.getOrders().toString());
+
+            return span1;
+
+        }).setHeader("Orders").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+
+            span1.setText(e.getRevenue() + " Eur");
+
+            return span1;
+
+        }).setHeader("Revenue").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+
+            span1.setText(e.getAverageRevenue() + " Eur");
+
+            return span1;
+
+        }).setHeader("Avg. Order value").setAutoWidth(true);
+
+
+        HorizontalLayout buttonHolder = new HorizontalLayout();
+        buttonHolder.setWidthFull();
+        buttonHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        Button button = new Button("View all customers");
+
+        buttonHolder.add(button);
+
+
+        v.add(
+                span,
+                grid,
+                buttonHolder
+        );
+
+        return  v;
+    }
+
+
+    public VerticalLayout recentOrdersList(LocalDate from, LocalDate to, Widths widths){
+
+        List<RecentOrdersReportPage> list = ordersService.getRecentOrderList(from,to);
+
+        VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
+
+        v.setWidth(widths.getWidth());
+
+        Span span = commonComponents.spanCrafter("Recent orders summary","activityFeed-name");
+
+        Grid<RecentOrdersReportPage> grid = new Grid<>(RecentOrdersReportPage.class,false);
+        grid.setItems(list);
+        grid.setWidthFull();
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+
+            span1.setText("ORD-" + e.getId());
+
+            return span1;
+
+        }).setHeader("Id").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+
+            span1.setText(e.getProductCount().toString());
+
+            return span1;
+
+        }).setHeader("Products count").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+            span1.addClassName("stock-badge");
+
+            span1.setText(e.getOrderStatus().getDisplayName());
+
+            switch (e.getOrderStatus()){
+                case NEW -> span1.addClassName("status-new");
+                case CANCELLED -> span1.addClassName("status-cancelled");
+                case Pending -> span1.addClassName("status-pending");
+                case Finished -> span1.addClassName("status-finished");
+                case In_Progress -> span1.addClassName("status-in-progress");
+                case LACK_OF_SUPPLY -> span1.addClassName("status-lack-of-supply");
+                default -> span1.addClassName("status-none");
+
+            }
+
+            return span1;
+
+        }).setHeader("Status").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+
+            span1.setText(e.getValue() + " Eur");
+
+            return span1;
+
+        }).setHeader("Value").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+
+            span1.setText(common.dateFormatter(e.getDueDate(),"MMMM dd, yyyy"));
+
+            return span1;
+
+        }).setHeader("Due date").setAutoWidth(true);
+
+
+        HorizontalLayout buttonHolder = new HorizontalLayout();
+        buttonHolder.setWidthFull();
+        buttonHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        Button button = new Button("View all orders");
+
+        buttonHolder.add(button);
+
+
+        v.add(
+                span,
+                grid,
+                buttonHolder
+        );
+
+        return  v;
     }
 
 
