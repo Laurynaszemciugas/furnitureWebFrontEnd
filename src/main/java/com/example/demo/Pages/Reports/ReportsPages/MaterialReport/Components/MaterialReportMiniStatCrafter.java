@@ -1,4 +1,4 @@
-package com.example.demo.Pages.Reports.ReportsPages.ProductReport.Components;
+package com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -6,13 +6,12 @@ import com.example.demo.Enums.Widths;
 import com.example.demo.Pages.Reports.Common.ReportMiniStatHolder;
 import com.example.demo.Pages.Reports.Common.ReportsMiniStatCrafter;
 import com.example.demo.Services.Material.MaterialService;
-import com.example.demo.Services.Orders.OrdersService;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 import java.time.LocalDate;
 
-public class ProductReportMiniStatCrafter {
+public class MaterialReportMiniStatCrafter {
 
     CommonComponents commonComponents;
     Common common;
@@ -20,7 +19,7 @@ public class ProductReportMiniStatCrafter {
 
     MaterialService materialService;
 
-    public ProductReportMiniStatCrafter(CommonComponents commonComponents, Common common, MaterialService materialService) {
+    public MaterialReportMiniStatCrafter(CommonComponents commonComponents, Common common, MaterialService materialService) {
         this.commonComponents = commonComponents;
         this.common = common;
 

@@ -1,13 +1,16 @@
 package com.example.demo.Services.Material;
 
 import com.example.demo.Common.Logic.HttpCallLogic;
+import com.example.demo.ControllerModels.Common.GraphDataDateValue;
 import com.example.demo.ControllerModels.Common.MiniStatHolder;
 import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
+import com.example.demo.ControllerModels.Orders.OrderReportPieChart;
 import com.example.demo.DTOS.ComboBoxMaterial;
 import com.example.demo.Pages.Reports.Common.ReportMiniStatHolder;
+import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.DTO.MaterialReportPieChart;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
@@ -88,7 +91,21 @@ public class MaterialService {
     @SneakyThrows
     public ReportMiniStatHolder getProductMiniStatData(LocalDate fromDate, LocalDate toDate) {
 
-        return httpCallLogic.HttpCall("material/getProductsMiniStatData", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), ReportMiniStatHolder.class,true);
+        return httpCallLogic.HttpCall("material/getMaterialMiniStatData", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), ReportMiniStatHolder.class,true);
+
+    }
+
+    @SneakyThrows
+    public MaterialReportPieChart getReportPagePieChart(LocalDate fromDate, LocalDate toDate) {
+
+        return httpCallLogic.HttpCall("material/getMaterialByStatus", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), MaterialReportPieChart.class,true);
+
+    }
+
+    @SneakyThrows
+    public List<GraphDataDateValue> getReportPageLineChart(LocalDate fromDate, LocalDate toDate) {
+
+        return Arrays.stream(httpCallLogic.HttpCall("material/getMaterialByLineChart", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), GraphDataDateValue[].class,true)).toList();
 
     }
 

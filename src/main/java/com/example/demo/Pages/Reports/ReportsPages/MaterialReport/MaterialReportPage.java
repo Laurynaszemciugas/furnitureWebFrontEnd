@@ -1,45 +1,44 @@
-package com.example.demo.Pages.Reports.ReportsPages.ProductReport;
+package com.example.demo.Pages.Reports.ReportsPages.MaterialReport;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Enums.Widths;
 import com.example.demo.MainLayout.MainLayout;
-import com.example.demo.Pages.Reports.ReportsPages.ProductReport.Components.BriefProductReportPageExplanation;
-import com.example.demo.Pages.Reports.ReportsPages.ProductReport.Components.ProductReportCharts;
-import com.example.demo.Pages.Reports.ReportsPages.ProductReport.Components.ProductReportMiniStatCrafter;
+import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components.BriefMaterialReportPageExplanation;
+import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components.MaterialReportCharts;
+import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components.MaterialReportMiniStatCrafter;
 import com.example.demo.Services.Material.MaterialService;
-import com.example.demo.Services.Orders.OrdersService;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
-@Route(value = "ProductReport", layout = MainLayout.class)
-public class ProductReportPage extends VerticalLayout implements BeforeEnterObserver {
+@Route(value = "MaterialReport", layout = MainLayout.class)
+public class MaterialReportPage extends VerticalLayout implements BeforeEnterObserver {
 
 
     CommonComponents commonComponents;
     Common common;
-    BriefProductReportPageExplanation biefExplanation;
+    BriefMaterialReportPageExplanation biefExplanation;
     MaterialService materialService;
 
-    ProductReportCharts charts;
+    MaterialReportCharts charts;
 
-    ProductReportMiniStatCrafter orderReportMiniStatCrafter;
+    MaterialReportMiniStatCrafter orderReportMiniStatCrafter;
 
 
-    public ProductReportPage(CommonComponents commonComponents, Common common, MaterialService materialService) {
+    public MaterialReportPage(CommonComponents commonComponents, Common common, MaterialService materialService) {
 
         this.commonComponents = commonComponents;
         this.common = common;
-        this.biefExplanation = new BriefProductReportPageExplanation(commonComponents, common);
+        this.biefExplanation = new BriefMaterialReportPageExplanation(commonComponents, common);
 
-        this.orderReportMiniStatCrafter = new ProductReportMiniStatCrafter(commonComponents, common,materialService);
+        this.orderReportMiniStatCrafter = new MaterialReportMiniStatCrafter(commonComponents, common,materialService);
 
         this.materialService = materialService;
 
-        this.charts = new ProductReportCharts(commonComponents,common,materialService);
+        this.charts = new MaterialReportCharts(commonComponents,common,materialService);
 
 
         setPadding(false);
@@ -73,9 +72,9 @@ public class ProductReportPage extends VerticalLayout implements BeforeEnterObse
 
         layout.add(
                 biefExplanation.briefExplanation(),
-                orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#035afc", Widths.FULL_WIDTH)
-//                charts.ordersByStatusChart(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
-//                charts.OrderRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
+                orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#9768EF", Widths.FULL_WIDTH),
+                charts.ProductByStatusChart(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
+                charts.ProductRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH)
 //                charts.topCustomerOrder(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
 //                charts.recentOrdersList(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH)
         );

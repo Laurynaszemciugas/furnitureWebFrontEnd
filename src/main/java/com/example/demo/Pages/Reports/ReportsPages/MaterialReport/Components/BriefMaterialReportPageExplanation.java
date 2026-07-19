@@ -1,4 +1,4 @@
-package com.example.demo.Pages.Reports.ReportsPages.ProductReport.Components;
+package com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -11,7 +11,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 
-public class BriefProductReportPageExplanation {
+public class BriefMaterialReportPageExplanation {
 
     CommonComponents commonComponents;
     Common common;
@@ -19,7 +19,7 @@ public class BriefProductReportPageExplanation {
 
     boolean firstLoad = true;
 
-    public BriefProductReportPageExplanation(CommonComponents commonComponents, Common common) {
+    public BriefMaterialReportPageExplanation(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
     }
