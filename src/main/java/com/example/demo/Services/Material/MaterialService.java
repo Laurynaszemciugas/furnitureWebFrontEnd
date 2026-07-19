@@ -10,6 +10,7 @@ import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
 import com.example.demo.ControllerModels.Orders.OrderReportPieChart;
 import com.example.demo.DTOS.ComboBoxMaterial;
 import com.example.demo.Pages.Reports.Common.ReportMiniStatHolder;
+import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.DTO.MaterialLowStockGrid;
 import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.DTO.MaterialReportPieChart;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -106,6 +107,13 @@ public class MaterialService {
     public List<GraphDataDateValue> getReportPageLineChart(LocalDate fromDate, LocalDate toDate) {
 
         return Arrays.stream(httpCallLogic.HttpCall("material/getMaterialByLineChart", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), GraphDataDateValue[].class,true)).toList();
+
+    }
+
+    @SneakyThrows
+    public List<MaterialLowStockGrid> getLowMaterialGrid(LocalDate fromDate, LocalDate toDate) {
+
+        return Arrays.stream(httpCallLogic.HttpCall("material/getMaterialLowStock", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), MaterialLowStockGrid[].class,true)).toList();
 
     }
 
