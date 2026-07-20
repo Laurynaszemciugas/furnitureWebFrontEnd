@@ -46,7 +46,7 @@ public class MiniReportCard {
                 reportCardCrafter(
                         VaadinIcon.PACKAGE,
                         "View Products Report",
-                        "Reports/Products",
+                        "MaterialReport",
                         "Products Reports",
                         "Understand product performance and inventory.",
                         "#47B25D",

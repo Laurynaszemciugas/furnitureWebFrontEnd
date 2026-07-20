@@ -67,7 +67,7 @@ public class BriefMaterialReportPageExplanation {
 
 
         v.add(
-                commonComponents.biefPageExplanation("Order Reports"),
+                commonComponents.biefPageExplanation("Materials Report"),
                 rightSideHolder
         );
         return v;

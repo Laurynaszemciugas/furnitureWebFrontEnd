@@ -18,6 +18,8 @@ public class StockMovement {
 
     private Long amountTakeAdd;
 
+    private Long balance;
+
     private Materials materials;
 
     private User user;

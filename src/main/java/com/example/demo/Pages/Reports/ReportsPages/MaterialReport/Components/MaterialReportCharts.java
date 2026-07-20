@@ -680,7 +680,7 @@ public class MaterialReportCharts {
         HorizontalLayout buttonHolder = new HorizontalLayout();
         buttonHolder.setWidthFull();
         buttonHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        Button button = new Button("View all customers");
+        Button button = new Button("View all materials");
 
         buttonHolder.add(button);
 
