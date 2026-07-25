@@ -46,7 +46,7 @@ public class MiniReportCard {
                 reportCardCrafter(
                         VaadinIcon.PACKAGE,
                         "View Products Report",
-                        "MaterialReport",
+                        "s",
                         "Products Reports",
                         "Understand product performance and inventory.",
                         "#47B25D",
@@ -59,7 +59,7 @@ public class MiniReportCard {
                 reportCardCrafter(
                         VaadinIcon.LINES_LIST,
                         "View Materials Report",
-                        "Reports/Materials",
+                        "MaterialReport",
                         "Materials Reports",
                         "Track material usage and stock efficiency.",
                         "#9768EF",

@@ -5,6 +5,8 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.Widths;
 import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.Pages.Reports.Common.CommonBriefPageExplanation;
+import com.example.demo.Pages.Reports.Common.FromToDate;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.OrderReportMiniStatCrafter;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.BriefOrderReportPageExplanation;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.OrderReportCharts;
@@ -32,19 +34,22 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
 
     CommonComponents commonComponents;
     Common common;
-    BriefOrderReportPageExplanation biefExplanation;
+    CommonBriefPageExplanation biefExplanation;
     OrdersService ordersService;
 
     OrderReportCharts charts;
 
     OrderReportMiniStatCrafter orderReportMiniStatCrafter;
 
+    VerticalLayout briefExplanationMemory = new VerticalLayout();
+
+    HorizontalLayout layout = new HorizontalLayout();
 
     public OrderReportPage(CommonComponents commonComponents, Common common, OrdersService ordersService) {
 
         this.commonComponents = commonComponents;
         this.common = common;
-        this.biefExplanation = new BriefOrderReportPageExplanation(commonComponents, common);
+        this.biefExplanation = new CommonBriefPageExplanation(commonComponents, common);
 
         this.orderReportMiniStatCrafter = new OrderReportMiniStatCrafter(commonComponents, common,ordersService);
 
@@ -52,6 +57,12 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
 
         this.charts = new OrderReportCharts(commonComponents,common,ordersService);
 
+
+        briefExplanationMemory.setPadding(false);
+        briefExplanationMemory.setWidthFull();
+        briefExplanationMemory.add(
+                biefExplanation.briefExplanation("Material report")
+        );
 
         setPadding(false);
         setSpacing(false);
@@ -74,7 +85,16 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
     }
 
     public HorizontalLayout mainLayout() {
-        HorizontalLayout layout = new HorizontalLayout();
+
+        biefExplanation.setFromToDateConsumer(e->{
+            if(e.getFrom() == null && e.getTo() == null){
+                updateReports(new FromToDate(common.currentMonthStart(),common.nextMonthDate()));
+            }
+            else {
+                updateReports(e);
+            }
+        });
+
         layout.setMaxWidth("1650px");
         layout.setPadding(true);
         layout.getStyle().set("margin-top", "5px");
@@ -83,7 +103,7 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
 
 
         layout.add(
-                biefExplanation.briefExplanation(),
+                briefExplanationMemory,
                 orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#035afc", Widths.FULL_WIDTH),
                 charts.ordersByStatusChart(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
                 charts.OrderRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
@@ -92,6 +112,25 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
         );
 
         return layout;
+    }
+
+    public void updateReports(FromToDate fromToDate){
+        layout.removeAll();
+
+        LocalDate from  = fromToDate.getFrom();
+
+        LocalDate to = fromToDate.getTo();
+
+        layout.add(
+                briefExplanationMemory,
+                orderReportMiniStatCrafter.miniStatHolder(from, to, "#9768EF", Widths.FULL_WIDTH),
+                charts.ordersByStatusChart(from, to,Widths.HALF_WIDTH),
+                charts.OrderRevenueAccordingToMonth(from, to,Widths.HALF_WIDTH),
+                charts.topCustomerOrder(from, to,Widths.HALF_WIDTH),
+                charts.recentOrdersList(from, to,Widths.HALF_WIDTH)
+        );
+
+
     }
 
 

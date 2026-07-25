@@ -22,7 +22,7 @@ body {
 
 .custom-layout-small::part(drawer),
 .custom-layout-large::part(drawer) {
-    transition: width 0.5s ease;
+    transition: width 10s ease;
 }
 
 /* collapsed */

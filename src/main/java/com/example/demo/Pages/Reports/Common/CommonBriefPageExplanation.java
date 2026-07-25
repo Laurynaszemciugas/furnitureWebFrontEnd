@@ -11,6 +11,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.function.Consumer;
 
 
@@ -60,6 +61,19 @@ public class CommonBriefPageExplanation {
         generateButton.addThemeVariants(ButtonVariant.PRIMARY);
 
         generateButton.addClickListener(e->{
+
+
+
+
+
+            if(from.getValue() == null){
+                from.setValue(common.currentMonthStart());
+            }
+            if (to.getValue() == null) {
+
+                LocalDate nextMonthDate = from.getValue().withDayOfMonth(1).plusMonths(1).minusDays(1);
+                to.setValue(nextMonthDate);
+            }
 
             if(from.getValue().isAfter(to.getValue())){
                 System.out.println("date from cannot be after to");
