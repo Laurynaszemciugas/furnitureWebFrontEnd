@@ -8,6 +8,7 @@ import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
 import com.example.demo.ControllerModels.Orders.OrderReportPieChart;
+import com.example.demo.ControllerModels.StockMovement.StockMovementGrid;
 import com.example.demo.DTOS.ComboBoxMaterial;
 import com.example.demo.Pages.Reports.Common.ReportMiniStatHolder;
 import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.DTO.MaterialLowStockGrid;
@@ -114,6 +115,13 @@ public class MaterialService {
     public List<MaterialLowStockGrid> getLowMaterialGrid(LocalDate fromDate, LocalDate toDate) {
 
         return Arrays.stream(httpCallLogic.HttpCall("material/getMaterialLowStock", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), MaterialLowStockGrid[].class,true)).toList();
+
+    }
+
+    @SneakyThrows
+    public List<StockMovementGrid> getMaterialMovement(LocalDate fromDate, LocalDate toDate) {
+
+        return Arrays.stream(httpCallLogic.HttpCall("material/getMaterialMovement", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), StockMovementGrid[].class,true)).toList();
 
     }
 

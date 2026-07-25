@@ -24,6 +24,8 @@ public class StockMovement {
 
     private User user;
 
+    private Orders orders;
+
     private LocalDateTime created;
 
 

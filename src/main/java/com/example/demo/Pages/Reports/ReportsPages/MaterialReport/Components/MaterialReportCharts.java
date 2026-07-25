@@ -3,6 +3,8 @@ package com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Common.GraphDataDateValue;
+import com.example.demo.ControllerModels.StockMovement.StockMovementGrid;
+import com.example.demo.Enums.Type;
 import com.example.demo.Enums.Widths;
 import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.DTO.MaterialLowStockGrid;
 import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.DTO.MaterialReportPieChart;
@@ -85,7 +87,7 @@ public class MaterialReportCharts {
                 color: #172033;
                 margin-bottom: 20px;
             ">
-                Orders by Status
+                Materials by Status
             </div>
 
             <div style="
@@ -248,7 +250,7 @@ public class MaterialReportCharts {
                 context.font = '500 13px Arial';
 
                 context.fillText(
-                    'Total Orders',
+                    'Total Materials',
                     centerX,
                     centerY + 19
                 );
@@ -385,7 +387,7 @@ public class MaterialReportCharts {
                     margin-bottom: 20px;
                     line-height: 22px;
                 ">
-                    Order Value Over Time
+                    Material usage overtime money wise
                 </div>
 
                 <div class="chart-holder" style="
@@ -618,6 +620,8 @@ public class MaterialReportCharts {
 
             Span span1 = new Span();
 
+            span1.addClassName("stat-title");
+
             span1.setText(e.getId().toString());
 
             return span1;
@@ -627,6 +631,7 @@ public class MaterialReportCharts {
         grid.addComponentColumn(e->{
 
             Span span1 = new Span();
+            span1.addClassName("stat-example");
 
             span1.setText(e.getMaterialName());
 
@@ -637,6 +642,7 @@ public class MaterialReportCharts {
         grid.addComponentColumn(e->{
 
             Span span1 = new Span();
+            span1.addClassName("stat-example");
 
             span1.setText(e.getInStock().toString());
 
@@ -647,6 +653,7 @@ public class MaterialReportCharts {
         grid.addComponentColumn(e->{
 
             Span span1 = new Span();
+            span1.addClassName("stat-example");
 
             span1.setText(e.getMinThreshold().toString());
 
@@ -696,102 +703,113 @@ public class MaterialReportCharts {
 
         return  v;
     }
-//
-//
-//    public VerticalLayout recentOrdersList(LocalDate from, LocalDate to, Widths widths){
-//
-//        List<RecentOrdersReportPage> list = ordersService.getRecentOrderList(from,to);
-//
-//        VerticalLayout v = new VerticalLayout();
-//        v.addClassName("island");
-//
-//        v.setWidth(widths.getWidth());
-//
-//        Span span = commonComponents.spanCrafter("Recent orders summary","activityFeed-name");
-//
-//        Grid<RecentOrdersReportPage> grid = new Grid<>(RecentOrdersReportPage.class,false);
-//        grid.setItems(list);
-//        grid.setWidthFull();
-//
-//        grid.addComponentColumn(e->{
-//
-//            Span span1 = new Span();
-//
-//            span1.setText("ORD-" + e.getId());
-//
-//            return span1;
-//
-//        }).setHeader("Id").setAutoWidth(true);
-//
-//        grid.addComponentColumn(e->{
-//
-//            Span span1 = new Span();
-//
-//            span1.setText(e.getProductCount().toString());
-//
-//            return span1;
-//
-//        }).setHeader("Products count").setAutoWidth(true);
-//
-//        grid.addComponentColumn(e->{
-//
-//            Span span1 = new Span();
-//            span1.addClassName("stock-badge");
-//
-//            span1.setText(e.getOrderStatus().getDisplayName());
-//
-//            switch (e.getOrderStatus()){
-//                case NEW -> span1.addClassName("status-new");
-//                case CANCELLED -> span1.addClassName("status-cancelled");
-//                case Pending -> span1.addClassName("status-pending");
-//                case Finished -> span1.addClassName("status-finished");
-//                case In_Progress -> span1.addClassName("status-in-progress");
-//                case LACK_OF_SUPPLY -> span1.addClassName("status-lack-of-supply");
-//                default -> span1.addClassName("status-none");
-//
-//            }
-//
-//            return span1;
-//
-//        }).setHeader("Status").setAutoWidth(true);
-//
-//        grid.addComponentColumn(e->{
-//
-//            Span span1 = new Span();
-//
-//            span1.setText(e.getValue() + " Eur");
-//
-//            return span1;
-//
-//        }).setHeader("Value").setAutoWidth(true);
-//
-//        grid.addComponentColumn(e->{
-//
-//            Span span1 = new Span();
-//
-//            span1.setText(common.dateFormatter(e.getDueDate(),"MMMM dd, yyyy"));
-//
-//            return span1;
-//
-//        }).setHeader("Due date").setAutoWidth(true);
-//
-//
-//        HorizontalLayout buttonHolder = new HorizontalLayout();
-//        buttonHolder.setWidthFull();
-//        buttonHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-//        Button button = new Button("View all orders");
-//
-//        buttonHolder.add(button);
-//
-//
-//        v.add(
-//                span,
-//                grid,
-//                buttonHolder
-//        );
-//
-//        return  v;
-//    }
-//
+
+
+    public VerticalLayout materialStockMovement(LocalDate from, LocalDate to, Widths widths){
+
+        List<StockMovementGrid> list = materialService.getMaterialMovement(from,to);
+
+        VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
+
+        v.setWidth(widths.getWidth());
+
+        Span span = commonComponents.spanCrafter("Recent orders summary","activityFeed-name");
+
+        Grid<StockMovementGrid> grid = new Grid<>(StockMovementGrid.class,false);
+        grid.setItems(list);
+        grid.setWidthFull();
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+
+            span1.addClassName("stat-title");
+
+            span1.setText(common.dateFormatter(e.getCreated(),"MMMM dd, yyyy"));
+
+            return span1;
+
+        }).setHeader("Date").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+
+            span1.addClassName("stat-example");
+
+            span1.setText(e.getMaterialName());
+
+            return span1;
+
+        }).setHeader("Material").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+            span1.addClassName("stock-badge");
+
+            span1.setText(e.getType().getDisplayName());
+
+            switch (e.getType()){
+                case OUT -> span1.addClassName("status-cancelled");
+                case IN -> span1.addClassName("status-finished");
+                default -> span1.addClassName("status-none");
+
+            }
+
+            return span1;
+
+        }).setHeader("Type").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+            span1.addClassName("stat-example");
+
+            String action = "";
+
+            if(e.getType().equals(Type.IN)){
+                action = "+";
+            }
+            else{
+                action = "-";
+            }
+
+            span1.setText(String.format("%s%d",action,e.getQty()));
+
+            return span1;
+
+        }).setHeader("Qty").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+            span1.addClassName("stat-example");
+
+            span1.setText(e.getBalance().toString());
+
+            return span1;
+
+        }).setHeader("Balance").setAutoWidth(true);
+
+
+        HorizontalLayout buttonHolder = new HorizontalLayout();
+        buttonHolder.setWidthFull();
+        buttonHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        Button button = new Button("View all stock movement");
+
+        buttonHolder.add(button);
+
+
+        v.add(
+                span,
+                grid,
+                buttonHolder
+        );
+
+        return  v;
+    }
+
 
 }

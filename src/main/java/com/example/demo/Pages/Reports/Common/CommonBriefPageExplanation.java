@@ -1,9 +1,8 @@
-package com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components;
+package com.example.demo.Pages.Reports.Common;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Enums.Export;
-import com.example.demo.Pages.Reports.Common.FromToDate;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -16,7 +15,7 @@ import java.util.function.Consumer;
 
 
 @Setter
-public class BriefMaterialReportPageExplanation {
+public class CommonBriefPageExplanation {
 
     CommonComponents commonComponents;
     Common common;
@@ -25,12 +24,12 @@ public class BriefMaterialReportPageExplanation {
 
     boolean firstLoad = true;
 
-    public BriefMaterialReportPageExplanation(CommonComponents commonComponents, Common common) {
+    public CommonBriefPageExplanation(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
     }
 
-    public HorizontalLayout briefExplanation(){
+    public HorizontalLayout briefExplanation(String pageExplanation){
 
         HorizontalLayout v = new HorizontalLayout();
         v.addClassName("layout-flex");
@@ -61,7 +60,13 @@ public class BriefMaterialReportPageExplanation {
         generateButton.addThemeVariants(ButtonVariant.PRIMARY);
 
         generateButton.addClickListener(e->{
-            fromToDateConsumer.accept(new FromToDate(from.getValue(),to.getValue()));
+
+            if(from.getValue().isAfter(to.getValue())){
+                System.out.println("date from cannot be after to");
+            }
+            else {
+                fromToDateConsumer.accept(new FromToDate(from.getValue(), to.getValue()));
+            }
         });
 
 
@@ -78,7 +83,7 @@ public class BriefMaterialReportPageExplanation {
 
 
         v.add(
-                commonComponents.biefPageExplanation("Materials Report"),
+                commonComponents.biefPageExplanation(pageExplanation),
                 rightSideHolder
         );
         return v;

@@ -626,6 +626,8 @@ public class OrderReportCharts {
 
             Span span1 = new Span();
 
+            span1.addClassName("stat-title");
+
             span1.setText(e.getId().toString());
 
             return span1;
@@ -635,6 +637,7 @@ public class OrderReportCharts {
         grid.addComponentColumn(e->{
 
             Span span1 = new Span();
+            span1.addClassName("stat-example");
 
             span1.setText(e.getName());
 
@@ -645,6 +648,7 @@ public class OrderReportCharts {
         grid.addComponentColumn(e->{
 
             Span span1 = new Span();
+            span1.addClassName("stat-example");
 
             span1.setText(e.getOrders().toString());
 
@@ -655,6 +659,7 @@ public class OrderReportCharts {
         grid.addComponentColumn(e->{
 
             Span span1 = new Span();
+            span1.addClassName("stat-example");
 
             span1.setText(e.getRevenue() + " Eur");
 
@@ -665,6 +670,7 @@ public class OrderReportCharts {
         grid.addComponentColumn(e->{
 
             Span span1 = new Span();
+            span1.addClassName("stat-example");
 
             span1.setText(e.getAverageRevenue() + " Eur");
 
@@ -709,6 +715,7 @@ public class OrderReportCharts {
         grid.addComponentColumn(e->{
 
             Span span1 = new Span();
+            span1.addClassName("stat-title");
 
             span1.setText("ORD-" + e.getId());
 
@@ -719,6 +726,7 @@ public class OrderReportCharts {
         grid.addComponentColumn(e->{
 
             Span span1 = new Span();
+            span1.addClassName("stat-example");
 
             span1.setText(e.getProductCount().toString());
 
@@ -751,6 +759,7 @@ public class OrderReportCharts {
         grid.addComponentColumn(e->{
 
             Span span1 = new Span();
+            span1.addClassName("stat-example");
 
             span1.setText(e.getValue() + " Eur");
 
@@ -761,6 +770,7 @@ public class OrderReportCharts {
         grid.addComponentColumn(e->{
 
             Span span1 = new Span();
+            span1.addClassName("stat-example");
 
             span1.setText(common.dateFormatter(e.getDueDate(),"MMMM dd, yyyy"));
 
