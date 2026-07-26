@@ -1,24 +1,14 @@
-package com.example.demo.Pages.Reports.ReportsPages.OrderReports;
+package com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.Widths;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Reports.Common.CommonBriefPageExplanation;
 import com.example.demo.Pages.Reports.Common.FromToDate;
-import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.OrderReportMiniStatCrafter;
-import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.BriefOrderReportPageExplanation;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.OrderReportCharts;
-import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.RecentOrdersReportPage;
-import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.TopCustomerDto;
+import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.OrderReportMiniStatCrafter;
 import com.example.demo.Services.Orders.OrdersService;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -26,10 +16,9 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
 import java.time.LocalDate;
-import java.util.List;
 
-@Route(value = "OrderReport", layout = MainLayout.class)
-public class OrderReportPage extends VerticalLayout implements BeforeEnterObserver {
+@Route(value = "ProductReport", layout = MainLayout.class)
+public class ProductReportPage extends VerticalLayout implements BeforeEnterObserver {
 
 
     CommonComponents commonComponents;
@@ -45,7 +34,7 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
 
     HorizontalLayout layout = new HorizontalLayout();
 
-    public OrderReportPage(CommonComponents commonComponents, Common common, OrdersService ordersService) {
+    public ProductReportPage(CommonComponents commonComponents, Common common, OrdersService ordersService) {
 
         this.commonComponents = commonComponents;
         this.common = common;
@@ -61,13 +50,13 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
         briefExplanationMemory.setPadding(false);
         briefExplanationMemory.setWidthFull();
         briefExplanationMemory.add(
-                biefExplanation.briefExplanation("Orders report")
+                biefExplanation.briefExplanation("Product report")
         );
 
         setPadding(false);
         setSpacing(false);
         setSizeFull();
-        setAlignItems(FlexComponent.Alignment.CENTER);
+        setAlignItems(Alignment.CENTER);
 
 
         addClassName("animation-page");
