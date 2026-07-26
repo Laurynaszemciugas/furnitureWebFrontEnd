@@ -9,6 +9,8 @@ import com.example.demo.ControllerModels.Orders.OrderAddProducts;
 import com.example.demo.ControllerModels.Products.ProductFeedModel;
 
 import com.example.demo.Pages.Reports.Common.ReportMiniStatHolder;
+import com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage.DTO.ProductLowStockList;
+import com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage.DTO.ProductPerformanceReport;
 import com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage.DTO.ProductReportPieChart;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -83,6 +85,16 @@ public class ProductService {
     @SneakyThrows
     public List<ProductReportPieChart> getPieChartProductReport(LocalDate from, LocalDate to){
         return Arrays.stream(httpCallLogic.HttpCall("product/getPieChartProductReport", HttpMethod.GET, String.format("%s/%s",from,to), ProductReportPieChart[].class,true)).toList();
+    }
+
+    @SneakyThrows
+    public List<ProductLowStockList> getLowStockAlerts(LocalDate from, LocalDate to){
+        return Arrays.stream(httpCallLogic.HttpCall("product/getLowStockAlerts", HttpMethod.GET, String.format("%s/%s",from,to), ProductLowStockList[].class,true)).toList();
+    }
+
+    @SneakyThrows
+    public List<ProductPerformanceReport> getProductPerformance(LocalDate from, LocalDate to){
+        return Arrays.stream(httpCallLogic.HttpCall("product/getProductPerformance", HttpMethod.GET, String.format("%s/%s",from,to), ProductPerformanceReport[].class,true)).toList();
     }
 
 

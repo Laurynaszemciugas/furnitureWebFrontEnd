@@ -9,7 +9,7 @@ import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Common.Logic.ProductEditImage;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Main.ProductEditRightSideFields;
-import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.ReviewCrafter;
+import com.example.demo.Common.ReviewCrafter;
 import com.example.demo.Services.CommonService.CommonService;
 import com.example.demo.Services.ProductAdd.ProductAddService;
 import com.vaadin.flow.component.html.Div;

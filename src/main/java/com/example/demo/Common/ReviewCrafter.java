@@ -1,7 +1,5 @@
-package com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components;
+package com.example.demo.Common;
 
-import com.example.demo.Common.Common;
-import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.CommonDtos.Comments;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;

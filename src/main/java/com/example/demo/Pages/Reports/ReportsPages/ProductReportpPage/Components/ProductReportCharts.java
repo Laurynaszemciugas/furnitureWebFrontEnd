@@ -8,6 +8,8 @@ import com.example.demo.ControllerModels.Orders.OrderReportPieChart;
 import com.example.demo.Enums.Widths;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.RecentOrdersReportPage;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.TopCustomerDto;
+import com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage.DTO.ProductLowStockList;
+import com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage.DTO.ProductPerformanceReport;
 import com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage.DTO.ProductReportPieChart;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.Products.ProductService;
@@ -15,6 +17,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -636,197 +639,201 @@ public Div OrderRevenueAccordingToMonth(
 
     return chartDiv;
 }
-//
-//
-//
-//    public VerticalLayout topCustomerOrder(LocalDate from, LocalDate to, Widths widths){
-//
-//        List<TopCustomerDto> list = ordersService.getOrderTopCustomer(from,to);
-//
-//        VerticalLayout v = new VerticalLayout();
-//        v.addClassName("island");
-//
-//        v.setWidth(widths.getWidth());
-//
-//        Span span = commonComponents.spanCrafter("Top customers","activityFeed-name");
-//
-//        Grid<TopCustomerDto> grid = new Grid<>(TopCustomerDto.class,false);
-//        grid.setItems(list);
-//        grid.setWidthFull();
-//
-//        grid.addComponentColumn(e->{
-//
-//            Span span1 = new Span();
-//
-//            span1.addClassName("stat-title");
-//
-//            span1.setText(e.getId().toString());
-//
-//            return span1;
-//
-//        }).setHeader("Id").setAutoWidth(true);
-//
-//        grid.addComponentColumn(e->{
-//
-//            Span span1 = new Span();
-//            span1.addClassName("stat-example");
-//
-//            span1.setText(e.getName());
-//
-//            return span1;
-//
-//        }).setHeader("Customer").setAutoWidth(true);
-//
-//        grid.addComponentColumn(e->{
-//
-//            Span span1 = new Span();
-//            span1.addClassName("stat-example");
-//
-//            span1.setText(e.getOrders().toString());
-//
-//            return span1;
-//
-//        }).setHeader("Orders").setAutoWidth(true);
-//
-//        grid.addComponentColumn(e->{
-//
-//            Span span1 = new Span();
-//            span1.addClassName("stat-example");
-//
-//            span1.setText(e.getRevenue() + " Eur");
-//
-//            return span1;
-//
-//        }).setHeader("Revenue").setAutoWidth(true);
-//
-//        grid.addComponentColumn(e->{
-//
-//            Span span1 = new Span();
-//            span1.addClassName("stat-example");
-//
-//            span1.setText(e.getAverageRevenue() + " Eur");
-//
-//            return span1;
-//
-//        }).setHeader("Avg. Order value").setAutoWidth(true);
-//
-//
-//        HorizontalLayout buttonHolder = new HorizontalLayout();
-//        buttonHolder.setWidthFull();
-//        buttonHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-//        Button button = new Button("View all customers");
-//
-//        buttonHolder.add(button);
-//
-//
-//        v.add(
-//                span,
-//                grid,
-//                buttonHolder
-//        );
-//
-//        return  v;
-//    }
-//
-//
-//    public VerticalLayout recentOrdersList(LocalDate from, LocalDate to, Widths widths){
-//
-//        List<RecentOrdersReportPage> list = ordersService.getRecentOrderList(from,to);
-//
-//        VerticalLayout v = new VerticalLayout();
-//        v.addClassName("island");
-//
-//        v.setWidth(widths.getWidth());
-//
-//        Span span = commonComponents.spanCrafter("Recent orders summary","activityFeed-name");
-//
-//        Grid<RecentOrdersReportPage> grid = new Grid<>(RecentOrdersReportPage.class,false);
-//        grid.setItems(list);
-//        grid.setWidthFull();
-//
-//        grid.addComponentColumn(e->{
-//
-//            Span span1 = new Span();
-//            span1.addClassName("stat-title");
-//
-//            span1.setText("ORD-" + e.getId());
-//
-//            return span1;
-//
-//        }).setHeader("Id").setAutoWidth(true);
-//
-//        grid.addComponentColumn(e->{
-//
-//            Span span1 = new Span();
-//            span1.addClassName("stat-example");
-//
-//            span1.setText(e.getProductCount().toString());
-//
-//            return span1;
-//
-//        }).setHeader("Products count").setAutoWidth(true);
-//
-//        grid.addComponentColumn(e->{
-//
-//            Span span1 = new Span();
-//            span1.addClassName("stock-badge");
-//
-//            span1.setText(e.getOrderStatus().getDisplayName());
-//
-//            switch (e.getOrderStatus()){
-//                case NEW -> span1.addClassName("status-new");
-//                case CANCELLED -> span1.addClassName("status-cancelled");
-//                case Pending -> span1.addClassName("status-pending");
-//                case Finished -> span1.addClassName("status-finished");
-//                case In_Progress -> span1.addClassName("status-in-progress");
-//                case LACK_OF_SUPPLY -> span1.addClassName("status-lack-of-supply");
-//                default -> span1.addClassName("status-none");
-//
-//            }
-//
-//            return span1;
-//
-//        }).setHeader("Status").setAutoWidth(true);
-//
-//        grid.addComponentColumn(e->{
-//
-//            Span span1 = new Span();
-//            span1.addClassName("stat-example");
-//
-//            span1.setText(e.getValue() + " Eur");
-//
-//            return span1;
-//
-//        }).setHeader("Value").setAutoWidth(true);
-//
-//        grid.addComponentColumn(e->{
-//
-//            Span span1 = new Span();
-//            span1.addClassName("stat-example");
-//
-//            span1.setText(common.dateFormatter(e.getDueDate(),"MMMM dd, yyyy"));
-//
-//            return span1;
-//
-//        }).setHeader("Due date").setAutoWidth(true);
-//
-//
-//        HorizontalLayout buttonHolder = new HorizontalLayout();
-//        buttonHolder.setWidthFull();
-//        buttonHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-//        Button button = new Button("View all orders");
-//
-//        buttonHolder.add(button);
-//
-//
-//        v.add(
-//                span,
-//                grid,
-//                buttonHolder
-//        );
-//
-//        return  v;
-//    }
+
+
+
+    public VerticalLayout lowStockAlerts(LocalDate from, LocalDate to, Widths widths){
+
+        List<ProductLowStockList> list = productService.getLowStockAlerts(from,to);
+
+        VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
+
+        v.setWidth(widths.getWidth());
+
+        Span span = commonComponents.spanCrafter("Top customers","activityFeed-name");
+
+        Grid<ProductLowStockList> grid = new Grid<>(ProductLowStockList.class,false);
+        grid.setItems(list);
+        grid.setWidthFull();
+
+
+
+        grid.addComponentColumn(e->{
+
+            HorizontalLayout h = new HorizontalLayout();
+            h.setAlignItems(FlexComponent.Alignment.CENTER);
+
+
+            Span span1 = new Span();
+            span1.addClassName("stat-example");
+            span1.setText(e.getProductName());
+
+            Image image = commonComponents.imageCrafter(e.getImageUrl(),"50px","50px","5px");
+
+            h.add(image,span1);
+
+            return h;
+
+        }).setHeader("Product").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+            span1.addClassName("stat-example");
+
+            span1.setText(e.getStockLeft().toString());
+
+            return span1;
+
+        }).setHeader("Stock left").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+            span1.addClassName("stat-example");
+
+            span1.setText(e.getLowThreshold().toString());
+
+            return span1;
+
+        }).setHeader("Threshold").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+            span1.addClassName("stock-badge");
+
+            if(e.isUserDriven()){
+                span1.setText("Manual");
+                span1.addClassName("status-new");
+            }
+            else{
+                span1.setText("Automatic");
+                span1.addClassName("status-lack-of-supply");
+            }
+
+
+
+
+            return span1;
+
+        }).setHeader("Who manages stock").setAutoWidth(true);
+
+
+        HorizontalLayout buttonHolder = new HorizontalLayout();
+        buttonHolder.setWidthFull();
+        buttonHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        Button button = new Button("Calculated");
+
+        buttonHolder.add(button);
+
+
+        v.add(
+                span,
+                grid,
+                buttonHolder
+        );
+
+        return  v;
+    }
+
+
+    public VerticalLayout productPerformance(LocalDate from, LocalDate to, Widths widths){
+
+        List<ProductPerformanceReport> list = productService.getProductPerformance(from,to);
+
+        VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
+
+        v.setWidth(widths.getWidth());
+
+        Span span = commonComponents.spanCrafter("Recent orders summary","activityFeed-name");
+
+        Grid<ProductPerformanceReport> grid = new Grid<>(ProductPerformanceReport.class,false);
+        grid.setItems(list);
+        grid.setWidthFull();
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+            span1.addClassName("stat-title");
+
+            span1.setText(e.getId().toString());
+
+            return span1;
+
+        }).setHeader("Id").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            HorizontalLayout h = new HorizontalLayout();
+            h.setAlignItems(FlexComponent.Alignment.CENTER);
+
+
+            Span span1 = new Span();
+            span1.addClassName("stat-example");
+            span1.setText(e.getProductName());
+
+            Image image = commonComponents.imageCrafter(e.getImageUrl(),"50px","50px","5px");
+
+            h.add(image,span1);
+
+            return h;
+
+        }).setHeader("Product").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+            span1.addClassName("stock-badge");
+
+            span1.setText(e.getUnitsSold().toString());
+
+
+            return span1;
+
+        }).setHeader("Units sold").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+            span1.addClassName("stat-example");
+
+            span1.setText(e.getRevenue().toString());
+
+            return span1;
+
+        }).setHeader("Revenue").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span span1 = new Span();
+            span1.addClassName("stat-example");
+
+            span1.setText(e.getRating().toString());
+
+            return span1;
+
+        }).setHeader("Rating").setAutoWidth(true);
+
+
+        HorizontalLayout buttonHolder = new HorizontalLayout();
+        buttonHolder.setWidthFull();
+        buttonHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        Button button = new Button("View all orders");
+
+        buttonHolder.add(button);
+
+
+        v.add(
+                span,
+                grid,
+                buttonHolder
+        );
+
+        return  v;
+    }
 
 
 }

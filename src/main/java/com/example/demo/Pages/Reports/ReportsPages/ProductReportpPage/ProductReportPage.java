@@ -98,9 +98,9 @@ public class ProductReportPage extends VerticalLayout implements BeforeEnterObse
                 briefExplanationMemory,
                 productReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#47B25D", Widths.FULL_WIDTH),
                 charts.OrderRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),"#47B25D",Widths.HALF_WIDTH),
-                charts.productByCategory(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH)
-//                charts.topCustomerOrder(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
-//                charts.recentOrdersList(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH)
+                charts.productByCategory(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
+                charts.lowStockAlerts(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
+                charts.productPerformance(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH)
         );
 
         return layout;
@@ -117,9 +117,9 @@ public class ProductReportPage extends VerticalLayout implements BeforeEnterObse
                 briefExplanationMemory,
                 productReportMiniStatCrafter.miniStatHolder(from, to, "#47B25D", Widths.FULL_WIDTH),
                 charts.OrderRevenueAccordingToMonth(from, to,"#47B25D",Widths.HALF_WIDTH),
-                charts.productByCategory(from, to,Widths.HALF_WIDTH)
-//                charts.topCustomerOrder(from, to,Widths.HALF_WIDTH),
-//                charts.recentOrdersList(from, to,Widths.HALF_WIDTH)
+                charts.productByCategory(from, to,Widths.HALF_WIDTH),
+                charts.lowStockAlerts(from, to,Widths.HALF_WIDTH),
+                charts.productPerformance(from, to,Widths.HALF_WIDTH)
         );
 
 
