@@ -3,12 +3,16 @@ package com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage.Component
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Common.GraphDataDateValue;
+import com.example.demo.ControllerModels.Common.GraphDataLongValue;
 import com.example.demo.ControllerModels.Orders.OrderReportPieChart;
 import com.example.demo.Enums.Widths;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.RecentOrdersReportPage;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.TopCustomerDto;
+import com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage.DTO.ProductReportPieChart;
 import com.example.demo.Services.Orders.OrdersService;
+import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
@@ -17,36 +21,35 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductReportCharts {
 
     CommonComponents commonComponents;
     Common common;
-    OrdersService ordersService;
+    ProductService productService;
 
-    public ProductReportCharts(CommonComponents commonComponents, Common common, OrdersService ordersService) {
+    List<GraphDataLongValue> list = new ArrayList<>();
+
+    public ProductReportCharts(CommonComponents commonComponents, Common common, ProductService productService) {
         this.commonComponents = commonComponents;
         this.common = common;
-        this.ordersService = ordersService;
+        this.productService = productService;
     }
 
-    public Div ordersByStatusChart(
+    public Div productByCategory(
+            LocalDate fromDate,
+            LocalDate toDate,
+            Widths widths
 
-            LocalDate fromDate, LocalDate toDate, Widths widths
     ) {
 
-        OrderReportPieChart stuff = ordersService.getReportPagePieChart(fromDate,toDate);
+        List<ProductReportPieChart> data = productService.getPieChartProductReport(fromDate,toDate);
 
-        long newOrders = stuff.getNewCount();
-        long lackOfSupply = stuff.getLackOfSupplyCount();
-        long pending = stuff.getPendingCount();
-        long inProgress = stuff.getInProgressCount();
-        long completed = stuff.getFinishedCount();
-        long cancelled = stuff.getCancelledCount();
+                Div chartDiv = new Div();
 
 
-        Div chartDiv = new Div();
 
         chartDiv.setWidth(widths.getWidth());
 
@@ -59,742 +62,771 @@ public class ProductReportCharts {
                 .set("padding", "22px")
                 .set("box-sizing", "border-box");
 
+
+        String[] labels = data.stream()
+                .map(x -> x.getCategory().toString())
+                .toArray(String[]::new);
+
+
+        Long[] values = data.stream()
+                .map(ProductReportPieChart::getValue)
+                .toArray(Long[]::new);
+
+
+
         chartDiv.getElement().executeJs("""
-        const host = this;
+    
+    const host = this;
 
-        const values = [$0, $1, $2, $3, $4, $5];
+    const labels = $0;
+    const values = $1;
 
-        const labels = [
-            'New',
-            'Lack of Supply',
-            'Pending',
-            'In Progress',
-            'Finished',
-            'Cancelled'
-        ];
 
-        const colors = [
-            '#6366F1',
-            '#F97316',
-            '#1677FF',
-            '#FFB81C',
-            '#3DBB70',
-            '#EF4444'
-        ];
+const colors = [
+    '#16A34A',
+    '#22C55E', 
+    '#15803D', 
+    '#4ADE80',
+    '#10B981', 
+    '#34D399', 
+    '#059669', 
+    '#65A30D', 
+    '#84CC16', 
+    '#047857'  
+];
 
-        const total = values.reduce(
-            (sum, value) => sum + value,
-            0
-        );
 
-        host.innerHTML = `
+    const total = values.reduce(
+        (sum,value)=>sum+value,
+        0
+    );
+
+
+    host.innerHTML = `
+
+        <div style="
+            font-size:18px;
+            font-weight:700;
+            color:#172033;
+            margin-bottom:20px;
+        ">
+            Products by Category
+        </div>
+
+
+        <div style="
+            display:flex;
+            align-items:center;
+            gap:55px;
+            flex-wrap:wrap;
+        ">
+
+
             <div style="
-                font-size: 18px;
-                font-weight: 700;
-                color: #172033;
-                margin-bottom: 20px;
+                width:260px;
+                height:260px;
+                min-width:260px;
             ">
-                Orders by Status
+                <canvas></canvas>
             </div>
 
-            <div style="
-                display: flex;
-                align-items: center;
-                gap: 55px;
-                flex-wrap: wrap;
-            ">
-                <div style="
-                    width: 260px;
-                    height: 260px;
-                    min-width: 260px;
-                    position: relative;
-                    margin: auto;
-                ">
-                    <canvas></canvas>
-                </div>
 
-                <div
-                    class="orders-status-rows"
-                    style="
-                        flex: 1;
-                        min-width: 300px;
-                        display: flex;
-                        flex-direction: column;
-                        gap: 18px;
-                    ">
-                </div>
+            <div class="categoryRows"
+                style="
+                    flex:1;
+                    min-width:300px;
+                    display:flex;
+                    flex-direction:column;
+                    gap:18px;
+                ">
             </div>
-        `;
 
-        const rowsHolder =
-            host.querySelector('.orders-status-rows');
 
-        const rowsHtml = labels.map((label, index) => {
-            const value = values[index];
+        </div>
 
-            const percentage = total === 0
-                ? 0
-                : value / total * 100;
+    `;
 
-            return `
-                <div style="
-                    display: grid;
-                    grid-template-columns: minmax(130px, 1fr) 75px 65px;
-                    align-items: center;
-                    column-gap: 15px;
-                    font-size: 14px;
-                ">
-                    <div style="
-                        display: flex;
-                        align-items: center;
-                        gap: 12px;
-                        color: #526078;
-                    ">
-                        <span style="
-                            width: 10px;
-                            height: 10px;
-                            min-width: 10px;
-                            border-radius: 50%;
-                            background-color: ${colors[index]};
-                        "></span>
 
-                        <span>${label}</span>
-                    </div>
 
-                    <span style="
-                        text-align: right;
-                        font-weight: 600;
-                        color: #263754;
-                    ">
-                        ${value.toLocaleString()}
-                    </span>
+    const rowsHolder =
+        host.querySelector(".categoryRows");
 
-                    <span style="
-                        text-align: right;
-                        color: #526078;
-                    ">
-                        ${percentage.toFixed(1)}%
-                    </span>
-                </div>
-            `;
-        }).join('');
 
-        rowsHolder.innerHTML = `
-            ${rowsHtml}
+
+    rowsHolder.innerHTML = labels.map((label,index)=>{
+
+
+        const value = values[index];
+
+
+        const percentage =
+            total === 0
+            ? 0
+            : value / total * 100;
+
+
+        return `
+
+        <div style="
+            display:grid;
+            grid-template-columns:minmax(130px,1fr) 75px 65px;
+            align-items:center;
+            column-gap:15px;
+            font-size:14px;
+        ">
+
 
             <div style="
-                border-top: 1px solid #e5e7eb;
-                margin-top: 2px;
-                padding-top: 17px;
-                display: grid;
-                grid-template-columns: minmax(130px, 1fr) 75px 65px;
-                column-gap: 15px;
-                align-items: center;
+                display:flex;
+                align-items:center;
+                gap:12px;
+                color:#526078;
             ">
-                <span style="
-                    font-size: 15px;
-                    font-weight: 600;
-                    color: #263754;
-                ">
-                    Total
-                </span>
+
 
                 <span style="
-                    text-align: right;
-                    font-size: 15px;
-                    font-weight: 700;
-                    color: #263754;
+                    width:10px;
+                    height:10px;
+                    border-radius:50%;
+                    background:${colors[index % colors.length]};
                 ">
-                    ${total.toLocaleString()}
                 </span>
 
-                <span></span>
+
+                <span>
+                    ${label}
+                </span>
+
+
             </div>
+
+
+            <span style="
+                text-align:right;
+                font-weight:600;
+                color:#263754;
+            ">
+                ${value.toLocaleString()}
+            </span>
+
+
+            <span style="
+                text-align:right;
+                color:#526078;
+            ">
+                ${percentage.toFixed(1)}%
+            </span>
+
+
+        </div>
+
         `;
 
-        const canvas = host.querySelector('canvas');
-        const ctx = canvas.getContext('2d');
+    }).join("");
 
-        if (host.ordersStatusChart) {
-            host.ordersStatusChart.destroy();
+
+
+    const canvas = host.querySelector("canvas");
+
+    const ctx = canvas.getContext("2d");
+
+
+
+    if(host.productCategoryChart){
+        host.productCategoryChart.destroy();
+    }
+
+
+
+    const centerTextPlugin = {
+
+        id:"centerText",
+
+        afterDraw(chart){
+
+            const area = chart.chartArea;
+
+            if(!area)
+                return;
+
+
+            const ctx = chart.ctx;
+
+
+            const x =
+                (area.left + area.right) / 2;
+
+
+            const y =
+                (area.top + area.bottom) / 2;
+
+
+            ctx.save();
+
+
+            ctx.textAlign="center";
+            ctx.textBaseline="middle";
+
+
+            ctx.fillStyle="#172033";
+            ctx.font="700 25px Arial";
+
+
+            ctx.fillText(
+                total.toLocaleString(),
+                x,
+                y-10
+            );
+
+
+            ctx.fillStyle="#526078";
+            ctx.font="500 13px Arial";
+
+
+            ctx.fillText(
+                "Products",
+                x,
+                y+18
+            );
+
+
+            ctx.restore();
+
         }
 
-        const centerTextPlugin = {
-            id: 'ordersStatusCenterText',
+    };
 
-            afterDraw(chart) {
-                const chartArea = chart.chartArea;
 
-                if (!chartArea) {
-                    return;
+
+    host.productCategoryChart = new Chart(ctx,{
+
+        type:"doughnut",
+
+
+        data:{
+
+            labels:labels,
+
+            datasets:[{
+
+                data:values,
+
+                backgroundColor:
+                    labels.map((_,index)=>
+                        colors[index % colors.length]
+                    ),
+
+
+                borderColor:"#ffffff",
+
+                borderWidth:3,
+
+                hoverOffset:7
+
+            }]
+
+        },
+
+
+        options:{
+
+            responsive:true,
+
+            maintainAspectRatio:false,
+
+            cutout:"68%",
+
+
+            plugins:{
+
+                legend:{
+                    display:false
+                },
+
+
+                tooltip:{
+
+                    callbacks:{
+
+                        label(context){
+
+                            const value=context.raw;
+
+                            const percentage =
+                                total===0
+                                ?0
+                                :value/total*100;
+
+
+                            return context.label
+                            +" : "
+                            +value.toLocaleString()
+                            +" ("
+                            +percentage.toFixed(1)
+                            +"%)";
+
+                        }
+
+                    }
+
                 }
-                
-                
 
-                const context = chart.ctx;
-
-                const centerX =
-                    (chartArea.left + chartArea.right) / 2;
-
-                const centerY =
-                    (chartArea.top + chartArea.bottom) / 2;
-
-                context.save();
-
-                context.textAlign = 'center';
-                context.textBaseline = 'middle';
-
-                context.fillStyle = '#172033';
-                context.font = '700 25px Arial';
-
-                context.fillText(
-                    total.toLocaleString(),
-                    centerX,
-                    centerY - 10
-                );
-
-                context.fillStyle = '#526078';
-                context.font = '500 13px Arial';
-
-                context.fillText(
-                    'Total Orders',
-                    centerX,
-                    centerY + 19
-                );
-
-                context.restore();
             }
-        };
 
-        host.ordersStatusChart = new Chart(ctx, {
-            type: 'doughnut',
+        },
 
-            data: {
-                labels: labels,
 
-                datasets: [{
-                    data: values,
-                    backgroundColor: colors,
+        plugins:[
+            centerTextPlugin
+        ]
 
-                    borderColor: '#ffffff',
-                    borderWidth: 3,
+    });
 
-                    hoverBorderWidth: 3,
-                    hoverOffset: 7
+
+    """,
+                labels,
+                values
+        );
+
+
+        return chartDiv;
+    }
+
+
+public Div OrderRevenueAccordingToMonth(
+        LocalDate fromDate,
+        LocalDate toDate,
+        String color,
+        Widths widths
+) {
+
+
+    List<GraphDataLongValue> list =
+            productService.getTopProducts(fromDate, toDate, 5);
+
+
+    Div chartDiv = new Div();
+
+
+    chartDiv.setWidth(widths.getWidth());
+    chartDiv.setHeight("480px");
+
+
+    chartDiv.getStyle()
+            .set("background-color", "white")
+            .set("border", "1px solid #e5e7eb")
+            .set("border-radius", "16px")
+            .set("padding", "22px")
+            .set("box-sizing", "border-box")
+            .set("position", "relative");
+
+
+
+    ComboBox<Integer> topProductCounts = new ComboBox<>();
+
+    topProductCounts.setItems(
+            1,
+            2,
+            5,
+            10
+    );
+
+    topProductCounts.setValue(5);
+
+
+    topProductCounts.getStyle()
+            .set("position", "absolute")
+            .set("right", "22px")
+            .set("top", "22px")
+            .set("width", "100px");
+
+
+
+    chartDiv.add(topProductCounts);
+
+
+
+    String labels = list.stream()
+            .map(value -> "'" + value.getName() + "'")
+            .reduce((a,b) -> a + "," + b)
+            .orElse("");
+
+
+
+    String data = list.stream()
+            .map(value -> String.valueOf(value.getAmount()))
+            .reduce((a,b) -> a + "," + b)
+            .orElse("");
+
+
+
+    String javascript = """
+        const host = this;
+
+
+        if(host.chartInstance){
+            host.chartInstance.destroy();
+        }
+
+
+        host.chartContainer = document.createElement("div");
+
+        host.chartContainer.style.width = "100%";
+        host.chartContainer.style.height = "100%";
+
+
+        host.chartContainer.innerHTML = `
+            <div style="
+                font-size:18px;
+                font-weight:700;
+                color:#172033;
+                margin-bottom:20px;
+            ">
+                Top selling products
+            </div>
+
+            <div style="
+                width:100%;
+                height:calc(100% - 40px);
+            ">
+                <canvas></canvas>
+            </div>
+        `;
+
+
+        host.appendChild(host.chartContainer);
+
+
+
+        const ctx =
+            host.chartContainer
+            .querySelector("canvas")
+            .getContext("2d");
+
+
+
+        host.chartInstance = new Chart(ctx, {
+
+            type:"bar",
+
+
+            data:{
+
+                labels:[__LABELS__],
+
+
+                datasets:[{
+
+                    data:[__DATA__],
+
+                    backgroundColor:"__COLOR__",
+
+                    borderRadius:8,
+
+                    barThickness:24
                 }]
             },
 
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
 
-                cutout: '68%',
+            options:{
 
-                animation: {
-                    duration: 1200,
-                    easing: 'easeOutQuart'
-                },
+                indexAxis:"y",
 
-                plugins: {
-                    legend: {
-                        display: false
+                responsive:true,
+
+                maintainAspectRatio:false,
+
+
+                plugins:{
+
+                    legend:{
+                        display:false
                     },
 
-                    tooltip: {
-                        backgroundColor: '#ffffff',
-                        titleColor: '#172033',
-                        bodyColor: '#526078',
 
-                        borderColor: '#e2e8f0',
-                        borderWidth: 1,
+                    datalabels:{
 
-                        padding: 11,
-                        cornerRadius: 8,
+                        display:true,
 
-                        callbacks: {
-                            label(context) {
-                                const value = context.raw;
+                        anchor:"end",
 
-                                const percentage = total === 0
-                                    ? 0
-                                    : value / total * 100;
+                        align:"right",
 
-                                return context.label
-                                    + ': '
-                                    + value.toLocaleString()
-                                    + ' ('
-                                    + percentage.toFixed(1)
-                                    + '%)';
-                            }
-                        }
+                        color:"#344054"
                     }
                 }
-            },
-
-            plugins: [
-                centerTextPlugin
-            ]
+            }
         });
-    """,
-                newOrders,
-                lackOfSupply,
-                pending,
-                inProgress,
-                completed,
-                cancelled
-        );
 
-        return chartDiv;
-    }
+        """;
 
 
-    public Div OrderRevenueAccordingToMonth(
-            LocalDate fromDate,
-            LocalDate toDate,
-            Widths widths
-    ) {
-        List<GraphDataDateValue> list = ordersService.getReportPageLineChart(fromDate,toDate);
+    javascript = javascript
+            .replace("__LABELS__", labels)
+            .replace("__DATA__", data)
+            .replace("__COLOR__", color);
 
 
-        Div chartDiv = new Div();
 
-        chartDiv.setWidth(widths.getWidth());
-        chartDiv.setHeight("480px");
+    chartDiv.getElement()
+            .executeJs(javascript);
 
-        chartDiv.getStyle()
-                .set("background-color", "white")
-                .set("border", "1px solid #e5e7eb")
-                .set("border-radius", "16px")
-                .set("padding", "22px")
-                .set("box-sizing", "border-box");
 
-        String labels = list.stream()
-                .map(value -> "'" + value.getLocalDate() + "'")
-                .reduce((first, second) -> first + "," + second)
-                .orElse("");
 
-        String data = list.stream()
-                .map(value -> String.valueOf(value.getValue()))
-                .reduce((first, second) -> first + "," + second)
-                .orElse("");
 
-        String javascript = """
-            const host = this;
+    topProductCounts.addValueChangeListener(e -> {
 
-            if (host.chartInstance) {
-                host.chartInstance.destroy();
-            }
 
-            host.innerHTML = `
-                <div style="
-                    font-size: 18px;
-                    font-weight: 700;
-                    color: #172033;
-                    margin-bottom: 20px;
-                    line-height: 22px;
-                ">
-                    Order Value Over Time
-                </div>
+        if(e.isFromClient()) {
 
-                <div class="chart-holder" style="
-                    position: relative;
-                    width: 100%;
-                    height: calc(100% - 42px);
-                ">
-                    <canvas></canvas>
-                </div>
-            `;
 
-            const chartHolder =
-                host.querySelector('.chart-holder');
+            List<GraphDataLongValue> newList =
+                    productService.getTopProducts(
+                            fromDate,
+                            toDate,
+                            e.getValue()
+                    );
 
-            const canvas =
-                chartHolder.querySelector('canvas');
 
-            const ctx =
-                canvas.getContext('2d');
 
-            const gradient = ctx.createLinearGradient(
-                0,
-                0,
-                0,
-                chartHolder.clientHeight
-            );
+            String newLabels = newList.stream()
+                    .map(value -> "'" + value.getName() + "'")
+                    .reduce((a,b) -> a + "," + b)
+                    .orElse("");
 
-            gradient.addColorStop(
-                0,
-                'rgba(34, 117, 243, 0.22)'
-            );
 
-            gradient.addColorStop(
-                1,
-                'rgba(34, 117, 243, 0.01)'
-            );
 
-            const formatCurrency = value => {
-                const numericValue = Number(value);
+            String newData = newList.stream()
+                    .map(value -> String.valueOf(value.getAmount()))
+                    .reduce((a,b) -> a + "," + b)
+                    .orElse("");
 
-                if (numericValue >= 1000000) {
-                    return '$'
-                        + (numericValue / 1000000).toFixed(1)
-                        + 'M';
+
+
+            String updateChart = """
+                const chart = this.chartInstance;
+
+
+                if(chart){
+
+                    chart.data.labels = [__LABELS__];
+
+                    chart.data.datasets[0].data = [__DATA__];
+
+
+                    chart.update();
+
                 }
-
-                if (numericValue >= 1000) {
-                         return '€'
-                             + (numericValue / 1000).toFixed(1)
-                             + 'K';
-                     }
-
-                return '$' + numericValue;
-            };
-
-            const chartPlugins = window.ChartDataLabels
-                ? [window.ChartDataLabels]
-                : [];
-
-            host.chartInstance = new Chart(ctx, {
-                type: 'line',
-
-                data: {
-                    labels: [__LABELS__],
-
-                    datasets: [{
-                        data: [__DATA__],
-
-                        borderColor: '#2275F3',
-                        backgroundColor: gradient,
-
-                        borderWidth: 3,
-                        fill: true,
-
-                        tension: 0.25,
-
-                        pointRadius: 5,
-                        pointHoverRadius: 8,
-
-                        pointBackgroundColor: '#2275F3',
-                        pointBorderColor: '#2275F3',
-                        pointBorderWidth: 2
-                    }]
-                },
-
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-
-                    interaction: {
-                        mode: 'index',
-                        intersect: false
-                    },
-
-                    layout: {
-                        padding: {
-                            top: 35,
-                            right: 15,
-                            left: 5
-                        }
-                    },
-
-                    animation: {
-                        duration: 1400,
-                        easing: 'easeOutQuart'
-                    },
-
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-
-                        datalabels: {
-                            display: true,
-
-                            align: 'top',
-                            anchor: 'end',
-                            offset: 5,
-
-                            color: '#344054',
-
-                            font: {
-                                size: 12,
-                                weight: '600'
-                            },
-
-                            formatter(value) {
-                                return formatCurrency(value);
-                            }
-                        },
-
-                        tooltip: {
-                            backgroundColor: '#ffffff',
-
-                            titleColor: '#172033',
-                            bodyColor: '#344054',
-
-                            borderColor: '#e2e8f0',
-                            borderWidth: 1,
-
-                            padding: 10,
-                            cornerRadius: 8,
-
-                            displayColors: false,
-
-                            callbacks: {
-                                label(context) {
-                                    return formatCurrency(
-                                        context.raw
-                                    );
-                                }
-                            }
-                        }
-                    },
-
-                    scales: {
-                        x: {
-                            border: {
-                                color: '#dbe2ea'
-                            },
-
-                            grid: {
-                                display: false
-                            },
-
-                            ticks: {
-                                color: '#526078',
-
-                                font: {
-                                    size: 12
-                                }
-                            }
-                        },
-
-                        y: {
-                            beginAtZero: true,
-
-                            border: {
-                                display: false
-                            },
-
-                            grid: {
-                                color:
-                                    'rgba(148, 163, 184, 0.20)'
-                            },
-
-                            ticks: {
-                                color: '#526078',
-                                padding: 10,
-
-                                callback(value) {
-                                    return formatCurrency(value);
-                                }
-                            }
-                        }
-                    }
-                },
-
-                plugins: chartPlugins
-            });
-            """;
-
-        javascript = javascript
-                .replace("__LABELS__", labels)
-                .replace("__DATA__", data);
-
-        chartDiv.getElement().executeJs(javascript);
-
-        return chartDiv;
-    }
-
-
-
-    public VerticalLayout topCustomerOrder(LocalDate from, LocalDate to, Widths widths){
-
-        List<TopCustomerDto> list = ordersService.getOrderTopCustomer(from,to);
-
-        VerticalLayout v = new VerticalLayout();
-        v.addClassName("island");
-
-        v.setWidth(widths.getWidth());
-
-        Span span = commonComponents.spanCrafter("Top customers","activityFeed-name");
-
-        Grid<TopCustomerDto> grid = new Grid<>(TopCustomerDto.class,false);
-        grid.setItems(list);
-        grid.setWidthFull();
-
-        grid.addComponentColumn(e->{
-
-            Span span1 = new Span();
-
-            span1.addClassName("stat-title");
-
-            span1.setText(e.getId().toString());
-
-            return span1;
-
-        }).setHeader("Id").setAutoWidth(true);
-
-        grid.addComponentColumn(e->{
-
-            Span span1 = new Span();
-            span1.addClassName("stat-example");
-
-            span1.setText(e.getName());
-
-            return span1;
-
-        }).setHeader("Customer").setAutoWidth(true);
-
-        grid.addComponentColumn(e->{
-
-            Span span1 = new Span();
-            span1.addClassName("stat-example");
-
-            span1.setText(e.getOrders().toString());
-
-            return span1;
-
-        }).setHeader("Orders").setAutoWidth(true);
-
-        grid.addComponentColumn(e->{
-
-            Span span1 = new Span();
-            span1.addClassName("stat-example");
-
-            span1.setText(e.getRevenue() + " Eur");
-
-            return span1;
-
-        }).setHeader("Revenue").setAutoWidth(true);
-
-        grid.addComponentColumn(e->{
-
-            Span span1 = new Span();
-            span1.addClassName("stat-example");
-
-            span1.setText(e.getAverageRevenue() + " Eur");
-
-            return span1;
-
-        }).setHeader("Avg. Order value").setAutoWidth(true);
-
-
-        HorizontalLayout buttonHolder = new HorizontalLayout();
-        buttonHolder.setWidthFull();
-        buttonHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        Button button = new Button("View all customers");
-
-        buttonHolder.add(button);
-
-
-        v.add(
-                span,
-                grid,
-                buttonHolder
-        );
-
-        return  v;
-    }
-
-
-    public VerticalLayout recentOrdersList(LocalDate from, LocalDate to, Widths widths){
-
-        List<RecentOrdersReportPage> list = ordersService.getRecentOrderList(from,to);
-
-        VerticalLayout v = new VerticalLayout();
-        v.addClassName("island");
-
-        v.setWidth(widths.getWidth());
-
-        Span span = commonComponents.spanCrafter("Recent orders summary","activityFeed-name");
-
-        Grid<RecentOrdersReportPage> grid = new Grid<>(RecentOrdersReportPage.class,false);
-        grid.setItems(list);
-        grid.setWidthFull();
-
-        grid.addComponentColumn(e->{
-
-            Span span1 = new Span();
-            span1.addClassName("stat-title");
-
-            span1.setText("ORD-" + e.getId());
-
-            return span1;
-
-        }).setHeader("Id").setAutoWidth(true);
-
-        grid.addComponentColumn(e->{
-
-            Span span1 = new Span();
-            span1.addClassName("stat-example");
-
-            span1.setText(e.getProductCount().toString());
-
-            return span1;
-
-        }).setHeader("Products count").setAutoWidth(true);
-
-        grid.addComponentColumn(e->{
-
-            Span span1 = new Span();
-            span1.addClassName("stock-badge");
-
-            span1.setText(e.getOrderStatus().getDisplayName());
-
-            switch (e.getOrderStatus()){
-                case NEW -> span1.addClassName("status-new");
-                case CANCELLED -> span1.addClassName("status-cancelled");
-                case Pending -> span1.addClassName("status-pending");
-                case Finished -> span1.addClassName("status-finished");
-                case In_Progress -> span1.addClassName("status-in-progress");
-                case LACK_OF_SUPPLY -> span1.addClassName("status-lack-of-supply");
-                default -> span1.addClassName("status-none");
-
-            }
-
-            return span1;
-
-        }).setHeader("Status").setAutoWidth(true);
-
-        grid.addComponentColumn(e->{
-
-            Span span1 = new Span();
-            span1.addClassName("stat-example");
-
-            span1.setText(e.getValue() + " Eur");
-
-            return span1;
-
-        }).setHeader("Value").setAutoWidth(true);
-
-        grid.addComponentColumn(e->{
-
-            Span span1 = new Span();
-            span1.addClassName("stat-example");
-
-            span1.setText(common.dateFormatter(e.getDueDate(),"MMMM dd, yyyy"));
-
-            return span1;
-
-        }).setHeader("Due date").setAutoWidth(true);
-
-
-        HorizontalLayout buttonHolder = new HorizontalLayout();
-        buttonHolder.setWidthFull();
-        buttonHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        Button button = new Button("View all orders");
-
-        buttonHolder.add(button);
-
-
-        v.add(
-                span,
-                grid,
-                buttonHolder
-        );
-
-        return  v;
-    }
+                """;
+
+
+            updateChart = updateChart
+                    .replace("__LABELS__", newLabels)
+                    .replace("__DATA__", newData);
+
+
+
+            chartDiv.getElement()
+                    .executeJs(updateChart);
+        }
+
+    });
+
+
+
+    return chartDiv;
+}
+//
+//
+//
+//    public VerticalLayout topCustomerOrder(LocalDate from, LocalDate to, Widths widths){
+//
+//        List<TopCustomerDto> list = ordersService.getOrderTopCustomer(from,to);
+//
+//        VerticalLayout v = new VerticalLayout();
+//        v.addClassName("island");
+//
+//        v.setWidth(widths.getWidth());
+//
+//        Span span = commonComponents.spanCrafter("Top customers","activityFeed-name");
+//
+//        Grid<TopCustomerDto> grid = new Grid<>(TopCustomerDto.class,false);
+//        grid.setItems(list);
+//        grid.setWidthFull();
+//
+//        grid.addComponentColumn(e->{
+//
+//            Span span1 = new Span();
+//
+//            span1.addClassName("stat-title");
+//
+//            span1.setText(e.getId().toString());
+//
+//            return span1;
+//
+//        }).setHeader("Id").setAutoWidth(true);
+//
+//        grid.addComponentColumn(e->{
+//
+//            Span span1 = new Span();
+//            span1.addClassName("stat-example");
+//
+//            span1.setText(e.getName());
+//
+//            return span1;
+//
+//        }).setHeader("Customer").setAutoWidth(true);
+//
+//        grid.addComponentColumn(e->{
+//
+//            Span span1 = new Span();
+//            span1.addClassName("stat-example");
+//
+//            span1.setText(e.getOrders().toString());
+//
+//            return span1;
+//
+//        }).setHeader("Orders").setAutoWidth(true);
+//
+//        grid.addComponentColumn(e->{
+//
+//            Span span1 = new Span();
+//            span1.addClassName("stat-example");
+//
+//            span1.setText(e.getRevenue() + " Eur");
+//
+//            return span1;
+//
+//        }).setHeader("Revenue").setAutoWidth(true);
+//
+//        grid.addComponentColumn(e->{
+//
+//            Span span1 = new Span();
+//            span1.addClassName("stat-example");
+//
+//            span1.setText(e.getAverageRevenue() + " Eur");
+//
+//            return span1;
+//
+//        }).setHeader("Avg. Order value").setAutoWidth(true);
+//
+//
+//        HorizontalLayout buttonHolder = new HorizontalLayout();
+//        buttonHolder.setWidthFull();
+//        buttonHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+//        Button button = new Button("View all customers");
+//
+//        buttonHolder.add(button);
+//
+//
+//        v.add(
+//                span,
+//                grid,
+//                buttonHolder
+//        );
+//
+//        return  v;
+//    }
+//
+//
+//    public VerticalLayout recentOrdersList(LocalDate from, LocalDate to, Widths widths){
+//
+//        List<RecentOrdersReportPage> list = ordersService.getRecentOrderList(from,to);
+//
+//        VerticalLayout v = new VerticalLayout();
+//        v.addClassName("island");
+//
+//        v.setWidth(widths.getWidth());
+//
+//        Span span = commonComponents.spanCrafter("Recent orders summary","activityFeed-name");
+//
+//        Grid<RecentOrdersReportPage> grid = new Grid<>(RecentOrdersReportPage.class,false);
+//        grid.setItems(list);
+//        grid.setWidthFull();
+//
+//        grid.addComponentColumn(e->{
+//
+//            Span span1 = new Span();
+//            span1.addClassName("stat-title");
+//
+//            span1.setText("ORD-" + e.getId());
+//
+//            return span1;
+//
+//        }).setHeader("Id").setAutoWidth(true);
+//
+//        grid.addComponentColumn(e->{
+//
+//            Span span1 = new Span();
+//            span1.addClassName("stat-example");
+//
+//            span1.setText(e.getProductCount().toString());
+//
+//            return span1;
+//
+//        }).setHeader("Products count").setAutoWidth(true);
+//
+//        grid.addComponentColumn(e->{
+//
+//            Span span1 = new Span();
+//            span1.addClassName("stock-badge");
+//
+//            span1.setText(e.getOrderStatus().getDisplayName());
+//
+//            switch (e.getOrderStatus()){
+//                case NEW -> span1.addClassName("status-new");
+//                case CANCELLED -> span1.addClassName("status-cancelled");
+//                case Pending -> span1.addClassName("status-pending");
+//                case Finished -> span1.addClassName("status-finished");
+//                case In_Progress -> span1.addClassName("status-in-progress");
+//                case LACK_OF_SUPPLY -> span1.addClassName("status-lack-of-supply");
+//                default -> span1.addClassName("status-none");
+//
+//            }
+//
+//            return span1;
+//
+//        }).setHeader("Status").setAutoWidth(true);
+//
+//        grid.addComponentColumn(e->{
+//
+//            Span span1 = new Span();
+//            span1.addClassName("stat-example");
+//
+//            span1.setText(e.getValue() + " Eur");
+//
+//            return span1;
+//
+//        }).setHeader("Value").setAutoWidth(true);
+//
+//        grid.addComponentColumn(e->{
+//
+//            Span span1 = new Span();
+//            span1.addClassName("stat-example");
+//
+//            span1.setText(common.dateFormatter(e.getDueDate(),"MMMM dd, yyyy"));
+//
+//            return span1;
+//
+//        }).setHeader("Due date").setAutoWidth(true);
+//
+//
+//        HorizontalLayout buttonHolder = new HorizontalLayout();
+//        buttonHolder.setWidthFull();
+//        buttonHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+//        Button button = new Button("View all orders");
+//
+//        buttonHolder.add(button);
+//
+//
+//        v.add(
+//                span,
+//                grid,
+//                buttonHolder
+//        );
+//
+//        return  v;
+//    }
 
 
 }

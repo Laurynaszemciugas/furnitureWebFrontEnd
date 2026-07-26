@@ -8,7 +8,6 @@ import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Reports.Common.CommonBriefPageExplanation;
 import com.example.demo.Pages.Reports.Common.FromToDate;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.OrderReportMiniStatCrafter;
-import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.BriefOrderReportPageExplanation;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.OrderReportCharts;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.RecentOrdersReportPage;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.TopCustomerDto;
@@ -61,7 +60,7 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
         briefExplanationMemory.setPadding(false);
         briefExplanationMemory.setWidthFull();
         briefExplanationMemory.add(
-                biefExplanation.briefExplanation("Orders report")
+                biefExplanation.briefExplanation("Orders report","#035afc")
         );
 
         setPadding(false);

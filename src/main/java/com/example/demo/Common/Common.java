@@ -102,7 +102,7 @@ public class Common {
 
         double value = 0;
 
-        if (oldValue == 0 || currentValue == 0) {
+        if (oldValue == 0) {
             value = 0.0;
         } else {
             value = ((currentValue - oldValue) / oldValue) * 100;
@@ -172,7 +172,8 @@ public class Common {
         }
         else{
             Span span = new Span();
-            span.setText(String.valueOf(was));
+            span.addClassName("stat-description");
+            span.setText(was + " Units sold");
             h.add(span);
         }
 

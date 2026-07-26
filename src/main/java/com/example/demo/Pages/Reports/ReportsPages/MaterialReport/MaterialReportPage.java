@@ -6,7 +6,6 @@ import com.example.demo.Enums.Widths;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Reports.Common.CommonBriefPageExplanation;
 import com.example.demo.Pages.Reports.Common.FromToDate;
-import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components.BriefMaterialReportPageExplanation;
 import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components.MaterialReportCharts;
 import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components.MaterialReportMiniStatCrafter;
 import com.example.demo.Services.Material.MaterialService;
@@ -51,7 +50,7 @@ public class MaterialReportPage extends VerticalLayout implements BeforeEnterObs
         briefExplanationMemory.setPadding(false);
         briefExplanationMemory.setWidthFull();
         briefExplanationMemory.add(
-                biefExplanation.briefExplanation("Material report")
+                biefExplanation.briefExplanation("Material report","#9768EF")
         );
 
         setPadding(false);

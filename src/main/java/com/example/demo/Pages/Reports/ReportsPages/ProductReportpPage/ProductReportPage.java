@@ -8,7 +8,10 @@ import com.example.demo.Pages.Reports.Common.CommonBriefPageExplanation;
 import com.example.demo.Pages.Reports.Common.FromToDate;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.OrderReportCharts;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.OrderReportMiniStatCrafter;
+import com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage.Components.ProductReportCharts;
+import com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage.Components.ProductReportMiniStatCrafter;
 import com.example.demo.Services.Orders.OrdersService;
+import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -24,33 +27,33 @@ public class ProductReportPage extends VerticalLayout implements BeforeEnterObse
     CommonComponents commonComponents;
     Common common;
     CommonBriefPageExplanation biefExplanation;
-    OrdersService ordersService;
+    ProductService productService;
 
-    OrderReportCharts charts;
+    ProductReportCharts charts;
 
-    OrderReportMiniStatCrafter orderReportMiniStatCrafter;
+    ProductReportMiniStatCrafter productReportMiniStatCrafter;
 
     VerticalLayout briefExplanationMemory = new VerticalLayout();
 
     HorizontalLayout layout = new HorizontalLayout();
 
-    public ProductReportPage(CommonComponents commonComponents, Common common, OrdersService ordersService) {
+    public ProductReportPage(CommonComponents commonComponents, Common common, ProductService productService) {
 
         this.commonComponents = commonComponents;
         this.common = common;
         this.biefExplanation = new CommonBriefPageExplanation(commonComponents, common);
 
-        this.orderReportMiniStatCrafter = new OrderReportMiniStatCrafter(commonComponents, common,ordersService);
+        this.productReportMiniStatCrafter = new ProductReportMiniStatCrafter(commonComponents, common,productService);
 
-        this.ordersService = ordersService;
+        this.productService = productService;
 
-        this.charts = new OrderReportCharts(commonComponents,common,ordersService);
+        this.charts = new ProductReportCharts(commonComponents,common,productService);
 
 
         briefExplanationMemory.setPadding(false);
         briefExplanationMemory.setWidthFull();
         briefExplanationMemory.add(
-                biefExplanation.briefExplanation("Product report")
+                biefExplanation.briefExplanation("Product report","#47B25D")
         );
 
         setPadding(false);
@@ -93,11 +96,11 @@ public class ProductReportPage extends VerticalLayout implements BeforeEnterObse
 
         layout.add(
                 briefExplanationMemory,
-                orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#035afc", Widths.FULL_WIDTH),
-                charts.ordersByStatusChart(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
-                charts.OrderRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
-                charts.topCustomerOrder(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
-                charts.recentOrdersList(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH)
+                productReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#47B25D", Widths.FULL_WIDTH),
+                charts.OrderRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),"#47B25D",Widths.HALF_WIDTH),
+                charts.productByCategory(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH)
+//                charts.topCustomerOrder(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
+//                charts.recentOrdersList(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH)
         );
 
         return layout;
@@ -112,11 +115,11 @@ public class ProductReportPage extends VerticalLayout implements BeforeEnterObse
 
         layout.add(
                 briefExplanationMemory,
-                orderReportMiniStatCrafter.miniStatHolder(from, to, "#9768EF", Widths.FULL_WIDTH),
-                charts.ordersByStatusChart(from, to,Widths.HALF_WIDTH),
-                charts.OrderRevenueAccordingToMonth(from, to,Widths.HALF_WIDTH),
-                charts.topCustomerOrder(from, to,Widths.HALF_WIDTH),
-                charts.recentOrdersList(from, to,Widths.HALF_WIDTH)
+                productReportMiniStatCrafter.miniStatHolder(from, to, "#47B25D", Widths.FULL_WIDTH),
+                charts.OrderRevenueAccordingToMonth(from, to,"#47B25D",Widths.HALF_WIDTH),
+                charts.productByCategory(from, to,Widths.HALF_WIDTH)
+//                charts.topCustomerOrder(from, to,Widths.HALF_WIDTH),
+//                charts.recentOrdersList(from, to,Widths.HALF_WIDTH)
         );
 
 

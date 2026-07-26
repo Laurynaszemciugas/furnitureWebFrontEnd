@@ -30,7 +30,7 @@ public class CommonBriefPageExplanation {
         this.common = common;
     }
 
-    public HorizontalLayout briefExplanation(String pageExplanation){
+    public HorizontalLayout briefExplanation(String pageExplanation, String color){
 
         HorizontalLayout v = new HorizontalLayout();
         v.addClassName("layout-flex");
@@ -59,6 +59,7 @@ public class CommonBriefPageExplanation {
 
         Button generateButton = new Button("Generate report");
         generateButton.addThemeVariants(ButtonVariant.PRIMARY);
+        generateButton.getStyle().set("background-color",color);
 
         generateButton.addClickListener(e->{
 

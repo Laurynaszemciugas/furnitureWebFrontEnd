@@ -6,6 +6,7 @@ import com.example.demo.Enums.Widths;
 import com.example.demo.Pages.Reports.Common.ReportMiniStatHolder;
 import com.example.demo.Pages.Reports.Common.ReportsMiniStatCrafter;
 import com.example.demo.Services.Orders.OrdersService;
+import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
@@ -17,20 +18,20 @@ public class ProductReportMiniStatCrafter {
     Common common;
     ReportsMiniStatCrafter miniStatCrafter;
 
-    OrdersService ordersService;
+    ProductService productService;
 
-    public ProductReportMiniStatCrafter(CommonComponents commonComponents, Common common, OrdersService ordersService) {
+    public ProductReportMiniStatCrafter(CommonComponents commonComponents, Common common, ProductService productService) {
         this.commonComponents = commonComponents;
         this.common = common;
 
         this.miniStatCrafter = new ReportsMiniStatCrafter(commonComponents,common);
 
-        this.ordersService = ordersService;
+        this.productService = productService;
     }
 
     public HorizontalLayout miniStatHolder(LocalDate fromDate, LocalDate toDate, String color, Widths widths){
 
-        ReportMiniStatHolder items = ordersService.getOrderMiniStatData(fromDate,toDate);
+        ReportMiniStatHolder items = productService.getMiniStatsProduct(fromDate,toDate);
 
         HorizontalLayout miniStatHolders = new HorizontalLayout();
         miniStatHolders.setWidth(widths.getWidth());
@@ -39,10 +40,10 @@ public class ProductReportMiniStatCrafter {
         String backgroundColor = common.hexToRgba(color,0.15);
 
         miniStatHolders.add(
-                miniStatCrafter.miniStats(VaadinIcon.CART, "Total orders", items.getValue1ThisMonth(),common.lastMonthTrend(items.getValue1ThisMonth(),items.getValue1LastMonth(),fromDate,true), color, backgroundColor),
-                miniStatCrafter.miniStats(VaadinIcon.CLOCK, "Finished orders", items.getValue2ThisMonth(), common.lastMonthTrend(items.getValue2ThisMonth(),items.getValue2LastMonth(),fromDate,true), color, backgroundColor),
-                miniStatCrafter.miniStats(VaadinIcon.CHECK, "In progress orders", items.getValue3ThisMonth(), common.lastMonthTrend(items.getValue3ThisMonth(),items.getValue3LastMonth(),fromDate,true), color, backgroundColor),
-                miniStatCrafter.miniStats(VaadinIcon.MONEY, "Total revenue",items.getValue4ThisMonth() + " Eur", common.lastMonthTrend(items.getValue4ThisMonth(),items.getValue4LastMonth(),fromDate,true), color, backgroundColor)
+                miniStatCrafter.miniStats(VaadinIcon.CART, "Total products", items.getValue1ThisMonth(),common.lastMonthTrend(items.getValue1ThisMonth(),items.getValue1LastMonth(),fromDate,true), color, backgroundColor),
+                miniStatCrafter.miniStats(VaadinIcon.CLOCK, "Top selling product", items.getValue2LastMonth(), common.lastMonthTrend(items.getValue2ThisMonth(),items.getValue2ThisMonth(),fromDate,false), color, backgroundColor),
+                miniStatCrafter.miniStats(VaadinIcon.CHECK, "Low stock products", items.getValue3ThisMonth(), common.lastMonthTrend(items.getValue3ThisMonth(),items.getValue3LastMonth(),fromDate,true), color, backgroundColor),
+                miniStatCrafter.miniStats(VaadinIcon.MONEY, "Sales revenue",items.getValue4ThisMonth() + " Eur", common.lastMonthTrend(items.getValue4ThisMonth(),items.getValue4LastMonth(),fromDate,true), color, backgroundColor)
         );
 
         return miniStatHolders;
