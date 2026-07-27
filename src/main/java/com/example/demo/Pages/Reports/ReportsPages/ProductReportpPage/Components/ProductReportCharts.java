@@ -651,7 +651,7 @@ public Div OrderRevenueAccordingToMonth(
 
         v.setWidth(widths.getWidth());
 
-        Span span = commonComponents.spanCrafter("Top customers","activityFeed-name");
+        Span span = commonComponents.spanCrafter("Low stock alerts","activityFeed-name");
 
         Grid<ProductLowStockList> grid = new Grid<>(ProductLowStockList.class,false);
         grid.setItems(list);
@@ -748,7 +748,7 @@ public Div OrderRevenueAccordingToMonth(
 
         v.setWidth(widths.getWidth());
 
-        Span span = commonComponents.spanCrafter("Recent orders summary","activityFeed-name");
+        Span span = commonComponents.spanCrafter("Product performance","activityFeed-name");
 
         Grid<ProductPerformanceReport> grid = new Grid<>(ProductPerformanceReport.class,false);
         grid.setItems(list);
