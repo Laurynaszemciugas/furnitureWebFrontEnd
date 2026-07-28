@@ -11,6 +11,7 @@ import com.example.demo.Common.Logic.ProductEditImage;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Main.ProductEditRightSideFields;
 import com.example.demo.Common.ReviewCrafter;
 import com.example.demo.Services.CommonService.CommonService;
+import com.example.demo.Services.Material.MaterialService;
 import com.example.demo.Services.ProductEditService.ProductEditService;
 
 import com.vaadin.flow.component.html.Div;
@@ -30,6 +31,7 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
     Common common;
     ProductEditService productEditService;
     CommonService commonService;
+    MaterialService materialService;
 
     ObjectConverter objectConverter;
 
@@ -46,13 +48,15 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
                         Common common,
                         CommonService commonService,
                         ProductEditService productEditService,
-                        ObjectConverter objectConverter) {
+                        ObjectConverter objectConverter,
+                        MaterialService materialService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.commonService = commonService;
         this.productEditService = productEditService;
         this.objectConverter = objectConverter;
-        this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonService,objectConverter);
+        this.materialService = materialService;
+        this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonService,objectConverter,materialService);
         this.productEditImage = new ProductEditImage(commonComponents,common);
         this.reviewCrafter = new ReviewCrafter(commonComponents,common);
 

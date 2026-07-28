@@ -7,6 +7,7 @@ import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
+import com.example.demo.ControllerModels.Material.MaterialInfo;
 import com.example.demo.ControllerModels.Orders.OrderReportPieChart;
 import com.example.demo.ControllerModels.StockMovement.StockMovementGrid;
 import com.example.demo.DTOS.ComboBoxMaterial;
@@ -124,6 +125,23 @@ public class MaterialService {
         return Arrays.stream(httpCallLogic.HttpCall("material/getMaterialMovement", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), StockMovementGrid[].class,true)).toList();
 
     }
+
+    @SneakyThrows
+    public List<MaterialInfo> getAllAvailableMaterials() {
+
+        return Arrays.stream(httpCallLogic.HttpCall("material/getAllAvailableMaterials", HttpMethod.GET,"", MaterialInfo[].class,false)).toList();
+
+    }
+
+    @SneakyThrows
+    public MaterialInfo getMaterialInfoAccordingToId(Long id) {
+
+        return httpCallLogic.HttpCall("material/getMaterialInfoAccordingToId", HttpMethod.GET,id, MaterialInfo.class,true);
+
+    }
+
+
+
 
 
 

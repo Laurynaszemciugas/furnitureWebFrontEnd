@@ -6,6 +6,7 @@ import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.ControllerModels.Common.*;
 import com.example.demo.ControllerModels.CommonDtos.*;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
+import com.example.demo.ControllerModels.Material.MaterialInfo;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Status;
 import com.example.demo.Enums.Tags;
@@ -14,6 +15,7 @@ import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Compo
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.MaterialAndDetails;
 import com.example.demo.Common.Logic.ProductEditImage;
 import com.example.demo.Services.CommonService.CommonService;
+import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -47,6 +49,7 @@ public class ProductEditRightSideFields {
     CommonService commonService;
     Grids grids;
 
+    MaterialService materialService;
 
 
     ProductEditImage productEditImage;
@@ -91,14 +94,14 @@ public class ProductEditRightSideFields {
     Grid<ListExtraDetailsGrid> extraDetailsGrid = new Grid<>(ListExtraDetailsGrid.class,false);
 
 
-    List<ListMaterialGrid> listMaterialGrids = new ArrayList<>();
-    Grid<ListMaterialGrid> productFeedModelGrid = new Grid<>(ListMaterialGrid.class,false);
+    Grid<MaterialInfo> productFeedModelGrid = new Grid<>(MaterialInfo.class,false);
 
     List<Tags> tagss = new ArrayList<>();
 
 
     Button addNewMaterial;
 
+    List<MaterialInfo> materialInfoList = new ArrayList<>();
 
     // send message that info is ready
     Consumer<Product> consumer;
@@ -119,19 +122,21 @@ public class ProductEditRightSideFields {
     public ProductEditRightSideFields(CommonComponents commonComponents,
                                       Common common,
                                       CommonService commonService,
-                                      ObjectConverter objectConverter
+                                      ObjectConverter objectConverter,
+                                      MaterialService materialService
     ) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.commonService = commonService;
         this.objectConverter = objectConverter;
-        this.grids = new Grids(commonComponents,common);
+        this.materialService = materialService;
+        this.grids = new Grids(commonComponents,common,materialService);
         this.materialAndDetails = new MaterialAndDetails(commonComponents,common,commonService,grids);
 
 
 
 
-
+        loadNewData();
         bindFields();
 
 
@@ -277,19 +282,7 @@ public class ProductEditRightSideFields {
 
         addNewMaterial = commonComponents.normalThemeButtonNoNavigate("Add Material", ButtonVariant.LUMO_PRIMARY);
 
-        addNewMaterial.addClickListener(e->{
-            addNewMaterial.setEnabled(false);
-            listMaterialGrids.add(new ListMaterialGrid(null,
-                    "",
-                    materialAndDetails.comboBoxMaterial("",listMaterialGrids,productFeedModelGrid,addNewMaterial),
-                    materialAndDetails.quantityField(0l,listMaterialGrids,productFeedModelGrid,materialCost),
-                    materialAndDetails.unitField(""),
-                    0,
-                    0l));
-            upgradeMaterialGrid();
 
-
-        });
 
 
         Button addNewDetail = commonComponents.normalThemeButtonNoNavigate("Add Detail", ButtonVariant.LUMO_PRIMARY);
@@ -322,7 +315,7 @@ public class ProductEditRightSideFields {
                 commonComponents.spanCrafterWordNoHide("Product Status","activityFeed-name"),
                 productStatus,
                 commonComponents.spanCrafterWordNoHide("Required Materials","activityFeed-name"),
-                grids.materialGridCrafter(productFeedModelGrid,listMaterialGrids,addNewMaterial),
+                grids.materialGridCrafter(productFeedModelGrid,materialInfoList,addNewMaterial),
                 addNewMaterial
 
 
@@ -416,20 +409,12 @@ public class ProductEditRightSideFields {
 
         if(productEditDto.getMaterials() != null &&  !productEditDto.getMaterials().isEmpty()) {
             for(var s : productEditDto.getMaterials()) {
-                listMaterialGrids.add(new ListMaterialGrid(
-                        s.getMaterials().getId(),
-                        s.getMaterials().getMaterialName(),
-                        materialAndDetails.comboBoxMaterial(s.getMaterials().getMaterialName(),listMaterialGrids,productFeedModelGrid,addNewMaterial),
-                        materialAndDetails.quantityField(s.getAmountUsed(),listMaterialGrids,productFeedModelGrid,materialCost),
-                        materialAndDetails.unitField(s.getMaterials().getUnit()),
-                        s.getMaterials().getUnitPrice(),
-                        s.getMaterials().getInStock()));
+                MaterialInfo materialInfo = materialService.getMaterialInfoAccordingToId(s.getMaterials().getId());
+                materialInfoList.add(materialInfo);
+                sumPrice+= (s.getAmountUsed() * s.getUnitPrice());
+
             }
             upgradeMaterialGrid();
-        }
-
-        for(var s : listMaterialGrids){
-            sumPrice+= (s.getAmountOfMaterial().getValue()* s.getUnitPrice());
         }
 
         materialCost.setValue(sumPrice);
@@ -486,21 +471,30 @@ public class ProductEditRightSideFields {
 
             // get materials
             List<ProductMaterials> materials = new ArrayList<>();
-            for(var s : listMaterialGrids){
+            for(var s : materialInfoList){
 
                 ProductMaterials productMaterials = new ProductMaterials();
-                productMaterials.setId(s.getMaterial().getValue().getId());
                 productMaterials.setProduct(product);
                 productMaterials.setUser(null);
                 productMaterials.setMaterials(null);
-                productMaterials.setNameForRefrence(s.getMaterial().getValue().getMaterialName());
-                productMaterials.setAmountUsed(Long.valueOf(s.getAmountOfMaterial().getValue()));
+                productMaterials.setId(s.getId());
+                productMaterials.setNameForRefrence(s.getMaterialName());
+                productMaterials.setAmountUsed(Long.valueOf(s.getAmountTaken()));
 
                 materials.add(productMaterials);
             }
             product.setMaterials(materials);
 
 
+
+                System.out.println("=========================================");
+                for(var s : materials){
+                    System.out.println(s.getId() );
+                    System.out.println(s.getUnitPrice());
+                    System.out.println(s.getAmountUsed());
+                    System.out.println(s.getNameForRefrence());
+                }
+                System.out.println("=========================================");
 
 
                 // get extra details
@@ -517,6 +511,10 @@ public class ProductEditRightSideFields {
 
                 product.setStockCalculatedManually(manualStock.getValue());
 
+
+
+
+
                 consumer.accept(product);
                 common.customNavigate("Products/1");
             } else {
@@ -525,6 +523,21 @@ public class ProductEditRightSideFields {
         });
     }
 
+
+    public void loadNewData(){
+        grids.setConsumer(e->{
+            MaterialInfo materials = materialService.getMaterialInfoAccordingToId(e);
+
+            materials.setAmountTaken(0L);
+
+            materialInfoList.add(
+                    materials
+            );
+
+            upgradeMaterialGrid();
+
+        });
+    }
 
     public void showDialog(String error,Product product, int errorCount){
         ConfirmDialog dialog = new ConfirmDialog();
@@ -646,7 +659,7 @@ public class ProductEditRightSideFields {
     // update
 
     public void upgradeMaterialGrid(){
-        productFeedModelGrid.setItems(listMaterialGrids);
+        productFeedModelGrid.setItems(materialInfoList);
     }
 
     public void upgradeExtraDetailsGrid(){
