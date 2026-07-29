@@ -24,6 +24,7 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -38,6 +39,9 @@ public class Grids {
     MaterialService materialService;
 
     Consumer<Long> consumer;
+    Consumer<Double> price;
+
+    List<MaterialInfo> materialInfos = new ArrayList<>();
 
     public Grids(CommonComponents commonComponents, Common common, MaterialService materialService) {
         this.commonComponents = commonComponents;
@@ -50,16 +54,26 @@ public class Grids {
 
     public Grid<MaterialInfo> materialGridCrafter(Grid<MaterialInfo> productFeedModelGrid, List<MaterialInfo> listMaterialGrids, Button addNewMaterial){
 
+        materialInfos = listMaterialGrids;
+
         addNewMaterial.addClickListener(e->{
            callDialog(listMaterialGrids);
         });
 
+
         productFeedModelGrid.addComponentColumn(row -> {
 
-                    Span span = new Span();
-                    span.setText(row.getId().toString());
+                    HorizontalLayout h = new HorizontalLayout();
+                    h.setAlignItems(FlexComponent.Alignment.CENTER);
+                    Span span = commonComponents.spanCrafter(row.getMaterialName(),"stat-example");
+                    Image image = commonComponents.imageCrafter(row.getImageUrl(), "70px","70px","5px");
 
-                    return span;
+                    h.add(
+                            image,
+                            span
+                    );
+
+                    return h;
                 })
                 .setHeader("Material")
                 .setAutoWidth(true);
@@ -68,49 +82,30 @@ public class Grids {
 
         productFeedModelGrid.addComponentColumn(row -> {
 
-                    Span span = new Span();
-                    span.setText(row.getMaterialName());
+                    Span span = commonComponents.spanCrafter(row.getInStock().toString(),"stat-example");
 
                     return span;
+
                 })
-                .setHeader("Amount of material")
-                .setAutoWidth(true);
-
-
-
-        productFeedModelGrid.addComponentColumn(row -> {
-
-                    Image image = commonComponents.imageCrafter(row.getImageUrl(), "70px","70px","5px");
-
-                    return image;
-                })
-                .setHeader("Unit")
+                .setHeader("Material stock")
                 .setAutoWidth(true);
 
 
         productFeedModelGrid.addComponentColumn(row -> {
 
-                    Span span = new Span();
-                    span.setText(row.getInStock().toString());
+                    Span span = commonComponents.spanCrafter(row.getUnitPrice() + " Eur", "stat-example");
 
                     return span;
                 })
-                .setHeader("Amount of material")
+                .setHeader("Material unit cost")
                 .setAutoWidth(true);
 
-        productFeedModelGrid.addComponentColumn(row -> {
-
-                    Span span = new Span();
-                    span.setText(row.getUnitPrice().toString());
-
-                    return span;
-                })
-                .setHeader("Amount of material")
-                .setAutoWidth(true);
 
         productFeedModelGrid.addComponentColumn(row -> {
 
                     IntegerField textField = new IntegerField();
+                    textField.setStepButtonsVisible(true);
+                    textField.setMin(0);
                     textField.setValue(Math.toIntExact(row.getAmountTaken()));
 
                     textField.addValueChangeListener(e->{
@@ -119,12 +114,14 @@ public class Grids {
                                s.setAmountTaken(Long.valueOf(textField.getValue()));
                            }
                        }
+
+                        calculateTotal();
                         upgradeMaterialGrid(productFeedModelGrid,listMaterialGrids);
                     });
 
                     return textField;
                 })
-                .setHeader("Taken")
+                .setHeader("Amount of material")
                 .setAutoWidth(true);
 
 
@@ -161,17 +158,29 @@ public class Grids {
 
         Dialog dialog = new Dialog();
 
+        Button back = new Button("Back");
+        back.addThemeVariants(ButtonVariant.PRIMARY);
+
         List<MaterialInfo> materialInfos = materialService.getAllAvailableMaterials();
 
         Grid<MaterialInfo> productFeedModelGrid = new Grid<>(MaterialInfo.class,false);
         productFeedModelGrid.setItems(materialInfos);
 
+
         productFeedModelGrid.addComponentColumn(row -> {
 
-                    Span span = new Span();
-                    span.setText(row.getId().toString());
 
-                    return span;
+                    HorizontalLayout h = new HorizontalLayout();
+                    h.setAlignItems(FlexComponent.Alignment.CENTER);
+                    Span span = commonComponents.spanCrafter(row.getMaterialName(),"stat-example");
+                    Image image = commonComponents.imageCrafter(row.getImageUrl(), "70px","70px","5px");
+
+                    h.add(
+                            image,
+                            span
+                    );
+
+                    return h;
                 })
                 .setHeader("Material")
                 .setAutoWidth(true);
@@ -180,55 +189,39 @@ public class Grids {
 
         productFeedModelGrid.addComponentColumn(row -> {
 
-                    Image image = commonComponents.imageCrafter(row.getImageUrl(), "70px","70px","5px");
-
-                    return image;
-                })
-                .setHeader("Amount of material")
-                .setAutoWidth(true);
-
-
-
-        productFeedModelGrid.addComponentColumn(row -> {
-
-                    Span span = new Span();
-                    span.setText(row.getMaterialName().toString());
+                    Span span = commonComponents.spanCrafter(row.getUnitPrice().toString(),"stat-example");
 
                     return span;
                 })
-                .setHeader("Unit")
+                .setHeader("Stock of the material")
                 .setAutoWidth(true);
 
 
 
         productFeedModelGrid.addComponentColumn(row ->{
 
-            Span span = new Span();
-            span.setText(row.getUnitPrice().toString());
+            Span span = commonComponents.spanCrafter(row.getUnitPrice().toString(),"stat-example");
 
             return span;
 
-        }).setHeader("Actions").setAutoWidth(true);
+        }).setHeader("Cost per unit").setAutoWidth(true);
 
-        productFeedModelGrid.addComponentColumn(row ->{
-
-            Span span = new Span();
-            span.setText(row.getInStock().toString());
-
-            return span;
-
-        }).setHeader("Actions").setAutoWidth(true);
 
         productFeedModelGrid.addComponentColumn(row ->{
 
             Button select = new Button("Select");
 
+            if(materialInfoList.stream().anyMatch(p-> p.getId().equals(row.getId()))){
+                select.setText("Selected");
+            }
+
             select.addClickListener(e->{
 
-                if(materialInfoList.stream().anyMatch(p-> p.getId().equals(row.getId()))){
-                    commonComponents.showNotification("Material already selected",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.WARNING);
+                    if (materialInfoList.stream().anyMatch(p -> p.getId().equals(row.getId()))) {
+                        commonComponents.showNotification("Material already selected", 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.WARNING);
 
-                }
+                    }
+
                 else {
 
                     consumer.accept(row.getId());
@@ -246,15 +239,31 @@ public class Grids {
 
         dialog.add(productFeedModelGrid);
 
+        dialog.getFooter().add(back);
+
         dialog.open();
 
 
+
+        back.addClickListener(e->{
+           dialog.close();
+        });
+
+
+    }
+
+    public void calculateTotal(){
+        Double sum = 0.0;
+        for(var s : materialInfos){
+            sum+= s.getUnitPrice()*s.getAmountTaken();
+        }
+        price.accept(sum);
     }
 
     public Grid<ListExtraDetailsGrid> extraDetailsGridCrafter(List<ListExtraDetailsGrid> listExtraDetailsGrids,Grid<ListExtraDetailsGrid> extraDetailsGrid){
 
         extraDetailsGrid.addComponentColumn(ListExtraDetailsGrid::getSpecName)
-                .setHeader("Specficiation name").setAutoWidth(true);
+                .setHeader("Specification name").setAutoWidth(true);
 
         extraDetailsGrid.addComponentColumn(ListExtraDetailsGrid::getSpecDescription)
                 .setHeader("Specification description").setAutoWidth(true);

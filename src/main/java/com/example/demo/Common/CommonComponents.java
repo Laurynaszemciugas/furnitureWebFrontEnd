@@ -114,7 +114,12 @@ public class CommonComponents {
     }
 
     public Button buttonThemeAndIcon(String text, String navigate , ButtonVariant buttonVariant, VaadinIcon icon, String iconColor){
-        Button button = new Button(text, e-> UI.getCurrent().navigate(navigate));
+        Button button = new Button(text);
+        button.addClickListener(e->{
+           if(navigate !=null){
+               UI.getCurrent().navigate(navigate);
+           }
+        });
         button.addThemeVariants(buttonVariant);
         button.setIcon(iconCrafter(icon,"25px",iconColor));
 

@@ -16,6 +16,6 @@ public class MaterialInfo {
     private String materialName;
     private Double unitPrice;
     private Long inStock;
-    private Long amountTaken = 0L;
+    private Long amountTaken = 1L;
 
 }
