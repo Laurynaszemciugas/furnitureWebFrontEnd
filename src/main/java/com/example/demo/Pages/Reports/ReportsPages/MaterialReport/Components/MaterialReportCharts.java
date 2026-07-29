@@ -787,7 +787,7 @@ public class MaterialReportCharts {
             Span span1 = new Span();
             span1.addClassName("stat-example");
 
-            span1.setText(e.getBalance().toString());
+            span1.setText(e.getBalance() == null ? "Something went wrong" : e.getBalance().toString());
 
             return span1;
 
