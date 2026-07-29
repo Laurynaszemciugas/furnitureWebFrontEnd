@@ -631,7 +631,7 @@ public class NewOrderFeed {
         newFilter.setPageCount(4);
 
         newOrderHolder.add(
-                ordersLeftSide.newOrderFeedHolder(ordersService.getOrderFeedData(newFilter, jwt)),
+                ordersLeftSide.newOrderFeedHolder(ordersService.getNewOrderFeed(newFilter)),
                 paganation.buttonHolder(Math.toIntExact(ordersService.getPageCount(newFilter)))
         );
 
