@@ -24,6 +24,7 @@ public class ReportsMiniStatCrafter {
 
     public <T> HorizontalLayout miniStats(VaadinIcon selectedIcon, String title, T value, Component miniTittle, String iconColor, String backgroundColor){
         HorizontalLayout h = new HorizontalLayout();
+        h.setHeight("180px");
         h.setSpacing(false);
         h.setAlignItems(FlexComponent.Alignment.CENTER);
         h.addClassName("island");
@@ -38,7 +39,7 @@ public class ReportsMiniStatCrafter {
 
 
         h.getStyle().set("flex", "1 1 252px");
-        h.getStyle().set("max-width", "620px");
+        //h.getStyle().set("max-width", "620px");
         h.getStyle().set("min-width", "252px");
 
         VerticalLayout iconHolder = new VerticalLayout();

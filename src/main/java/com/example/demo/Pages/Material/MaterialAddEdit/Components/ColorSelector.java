@@ -10,32 +10,40 @@ public class ColorSelector {
     public HorizontalLayout colorSelector(TextField textField) {
         HorizontalLayout horizontalLayout = new HorizontalLayout();
         horizontalLayout.setWidthFull();
-        horizontalLayout.setSpacing(false);
+        horizontalLayout.setSpacing(true);
         horizontalLayout.setPadding(false);
-        horizontalLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
-
+        horizontalLayout.setAlignItems(FlexComponent.Alignment.CENTER); // Aligns color picker with text box input
 
         Input colorPicker = new Input();
         colorPicker.addClassName("color-button");
-        colorPicker.setHeight("50px");
+        colorPicker.setHeight("60px"); // Match default Vaadin field height
+        colorPicker.setMinWidth("50px");
         colorPicker.setType("color");
         colorPicker.setValue("#1e88e5");
 
+        // Sync initial value to TextField
+        if (textField.getValue() == null || textField.getValue().isEmpty()) {
+            textField.setValue("#1e88e5");
+        }
 
-
-
-        textField.addValueChangeListener(e->{
-            colorPicker.setValue(e.getValue());
+        // Prevent infinite loop by checking isFromClient()
+        textField.addValueChangeListener(e -> {
+            if (e.isFromClient() && e.getValue() != null) {
+                colorPicker.setValue(e.getValue());
+            }
         });
 
-        colorPicker.addValueChangeListener(e->{
-            textField.setValue(e.getValue());
+        colorPicker.addValueChangeListener(e -> {
+            if (e.isFromClient()) {
+                textField.setValue(e.getValue());
+            }
         });
 
+        textField.setWidthFull();
 
-        horizontalLayout.add(colorPicker,textField);
+        horizontalLayout.add(colorPicker, textField);
+        horizontalLayout.expand(textField);
 
         return horizontalLayout;
     }
-
 }
