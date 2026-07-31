@@ -48,6 +48,7 @@ public class OrderReportCharts {
 
         Div chartDiv = new Div();
 
+
         chartDiv.setWidth(widths.getWidth());
 
         chartDiv.setMinHeight("480px");

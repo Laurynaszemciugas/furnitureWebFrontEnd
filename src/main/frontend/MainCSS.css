@@ -20,10 +20,7 @@ body {
 
 /* MainLayout stuff Drawer */
 
-.custom-layout-small::part(drawer),
-.custom-layout-large::part(drawer) {
-    transition: width 10s ease;
-}
+
 
 /* collapsed */
 .custom-layout-small::part(drawer) {

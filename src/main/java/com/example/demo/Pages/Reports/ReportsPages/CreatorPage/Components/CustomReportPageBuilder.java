@@ -4,6 +4,7 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.CommonDtos.CreateReport.ReportItems;
 import com.example.demo.ControllerModels.Orders.OrderReportPieChart;
+import com.example.demo.Enums.Widths;
 import com.example.demo.Pages.Reports.Common.ReportsMiniStatCrafter;
 import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components.MaterialReportCharts;
 import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components.MaterialReportMiniStatCrafter;
@@ -15,9 +16,15 @@ import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.example.demo.Services.Material.MaterialService;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.Products.ProductService;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasComponents;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.springframework.stereotype.Service;
 
+import javax.swing.plaf.PanelUI;
 import java.util.List;
 
 @Service
@@ -74,22 +81,180 @@ public class CustomReportPageBuilder {
 
         for(var s : reportItemsList){
 
-            switch (s.getWidget()){
+            Component component = switch (s.getWidget()) {
 
-                case ORDER_MINI_STATS -> layout.add(orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(),common.nextMonthDate(),color,s.getWidth()));
-                case ORDER_BY_STATUS -> layout.add(orderReportCharts.ordersByStatusChart(common.currentMonthStart(),common.nextMonthDate(),s.getWidth()));
-                case ORDER_VALUE_OVER_TIME -> layout.add(orderReportCharts.OrderRevenueAccordingToMonth(common.currentMonthStart(),common.nextMonthDate(),s.getWidth()));
-                case ORDER_TOP_CUSTOMERS -> layout.add(orderReportCharts.topCustomerOrder(common.currentMonthStart(),common.nextMonthDate(),s.getWidth()));
-                case ORDER_RECENT_ORDERS -> layout.add(orderReportCharts.recentOrdersList(common.currentMonthStart(),common.nextMonthDate(),s.getWidth()));
+                case ORDER_MINI_STATS ->
+                        orderReportMiniStatCrafter.miniStatHolder(
+                                common.currentMonthStart(),
+                                common.nextMonthDate(),
+                                color,
+                                s.getWidth()
+                        );
 
+                case ORDER_BY_STATUS ->
+                        orderReportCharts.ordersByStatusChart(
+                                common.currentMonthStart(),
+                                common.nextMonthDate(),
+                                s.getWidth()
+                        );
 
-            }
+                case ORDER_VALUE_OVER_TIME ->
+                        orderReportCharts.OrderRevenueAccordingToMonth(
+                                common.currentMonthStart(),
+                                common.nextMonthDate(),
+                                s.getWidth()
+                        );
 
+                case ORDER_TOP_CUSTOMERS ->
+                        orderReportCharts.topCustomerOrder(
+                                common.currentMonthStart(),
+                                common.nextMonthDate(),
+                                s.getWidth()
+                        );
+
+                case ORDER_RECENT_ORDERS ->
+                        orderReportCharts.recentOrdersList(
+                                common.currentMonthStart(),
+                                common.nextMonthDate(),
+                                s.getWidth()
+                        );
+
+                case PRODUCT_MINI_STATS ->
+                        productReportMiniStatCrafter.miniStatHolder(
+                                common.currentMonthStart(),
+                                common.nextMonthDate(),
+                                color,
+                                s.getWidth()
+                        );
+
+                case PRODUCT_TOP_SELLING_PRODUCTS ->
+                        productReportCharts.OrderRevenueAccordingToMonth(
+                                common.currentMonthStart(),
+                                common.nextMonthDate(),
+                                color,
+                                s.getWidth()
+                        );
+
+                case PRODUCT_BY_CATEGORY ->
+                        productReportCharts.productByCategory(
+                                common.currentMonthStart(),
+                                common.nextMonthDate(),
+                                s.getWidth()
+                        );
+
+                case PRODUCT_LOW_STOCK ->
+                        productReportCharts.lowStockAlerts(
+                                common.currentMonthStart(),
+                                common.nextMonthDate(),
+                                s.getWidth()
+                        );
+
+                case PRODUCT_PERFORMANCE ->
+                        productReportCharts.productPerformance(
+                                common.currentMonthStart(),
+                                common.nextMonthDate(),
+                                s.getWidth()
+                        );
+
+                case MATERIAL_MINI_STATS ->
+                        materialReportMiniStatCrafter.miniStatHolder(
+                                common.currentMonthStart(),
+                                common.nextMonthDate(),
+                                color,
+                                s.getWidth()
+                        );
+
+                case MATERIAL_BY_STATUS ->
+                        materialReportCharts.ProductByStatusChart(
+                                common.currentMonthStart(),
+                                common.nextMonthDate(),
+                                s.getWidth()
+                        );
+
+                case MATERIAL_USAGE_OVERTIME ->
+                        materialReportCharts.ProductRevenueAccordingToMonth(
+                                common.currentMonthStart(),
+                                common.nextMonthDate(),
+                                s.getWidth()
+                        );
+
+                case MATERIAL_LOW_STOCK ->
+                        materialReportCharts.topCustomerOrder(
+                                common.currentMonthStart(),
+                                common.nextMonthDate(),
+                                s.getWidth()
+                        );
+
+                case MATERIAL_RECENT_MOVEMENT ->
+                        materialReportCharts.materialStockMovement(
+                                common.currentMonthStart(),
+                                common.nextMonthDate(),
+                                s.getWidth()
+                        );
+            };
+            layoutAdd(component, layout, s.getWidth());
 
         }
 
 
     }
+
+
+    public void layoutAdd(Component component, HorizontalLayout layout, Widths widths){
+
+        component.getStyle().set("position","relative");
+        Span span = new Span(widths.getName());
+
+        span.getStyle()
+                .set("position","absolute")
+                .set("top","-10px")
+                .set("left","0px")
+                .set("z-index","100");
+
+        span.addClassName("tag-badge");
+
+
+        if(component instanceof HasComponents h){
+            if(h instanceof Div d) {
+                layout.add(wrapperForDiv(d,span,widths));
+            }
+            else{
+                h.add(span);
+                layout.add(
+                        component
+                );
+            }
+        }
+
+
+
+
+
+
+    }
+
+    public VerticalLayout wrapperForDiv(Div div, Span span, Widths widths){
+
+
+        VerticalLayout v = new VerticalLayout();
+        v.setWidth(widths.getWidth());
+        v.setPadding(false);
+        v.setSpacing(false);
+        v.getStyle().set("position","relative");
+
+        div.setWidthFull();
+
+        v.add(
+                span,
+                div
+        );
+
+
+
+        return v;
+    }
+
+
 
 
 

@@ -4,6 +4,7 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.CommonDtos.CreateReport.Report;
 import com.example.demo.ControllerModels.CommonDtos.CreateReport.ReportItems;
+import com.example.demo.ControllerModels.CommonDtos.User;
 import com.example.demo.Enums.ReportCategory;
 import com.example.demo.Enums.Widget;
 import com.example.demo.Enums.Widths;
@@ -17,12 +18,17 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
@@ -84,6 +90,7 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
 
         layout.add(
+                briefPageExplanation(),
                 leftRightJoin()
         );
 
@@ -94,6 +101,7 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
+        v.addClassName("fromLeftToRight");
 
         v.add(
                 leftSideCrafter()
@@ -118,30 +126,66 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
         ComboBox<ReportCategory> reportCategory = new ComboBox<>("Report category");
         reportCategory.setItems(ReportCategory.values());
+        reportCategory.setItemLabelGenerator(ReportCategory::name);
+
+
         TextArea reportDescription = new TextArea("Report description");
         reportDescription.setWidthFull();
         reportDescription.setHeight("80px");
 
+
         ComboBox<Widget> widgets = new ComboBox<>("Widget");
         widgets.setItems(Widget.values());
+
+
+        widgets.setItemLabelGenerator(Widget::getTitle);
+
+        widgets.setRenderer(new ComponentRenderer<>(WID -> {
+            HorizontalLayout layout = new HorizontalLayout();
+            layout.setAlignItems(FlexComponent.Alignment.CENTER);
+
+            Icon vaadinIcon = WID.getIcon().create();
+            vaadinIcon.setColor(WID.getColor());
+            Span name = new Span(WID.getTitle());
+
+            layout.add(vaadinIcon, name);
+            return layout;
+        }));
+
+
         ComboBox<Widths> widths = new ComboBox<>("Width");
         widths.setItems(Widths.values());
         Button addWidget = commonComponents.buttonThemeAndIcon("Add widget",null, ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White");
 
         addWidget.addClickListener(e->{
 
-            report.setReportCategory(reportCategory.getValue());
-            report.setReportColor(colorPicker.getValue());
-            report.setReportName(reportName.getValue());
-            report.setDescription(reportDescription.getValue());
+            if(widgets.getValue() == null){
+                commonComponents.showNotification("Widget is not selected",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.ERROR);
+                widgets.setInvalid(true);
+                widgets.setErrorMessage("Please fill this field");
+            }
+            else if(widths.getValue() == null){
+                commonComponents.showNotification("Width is not selected",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.ERROR);
+                widths.setInvalid(true);
+                widths.setErrorMessage("Please fill this field");
+            }
 
-            List<ReportItems> reportItems = report.getReportItemsList();
-            reportItems.add(new ReportItems(null,randomId(widgets.getValue().toString()),widgets.getValue(),widths.getValue(),report));
+            else {
 
-            updateGrid();
 
-            customReportPageBuilder.updateScene(rightSide,colorPicker.getValue(),report.getReportItemsList());
-        });
+                report.setReportCategory(reportCategory.getValue());
+                report.setReportColor(colorPicker.getValue());
+                report.setReportName(reportName.getValue());
+                report.setDescription(reportDescription.getValue());
+
+                List<ReportItems> reportItems = report.getReportItemsList();
+                reportItems.add(new ReportItems(null, randomId(widgets.getValue().toString()), widgets.getValue(), widths.getValue(), report));
+
+                updateGrid();
+
+                customReportPageBuilder.updateScene(rightSide, colorPicker.getValue(), report.getReportItemsList());
+            }
+            });
 
 
         addWidget.setWidthFull();
@@ -171,9 +215,16 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
         reportGrid.addComponentColumn(e->{
 
-            Span span = commonComponents.spanCrafter(e.getWidget().toString(),"stat-example");
+            HorizontalLayout layout = new HorizontalLayout();
+            layout.setAlignItems(FlexComponent.Alignment.CENTER);
 
-            return span;
+            Icon vaadinIcon = e.getWidget().getIcon().create();
+            vaadinIcon.setColor(e.getWidget().getColor());
+            Span name = commonComponents.spanCrafterWordNoHide(e.getWidget().getTitle(),"stat-example");
+
+            layout.add(vaadinIcon, name);
+
+            return layout;
 
         }).setAutoWidth(true).setHeader("Widget");
 
@@ -188,12 +239,23 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
             widthsComboBox.setValue(e.getWidth());
 
+            widthsComboBox.addValueChangeListener(sa->{
+
+                e.setWidth(sa.getValue());
+                updateGrid();
+
+                customReportPageBuilder.updateScene(rightSide,colorPicker.getValue(),report.getReportItemsList());
+
+            });
+
 
 
             Button increaseIndex = commonComponents.buttonThemeAndIconNoNavigate("",ButtonVariant.LUMO_ICON,VaadinIcon.ANGLE_UP,"Black");
             increaseIndex.addClickListener(ee->{
                 increaseIndexList(e.getCustomId());
                 updateGrid();
+
+                customReportPageBuilder.updateScene(rightSide,colorPicker.getValue(),report.getReportItemsList());
 
             });
 
@@ -202,6 +264,8 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
             decreaseIndex.addClickListener(eee->{
                 decreaseIndexList(e.getCustomId());
                 updateGrid();
+                customReportPageBuilder.updateScene(rightSide,colorPicker.getValue(),report.getReportItemsList());
+
             });
 
 
@@ -210,6 +274,9 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
             removeItem.addClickListener(item->{
                 report.getReportItemsList().remove(e);
                 updateGrid();
+
+                customReportPageBuilder.updateScene(rightSide,colorPicker.getValue(),report.getReportItemsList());
+
             });
 
 
@@ -238,7 +305,7 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
             return h;
 
-        }).setWidth("400px").setFlexGrow(1).setHeader("Size");
+        }).setWidth("400px").setFlexGrow(1).setHeader("Size & actions");
 
 
 
@@ -265,17 +332,21 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
 
     public HorizontalLayout rightSide() {
+
+        rightSide.addClassName("fromRightToLeft");
         rightSide.addClassName("island");
+
         rightSide.setWidthFull();
+        rightSide.setPadding(false);
+        rightSide.setSpacing(false);
 
-        // 1. Enable wrapping for items
-        rightSide.getStyle().set("flex-wrap", "wrap");
-
-        // 2. Prevent flexbox from spreading wrapped rows vertically across the screen
-        rightSide.getStyle().set("align-content", "flex-start");
-
-        // 3. Set a clean, uniform gap between rows and columns
-        rightSide.getStyle().set("gap", "16px");
+        rightSide.getStyle()
+                .set("display", "flex")
+                .set("flex-wrap", "wrap")
+                .set("align-content", "flex-start")
+                .set("align-items", "flex-start")
+                .set("gap", "16px")
+                .set("box-sizing", "border-box");
 
         return rightSide;
     }
@@ -284,6 +355,8 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
         HorizontalLayout rightSide = rightSide();
 
         SplitLayout splitLayout = new SplitLayout(leftSide, rightSide);
+        splitLayout.addClassName("smooth-panel");
+
 
         splitLayout.setSplitterPosition(35);
         splitLayout.setWidthFull();
@@ -366,5 +439,37 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
     public void updateGrid(){
         reportGrid.setItems(report.getReportItemsList());
     }
+
+    public HorizontalLayout briefPageExplanation(){
+        HorizontalLayout h = new HorizontalLayout();
+
+        h.addClassName("smooth-panel");
+
+        h.setWidthFull();
+        h.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+
+
+        HorizontalLayout buttonHolder = new HorizontalLayout();
+
+        Button cancel = commonComponents.normalThemeButton("Cancel","Reports", ButtonVariant.LUMO_ICON);
+        Button createOrder = commonComponents.normalThemeButtonNoNavigate("Create report", ButtonVariant.LUMO_PRIMARY);
+
+        createOrder.addClickListener(e->{
+
+
+        });
+
+        buttonHolder.add(
+                cancel,
+                createOrder
+        );
+        h.add(
+                commonComponents.biefPageExplanation("Create custom report"),
+                buttonHolder
+
+        );
+        return h;
+    }
+
 
 }
