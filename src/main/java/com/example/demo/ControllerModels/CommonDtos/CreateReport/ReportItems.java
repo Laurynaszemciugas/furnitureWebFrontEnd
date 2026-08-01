@@ -2,6 +2,7 @@ package com.example.demo.ControllerModels.CommonDtos.CreateReport;
 
 import com.example.demo.Enums.Widget;
 import com.example.demo.Enums.Widths;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 @Getter
@@ -18,8 +19,8 @@ public class ReportItems {
 
     private Widget widget;
 
-    private Widths Width;
-
+    private Widths width;
+    @JsonIgnore
     private Report report;
 
 }

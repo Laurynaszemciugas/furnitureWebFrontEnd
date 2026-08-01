@@ -157,7 +157,8 @@ public class CustomReportPageBuilder {
                         );
 
                 case MATERIAL_MINI_STATS ->
-                        materialReportMiniStatCrafter.miniStatHolder(
+                        new MaterialReportMiniStatCrafter(commonComponents, common, materialService)
+                        .miniStatHolder(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
                                 color,
@@ -165,28 +166,32 @@ public class CustomReportPageBuilder {
                         );
 
                 case MATERIAL_BY_STATUS ->
-                        materialReportCharts.ProductByStatusChart(
+                        new MaterialReportCharts(commonComponents, common, materialService)
+                        .ProductByStatusChart(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
                                 s.getWidth()
                         );
 
                 case MATERIAL_USAGE_OVERTIME ->
-                        materialReportCharts.ProductRevenueAccordingToMonth(
+                        new MaterialReportCharts(commonComponents, common, materialService)
+                                .ProductRevenueAccordingToMonth(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
                                 s.getWidth()
                         );
 
                 case MATERIAL_LOW_STOCK ->
-                        materialReportCharts.topCustomerOrder(
+                        new MaterialReportCharts(commonComponents, common, materialService)
+                        .topCustomerOrder(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
                                 s.getWidth()
                         );
 
                 case MATERIAL_RECENT_MOVEMENT ->
-                        materialReportCharts.materialStockMovement(
+                        new MaterialReportCharts(commonComponents, common, materialService)
+                        .materialStockMovement(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
                                 s.getWidth()
@@ -198,6 +203,7 @@ public class CustomReportPageBuilder {
 
 
     }
+
 
 
     public void layoutAdd(Component component, HorizontalLayout layout, Widths widths){
@@ -233,7 +239,7 @@ public class CustomReportPageBuilder {
 
     }
 
-    public VerticalLayout wrapperForDiv(Div div, Span span, Widths widths){
+    public VerticalLayout wrapperForDiv(Div div,Span span, Widths widths){
 
 
         VerticalLayout v = new VerticalLayout();
@@ -242,7 +248,13 @@ public class CustomReportPageBuilder {
         v.setSpacing(false);
         v.getStyle().set("position","relative");
 
+
+
+
+
         div.setWidthFull();
+
+
 
         v.add(
                 span,

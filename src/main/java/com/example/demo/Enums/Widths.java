@@ -24,8 +24,4 @@ public enum Widths {
         return width;
     }
 
-    @Override
-    public String toString() {
-        return name;
-    }
 }
