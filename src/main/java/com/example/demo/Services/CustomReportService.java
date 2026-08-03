@@ -42,4 +42,11 @@ public class CustomReportService {
 
     }
 
+    @SneakyThrows
+    public Report getReportAccordingToId(Long id) {
+
+        return httpCallLogic.HttpCall("customReport/getReportAccordingToId", HttpMethod.GET,id, Report.class,true);
+
+    }
+
 }

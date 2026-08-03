@@ -2,6 +2,7 @@ package com.example.demo.Pages.Reports.Page.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Enums.DashboardWidget;
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.DTOS.CustomReportFeed;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -12,6 +13,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class MiniReportCard {
@@ -239,14 +241,14 @@ public class MiniReportCard {
         h.setPadding(false);
 
         for(var s : reportFeeds){
-            h.add(userCreatedReports(s.getId(),s.getReportName(),s.getReportColor()));
+            h.add(userCreatedReports(s.getId(),s.getReportName(),s.getDashboardWidget(), s.getDescription(), s.getCreated(),s.getReportColor()));
         }
 
 
         return h;
     }
 
-    public VerticalLayout userCreatedReports(Long id,String title,String color){
+    public VerticalLayout userCreatedReports(Long id, String title, DashboardWidget dashboardWidget, String description, LocalDateTime created, String color){
 
         VerticalLayout card = new VerticalLayout();
         card.addClassName("island");
@@ -258,12 +260,27 @@ public class MiniReportCard {
         card.getStyle().set("max-width", "620px");
         card.getStyle().set("min-width", "452px");
 
-        Span tittle = commonComponents.spanCrafter(title,"activityFeed-name");
+        VerticalLayout v =  new VerticalLayout();
+        v.setPadding(false);
+        v.setSpacing(false);
+        v.setWidthFull();
+
+        v.add(
+                commonComponents.spanCrafter(title,"activityFeed-name"),
+                commonComponents.spanCrafter(description,"stat-example"),
+                commonComponents.spanCrafter(created == null ? "" :  "Created - "+ common.dateFormatter(created,"dd MMM yyyy"),"stat-description")
+        );
 
 
         Button button = new Button("View " + title);
         button.setWidthFull();
         button.getStyle().set("background-color",color).set("color","White");
+
+        button.addClickListener(e->{
+            System.out.println(id);
+        });
+
+
 
         VerticalLayout iconHolder = new VerticalLayout();
         iconHolder.getStyle().set("position","relative");
@@ -275,7 +292,7 @@ public class MiniReportCard {
 
         iconHolder.getStyle().set("background-color",common.hexToRgba(color,0.15));
 
-        Icon icon = commonComponents.iconCrafter(VaadinIcon.TABLET,"30px",color);
+        Icon icon = commonComponents.iconCrafter(dashboardWidget == null ? VaadinIcon.ADJUST : dashboardWidget.getIcon(),"30px",color);
         iconHolder.add(icon);
 
         HorizontalLayout h = new HorizontalLayout();
@@ -284,7 +301,7 @@ public class MiniReportCard {
         h.setAlignItems(FlexComponent.Alignment.CENTER);
 
         h.add(
-                iconHolder, tittle
+                iconHolder, v
         );
 
         card.add(

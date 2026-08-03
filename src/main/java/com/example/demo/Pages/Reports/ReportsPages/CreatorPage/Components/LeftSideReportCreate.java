@@ -4,6 +4,7 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.CommonDtos.CreateReport.Report;
 import com.example.demo.ControllerModels.CommonDtos.CreateReport.ReportItems;
+import com.example.demo.Enums.DashboardWidget;
 import com.example.demo.Enums.ReportCategory;
 import com.example.demo.Enums.Widget;
 import com.example.demo.Enums.Widths;
@@ -53,6 +54,7 @@ public class LeftSideReportCreate {
     TextField reportName = new TextField("Report name");
     TextField colorPicker = new TextField("Global color");
     ComboBox<ReportCategory> reportCategory = new ComboBox<>("Report category");
+    ComboBox<DashboardWidget> dashboardWidgetComboBox = new ComboBox<>("Report icon");
     TextArea reportDescription = new TextArea("Report description");
     ComboBox<Widget> widgets = new ComboBox<>("Widget");
     ComboBox<Widths> widths = new ComboBox<>("Width");
@@ -110,6 +112,7 @@ public class LeftSideReportCreate {
                 customReport.setReportColor(colorPicker.getValue());
                 customReport.setReportCategory(reportCategory.getValue());
                 customReport.setDescription(reportDescription.getValue());
+                customReport.setDashboardWidget(dashboardWidgetComboBox.getValue());
 
                 List<ReportItems> reportItemsList = new ArrayList<>();
 
@@ -160,6 +163,21 @@ public class LeftSideReportCreate {
         v.setWidthFull();
         v.setPadding(false);
 
+        dashboardWidgetComboBox.setWidthFull();
+        dashboardWidgetComboBox.setItems(DashboardWidget.values());
+        dashboardWidgetComboBox.setItemLabelGenerator(DashboardWidget::getName);
+        dashboardWidgetComboBox.setRenderer(new ComponentRenderer<>(WID -> {
+            HorizontalLayout layout = new HorizontalLayout();
+            layout.setAlignItems(FlexComponent.Alignment.CENTER);
+
+            Icon vaadinIcon = WID.getIcon().create();
+            vaadinIcon.setColor(WID.getIcon().create().getColor());
+            Span name = new Span(WID.getName());
+
+            layout.add(vaadinIcon, name);
+            return layout;
+        }));
+
 
         reportName.setWidthFull();
 
@@ -178,6 +196,8 @@ public class LeftSideReportCreate {
 
 
         widgets.setItemLabelGenerator(Widget::getTitle);
+
+
 
         widgets.setRenderer(new ComponentRenderer<>(WID -> {
             HorizontalLayout layout = new HorizontalLayout();
@@ -378,6 +398,7 @@ public class LeftSideReportCreate {
                 reportName,
                 firstLayer,
                 reportDescription,
+                dashboardWidgetComboBox,
                 commonComponents.spanCrafter("Add widget","activityFeed-name"),
                 secondLayer,
                 addWidget,
@@ -395,6 +416,7 @@ public class LeftSideReportCreate {
             colorPicker.setValue(loadData.getReportColor());
             reportCategory.setValue(loadData.getReportCategory());
             reportDescription.setValue(loadData.getDescription());
+            dashboardWidgetComboBox.setValue(loadData.getDashboardWidget());
 
             colorSelector.loadColor(loadData.getReportColor());
 
