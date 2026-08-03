@@ -56,8 +56,8 @@ public class ReportsMiniStatCrafter {
         VerticalLayout v = new VerticalLayout();
         v.setSpacing(false);
         v.add(
-                commonComponents.spanCrafter(title,"activityFeed-name"),
-                commonComponents.spanCrafter(value == null ? "0" : value.toString(),"stat-value"),
+                commonComponents.spanCrafterWordNoHide(title,"activityFeed-name"),
+                commonComponents.spanCrafterWordNoHide(value == null ? "0" : value.toString(),"stat-value"),
                 miniTittle
         );
 

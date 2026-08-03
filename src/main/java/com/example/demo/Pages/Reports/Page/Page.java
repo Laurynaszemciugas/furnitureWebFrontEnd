@@ -5,6 +5,7 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Reports.Page.Components.BriefReportPageExplanation;
 import com.example.demo.Pages.Reports.Page.Components.MiniReportCard;
+import com.example.demo.Services.CustomReportService;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -19,11 +20,14 @@ public class Page extends VerticalLayout implements BeforeEnterObserver {
     BriefReportPageExplanation briefReportPageExplanation;
     MiniReportCard miniReportCard;
 
+    CustomReportService customReportService;
 
-    public Page(CommonComponents commonComponents, Common common) {
+
+    public Page(CommonComponents commonComponents, Common common,CustomReportService customReportService) {
 
         this.commonComponents = commonComponents;
         this.common = common;
+        this.customReportService = customReportService;
 
         this.briefReportPageExplanation = new BriefReportPageExplanation(commonComponents,common);
         this.miniReportCard = new MiniReportCard(commonComponents,common);
@@ -56,12 +60,19 @@ public class Page extends VerticalLayout implements BeforeEnterObserver {
         Span available = commonComponents.spanCrafter("Available reports","activityFeed-name");
         available.addClassName("animated-card");
 
+        Span customCreated = commonComponents.spanCrafter("Custom created reports","activityFeed-name");
+        customCreated.addClassName("animated-card");
+
                 verticalLayout.add(
                         briefReportPageExplanation.briefExplanation(),
                         available,
-                        miniReportCard.reportHolder()
+                        miniReportCard.reportHolder(),
+                        customCreated,
+                        miniReportCard.loadUserData(customReportService.getCustomReportFeed())
 
-        );
+                );
+            //miniReportCard.loadUserData(customReportService.getCustomReportFeed());
+
 
         return verticalLayout;
     }

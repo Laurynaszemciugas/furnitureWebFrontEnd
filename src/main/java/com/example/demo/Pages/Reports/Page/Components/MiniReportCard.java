@@ -2,6 +2,7 @@ package com.example.demo.Pages.Reports.Page.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.DTOS.CustomReportFeed;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
@@ -10,6 +11,8 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+
+import java.util.List;
 
 public class MiniReportCard {
 
@@ -20,14 +23,18 @@ public class MiniReportCard {
     public MiniReportCard(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
+
+
     }
 
     public HorizontalLayout reportHolder(){
+
 
         HorizontalLayout h = new HorizontalLayout();
         h.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         h.addClassName("layout-flex");
         h.setPadding(false);
+
 
         h.add(
                 reportCardCrafter(
@@ -98,7 +105,7 @@ public class MiniReportCard {
                 reportCardCrafter(
                         VaadinIcon.NEWSPAPER,
                         "Create Custom Report",
-                        "Reports/Custom",
+                        "reportCreator",
                         "Custom Report",
                         "Build your own report with selected metrics.",
                         "#3BB8D0",
@@ -221,6 +228,71 @@ public class MiniReportCard {
         );
 
         return h;
+
+    }
+
+    public HorizontalLayout loadUserData(List<CustomReportFeed> reportFeeds){
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        h.addClassName("layout-flex");
+        h.setPadding(false);
+
+        for(var s : reportFeeds){
+            h.add(userCreatedReports(s.getId(),s.getReportName(),s.getReportColor()));
+        }
+
+
+        return h;
+    }
+
+    public VerticalLayout userCreatedReports(Long id,String title,String color){
+
+        VerticalLayout card = new VerticalLayout();
+        card.addClassName("island");
+
+        card.addClassName("animated-card");
+
+        card.addClassName("island");
+        card.getStyle().set("flex", "1 1 452px");
+        card.getStyle().set("max-width", "620px");
+        card.getStyle().set("min-width", "452px");
+
+        Span tittle = commonComponents.spanCrafter(title,"activityFeed-name");
+
+
+        Button button = new Button("View " + title);
+        button.setWidthFull();
+        button.getStyle().set("background-color",color).set("color","White");
+
+        VerticalLayout iconHolder = new VerticalLayout();
+        iconHolder.getStyle().set("position","relative");
+        iconHolder.setHeight("90px");
+        iconHolder.setWidth("100px");
+        iconHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        iconHolder.setAlignItems(FlexComponent.Alignment.CENTER);
+        iconHolder.addClassName("statIconBack");
+
+        iconHolder.getStyle().set("background-color",common.hexToRgba(color,0.15));
+
+        Icon icon = commonComponents.iconCrafter(VaadinIcon.TABLET,"30px",color);
+        iconHolder.add(icon);
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setWidthFull();
+        h.setPadding(false);
+        h.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        h.add(
+                iconHolder, tittle
+        );
+
+        card.add(
+                h,
+                button
+        );
+
+        return card;
 
     }
 

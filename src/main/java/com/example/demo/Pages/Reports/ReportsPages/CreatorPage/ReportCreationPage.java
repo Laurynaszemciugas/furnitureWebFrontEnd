@@ -15,6 +15,7 @@ import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.LeftSi
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.RightSideReportCreate;
 import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.MaterialReportPage;
 import com.example.demo.Services.CustomReportService;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -105,18 +106,15 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
         leftSideReportCreate.setReportAddedEdited(e->{
             customReportService.saveNewReport(e);
-
-
-            System.out.println("adding it to tdsdsdsdhe list");
-            for(var s : e.getReportItemsList()){
-                System.out.println(s.getWidget());
-                System.out.println(s.getWidth());
-            }
         });
 
         customReportService.setSuccess(ee->{
-
+            UI.getCurrent().navigate("Reports");
         });
+
+
+
+
         return layout;
     }
 
@@ -125,7 +123,20 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
 
     public SplitLayout leftRightJoin() {
-        VerticalLayout leftSide = leftSideReportCreate.leftSide(rightSide);
+
+        Report report = new Report();
+        report.setReportColor("#fb542b");
+        report.setReportName("zxaza");
+        report.setDescription("zaza sasa");
+        report.setReportCategory(ReportCategory.Analytics);
+
+        List<ReportItems> reportItems = new ArrayList<>();
+
+        reportItems.add(new ReportItems(2L,"gagagas3132",Widget.ORDER_MINI_STATS,Widths.FULL_WIDTH,report));
+
+        report.setReportItemsList(reportItems);
+
+        VerticalLayout leftSide = leftSideReportCreate.leftSide(rightSide,report);
 
         HorizontalLayout rightSides = rightSideReportCreate.rightSideReportCustom(rightSide);
 
@@ -141,6 +152,8 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
         return splitLayout;
     }
+
+
 
 
 

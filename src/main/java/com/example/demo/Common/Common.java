@@ -116,22 +116,24 @@ public class Common {
         return value;
     }
 
-    public HorizontalLayout lastMonthTrend(
+    public VerticalLayout lastMonthTrend(
             Object now,
             Object was,
             LocalDate chosenDate,
             boolean useValueComparison
     ){
 
-        HorizontalLayout h = new HorizontalLayout();
+        VerticalLayout h = new VerticalLayout();
+        h.setPadding(false);
+        h.setSpacing(false);
 
         if(useValueComparison) {
 
             String moreThanZeroColor = "Green";
             String lessThanZeroColor = "Red";
 
-            Span span = new Span();
-            Span comparedSpan = new Span();
+            Span span = commonComponents.spanCrafter("","stat-description");
+            Span comparedSpan = commonComponents.spanCrafter("","stat-description");
 
             double nowValue = toDouble(now);
             double wasValue = toDouble(was);
@@ -160,15 +162,18 @@ public class Common {
             String formatedVs = String.format("vs %s - %s", dateFormatter(preFrom, "MMMM d"), dateFormatter(preTo, "MMMM d, yyyy"));
 
             span.setText(formatedText);
-            span.addClassName("stat-description");
             comparedSpan.setText(formatedVs);
             comparedSpan.addClassName("stat-description");
 
 
-            h.setPadding(false);
-            h.getStyle().set("gap", "10px");
+            h.add(
+                    span,
+                    comparedSpan
+            );
 
-            h.add(span, comparedSpan);
+
+
+
         }
         else{
             Span span = new Span();

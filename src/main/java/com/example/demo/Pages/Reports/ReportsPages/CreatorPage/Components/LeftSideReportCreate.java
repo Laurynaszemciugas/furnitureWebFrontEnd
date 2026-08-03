@@ -72,14 +72,14 @@ public class LeftSideReportCreate {
 
     }
 
-    public VerticalLayout leftSide(HorizontalLayout rightSide){
+    public VerticalLayout leftSide(HorizontalLayout rightSide, Report loadData){
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
         v.addClassName("fromLeftToRight");
 
         v.add(
-                leftSideCrafter(rightSide)
+                leftSideCrafter(rightSide,loadData)
         );
 
 
@@ -151,9 +151,11 @@ public class LeftSideReportCreate {
     }
 
 
-    public VerticalLayout leftSideCrafter(HorizontalLayout rightSide){
+    public VerticalLayout leftSideCrafter(HorizontalLayout rightSide, Report loadData){
 
         VerticalLayout v = new VerticalLayout();
+
+
 
         v.setWidthFull();
         v.setPadding(false);
@@ -352,6 +354,23 @@ public class LeftSideReportCreate {
 
 
 
+        HorizontalLayout removeAll = new HorizontalLayout();
+        removeAll.setWidthFull();
+        removeAll.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        removeAll.setPadding(false);
+
+        Button removeAllButton = commonComponents.buttonThemeAndIconNoNavigate("Remove all widgets",ButtonVariant.ERROR,VaadinIcon.TRASH,"Red");
+        removeAllButton.addThemeVariants(ButtonVariant.ERROR);
+        removeAll.add(
+                removeAllButton
+        );
+
+        removeAllButton.addClickListener(e->{
+           report.getReportItemsList().clear();
+           updateGrid();
+            customReportPageBuilder.updateScene(rightSide,colorPicker.getValue(),report.getReportItemsList());
+
+        });
 
 
         v.add(
@@ -363,9 +382,31 @@ public class LeftSideReportCreate {
                 secondLayer,
                 addWidget,
                 commonComponents.spanCrafter("Selected widgets","activityFeed-name"),
-                reportGrid
+                reportGrid,
+                removeAll
 
         );
+
+        if(loadData != null) {
+            //set data to grid and update it and update the scene and info is loaded
+            report.setReportItemsList(loadData.getReportItemsList());
+
+            reportName.setValue(loadData.getReportName());
+            colorPicker.setValue(loadData.getReportColor());
+            reportCategory.setValue(loadData.getReportCategory());
+            reportDescription.setValue(loadData.getDescription());
+
+            colorSelector.loadColor(loadData.getReportColor());
+
+            updateGrid();
+            customReportPageBuilder.updateScene(rightSide, colorPicker.getValue(), report.getReportItemsList());
+
+
+        }
+
+        colorSelector.setColorChanged(e->{
+            customReportPageBuilder.updateScene(rightSide, colorPicker.getValue(), report.getReportItemsList());
+        });
 
 
         return v;

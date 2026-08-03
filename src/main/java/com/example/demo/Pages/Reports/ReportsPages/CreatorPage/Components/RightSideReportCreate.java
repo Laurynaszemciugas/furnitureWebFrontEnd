@@ -13,6 +13,8 @@ public class RightSideReportCreate {
         rightSide.setPadding(false);
         rightSide.setSpacing(false);
 
+        rightSide.addClassName("layout-flex");
+
         rightSide.getStyle()
                 .set("display", "flex")
                 .set("flex-wrap", "wrap")

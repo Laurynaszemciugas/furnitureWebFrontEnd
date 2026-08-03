@@ -4,20 +4,28 @@ import com.vaadin.flow.component.html.Input;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import lombok.Setter;
 
+import java.util.function.Consumer;
+
+@Setter
 public class ColorSelector {
+
+    Consumer<Boolean> colorChanged;
+
+    Input colorPicker = new Input();
 
     public HorizontalLayout colorSelector(TextField textField) {
         HorizontalLayout horizontalLayout = new HorizontalLayout();
         horizontalLayout.setWidthFull();
-        horizontalLayout.setSpacing(true);
+        horizontalLayout.setSpacing(false);
         horizontalLayout.setPadding(false);
         horizontalLayout.setAlignItems(FlexComponent.Alignment.CENTER); // Aligns color picker with text box input
 
-        Input colorPicker = new Input();
+
         colorPicker.addClassName("color-button");
-        colorPicker.setHeight("60px"); // Match default Vaadin field height
-        colorPicker.setMinWidth("50px");
+        colorPicker.setHeight("70px"); // Match default Vaadin field height
+        colorPicker.setMinWidth("20px");
         colorPicker.setType("color");
         colorPicker.setValue("#1e88e5");
 
@@ -30,12 +38,14 @@ public class ColorSelector {
         textField.addValueChangeListener(e -> {
             if (e.isFromClient() && e.getValue() != null) {
                 colorPicker.setValue(e.getValue());
+                colorChanged.accept(true);
             }
         });
 
         colorPicker.addValueChangeListener(e -> {
             if (e.isFromClient()) {
                 textField.setValue(e.getValue());
+                colorChanged.accept(true);
             }
         });
 
@@ -46,4 +56,12 @@ public class ColorSelector {
 
         return horizontalLayout;
     }
+
+    public void loadColor(String color){
+
+        colorPicker.setValue(color);
+
+    }
+
+
 }

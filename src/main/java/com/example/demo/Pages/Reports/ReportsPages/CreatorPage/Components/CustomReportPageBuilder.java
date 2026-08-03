@@ -2,6 +2,7 @@ package com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.CommonDtos.CreateReport.Report;
 import com.example.demo.ControllerModels.CommonDtos.CreateReport.ReportItems;
 import com.example.demo.ControllerModels.Orders.OrderReportPieChart;
 import com.example.demo.Enums.Widths;
@@ -267,7 +268,12 @@ public class CustomReportPageBuilder {
     }
 
 
+    public void loadData(Report report, HorizontalLayout rightSide){
 
+        updateScene(rightSide, report.getReportColor(),report.getReportItemsList());
+
+
+    }
 
 
 
