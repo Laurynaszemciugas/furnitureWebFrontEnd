@@ -72,6 +72,8 @@ public class LeftSideReportCreate {
 
         binderCheck();
 
+        reportGrid.setHeight("500px");
+
     }
 
     public VerticalLayout leftSide(HorizontalLayout rightSide, Report loadData){
@@ -107,32 +109,42 @@ public class LeftSideReportCreate {
 
             if (binder.validate().isOk()){
 
-                Report customReport = new Report();
-                customReport.setReportName(reportName.getValue());
-                customReport.setReportColor(colorPicker.getValue());
-                customReport.setReportCategory(reportCategory.getValue());
-                customReport.setDescription(reportDescription.getValue());
-                customReport.setDashboardWidget(dashboardWidgetComboBox.getValue());
-
-                List<ReportItems> reportItemsList = new ArrayList<>();
-
-                for(var s : report.getReportItemsList()){
-
-                    ReportItems reportItems = new ReportItems();
-
-                    reportItems.setReport(customReport);
-                    reportItems.setWidth(s.getWidth());
-                    reportItems.setWidget(s.getWidget());
-                    reportItems.setCustomId(s.getCustomId());
-
-                    reportItemsList.add(
-                            reportItems
-                    );
+                if(report.getReportItemsList() == null || report.getReportItemsList().size() == 0){
+                    commonComponents.showNotification("Please select widget and add it to the list", 3000, Notification.Position.BOTTOM_CENTER,NotificationVariant.ERROR);
+                    widgets.setInvalid(true);
+                    widgets.setErrorMessage("Use this to select widget");
+                    widgets.setInvalid(true);
+                    widgets.setErrorMessage("Use this to select width");
                 }
-                customReport.setReportItemsList(reportItemsList);
+                else {
+
+                    Report customReport = new Report();
+                    customReport.setReportName(reportName.getValue());
+                    customReport.setReportColor(colorPicker.getValue());
+                    customReport.setReportCategory(reportCategory.getValue());
+                    customReport.setDescription(reportDescription.getValue());
+                    customReport.setDashboardWidget(dashboardWidgetComboBox.getValue());
+
+                    List<ReportItems> reportItemsList = new ArrayList<>();
+
+                    for (var s : report.getReportItemsList()) {
+
+                        ReportItems reportItems = new ReportItems();
+
+                        reportItems.setReport(customReport);
+                        reportItems.setWidth(s.getWidth());
+                        reportItems.setWidget(s.getWidget());
+                        reportItems.setCustomId(s.getCustomId());
+
+                        reportItemsList.add(
+                                reportItems
+                        );
+                    }
+                    customReport.setReportItemsList(reportItemsList);
 
 
-                reportAddedEdited.accept(customReport);
+                    reportAddedEdited.accept(customReport);
+                }
 
             }
             else{
@@ -188,7 +200,7 @@ public class LeftSideReportCreate {
 
 
         reportDescription.setWidthFull();
-        reportDescription.setHeight("80px");
+        reportDescription.setHeight("120px");
 
 
 
@@ -234,20 +246,15 @@ public class LeftSideReportCreate {
             else {
 
 
-                report.setReportCategory(reportCategory.getValue());
-                report.setReportColor(colorPicker.getValue());
-                report.setReportName(reportName.getValue());
-                report.setDescription(reportDescription.getValue());
-
                 List<ReportItems> reportItems = report.getReportItemsList();
                 reportItems.add(new ReportItems(null, randomId(widgets.getValue().toString()), widgets.getValue(), widths.getValue(), report));
-
-
-
 
                 updateGrid();
 
                 customReportPageBuilder.updateScene(rightSide, colorPicker.getValue(), report.getReportItemsList());
+
+                commonComponents.showNotification("Added " + widgets.getValue().getTitle() + " widget with " + widths.getValue().getName()  ,3000, Notification.Position.BOTTOM_CENTER,NotificationVariant.LUMO_SUCCESS);
+                widgets.clear();
             }
         });
 
@@ -300,6 +307,7 @@ public class LeftSideReportCreate {
 
             ComboBox<Widths> widthsComboBox = new ComboBox<>();
             widthsComboBox.setItems(Widths.values());
+            widthsComboBox.setItemLabelGenerator(Widths::getName);
 
             widthsComboBox.setValue(e.getWidth());
 
@@ -531,13 +539,11 @@ public void binderCheck(){
             .asRequired("Report description is required")
             .bind(value -> null, (bean, value) -> {});
 
-    binder.forField(widgets)
-            .asRequired("Widget is required")
+    binder.forField(dashboardWidgetComboBox)
+            .asRequired("Report icon is required")
             .bind(value -> null, (bean, value) -> {});
 
-    binder.forField(widths)
-            .asRequired("Width is required")
-            .bind(value -> null, (bean, value) -> {});
+
 }
 
 

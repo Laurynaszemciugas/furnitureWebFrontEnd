@@ -6,21 +6,27 @@ import com.example.demo.Enums.DashboardWidget;
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.DTOS.CustomReportFeed;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.Consumer;
 
+@Setter
 public class MiniReportCard {
 
     CommonComponents commonComponents;
     Common common;
 
+
+    Consumer<Long> removeItem;
 
     public MiniReportCard(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
@@ -236,12 +242,19 @@ public class MiniReportCard {
     public HorizontalLayout loadUserData(List<CustomReportFeed> reportFeeds){
 
         HorizontalLayout h = new HorizontalLayout();
+        h.setWidthFull();
+
         h.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         h.addClassName("layout-flex");
         h.setPadding(false);
 
-        for(var s : reportFeeds){
-            h.add(userCreatedReports(s.getId(),s.getReportName(),s.getDashboardWidget(), s.getDescription(), s.getCreated(),s.getReportColor()));
+        if(reportFeeds == null) {
+            for (var s : reportFeeds) {
+                h.add(userCreatedReports(s.getId(), s.getReportName(), s.getDashboardWidget(), s.getDescription(), s.getCreated(), s.getReportColor()));
+            }
+        }
+        else{
+            h.add(commonComponents.noDataFoundImproved("No custom reports found","Create one","reportCreator"));
         }
 
 
@@ -252,6 +265,7 @@ public class MiniReportCard {
 
         VerticalLayout card = new VerticalLayout();
         card.addClassName("island");
+        card.getStyle().set("position","relative");
 
         card.addClassName("animated-card");
 
@@ -271,13 +285,29 @@ public class MiniReportCard {
                 commonComponents.spanCrafter(created == null ? "" :  "Created - "+ common.dateFormatter(created,"dd MMM yyyy"),"stat-description")
         );
 
+        Button deleteButton = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.ERROR,VaadinIcon.TRASH,"Red");
+        deleteButton.getStyle().set("position","absolute").set("right","10px").set("top","10px");
+
+        deleteButton.addClickListener(e->{
+           common.actualDeleteConfirmation(title);
+
+            common.setBooleanConsumer(ee->{
+                if(ee == true) {
+                    removeItem.accept(id);
+                }
+            });
+
+        });
+
+
+
 
         Button button = new Button("View " + title);
         button.setWidthFull();
         button.getStyle().set("background-color",color).set("color","White");
 
         button.addClickListener(e->{
-            System.out.println(id);
+            UI.getCurrent().navigate("editReport/" + id);
         });
 
 
@@ -306,7 +336,8 @@ public class MiniReportCard {
 
         card.add(
                 h,
-                button
+                button,
+                deleteButton
         );
 
         return card;

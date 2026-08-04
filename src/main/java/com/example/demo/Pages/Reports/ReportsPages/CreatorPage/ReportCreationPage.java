@@ -124,19 +124,11 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
     public SplitLayout leftRightJoin() {
 
-        Report report = new Report();
-        report.setReportColor("#fb542b");
-        report.setReportName("zxaza");
-        report.setDescription("zaza sasa");
-        report.setReportCategory(ReportCategory.Analytics);
 
-        List<ReportItems> reportItems = new ArrayList<>();
 
-        reportItems.add(new ReportItems(2L,"gagagas3132",Widget.ORDER_MINI_STATS,Widths.FULL_WIDTH,report));
 
-        report.setReportItemsList(reportItems);
 
-        VerticalLayout leftSide = leftSideReportCreate.leftSide(rightSide,report);
+        VerticalLayout leftSide = leftSideReportCreate.leftSide(rightSide,null);
 
         HorizontalLayout rightSides = rightSideReportCreate.rightSideReportCustom(rightSide);
 

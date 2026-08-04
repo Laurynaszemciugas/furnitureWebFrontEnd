@@ -39,6 +39,7 @@ public class Page extends VerticalLayout implements BeforeEnterObserver {
 
 
         addClassName("animation-page");
+        deleteItem();
 
     }
 
@@ -75,6 +76,12 @@ public class Page extends VerticalLayout implements BeforeEnterObserver {
 
 
         return verticalLayout;
+    }
+
+    public void deleteItem(){
+        miniReportCard.setRemoveItem(e->{
+            customReportService.deleteCustomReport(e);
+        });
     }
 
 

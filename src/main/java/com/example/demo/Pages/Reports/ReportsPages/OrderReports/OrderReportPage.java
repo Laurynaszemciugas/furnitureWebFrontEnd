@@ -2,6 +2,7 @@ package com.example.demo.Pages.Reports.ReportsPages.OrderReports;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.Widths;
 import com.example.demo.MainLayout.MainLayout;
@@ -44,6 +45,10 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
 
     HorizontalLayout layout = new HorizontalLayout();
 
+    SessionCrafter sessionCrafter;
+
+    String jwt;
+
     public OrderReportPage(CommonComponents commonComponents, Common common, OrdersService ordersService) {
 
         this.commonComponents = commonComponents;
@@ -55,6 +60,8 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
         this.ordersService = ordersService;
 
         this.charts = new OrderReportCharts(commonComponents,common,ordersService);
+
+        this.sessionCrafter = new SessionCrafter();
 
 
         briefExplanationMemory.setPadding(false);
@@ -70,6 +77,8 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
 
 
         addClassName("animation-page");
+
+        jwt = sessionCrafter.extractSession("JWT", String.class);
 
     }
 
@@ -103,11 +112,11 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
 
         layout.add(
                 briefExplanationMemory,
-                orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#035afc", Widths.FULL_WIDTH),
-                charts.ordersByStatusChart(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
-                charts.OrderRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
-                charts.topCustomerOrder(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
-                charts.recentOrdersList(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH)
+                orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#035afc", Widths.FULL_WIDTH,jwt),
+                charts.ordersByStatusChart(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH, jwt),
+                charts.OrderRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt),
+                charts.topCustomerOrder(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt),
+                charts.recentOrdersList(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt)
         );
 
         return layout;
@@ -122,11 +131,11 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
 
         layout.add(
                 briefExplanationMemory,
-                orderReportMiniStatCrafter.miniStatHolder(from, to, "#9768EF", Widths.FULL_WIDTH),
-                charts.ordersByStatusChart(from, to,Widths.HALF_WIDTH),
-                charts.OrderRevenueAccordingToMonth(from, to,Widths.HALF_WIDTH),
-                charts.topCustomerOrder(from, to,Widths.HALF_WIDTH),
-                charts.recentOrdersList(from, to,Widths.HALF_WIDTH)
+                orderReportMiniStatCrafter.miniStatHolder(from, to, "#9768EF", Widths.FULL_WIDTH,jwt),
+                charts.ordersByStatusChart(from, to,Widths.HALF_WIDTH,jwt),
+                charts.OrderRevenueAccordingToMonth(from, to,Widths.HALF_WIDTH,jwt),
+                charts.topCustomerOrder(from, to,Widths.HALF_WIDTH,jwt),
+                charts.recentOrdersList(from, to,Widths.HALF_WIDTH,jwt)
         );
 
 

@@ -73,28 +73,28 @@ public class ProductService {
     // report calls
 
     @SneakyThrows
-    public ReportMiniStatHolder getMiniStatsProduct(LocalDate from, LocalDate to){
-        return httpCallLogic.HttpCall("product/getMiniStats", HttpMethod.GET, String.format("%s/%s",from,to), ReportMiniStatHolder.class,true);
+    public ReportMiniStatHolder getMiniStatsProduct(LocalDate from, LocalDate to, String jwt){
+        return httpCallLogic.HttpCallWithJwt("product/getMiniStats", HttpMethod.GET, String.format("%s/%s",from,to), ReportMiniStatHolder.class,true,jwt);
     }
 
     @SneakyThrows
-    public List<GraphDataLongValue> getTopProducts(LocalDate from, LocalDate to,int amountOfData){
-        return Arrays.stream(httpCallLogic.HttpCall("product/getTopProducts", HttpMethod.GET, String.format("%s/%s/%d",from,to,amountOfData), GraphDataLongValue[].class,true)).toList();
+    public List<GraphDataLongValue> getTopProducts(LocalDate from, LocalDate to,int amountOfData, String jwt){
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("product/getTopProducts", HttpMethod.GET, String.format("%s/%s/%d",from,to,amountOfData), GraphDataLongValue[].class,true,jwt)).toList();
     }
 
     @SneakyThrows
-    public List<ProductReportPieChart> getPieChartProductReport(LocalDate from, LocalDate to){
-        return Arrays.stream(httpCallLogic.HttpCall("product/getPieChartProductReport", HttpMethod.GET, String.format("%s/%s",from,to), ProductReportPieChart[].class,true)).toList();
+    public List<ProductReportPieChart> getPieChartProductReport(LocalDate from, LocalDate to, String jwt){
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("product/getPieChartProductReport", HttpMethod.GET, String.format("%s/%s",from,to), ProductReportPieChart[].class,true,jwt)).toList();
     }
 
     @SneakyThrows
-    public List<ProductLowStockList> getLowStockAlerts(LocalDate from, LocalDate to){
-        return Arrays.stream(httpCallLogic.HttpCall("product/getLowStockAlerts", HttpMethod.GET, String.format("%s/%s",from,to), ProductLowStockList[].class,true)).toList();
+    public List<ProductLowStockList> getLowStockAlerts(LocalDate from, LocalDate to, String jwt){
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("product/getLowStockAlerts", HttpMethod.GET, String.format("%s/%s",from,to), ProductLowStockList[].class,true,jwt)).toList();
     }
 
     @SneakyThrows
-    public List<ProductPerformanceReport> getProductPerformance(LocalDate from, LocalDate to){
-        return Arrays.stream(httpCallLogic.HttpCall("product/getProductPerformance", HttpMethod.GET, String.format("%s/%s",from,to), ProductPerformanceReport[].class,true)).toList();
+    public List<ProductPerformanceReport> getProductPerformance(LocalDate from, LocalDate to, String jwt){
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("product/getProductPerformance", HttpMethod.GET, String.format("%s/%s",from,to), ProductPerformanceReport[].class,true,jwt)).toList();
     }
 
 

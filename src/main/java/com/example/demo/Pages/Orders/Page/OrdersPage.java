@@ -336,7 +336,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
                 })
                 .thenAccept(e->{
                     ui.access(() -> {
-                        feedHolder.removeAll();
+                         feedHolder.removeAll();
                          feedHolder.add(ordersLeftSide.orderFeedHolder(e));
                     });
                 });

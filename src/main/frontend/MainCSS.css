@@ -771,29 +771,56 @@ transition:
 
 }
 
-.animated-card:nth-child(1) {
-    animation-delay: 0.15s;
-}
-
-.animated-card:nth-child(2) {
-    animation-delay: 0.25s;
-}
-
-.animated-card:nth-child(3) {
-    animation-delay: 0.35s;
-}
-
-.animated-card:nth-child(4) {
-    animation-delay: 0.45s;
-}
-
-.animated-card:nth-child(5) {
-    animation-delay: 0.55s;
-}
-
-.animated-card:nth-child(6) {
-    animation-delay: 0.65s;
-}
+.animated-card:nth-child(1) { animation-delay: 0.15s; }
+.animated-card:nth-child(2) { animation-delay: 0.25s; }
+.animated-card:nth-child(3) { animation-delay: 0.35s; }
+.animated-card:nth-child(4) { animation-delay: 0.45s; }
+.animated-card:nth-child(5) { animation-delay: 0.55s; }
+.animated-card:nth-child(6) { animation-delay: 0.65s; }
+.animated-card:nth-child(7) { animation-delay: 0.75s; }
+.animated-card:nth-child(8) { animation-delay: 0.85s; }
+.animated-card:nth-child(9) { animation-delay: 0.95s; }
+.animated-card:nth-child(10) { animation-delay: 1.05s; }
+.animated-card:nth-child(11) { animation-delay: 1.15s; }
+.animated-card:nth-child(12) { animation-delay: 1.25s; }
+.animated-card:nth-child(13) { animation-delay: 1.35s; }
+.animated-card:nth-child(14) { animation-delay: 1.45s; }
+.animated-card:nth-child(15) { animation-delay: 1.55s; }
+.animated-card:nth-child(16) { animation-delay: 1.65s; }
+.animated-card:nth-child(17) { animation-delay: 1.75s; }
+.animated-card:nth-child(18) { animation-delay: 1.85s; }
+.animated-card:nth-child(19) { animation-delay: 1.95s; }
+.animated-card:nth-child(20) { animation-delay: 2.05s; }
+.animated-card:nth-child(21) { animation-delay: 2.15s; }
+.animated-card:nth-child(22) { animation-delay: 2.25s; }
+.animated-card:nth-child(23) { animation-delay: 2.35s; }
+.animated-card:nth-child(24) { animation-delay: 2.45s; }
+.animated-card:nth-child(25) { animation-delay: 2.55s; }
+.animated-card:nth-child(26) { animation-delay: 2.65s; }
+.animated-card:nth-child(27) { animation-delay: 2.75s; }
+.animated-card:nth-child(28) { animation-delay: 2.85s; }
+.animated-card:nth-child(29) { animation-delay: 2.95s; }
+.animated-card:nth-child(30) { animation-delay: 3.05s; }
+.animated-card:nth-child(31) { animation-delay: 3.15s; }
+.animated-card:nth-child(32) { animation-delay: 3.25s; }
+.animated-card:nth-child(33) { animation-delay: 3.35s; }
+.animated-card:nth-child(34) { animation-delay: 3.45s; }
+.animated-card:nth-child(35) { animation-delay: 3.55s; }
+.animated-card:nth-child(36) { animation-delay: 3.65s; }
+.animated-card:nth-child(37) { animation-delay: 3.75s; }
+.animated-card:nth-child(38) { animation-delay: 3.85s; }
+.animated-card:nth-child(39) { animation-delay: 3.95s; }
+.animated-card:nth-child(40) { animation-delay: 4.05s; }
+.animated-card:nth-child(41) { animation-delay: 4.15s; }
+.animated-card:nth-child(42) { animation-delay: 4.25s; }
+.animated-card:nth-child(43) { animation-delay: 4.35s; }
+.animated-card:nth-child(44) { animation-delay: 4.45s; }
+.animated-card:nth-child(45) { animation-delay: 4.55s; }
+.animated-card:nth-child(46) { animation-delay: 4.65s; }
+.animated-card:nth-child(47) { animation-delay: 4.75s; }
+.animated-card:nth-child(48) { animation-delay: 4.85s; }
+.animated-card:nth-child(49) { animation-delay: 4.95s; }
+.animated-card:nth-child(50) { animation-delay: 5.05s; }
 
 /*
    comes from left or right

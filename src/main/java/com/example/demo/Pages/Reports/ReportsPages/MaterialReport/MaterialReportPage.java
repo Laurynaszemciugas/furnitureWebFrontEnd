@@ -2,6 +2,7 @@ package com.example.demo.Pages.Reports.ReportsPages.MaterialReport;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Enums.Widths;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Reports.Common.CommonBriefPageExplanation;
@@ -34,6 +35,11 @@ public class MaterialReportPage extends VerticalLayout implements BeforeEnterObs
 
     VerticalLayout briefExplanationMemory = new VerticalLayout();
 
+    SessionCrafter sessionCrafter;
+
+    String jwt;
+
+
     public MaterialReportPage(CommonComponents commonComponents, Common common, MaterialService materialService) {
 
         this.commonComponents = commonComponents;
@@ -45,6 +51,8 @@ public class MaterialReportPage extends VerticalLayout implements BeforeEnterObs
         this.materialService = materialService;
 
         this.charts = new MaterialReportCharts(commonComponents,common,materialService);
+
+        this.sessionCrafter = new SessionCrafter();
 
 
         briefExplanationMemory.setPadding(false);
@@ -61,6 +69,8 @@ public class MaterialReportPage extends VerticalLayout implements BeforeEnterObs
 
         addClassName("animation-page");
 
+        jwt = sessionCrafter.extractSession("JWT", String.class);
+
     }
 
     @Override
@@ -74,6 +84,7 @@ public class MaterialReportPage extends VerticalLayout implements BeforeEnterObs
     }
 
     public HorizontalLayout mainLayout() {
+
 
         biefExplanation.setFromToDateConsumer(e->{
             if(e.getFrom() == null && e.getTo() == null){
@@ -93,11 +104,11 @@ public class MaterialReportPage extends VerticalLayout implements BeforeEnterObs
 
         layout.add(
                 briefExplanationMemory,
-                orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#9768EF", Widths.FULL_WIDTH),
-                charts.ProductByStatusChart(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
-                charts.ProductRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
-                charts.topCustomerOrder(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
-                charts.materialStockMovement(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH)
+                orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#9768EF", Widths.FULL_WIDTH,jwt),
+                charts.ProductByStatusChart(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt),
+                charts.ProductRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt),
+                charts.topCustomerOrder(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt),
+                charts.materialStockMovement(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt)
         );
 
         return layout;
@@ -112,11 +123,11 @@ public class MaterialReportPage extends VerticalLayout implements BeforeEnterObs
 
         layout.add(
                 briefExplanationMemory,
-                orderReportMiniStatCrafter.miniStatHolder(from, to, "#9768EF", Widths.FULL_WIDTH),
-                charts.ProductByStatusChart(from, to,Widths.HALF_WIDTH),
-                charts.ProductRevenueAccordingToMonth(from, to,Widths.HALF_WIDTH),
-                charts.topCustomerOrder(from, to,Widths.HALF_WIDTH),
-                charts.materialStockMovement(from, to,Widths.HALF_WIDTH)
+                orderReportMiniStatCrafter.miniStatHolder(from, to, "#9768EF", Widths.FULL_WIDTH,jwt),
+                charts.ProductByStatusChart(from, to,Widths.HALF_WIDTH,jwt),
+                charts.ProductRevenueAccordingToMonth(from, to,Widths.HALF_WIDTH,jwt),
+                charts.topCustomerOrder(from, to,Widths.HALF_WIDTH,jwt),
+                charts.materialStockMovement(from, to,Widths.HALF_WIDTH,jwt)
         );
 
 

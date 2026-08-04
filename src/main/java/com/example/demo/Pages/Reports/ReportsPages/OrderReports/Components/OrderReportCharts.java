@@ -33,10 +33,10 @@ public class OrderReportCharts {
 
     public Div ordersByStatusChart(
 
-            LocalDate fromDate, LocalDate toDate, Widths widths
+            LocalDate fromDate, LocalDate toDate, Widths widths,String jwt
     ) {
 
-        OrderReportPieChart stuff = ordersService.getReportPagePieChart(fromDate,toDate);
+        OrderReportPieChart stuff = ordersService.getReportPagePieChart(fromDate,toDate,jwt);
 
         long newOrders = stuff.getNewCount();
         long lackOfSupply = stuff.getLackOfSupplyCount();
@@ -352,9 +352,10 @@ public class OrderReportCharts {
     public Div OrderRevenueAccordingToMonth(
             LocalDate fromDate,
             LocalDate toDate,
-            Widths widths
+            Widths widths,
+            String jwt
     ) {
-        List<GraphDataDateValue> list = ordersService.getReportPageLineChart(fromDate,toDate);
+        List<GraphDataDateValue> list = ordersService.getReportPageLineChart(fromDate,toDate,jwt);
 
 
         Div chartDiv = new Div();
@@ -608,9 +609,9 @@ public class OrderReportCharts {
 
 
 
-    public VerticalLayout topCustomerOrder(LocalDate from, LocalDate to, Widths widths){
+    public VerticalLayout topCustomerOrder(LocalDate from, LocalDate to, Widths widths,String jwt){
 
-        List<TopCustomerDto> list = ordersService.getOrderTopCustomer(from,to);
+        List<TopCustomerDto> list = ordersService.getOrderTopCustomer(from,to,jwt);
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
@@ -698,9 +699,9 @@ public class OrderReportCharts {
     }
 
 
-    public VerticalLayout recentOrdersList(LocalDate from, LocalDate to, Widths widths){
+    public VerticalLayout recentOrdersList(LocalDate from, LocalDate to, Widths widths,String jwt){
 
-        List<RecentOrdersReportPage> list = ordersService.getRecentOrderList(from,to);
+        List<RecentOrdersReportPage> list = ordersService.getRecentOrderList(from,to,jwt);
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");

@@ -49,4 +49,12 @@ public class CustomReportService {
 
     }
 
+    @SneakyThrows
+    public void deleteCustomReport(Long id){
+
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("customReport/deleteCustomReport", HttpMethod.GET,id, ErrorResponse.class,true), null,success,true);
+
+    }
+
 }

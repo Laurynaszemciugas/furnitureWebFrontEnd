@@ -44,11 +44,12 @@ public class ProductReportCharts {
     public Div productByCategory(
             LocalDate fromDate,
             LocalDate toDate,
-            Widths widths
+            Widths widths,
+            String jwt
 
     ) {
 
-        List<ProductReportPieChart> data = productService.getPieChartProductReport(fromDate,toDate);
+        List<ProductReportPieChart> data = productService.getPieChartProductReport(fromDate,toDate,jwt);
 
                 Div chartDiv = new Div();
 
@@ -400,12 +401,13 @@ public Div OrderRevenueAccordingToMonth(
         LocalDate fromDate,
         LocalDate toDate,
         String color,
-        Widths widths
+        Widths widths,
+        String jwt
 ) {
 
 
     List<GraphDataLongValue> list =
-            productService.getTopProducts(fromDate, toDate, 5);
+            productService.getTopProducts(fromDate, toDate, 5, jwt);
 
 
     Div chartDiv = new Div();
@@ -587,7 +589,8 @@ public Div OrderRevenueAccordingToMonth(
                     productService.getTopProducts(
                             fromDate,
                             toDate,
-                            e.getValue()
+                            e.getValue(),
+                            jwt
                     );
 
 
@@ -642,9 +645,9 @@ public Div OrderRevenueAccordingToMonth(
 
 
 
-    public VerticalLayout lowStockAlerts(LocalDate from, LocalDate to, Widths widths){
+    public VerticalLayout lowStockAlerts(LocalDate from, LocalDate to, Widths widths,String jwt){
 
-        List<ProductLowStockList> list = productService.getLowStockAlerts(from,to);
+        List<ProductLowStockList> list = productService.getLowStockAlerts(from,to,jwt);
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
@@ -739,9 +742,9 @@ public Div OrderRevenueAccordingToMonth(
     }
 
 
-    public VerticalLayout productPerformance(LocalDate from, LocalDate to, Widths widths){
+    public VerticalLayout productPerformance(LocalDate from, LocalDate to, Widths widths,String jwt){
 
-        List<ProductPerformanceReport> list = productService.getProductPerformance(from,to);
+        List<ProductPerformanceReport> list = productService.getProductPerformance(from,to,jwt);
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");

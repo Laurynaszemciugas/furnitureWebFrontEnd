@@ -2,6 +2,7 @@ package com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.Common.GraphDataDateValue;
 import com.example.demo.ControllerModels.StockMovement.StockMovementGrid;
 import com.example.demo.Enums.Type;
@@ -26,18 +27,25 @@ public class MaterialReportCharts {
     Common common;
     MaterialService materialService;
 
+    SessionCrafter sessionCrafter;
+
+
     public MaterialReportCharts(CommonComponents commonComponents, Common common, MaterialService materialService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.materialService = materialService;
+        this.sessionCrafter = new SessionCrafter();
+
+
+
     }
 
     public Div ProductByStatusChart(
 
-            LocalDate fromDate, LocalDate toDate, Widths widths
+            LocalDate fromDate, LocalDate toDate, Widths widths,String jwt
     ) {
 
-        MaterialReportPieChart stuff = materialService.getReportPagePieChart(fromDate,toDate);
+        MaterialReportPieChart stuff = materialService.getReportPagePieChart(fromDate,toDate,jwt);
 
         long inStock = stuff.getInStockCount();
         long lowStock = stuff.getLowStockCount();
@@ -345,9 +353,10 @@ public class MaterialReportCharts {
     public Div ProductRevenueAccordingToMonth(
             LocalDate fromDate,
             LocalDate toDate,
-            Widths widths
+            Widths widths,
+            String jwt
     ) {
-        List<GraphDataDateValue> list = materialService.getReportPageLineChart(fromDate,toDate);
+        List<GraphDataDateValue> list = materialService.getReportPageLineChart(fromDate,toDate,jwt);
 
 
         Div chartDiv = new Div();
@@ -601,9 +610,9 @@ public class MaterialReportCharts {
 
 
 
-    public VerticalLayout topCustomerOrder(LocalDate from, LocalDate to, Widths widths){
+    public VerticalLayout topCustomerOrder(LocalDate from, LocalDate to, Widths widths,String jwt){
 
-        List<MaterialLowStockGrid> list = materialService.getLowMaterialGrid(from,to);
+        List<MaterialLowStockGrid> list = materialService.getLowMaterialGrid(from,to,jwt);
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
@@ -705,9 +714,9 @@ public class MaterialReportCharts {
     }
 
 
-    public VerticalLayout materialStockMovement(LocalDate from, LocalDate to, Widths widths){
+    public VerticalLayout materialStockMovement(LocalDate from, LocalDate to, Widths widths,String jwt){
 
-        List<StockMovementGrid> list = materialService.getMaterialMovement(from,to);
+        List<StockMovementGrid> list = materialService.getMaterialMovement(from,to,jwt);
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");

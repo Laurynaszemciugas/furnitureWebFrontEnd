@@ -2,6 +2,7 @@ package com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.CommonDtos.CreateReport.Report;
 import com.example.demo.ControllerModels.CommonDtos.CreateReport.ReportItems;
 import com.example.demo.ControllerModels.Orders.OrderReportPieChart;
@@ -19,6 +20,7 @@ import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.plaf.PanelUI;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class CustomReportPageBuilder {
@@ -51,6 +54,8 @@ public class CustomReportPageBuilder {
     OrdersService ordersService;
     ProductService productService;
     EmployeeService employeeService;
+    SessionCrafter sessionCrafter;
+
 
 
     public CustomReportPageBuilder(CommonComponents commonComponents, Common common, MaterialService materialService, OrdersService ordersService, ProductService productService, EmployeeService employeeService) {
@@ -70,6 +75,9 @@ public class CustomReportPageBuilder {
         this.productReportCharts = new ProductReportCharts(commonComponents,common,productService);
         this.productReportMiniStatCrafter = new ProductReportMiniStatCrafter(commonComponents,common,productService);
 
+        this.sessionCrafter = new SessionCrafter();
+
+
     }
 
 
@@ -78,7 +86,22 @@ public class CustomReportPageBuilder {
 
     public void updateScene(HorizontalLayout layout, String color, List<ReportItems> reportItemsList){
 
+
+
+        HorizontalLayout holder = new HorizontalLayout();
+        holder.setWidthFull();
+        holder.setPadding(false);
+        holder.addClassName("layout-flex");
+
+        UI ui = UI.getCurrent();
+        String jwt = sessionCrafter.extractSession("JWT", String.class);
+
         layout.removeAll();
+        layout.add(commonComponents.shimmer(5));
+
+        CompletableFuture.runAsync(() -> {
+
+
 
         for(var s : reportItemsList){
 
@@ -89,35 +112,40 @@ public class CustomReportPageBuilder {
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
                                 color,
-                                s.getWidth()
+                                s.getWidth(),
+                                jwt
                         );
 
                 case ORDER_BY_STATUS ->
                         orderReportCharts.ordersByStatusChart(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth()
+                                s.getWidth(),
+                                jwt
                         );
 
                 case ORDER_VALUE_OVER_TIME ->
                         orderReportCharts.OrderRevenueAccordingToMonth(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth()
+                                s.getWidth(),
+                                jwt
                         );
 
                 case ORDER_TOP_CUSTOMERS ->
                         orderReportCharts.topCustomerOrder(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth()
+                                s.getWidth(),
+                                jwt
                         );
 
                 case ORDER_RECENT_ORDERS ->
                         orderReportCharts.recentOrdersList(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth()
+                                s.getWidth(),
+                                jwt
                         );
 
                 case PRODUCT_MINI_STATS ->
@@ -125,7 +153,8 @@ public class CustomReportPageBuilder {
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
                                 color,
-                                s.getWidth()
+                                s.getWidth(),
+                                jwt
                         );
 
                 case PRODUCT_TOP_SELLING_PRODUCTS ->
@@ -133,28 +162,32 @@ public class CustomReportPageBuilder {
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
                                 color,
-                                s.getWidth()
+                                s.getWidth(),
+                                jwt
                         );
 
                 case PRODUCT_BY_CATEGORY ->
                         productReportCharts.productByCategory(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth()
+                                s.getWidth(),
+                                jwt
                         );
 
                 case PRODUCT_LOW_STOCK ->
                         productReportCharts.lowStockAlerts(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth()
+                                s.getWidth(),
+                                jwt
                         );
 
                 case PRODUCT_PERFORMANCE ->
                         productReportCharts.productPerformance(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth()
+                                s.getWidth(),
+                                jwt
                         );
 
                 case MATERIAL_MINI_STATS ->
@@ -163,7 +196,8 @@ public class CustomReportPageBuilder {
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
                                 color,
-                                s.getWidth()
+                                s.getWidth(),
+                                jwt
                         );
 
                 case MATERIAL_BY_STATUS ->
@@ -171,7 +205,8 @@ public class CustomReportPageBuilder {
                         .ProductByStatusChart(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth()
+                                s.getWidth(),
+                                jwt
                         );
 
                 case MATERIAL_USAGE_OVERTIME ->
@@ -179,7 +214,8 @@ public class CustomReportPageBuilder {
                                 .ProductRevenueAccordingToMonth(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth()
+                                s.getWidth(),
+                                        jwt
                         );
 
                 case MATERIAL_LOW_STOCK ->
@@ -187,7 +223,8 @@ public class CustomReportPageBuilder {
                         .topCustomerOrder(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth()
+                                s.getWidth(),
+                                jwt
                         );
 
                 case MATERIAL_RECENT_MOVEMENT ->
@@ -195,19 +232,30 @@ public class CustomReportPageBuilder {
                         .materialStockMovement(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth()
+                                s.getWidth(),
+                                jwt
                         );
             };
-            layoutAdd(component, layout, s.getWidth());
+            layoutAdd(component, holder , s.getWidth());
 
         }
+
+        common.timer(250);
+
+            ui.access(() -> {
+                layout.removeAll();
+                layout.add(holder);
+            });
+
+        });
 
 
     }
 
 
 
-    public void layoutAdd(Component component, HorizontalLayout layout, Widths widths){
+    public void layoutAdd(Component component,HorizontalLayout holder, Widths widths){
+
 
         component.getStyle().set("position","relative");
         Span span = new Span(widths.getName());
@@ -221,13 +269,14 @@ public class CustomReportPageBuilder {
         span.addClassName("tag-badge");
 
 
+
         if(component instanceof HasComponents h){
             if(h instanceof Div d) {
-                layout.add(wrapperForDiv(d,span,widths));
+                holder.add(wrapperForDiv(d,span,widths));
             }
             else{
                 h.add(span);
-                layout.add(
+                holder.add(
                         component
                 );
             }

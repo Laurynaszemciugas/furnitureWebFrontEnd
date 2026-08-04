@@ -92,37 +92,37 @@ public class MaterialService {
 
 
     @SneakyThrows
-    public ReportMiniStatHolder getProductMiniStatData(LocalDate fromDate, LocalDate toDate) {
+    public ReportMiniStatHolder getProductMiniStatData(LocalDate fromDate, LocalDate toDate, String jwt) {
 
-        return httpCallLogic.HttpCall("material/getMaterialMiniStatData", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), ReportMiniStatHolder.class,true);
-
-    }
-
-    @SneakyThrows
-    public MaterialReportPieChart getReportPagePieChart(LocalDate fromDate, LocalDate toDate) {
-
-        return httpCallLogic.HttpCall("material/getMaterialByStatus", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), MaterialReportPieChart.class,true);
+        return httpCallLogic.HttpCallWithJwt("material/getMaterialMiniStatData", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), ReportMiniStatHolder.class,true,jwt);
 
     }
 
     @SneakyThrows
-    public List<GraphDataDateValue> getReportPageLineChart(LocalDate fromDate, LocalDate toDate) {
+    public MaterialReportPieChart getReportPagePieChart(LocalDate fromDate, LocalDate toDate, String jwt) {
 
-        return Arrays.stream(httpCallLogic.HttpCall("material/getMaterialByLineChart", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), GraphDataDateValue[].class,true)).toList();
-
-    }
-
-    @SneakyThrows
-    public List<MaterialLowStockGrid> getLowMaterialGrid(LocalDate fromDate, LocalDate toDate) {
-
-        return Arrays.stream(httpCallLogic.HttpCall("material/getMaterialLowStock", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), MaterialLowStockGrid[].class,true)).toList();
+        return httpCallLogic.HttpCallWithJwt("material/getMaterialByStatus", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), MaterialReportPieChart.class,true,jwt);
 
     }
 
     @SneakyThrows
-    public List<StockMovementGrid> getMaterialMovement(LocalDate fromDate, LocalDate toDate) {
+    public List<GraphDataDateValue> getReportPageLineChart(LocalDate fromDate, LocalDate toDate, String jwt) {
 
-        return Arrays.stream(httpCallLogic.HttpCall("material/getMaterialMovement", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), StockMovementGrid[].class,true)).toList();
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("material/getMaterialByLineChart", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), GraphDataDateValue[].class,true,jwt)).toList();
+
+    }
+
+    @SneakyThrows
+    public List<MaterialLowStockGrid> getLowMaterialGrid(LocalDate fromDate, LocalDate toDate, String jwt) {
+
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("material/getMaterialLowStock", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), MaterialLowStockGrid[].class,true,jwt)).toList();
+
+    }
+
+    @SneakyThrows
+    public List<StockMovementGrid> getMaterialMovement(LocalDate fromDate, LocalDate toDate, String jwt) {
+
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("material/getMaterialMovement", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), StockMovementGrid[].class,true,jwt)).toList();
 
     }
 

@@ -118,37 +118,37 @@ public class OrdersService {
 
     // Order report
     @SneakyThrows
-    public OrderReportPieChart getReportPagePieChart(LocalDate fromDate, LocalDate toDate) {
+    public OrderReportPieChart getReportPagePieChart(LocalDate fromDate, LocalDate toDate,String jwt) {
 
-        return httpCallLogic.HttpCall("order/getOrderByStatus", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), OrderReportPieChart.class,true);
-
-    }
-
-    @SneakyThrows
-    public List<GraphDataDateValue> getReportPageLineChart(LocalDate fromDate, LocalDate toDate) {
-
-        return Arrays.stream(httpCallLogic.HttpCall("order/getOrderByLineChart", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), GraphDataDateValue[].class,true)).toList();
+        return httpCallLogic.HttpCallWithJwt("order/getOrderByStatus", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), OrderReportPieChart.class,true,jwt);
 
     }
 
     @SneakyThrows
-    public ReportMiniStatHolder getOrderMiniStatData(LocalDate fromDate, LocalDate toDate) {
+    public List<GraphDataDateValue> getReportPageLineChart(LocalDate fromDate, LocalDate toDate,String jwt) {
 
-        return httpCallLogic.HttpCall("order/getOrderMiniStatData", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), ReportMiniStatHolder.class,true);
-
-    }
-
-    @SneakyThrows
-    public List<TopCustomerDto> getOrderTopCustomer(LocalDate fromDate, LocalDate toDate) {
-
-        return Arrays.stream(httpCallLogic.HttpCall("order/getOrderTopConsumers", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), TopCustomerDto[].class,true)).toList();
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("order/getOrderByLineChart", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), GraphDataDateValue[].class,true,jwt)).toList();
 
     }
 
     @SneakyThrows
-    public List<RecentOrdersReportPage> getRecentOrderList(LocalDate fromDate, LocalDate toDate) {
+    public ReportMiniStatHolder getOrderMiniStatData(LocalDate fromDate, LocalDate toDate,String jwt) {
 
-        return Arrays.stream(httpCallLogic.HttpCall("order/getRecentOrders", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), RecentOrdersReportPage[].class,true)).toList();
+        return httpCallLogic.HttpCallWithJwt("order/getOrderMiniStatData", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), ReportMiniStatHolder.class,true,jwt);
+
+    }
+
+    @SneakyThrows
+    public List<TopCustomerDto> getOrderTopCustomer(LocalDate fromDate, LocalDate toDate,String jwt) {
+
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("order/getOrderTopConsumers", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), TopCustomerDto[].class,true,jwt)).toList();
+
+    }
+
+    @SneakyThrows
+    public List<RecentOrdersReportPage> getRecentOrderList(LocalDate fromDate, LocalDate toDate,String jwt) {
+
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("order/getRecentOrders", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), RecentOrdersReportPage[].class,true,jwt)).toList();
 
     }
 

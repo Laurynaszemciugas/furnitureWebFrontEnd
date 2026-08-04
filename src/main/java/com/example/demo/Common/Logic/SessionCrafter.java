@@ -2,6 +2,7 @@ package com.example.demo.Common.Logic;
 
 import com.vaadin.flow.server.VaadinSession;
 
+
 public class SessionCrafter {
 
     // create session

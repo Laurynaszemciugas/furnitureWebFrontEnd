@@ -315,6 +315,57 @@ public class Common {
 
     }
 
+    public void actualDeleteConfirmation(String productName) {
+        ConfirmDialog dialog = new ConfirmDialog();
+
+        dialog.setHeader("Warning (DELETE ACTION)");
+
+        VerticalLayout content = new VerticalLayout();
+        content.setSpacing(false);
+        content.setPadding(false);
+
+        Span line = new Span(String.format("%s '%s' %s", "Please enter ", productName.toUpperCase(), "to remove a selected item"));
+        line.getStyle().set("color", "red");
+
+        Span lilWarning = commonComponents.spanCrafterWordNoHide("Deleting selected item this action cannot be reversed","stat-title");
+
+        TextField confirmName = new TextField("Enter product name");
+        confirmName.setWidthFull();
+
+
+
+        content.add(line,
+                confirmName,
+                lilWarning
+        );
+
+
+        dialog.setCancelable(true);
+        dialog.setConfirmText("Remove");
+        dialog.setCancelText("Go back");
+
+
+        dialog.addConfirmListener(event -> {
+            if (confirmName.getValue().equals(productName.toUpperCase())) {
+                booleanConsumer.accept(true);
+
+            } else {
+                commonComponents.showNotification("Selected item was not removed verification failed ", 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.ERROR);
+                booleanConsumer.accept(false);
+            }
+        });
+
+        dialog.addCancelListener(event -> {
+        });
+
+        dialog.add(content);
+
+        dialog.open();
+
+    }
+
+
+
     public void timer(int time){
         try {
             Thread.sleep(time);

@@ -29,9 +29,9 @@ public class OrderReportMiniStatCrafter {
         this.ordersService = ordersService;
     }
 
-    public HorizontalLayout miniStatHolder(LocalDate fromDate, LocalDate toDate, String color, Widths widths){
+    public HorizontalLayout miniStatHolder(LocalDate fromDate, LocalDate toDate, String color, Widths widths, String jwt){
 
-        ReportMiniStatHolder items = ordersService.getOrderMiniStatData(fromDate,toDate);
+        ReportMiniStatHolder items = ordersService.getOrderMiniStatData(fromDate,toDate, jwt);
 
         HorizontalLayout miniStatHolders = new HorizontalLayout();
         miniStatHolders.setWidth(widths.getWidth());

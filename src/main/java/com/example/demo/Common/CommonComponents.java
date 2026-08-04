@@ -256,6 +256,26 @@ public class CommonComponents {
         return  emptyView;
     }
 
+    public VerticalLayout noDataFoundImproved(String title,String buttonName,String navigateTo){
+
+        Image image = new Image("dataNotFound.png","s");
+        image.setWidth("150px");
+        image.setHeight("200px");
+
+        Button navigate = buttonThemeAndIcon(buttonName,navigateTo,ButtonVariant.LUMO_PRIMARY,VaadinIcon.PLUS,"white");
+        navigate.addThemeVariants(ButtonVariant.PRIMARY);
+
+
+
+        VerticalLayout emptyView = new VerticalLayout(spanCrafterWordNoHide(title,"stat-value"),image,navigate);
+        emptyView.setAlignItems(FlexComponent.Alignment.CENTER);
+        emptyView.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        emptyView.setSizeFull();
+
+
+        return  emptyView;
+    }
+
     public void showNotification(String text, int duration, Notification.Position position,NotificationVariant variant){
         Notification notification = Notification.show(text);
         notification.setDuration(duration);

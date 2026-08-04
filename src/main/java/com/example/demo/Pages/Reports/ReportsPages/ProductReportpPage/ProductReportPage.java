@@ -2,6 +2,7 @@ package com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Enums.Widths;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Reports.Common.CommonBriefPageExplanation;
@@ -37,6 +38,10 @@ public class ProductReportPage extends VerticalLayout implements BeforeEnterObse
 
     HorizontalLayout layout = new HorizontalLayout();
 
+    SessionCrafter sessionCrafter;
+
+    String jwt;
+
     public ProductReportPage(CommonComponents commonComponents, Common common, ProductService productService) {
 
         this.commonComponents = commonComponents;
@@ -48,6 +53,8 @@ public class ProductReportPage extends VerticalLayout implements BeforeEnterObse
         this.productService = productService;
 
         this.charts = new ProductReportCharts(commonComponents,common,productService);
+
+        this.sessionCrafter = new SessionCrafter();
 
 
         briefExplanationMemory.setPadding(false);
@@ -63,6 +70,8 @@ public class ProductReportPage extends VerticalLayout implements BeforeEnterObse
 
 
         addClassName("animation-page");
+
+        jwt = sessionCrafter.extractSession("JWT", String.class);
 
     }
 
@@ -96,11 +105,11 @@ public class ProductReportPage extends VerticalLayout implements BeforeEnterObse
 
         layout.add(
                 briefExplanationMemory,
-                productReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#47B25D", Widths.FULL_WIDTH),
-                charts.OrderRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),"#47B25D",Widths.HALF_WIDTH),
-                charts.productByCategory(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
-                charts.lowStockAlerts(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH),
-                charts.productPerformance(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH)
+                productReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#47B25D", Widths.FULL_WIDTH,jwt),
+                charts.OrderRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),"#47B25D",Widths.HALF_WIDTH,jwt),
+                charts.productByCategory(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt),
+                charts.lowStockAlerts(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt),
+                charts.productPerformance(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt)
         );
 
         return layout;
@@ -115,11 +124,11 @@ public class ProductReportPage extends VerticalLayout implements BeforeEnterObse
 
         layout.add(
                 briefExplanationMemory,
-                productReportMiniStatCrafter.miniStatHolder(from, to, "#47B25D", Widths.FULL_WIDTH),
-                charts.OrderRevenueAccordingToMonth(from, to,"#47B25D",Widths.HALF_WIDTH),
-                charts.productByCategory(from, to,Widths.HALF_WIDTH),
-                charts.lowStockAlerts(from, to,Widths.HALF_WIDTH),
-                charts.productPerformance(from, to,Widths.HALF_WIDTH)
+                productReportMiniStatCrafter.miniStatHolder(from, to, "#47B25D", Widths.FULL_WIDTH,jwt),
+                charts.OrderRevenueAccordingToMonth(from, to,"#47B25D",Widths.HALF_WIDTH,jwt),
+                charts.productByCategory(from, to,Widths.HALF_WIDTH,jwt),
+                charts.lowStockAlerts(from, to,Widths.HALF_WIDTH,jwt),
+                charts.productPerformance(from, to,Widths.HALF_WIDTH,jwt)
         );
 
 
