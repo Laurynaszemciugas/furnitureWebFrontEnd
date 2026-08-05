@@ -42,7 +42,7 @@ public class MaterialReportCharts {
 
     public Div ProductByStatusChart(
 
-            LocalDate fromDate, LocalDate toDate, Widths widths,String jwt
+            LocalDate fromDate, LocalDate toDate, String widths,String jwt
     ) {
 
         MaterialReportPieChart stuff = materialService.getReportPagePieChart(fromDate,toDate,jwt);
@@ -55,7 +55,7 @@ public class MaterialReportCharts {
 
         Div chartDiv = new Div();
 
-        chartDiv.setWidth(widths.getWidth());
+        chartDiv.setWidth(widths);
 
         chartDiv.setMinHeight("480px");
 
@@ -353,7 +353,7 @@ public class MaterialReportCharts {
     public Div ProductRevenueAccordingToMonth(
             LocalDate fromDate,
             LocalDate toDate,
-            Widths widths,
+            String widths,
             String jwt
     ) {
         List<GraphDataDateValue> list = materialService.getReportPageLineChart(fromDate,toDate,jwt);
@@ -361,7 +361,7 @@ public class MaterialReportCharts {
 
         Div chartDiv = new Div();
 
-        chartDiv.setWidth(widths.getWidth());
+        chartDiv.setWidth(widths);
         chartDiv.setHeight("480px");
 
         chartDiv.getStyle()
@@ -610,14 +610,14 @@ public class MaterialReportCharts {
 
 
 
-    public VerticalLayout topCustomerOrder(LocalDate from, LocalDate to, Widths widths,String jwt){
+    public VerticalLayout topCustomerOrder(LocalDate from, LocalDate to, String widths,String jwt){
 
         List<MaterialLowStockGrid> list = materialService.getLowMaterialGrid(from,to,jwt);
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
 
-        v.setWidth(widths.getWidth());
+        v.setWidth(widths);
 
         Span span = commonComponents.spanCrafter("Low materials","activityFeed-name");
 
@@ -714,14 +714,14 @@ public class MaterialReportCharts {
     }
 
 
-    public VerticalLayout materialStockMovement(LocalDate from, LocalDate to, Widths widths,String jwt){
+    public VerticalLayout materialStockMovement(LocalDate from, LocalDate to, String widths,String jwt){
 
         List<StockMovementGrid> list = materialService.getMaterialMovement(from,to,jwt);
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
 
-        v.setWidth(widths.getWidth());
+        v.setWidth(widths);
 
         Span span = commonComponents.spanCrafter("Recent orders summary","activityFeed-name");
 

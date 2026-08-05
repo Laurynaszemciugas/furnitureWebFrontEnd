@@ -44,7 +44,7 @@ public class ProductReportCharts {
     public Div productByCategory(
             LocalDate fromDate,
             LocalDate toDate,
-            Widths widths,
+            String widths,
             String jwt
 
     ) {
@@ -55,7 +55,7 @@ public class ProductReportCharts {
 
 
 
-        chartDiv.setWidth(widths.getWidth());
+        chartDiv.setWidth(widths);
 
         chartDiv.setMinHeight("480px");
 
@@ -401,7 +401,7 @@ public Div OrderRevenueAccordingToMonth(
         LocalDate fromDate,
         LocalDate toDate,
         String color,
-        Widths widths,
+        String widths,
         String jwt
 ) {
 
@@ -413,7 +413,7 @@ public Div OrderRevenueAccordingToMonth(
     Div chartDiv = new Div();
 
 
-    chartDiv.setWidth(widths.getWidth());
+    chartDiv.setWidth(widths);
     chartDiv.setHeight("480px");
 
 
@@ -645,14 +645,14 @@ public Div OrderRevenueAccordingToMonth(
 
 
 
-    public VerticalLayout lowStockAlerts(LocalDate from, LocalDate to, Widths widths,String jwt){
+    public VerticalLayout lowStockAlerts(LocalDate from, LocalDate to, String widths,String jwt){
 
         List<ProductLowStockList> list = productService.getLowStockAlerts(from,to,jwt);
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
 
-        v.setWidth(widths.getWidth());
+        v.setWidth(widths);
 
         Span span = commonComponents.spanCrafter("Low stock alerts","activityFeed-name");
 
@@ -742,14 +742,14 @@ public Div OrderRevenueAccordingToMonth(
     }
 
 
-    public VerticalLayout productPerformance(LocalDate from, LocalDate to, Widths widths,String jwt){
+    public VerticalLayout productPerformance(LocalDate from, LocalDate to, String widths,String jwt){
 
         List<ProductPerformanceReport> list = productService.getProductPerformance(from,to,jwt);
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
 
-        v.setWidth(widths.getWidth());
+        v.setWidth(widths);
 
         Span span = commonComponents.spanCrafter("Product performance","activityFeed-name");
 

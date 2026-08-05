@@ -105,11 +105,11 @@ public class ProductReportPage extends VerticalLayout implements BeforeEnterObse
 
         layout.add(
                 briefExplanationMemory,
-                productReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#47B25D", Widths.FULL_WIDTH,jwt),
-                charts.OrderRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),"#47B25D",Widths.HALF_WIDTH,jwt),
-                charts.productByCategory(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt),
-                charts.lowStockAlerts(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt),
-                charts.productPerformance(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt)
+                productReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#47B25D", Widths.FULL_WIDTH.getWidth(),jwt),
+                charts.OrderRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),"#47B25D",Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.productByCategory(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.lowStockAlerts(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.productPerformance(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH.getWidth(),jwt)
         );
 
         return layout;
@@ -124,11 +124,11 @@ public class ProductReportPage extends VerticalLayout implements BeforeEnterObse
 
         layout.add(
                 briefExplanationMemory,
-                productReportMiniStatCrafter.miniStatHolder(from, to, "#47B25D", Widths.FULL_WIDTH,jwt),
-                charts.OrderRevenueAccordingToMonth(from, to,"#47B25D",Widths.HALF_WIDTH,jwt),
-                charts.productByCategory(from, to,Widths.HALF_WIDTH,jwt),
-                charts.lowStockAlerts(from, to,Widths.HALF_WIDTH,jwt),
-                charts.productPerformance(from, to,Widths.HALF_WIDTH,jwt)
+                productReportMiniStatCrafter.miniStatHolder(from, to, "#47B25D", Widths.FULL_WIDTH.getWidth(),jwt),
+                charts.OrderRevenueAccordingToMonth(from, to,"#47B25D",Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.productByCategory(from, to,Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.lowStockAlerts(from, to,Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.productPerformance(from, to,Widths.HALF_WIDTH.getWidth(),jwt)
         );
 
 

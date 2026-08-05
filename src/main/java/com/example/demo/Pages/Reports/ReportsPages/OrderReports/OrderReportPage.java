@@ -113,10 +113,10 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
         layout.add(
                 briefExplanationMemory,
                 orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#035afc", Widths.FULL_WIDTH.getWidth(),jwt),
-                charts.ordersByStatusChart(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH, jwt),
-                charts.OrderRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt),
-                charts.topCustomerOrder(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt),
-                charts.recentOrdersList(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt)
+                charts.ordersByStatusChart(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH.getWidth(), jwt),
+                charts.OrderRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.topCustomerOrder(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.recentOrdersList(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH.getWidth(),jwt)
         );
 
         return layout;
@@ -132,10 +132,10 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
         layout.add(
                 briefExplanationMemory,
                 orderReportMiniStatCrafter.miniStatHolder(from, to, "#9768EF", Widths.FULL_WIDTH.getWidth(),jwt),
-                charts.ordersByStatusChart(from, to,Widths.HALF_WIDTH,jwt),
-                charts.OrderRevenueAccordingToMonth(from, to,Widths.HALF_WIDTH,jwt),
-                charts.topCustomerOrder(from, to,Widths.HALF_WIDTH,jwt),
-                charts.recentOrdersList(from, to,Widths.HALF_WIDTH,jwt)
+                charts.ordersByStatusChart(from, to,Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.OrderRevenueAccordingToMonth(from, to,Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.topCustomerOrder(from, to,Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.recentOrdersList(from, to,Widths.HALF_WIDTH.getWidth(),jwt)
         );
 
 

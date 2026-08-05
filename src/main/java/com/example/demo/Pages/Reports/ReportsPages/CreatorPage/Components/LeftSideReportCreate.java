@@ -63,6 +63,7 @@ public class LeftSideReportCreate {
 
 
     Consumer<Report> reportAddedEdited;
+    HorizontalLayout rightMemory = new HorizontalLayout();
 
 
     public LeftSideReportCreate(CommonComponents commonComponents, Common common,CustomReportPageBuilder customReportPageBuilder) {
@@ -75,6 +76,8 @@ public class LeftSideReportCreate {
         binderCheck();
 
         reportGrid.setHeight("500px");
+
+        updateChangeOnCustomWidth();
 
     }
 
@@ -137,6 +140,7 @@ public class LeftSideReportCreate {
                         reportItems.setWidth(s.getWidth());
                         reportItems.setWidget(s.getWidget());
                         reportItems.setCustomId(s.getCustomId());
+                        reportItems.setUserPreferredWidth(s.getUserPreferredWidth());
 
                         reportItemsList.add(
                                 reportItems
@@ -172,6 +176,7 @@ public class LeftSideReportCreate {
 
         VerticalLayout v = new VerticalLayout();
 
+        rightMemory = rightSide;
 
 
         v.setWidthFull();
@@ -355,12 +360,13 @@ public class LeftSideReportCreate {
             });
 
 
-            Component sizeModification;
+            VerticalLayout sizeActions = new VerticalLayout();
             if(e.getWidth().equals(Widths.CUSTOM)){
                 IntegerField integerField = new IntegerField();
                 integerField.setStepButtonsVisible(true);
                 integerField.setStep(100);
-                sizeModification = integerField;
+                integerField.setValue(e.getUserPreferredWidth().equals("auto") ? null : Integer.valueOf(e.getUserPreferredWidth().replace("px","")));
+
 
                 integerField.addValueChangeListener(eeee->{
                     e.setUserPreferredWidth(eeee.getValue() + "px");
@@ -368,16 +374,23 @@ public class LeftSideReportCreate {
                     customReportPageBuilder.updateScene(rightSide,colorPicker.getValue(),report.getReportItemsList());
                 });
 
+                sizeActions.add(
+                        integerField,
+                        widthsComboBox
+                );
+
             }
             else{
-                sizeModification = widthsComboBox;
+                sizeActions.add(
+                        widthsComboBox
+                );
                 e.setWidthIsStatic(true);
             }
 
 
 
             h.add(
-                    sizeModification,
+                    sizeActions,
                     increaseIndex,
                     decreaseIndex,
                     removeItem
@@ -521,6 +534,24 @@ public class LeftSideReportCreate {
 
     public void updateGrid(){
         reportGrid.setItems(report.getReportItemsList());
+    }
+
+    public void updateChangeOnCustomWidth(){
+        customReportPageBuilder.setCustomIdConsumer(e->{
+
+
+            for(var s : report.getReportItemsList()){
+                if(s.getCustomId().equals(e.getCustomId())){
+                    s.setUserPreferredWidth(e.getWidthPX());
+
+                }
+            }
+
+            updateGrid();
+            customReportPageBuilder.updateScene(rightMemory, colorPicker.getValue(), report.getReportItemsList());
+
+
+        });
     }
 
 

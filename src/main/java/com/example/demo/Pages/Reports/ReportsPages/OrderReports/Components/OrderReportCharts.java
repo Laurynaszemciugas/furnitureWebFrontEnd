@@ -33,7 +33,7 @@ public class OrderReportCharts {
 
     public Div ordersByStatusChart(
 
-            LocalDate fromDate, LocalDate toDate, Widths widths,String jwt
+            LocalDate fromDate, LocalDate toDate, String widths,String jwt
     ) {
 
         OrderReportPieChart stuff = ordersService.getReportPagePieChart(fromDate,toDate,jwt);
@@ -49,7 +49,7 @@ public class OrderReportCharts {
         Div chartDiv = new Div();
 
 
-        chartDiv.setWidth(widths.getWidth());
+        chartDiv.setWidth(widths);
 
         chartDiv.setMinHeight("480px");
 
@@ -352,7 +352,7 @@ public class OrderReportCharts {
     public Div OrderRevenueAccordingToMonth(
             LocalDate fromDate,
             LocalDate toDate,
-            Widths widths,
+            String widths,
             String jwt
     ) {
         List<GraphDataDateValue> list = ordersService.getReportPageLineChart(fromDate,toDate,jwt);
@@ -360,7 +360,7 @@ public class OrderReportCharts {
 
         Div chartDiv = new Div();
 
-        chartDiv.setWidth(widths.getWidth());
+        chartDiv.setWidth(widths);
         chartDiv.setHeight("480px");
 
         chartDiv.getStyle()
@@ -609,14 +609,14 @@ public class OrderReportCharts {
 
 
 
-    public VerticalLayout topCustomerOrder(LocalDate from, LocalDate to, Widths widths,String jwt){
+    public VerticalLayout topCustomerOrder(LocalDate from, LocalDate to, String widths,String jwt){
 
         List<TopCustomerDto> list = ordersService.getOrderTopCustomer(from,to,jwt);
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
 
-        v.setWidth(widths.getWidth());
+        v.setWidth(widths);
 
         Span span = commonComponents.spanCrafter("Top customers","activityFeed-name");
 
@@ -699,14 +699,14 @@ public class OrderReportCharts {
     }
 
 
-    public VerticalLayout recentOrdersList(LocalDate from, LocalDate to, Widths widths,String jwt){
+    public VerticalLayout recentOrdersList(LocalDate from, LocalDate to, String widths,String jwt){
 
         List<RecentOrdersReportPage> list = ordersService.getRecentOrderList(from,to,jwt);
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
 
-        v.setWidth(widths.getWidth());
+        v.setWidth(widths);
 
         Span span = commonComponents.spanCrafter("Recent orders summary","activityFeed-name");
 

@@ -104,11 +104,11 @@ public class MaterialReportPage extends VerticalLayout implements BeforeEnterObs
 
         layout.add(
                 briefExplanationMemory,
-                orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#9768EF", Widths.FULL_WIDTH,jwt),
-                charts.ProductByStatusChart(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt),
-                charts.ProductRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt),
-                charts.topCustomerOrder(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt),
-                charts.materialStockMovement(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH,jwt)
+                orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#9768EF", Widths.FULL_WIDTH.getWidth(),jwt),
+                charts.ProductByStatusChart(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.ProductRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.topCustomerOrder(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.materialStockMovement(common.currentMonthStart(), common.nextMonthDate(),Widths.HALF_WIDTH.getWidth(),jwt)
         );
 
         return layout;
@@ -123,11 +123,11 @@ public class MaterialReportPage extends VerticalLayout implements BeforeEnterObs
 
         layout.add(
                 briefExplanationMemory,
-                orderReportMiniStatCrafter.miniStatHolder(from, to, "#9768EF", Widths.FULL_WIDTH,jwt),
-                charts.ProductByStatusChart(from, to,Widths.HALF_WIDTH,jwt),
-                charts.ProductRevenueAccordingToMonth(from, to,Widths.HALF_WIDTH,jwt),
-                charts.topCustomerOrder(from, to,Widths.HALF_WIDTH,jwt),
-                charts.materialStockMovement(from, to,Widths.HALF_WIDTH,jwt)
+                orderReportMiniStatCrafter.miniStatHolder(from, to, "#9768EF", Widths.FULL_WIDTH.getWidth(),jwt),
+                charts.ProductByStatusChart(from, to,Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.ProductRevenueAccordingToMonth(from, to,Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.topCustomerOrder(from, to,Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.materialStockMovement(from, to,Widths.HALF_WIDTH.getWidth(),jwt)
         );
 
 

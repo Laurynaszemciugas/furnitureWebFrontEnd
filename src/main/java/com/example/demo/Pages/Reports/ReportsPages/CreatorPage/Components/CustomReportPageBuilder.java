@@ -8,6 +8,7 @@ import com.example.demo.ControllerModels.CommonDtos.CreateReport.ReportItems;
 import com.example.demo.ControllerModels.Orders.OrderReportPieChart;
 import com.example.demo.Enums.Widths;
 import com.example.demo.Pages.Reports.Common.ReportsMiniStatCrafter;
+import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.DTOS.ReportResizedData;
 import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components.MaterialReportCharts;
 import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components.MaterialReportMiniStatCrafter;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.OrderReportCharts;
@@ -18,20 +19,21 @@ import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.example.demo.Services.Material.MaterialService;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.Products.ProductService;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasComponents;
-import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import javax.swing.plaf.PanelUI;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 @Service
+@Setter
 public class CustomReportPageBuilder {
 
     // components required to build UI
@@ -56,6 +58,8 @@ public class CustomReportPageBuilder {
     EmployeeService employeeService;
     SessionCrafter sessionCrafter;
 
+
+    Consumer<ReportResizedData> customIdConsumer;
 
 
     public CustomReportPageBuilder(CommonComponents commonComponents, Common common, MaterialService materialService, OrdersService ordersService, ProductService productService, EmployeeService employeeService) {
@@ -120,7 +124,7 @@ public class CustomReportPageBuilder {
                         orderReportCharts.ordersByStatusChart(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth(),
+                                s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
@@ -128,7 +132,7 @@ public class CustomReportPageBuilder {
                         orderReportCharts.OrderRevenueAccordingToMonth(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth(),
+                                s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
@@ -136,7 +140,7 @@ public class CustomReportPageBuilder {
                         orderReportCharts.topCustomerOrder(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth(),
+                                s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
@@ -144,7 +148,7 @@ public class CustomReportPageBuilder {
                         orderReportCharts.recentOrdersList(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth(),
+                                s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
@@ -153,7 +157,7 @@ public class CustomReportPageBuilder {
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
                                 color,
-                                s.getWidth(),
+                                s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
@@ -162,7 +166,7 @@ public class CustomReportPageBuilder {
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
                                 color,
-                                s.getWidth(),
+                                s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
@@ -170,7 +174,7 @@ public class CustomReportPageBuilder {
                         productReportCharts.productByCategory(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth(),
+                                s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
@@ -178,7 +182,7 @@ public class CustomReportPageBuilder {
                         productReportCharts.lowStockAlerts(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth(),
+                                s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
@@ -186,7 +190,7 @@ public class CustomReportPageBuilder {
                         productReportCharts.productPerformance(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth(),
+                                s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
@@ -196,7 +200,7 @@ public class CustomReportPageBuilder {
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
                                 color,
-                                s.getWidth(),
+                                s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
@@ -205,7 +209,7 @@ public class CustomReportPageBuilder {
                         .ProductByStatusChart(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth(),
+                                s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
@@ -214,7 +218,7 @@ public class CustomReportPageBuilder {
                                 .ProductRevenueAccordingToMonth(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth(),
+                                        s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                         jwt
                         );
 
@@ -223,7 +227,7 @@ public class CustomReportPageBuilder {
                         .topCustomerOrder(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth(),
+                                s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
@@ -232,11 +236,11 @@ public class CustomReportPageBuilder {
                         .materialStockMovement(
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
-                                s.getWidth(),
+                                s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
             };
-            layoutAdd(component, holder , s.getWidth(), s.getUserPreferredWidth());
+            layoutAdd(s.getCustomId(),component, holder , s.getWidth(), s.getUserPreferredWidth());
 
         }
 
@@ -254,16 +258,42 @@ public class CustomReportPageBuilder {
 
 
 
-    public void layoutAdd(Component component,HorizontalLayout holder, Widths widths, String userWidth){
+    public void layoutAdd(String customId,Component component,HorizontalLayout holder, Widths widths, String userWidth){
 
 
         component.getStyle().set("position","relative");
         Span span = new Span(widths == Widths.CUSTOM ? userWidth : widths.getName());
+        ;
+        if(widths.equals(Widths.CUSTOM)) {
 
-        component.addClassName("island-layout");
-        component.getStyle().set("resize", "horizontal");
-        component.getStyle().set("overflow", "hidden");
-        component.getStyle().set("padding", "8px");
+            component.getStyle().set("resize", "horizontal");
+            component.getStyle().set("overflow", "hidden");
+            component.getStyle().set("padding", "8px");
+        }
+
+        component.getElement().executeJs("""
+    const element = this;
+    let startWidth = element.offsetWidth;
+
+    document.addEventListener('mouseup', () => {
+        const newWidth = element.offsetWidth;
+
+        if (newWidth !== startWidth) {
+            element.dispatchEvent(new CustomEvent('resize-finished'));
+            startWidth = newWidth;
+        }
+    });
+""");
+
+        component.getElement().addEventListener("resize-finished", e -> {
+            component.getElement().executeJs(
+                    "return this.offsetWidth;"
+            ).then(Integer.class, width -> {
+                customIdConsumer.accept(
+                        new ReportResizedData(customId, width + "px")
+                );
+            });
+        });
 
         span.getStyle()
                 .set("position","absolute")
@@ -274,6 +304,8 @@ public class CustomReportPageBuilder {
         span.addClassName("tag-badge");
 
 
+
+
         String widhth = widths == Widths.CUSTOM ? userWidth : widths.getWidth();
 
 
@@ -282,6 +314,7 @@ public class CustomReportPageBuilder {
                 holder.add(wrapperForDiv(d,span,widhth));
             }
             else{
+                component.addClassNames("island-layout");
                 h.add(span);
                 holder.add(
                         component
@@ -296,19 +329,15 @@ public class CustomReportPageBuilder {
 
     }
 
-    public VerticalLayout wrapperForDiv(Div div,Span span, String widths){
+    public Div wrapperForDiv(Div div,Span span, String widths){
 
 
-        VerticalLayout v = new VerticalLayout();
+        Div v = new Div();
         v.setWidth(widths);
-        v.setPadding(false);
-        v.setSpacing(false);
+        v.addClassNames("island-layout");
         v.getStyle().set("position","relative");
 
-        v.addClassName("island-layout");
-        v.getStyle().set("resize", "horizontal");
-        v.getStyle().set("overflow", "hidden");
-        v.getStyle().set("padding", "8px");
+
 
 
 

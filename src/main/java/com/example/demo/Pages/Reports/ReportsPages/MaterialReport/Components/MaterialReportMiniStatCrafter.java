@@ -28,29 +28,17 @@ public class MaterialReportMiniStatCrafter {
         this.materialService = materialService;
     }
 
-    public HorizontalLayout miniStatHolder(LocalDate fromDate, LocalDate toDate, String color, Widths widths, String jwt) {
+    public HorizontalLayout miniStatHolder(LocalDate fromDate, LocalDate toDate, String color, String widths, String jwt) {
 
         ReportMiniStatHolder items = materialService.getProductMiniStatData(fromDate, toDate, jwt);
 
         HorizontalLayout miniStatHolders = new HorizontalLayout();
 
-        // Apply both custom layout classes safely
         miniStatHolders.addClassNames("island-layout", "layout-flex");
 
-        miniStatHolders.setWidth(widths.getWidth());
+        miniStatHolders.setWidth(widths);
         miniStatHolders.setMinWidth("320px");
 
-        miniStatHolders.getStyle().set("resize", "horizontal");
-        miniStatHolders.getStyle().set("overflow", "hidden");
-        miniStatHolders.getStyle().set("padding", "8px");
-
-        miniStatHolders.addClickListener(e -> {
-            miniStatHolders.getElement().executeJs(
-                    "return this.offsetWidth;"
-            ).then(Integer.class, width -> {
-                System.out.println("Width: " + width + "px");
-            });
-        });
 
         String backgroundColor = common.hexToRgba(color, 0.15);
 
