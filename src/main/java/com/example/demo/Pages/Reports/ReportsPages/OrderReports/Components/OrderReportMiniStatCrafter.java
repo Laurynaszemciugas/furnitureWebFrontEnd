@@ -29,12 +29,12 @@ public class OrderReportMiniStatCrafter {
         this.ordersService = ordersService;
     }
 
-    public HorizontalLayout miniStatHolder(LocalDate fromDate, LocalDate toDate, String color, Widths widths, String jwt){
+    public HorizontalLayout miniStatHolder(LocalDate fromDate, LocalDate toDate, String color, String widths, String jwt){
 
         ReportMiniStatHolder items = ordersService.getOrderMiniStatData(fromDate,toDate, jwt);
 
         HorizontalLayout miniStatHolders = new HorizontalLayout();
-        miniStatHolders.setWidth(widths.getWidth());
+        miniStatHolders.setWidth(widths);
         miniStatHolders.addClassName("layout-flex");
 
         String backgroundColor = common.hexToRgba(color,0.15);

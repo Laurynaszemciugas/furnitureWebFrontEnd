@@ -9,6 +9,7 @@ import com.example.demo.Enums.ReportCategory;
 import com.example.demo.Enums.Widget;
 import com.example.demo.Enums.Widths;
 import com.example.demo.Pages.Material.MaterialAddEdit.Components.ColorSelector;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -22,6 +23,7 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -247,7 +249,7 @@ public class LeftSideReportCreate {
 
 
                 List<ReportItems> reportItems = report.getReportItemsList();
-                reportItems.add(new ReportItems(null, randomId(widgets.getValue().toString()), widgets.getValue(), widths.getValue(), report));
+                reportItems.add(new ReportItems(null, randomId(widgets.getValue().toString()), widgets.getValue(), widths.getValue(),true,"auto", report));
 
                 updateGrid();
 
@@ -305,6 +307,7 @@ public class LeftSideReportCreate {
 
             HorizontalLayout h = new HorizontalLayout();
 
+
             ComboBox<Widths> widthsComboBox = new ComboBox<>();
             widthsComboBox.setItems(Widths.values());
             widthsComboBox.setItemLabelGenerator(Widths::getName);
@@ -352,15 +355,29 @@ public class LeftSideReportCreate {
             });
 
 
+            Component sizeModification;
+            if(e.getWidth().equals(Widths.CUSTOM)){
+                IntegerField integerField = new IntegerField();
+                integerField.setStepButtonsVisible(true);
+                integerField.setStep(100);
+                sizeModification = integerField;
 
+                integerField.addValueChangeListener(eeee->{
+                    e.setUserPreferredWidth(eeee.getValue() + "px");
+                    e.setWidthIsStatic(false);
+                    customReportPageBuilder.updateScene(rightSide,colorPicker.getValue(),report.getReportItemsList());
+                });
 
-
-
+            }
+            else{
+                sizeModification = widthsComboBox;
+                e.setWidthIsStatic(true);
+            }
 
 
 
             h.add(
-                    widthsComboBox,
+                    sizeModification,
                     increaseIndex,
                     decreaseIndex,
                     removeItem
@@ -500,18 +517,7 @@ public class LeftSideReportCreate {
 
     }
 
-    public void loadData(){
-        List<ReportItems> reportItems = new ArrayList<>();
-        reportItems.add(new ReportItems(null,"123",Widget.ORDER_MINI_STATS,Widths.FULL_WIDTH,null) );
-        reportItems.add(new ReportItems(null,"123",Widget.ORDER_RECENT_ORDERS,Widths.FULL_WIDTH,null) );
 
-        report.setReportItemsList(reportItems);
-
-
-
-        updateGrid();
-
-    }
 
     public void updateGrid(){
         reportGrid.setItems(report.getReportItemsList());

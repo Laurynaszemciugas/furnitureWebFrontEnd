@@ -28,21 +28,37 @@ public class MaterialReportMiniStatCrafter {
         this.materialService = materialService;
     }
 
-    public HorizontalLayout miniStatHolder(LocalDate fromDate, LocalDate toDate, String color, Widths widths,String jwt){
+    public HorizontalLayout miniStatHolder(LocalDate fromDate, LocalDate toDate, String color, Widths widths, String jwt) {
 
-        ReportMiniStatHolder items = materialService.getProductMiniStatData(fromDate,toDate,jwt);
+        ReportMiniStatHolder items = materialService.getProductMiniStatData(fromDate, toDate, jwt);
 
         HorizontalLayout miniStatHolders = new HorizontalLayout();
-        miniStatHolders.setWidth(widths.getWidth());
-        miniStatHolders.addClassName("layout-flex");
 
-        String backgroundColor = common.hexToRgba(color,0.15);
+        // Apply both custom layout classes safely
+        miniStatHolders.addClassNames("island-layout", "layout-flex");
+
+        miniStatHolders.setWidth(widths.getWidth());
+        miniStatHolders.setMinWidth("320px");
+
+        miniStatHolders.getStyle().set("resize", "horizontal");
+        miniStatHolders.getStyle().set("overflow", "hidden");
+        miniStatHolders.getStyle().set("padding", "8px");
+
+        miniStatHolders.addClickListener(e -> {
+            miniStatHolders.getElement().executeJs(
+                    "return this.offsetWidth;"
+            ).then(Integer.class, width -> {
+                System.out.println("Width: " + width + "px");
+            });
+        });
+
+        String backgroundColor = common.hexToRgba(color, 0.15);
 
         miniStatHolders.add(
-                miniStatCrafter.miniStats(VaadinIcon.CART, "Total materials", items.getValue1ThisMonth(),common.lastMonthTrend(items.getValue1ThisMonth(),items.getValue1LastMonth(),fromDate,true), color, backgroundColor),
-                miniStatCrafter.miniStats(VaadinIcon.CLOCK, "In stock", items.getValue2ThisMonth(), common.lastMonthTrend(items.getValue2ThisMonth(),items.getValue2LastMonth(),fromDate,true), color, backgroundColor),
-                miniStatCrafter.miniStats(VaadinIcon.CHECK, "Low stock materials", items.getValue3ThisMonth(), common.lastMonthTrend(items.getValue3ThisMonth(),items.getValue3LastMonth(),fromDate,true), color, backgroundColor),
-                miniStatCrafter.miniStats(VaadinIcon.MONEY, "Inventory value",items.getValue4ThisMonth() + " Eur", common.lastMonthTrend(items.getValue4ThisMonth(),items.getValue4LastMonth(),fromDate,true), color, backgroundColor)
+                miniStatCrafter.miniStats(VaadinIcon.CART, "Total materials", items.getValue1ThisMonth(), common.lastMonthTrend(items.getValue1ThisMonth(), items.getValue1LastMonth(), fromDate, true), color, backgroundColor),
+                miniStatCrafter.miniStats(VaadinIcon.CLOCK, "In stock", items.getValue2ThisMonth(), common.lastMonthTrend(items.getValue2ThisMonth(), items.getValue2LastMonth(), fromDate, true), color, backgroundColor),
+                miniStatCrafter.miniStats(VaadinIcon.CHECK, "Low stock materials", items.getValue3ThisMonth(), common.lastMonthTrend(items.getValue3ThisMonth(), items.getValue3LastMonth(), fromDate, true), color, backgroundColor),
+                miniStatCrafter.miniStats(VaadinIcon.MONEY, "Inventory value", items.getValue4ThisMonth() + " Eur", common.lastMonthTrend(items.getValue4ThisMonth(), items.getValue4LastMonth(), fromDate, true), color, backgroundColor)
         );
 
         return miniStatHolders;

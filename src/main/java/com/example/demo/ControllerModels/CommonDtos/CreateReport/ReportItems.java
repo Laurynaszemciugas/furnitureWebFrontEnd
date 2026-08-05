@@ -20,6 +20,10 @@ public class ReportItems {
     private Widget widget;
 
     private Widths width;
+
+    private Boolean widthIsStatic;
+    private String userPreferredWidth;
+
     @JsonIgnore
     private Report report;
 

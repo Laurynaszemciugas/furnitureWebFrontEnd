@@ -248,7 +248,7 @@ public class MiniReportCard {
         h.addClassName("layout-flex");
         h.setPadding(false);
 
-        if(reportFeeds == null) {
+        if(!reportFeeds.isEmpty()) {
             for (var s : reportFeeds) {
                 h.add(userCreatedReports(s.getId(), s.getReportName(), s.getDashboardWidget(), s.getDescription(), s.getCreated(), s.getReportColor()));
             }

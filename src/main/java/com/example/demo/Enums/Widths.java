@@ -6,7 +6,8 @@ public enum Widths {
     HALF_WIDTH("Half Width", "calc(50% - 8px)"),
     THREE_QUARTS("Three Quarters", "calc(75% - 8px)"),
     QUARTER_WIDTH("Quarter Width", "calc(25% - 8px)"),
-    AUTO_WIDTH("Auto Width", "auto");
+    AUTO_WIDTH("Auto Width", "auto"),
+    CUSTOM("Custom","500px");
 
     private final String name;
     private final String width;

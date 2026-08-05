@@ -112,7 +112,7 @@ public class CustomReportPageBuilder {
                                 common.currentMonthStart(),
                                 common.nextMonthDate(),
                                 color,
-                                s.getWidth(),
+                                s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
@@ -236,7 +236,7 @@ public class CustomReportPageBuilder {
                                 jwt
                         );
             };
-            layoutAdd(component, holder , s.getWidth());
+            layoutAdd(component, holder , s.getWidth(), s.getUserPreferredWidth());
 
         }
 
@@ -254,25 +254,32 @@ public class CustomReportPageBuilder {
 
 
 
-    public void layoutAdd(Component component,HorizontalLayout holder, Widths widths){
+    public void layoutAdd(Component component,HorizontalLayout holder, Widths widths, String userWidth){
 
 
         component.getStyle().set("position","relative");
-        Span span = new Span(widths.getName());
+        Span span = new Span(widths == Widths.CUSTOM ? userWidth : widths.getName());
+
+        component.addClassName("island-layout");
+        component.getStyle().set("resize", "horizontal");
+        component.getStyle().set("overflow", "hidden");
+        component.getStyle().set("padding", "8px");
 
         span.getStyle()
                 .set("position","absolute")
-                .set("top","-10px")
-                .set("left","0px")
+                .set("top","5px")
+                .set("right","5px")
                 .set("z-index","100");
 
         span.addClassName("tag-badge");
 
 
+        String widhth = widths == Widths.CUSTOM ? userWidth : widths.getWidth();
+
 
         if(component instanceof HasComponents h){
             if(h instanceof Div d) {
-                holder.add(wrapperForDiv(d,span,widths));
+                holder.add(wrapperForDiv(d,span,widhth));
             }
             else{
                 h.add(span);
@@ -289,15 +296,19 @@ public class CustomReportPageBuilder {
 
     }
 
-    public VerticalLayout wrapperForDiv(Div div,Span span, Widths widths){
+    public VerticalLayout wrapperForDiv(Div div,Span span, String widths){
 
 
         VerticalLayout v = new VerticalLayout();
-        v.setWidth(widths.getWidth());
+        v.setWidth(widths);
         v.setPadding(false);
         v.setSpacing(false);
         v.getStyle().set("position","relative");
 
+        v.addClassName("island-layout");
+        v.getStyle().set("resize", "horizontal");
+        v.getStyle().set("overflow", "hidden");
+        v.getStyle().set("padding", "8px");
 
 
 
