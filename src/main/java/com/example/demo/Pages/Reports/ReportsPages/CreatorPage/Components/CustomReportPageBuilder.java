@@ -271,6 +271,8 @@ public class CustomReportPageBuilder {
             component.getStyle().set("padding", "8px");
         }
 
+
+        // custom check on resize
         component.getElement().executeJs("""
     const element = this;
     let startWidth = element.offsetWidth;

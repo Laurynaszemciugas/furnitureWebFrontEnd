@@ -13,8 +13,10 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -197,6 +199,16 @@ public class LeftSideReportCreate {
             return layout;
         }));
 
+        dashboardWidgetComboBox.addValueChangeListener(e->{
+            if(e.isFromClient()){
+                Icon vaadinIcon = e.getValue().getIcon().create();
+                dashboardWidgetComboBox.setPrefixComponent(vaadinIcon);
+
+
+
+            }
+        });
+
 
         reportName.setWidthFull();
 
@@ -217,16 +229,34 @@ public class LeftSideReportCreate {
         widgets.setItemLabelGenerator(Widget::getTitle);
 
 
+        widgets.addValueChangeListener(e->{
+           if(e.isFromClient()){
+               Icon vaadinIcon = e.getValue().getIcon().create();
+               vaadinIcon.setColor(e.getValue().getColor());
+                widgets.setPrefixComponent(vaadinIcon);
+
+                vaadinIcon.addClickListener(ee->{
+                    Dialog dialog = new Dialog("sas");
+
+                    dialog.open();
+
+                });
+
+           }
+        });
 
         widgets.setRenderer(new ComponentRenderer<>(WID -> {
             HorizontalLayout layout = new HorizontalLayout();
             layout.setAlignItems(FlexComponent.Alignment.CENTER);
+            layout.setSpacing(true);
 
             Icon vaadinIcon = WID.getIcon().create();
             vaadinIcon.setColor(WID.getColor());
+
             Span name = new Span(WID.getTitle());
 
             layout.add(vaadinIcon, name);
+
             return layout;
         }));
 

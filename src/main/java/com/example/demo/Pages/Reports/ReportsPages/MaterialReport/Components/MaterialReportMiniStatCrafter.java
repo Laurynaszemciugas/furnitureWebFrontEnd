@@ -34,7 +34,7 @@ public class MaterialReportMiniStatCrafter {
 
         HorizontalLayout miniStatHolders = new HorizontalLayout();
 
-        miniStatHolders.addClassNames("island-layout", "layout-flex");
+        miniStatHolders.addClassName("layout-flex");
 
         miniStatHolders.setWidth(widths);
         miniStatHolders.setMinWidth("320px");
