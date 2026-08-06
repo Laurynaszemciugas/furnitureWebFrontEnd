@@ -7,12 +7,14 @@ import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.DTOS.CustomReport
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.popover.Popover;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -286,7 +288,7 @@ public class MiniReportCard {
         );
 
         Button deleteButton = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.ERROR,VaadinIcon.TRASH,"Red");
-        deleteButton.getStyle().set("position","absolute").set("right","10px").set("top","10px");
+
 
         deleteButton.addClickListener(e->{
            common.actualDeleteConfirmation(title);
@@ -299,6 +301,13 @@ public class MiniReportCard {
 
         });
 
+        Button editButton = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.ERROR,VaadinIcon.PENCIL,"Blue");
+
+
+        editButton.addClickListener(e->{
+            UI.getCurrent().navigate("editReport/" + id);
+        });
+
 
 
 
@@ -307,9 +316,26 @@ public class MiniReportCard {
         button.getStyle().set("background-color",color).set("color","White");
 
         button.addClickListener(e->{
-            UI.getCurrent().navigate("editReport/" + id);
+            UI.getCurrent().navigate("viewCustomReport/" + id);
         });
 
+        Button openMore = new Button(VaadinIcon.OPTIONS.create());
+        openMore.getStyle().set("position","absolute").set("right","10px").set("top","10px");
+        openMore.addThemeVariants(ButtonVariant.LUMO_ICON);
+        openMore.setAriaLabel("Notifications");
+
+        Popover popover = new Popover();
+        popover.setTarget(openMore);
+
+        H4 heading = new H4("Actions");
+        VerticalLayout layout = new VerticalLayout(heading);
+        layout.setAlignItems(FlexComponent.Alignment.CENTER);
+        layout.add(
+                editButton,
+                deleteButton
+        );
+
+        popover.add(layout);
 
 
         VerticalLayout iconHolder = new VerticalLayout();
@@ -337,7 +363,8 @@ public class MiniReportCard {
         card.add(
                 h,
                 button,
-                deleteButton
+                openMore,
+                popover
         );
 
         return card;

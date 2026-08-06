@@ -34,12 +34,20 @@ public class ColorSelector {
             if (e.isFromClient() && e.getValue() != null) {
                 colorPicker.setValue(e.getValue());
                 colorChanged.accept(true);
+                if(e.getValue().equalsIgnoreCase("#ffffff")){
+                    colorPicker.setValue("#ddd4d4");
+                    textField.setValue("#ddd4d4");
+                }
             }
         });
 
         colorPicker.addValueChangeListener(e -> {
             if (e.isFromClient()) {
                 textField.setValue(e.getValue());
+                if(e.getValue().equalsIgnoreCase("#ffffff")){
+                    colorPicker.setValue("#ddd4d4");
+                    textField.setValue("#ddd4d4");
+                }
                 try {
                     colorChanged.accept(true);
                 } catch (NullPointerException ex) {

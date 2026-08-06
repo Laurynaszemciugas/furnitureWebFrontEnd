@@ -49,7 +49,7 @@ public class ReportCreationEditPage extends VerticalLayout implements BeforeEnte
         this.customReportPageBuilder = customReportPageBuilder;
         this.colorSelector = new ColorSelector();
         this.leftSideReportCreate = new LeftSideReportCreate(commonComponents,common,customReportPageBuilder);
-        this.rightSideReportCreate = new RightSideReportCreate();
+        this.rightSideReportCreate = new RightSideReportCreate(commonComponents,common);
         this.customReportService = customReportService;
 
         setPadding(false);
@@ -115,9 +115,10 @@ public class ReportCreationEditPage extends VerticalLayout implements BeforeEnte
     public SplitLayout leftRightJoin() {
 
 
-        VerticalLayout leftSide = leftSideReportCreate.leftSide(rightSide,customReportService.getReportAccordingToId((long) itemChoice));
+        VerticalLayout leftSide = leftSideReportCreate.leftSide(rightSide,customReportService.getReportAccordingToId((long) itemChoice),true,common.currentMonthStart(),common.nextMonthDate());
 
-        HorizontalLayout rightSides = rightSideReportCreate.rightSideReportCustom(rightSide);
+        HorizontalLayout rightSides = rightSideReportCreate.rightSideReportCustom(rightSide,true);
+        rightSides.setPadding(false);
 
         SplitLayout splitLayout = new SplitLayout(leftSide, rightSides);
         splitLayout.addClassName("smooth-panel");

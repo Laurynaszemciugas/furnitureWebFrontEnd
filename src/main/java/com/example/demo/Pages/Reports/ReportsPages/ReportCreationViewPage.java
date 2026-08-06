@@ -1,47 +1,28 @@
-package com.example.demo.Pages.Reports.ReportsPages.CreatorPage;
+package com.example.demo.Pages.Reports.ReportsPages;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.CommonDtos.CreateReport.Report;
-import com.example.demo.ControllerModels.CommonDtos.CreateReport.ReportItems;
-import com.example.demo.ControllerModels.CommonDtos.User;
-import com.example.demo.Enums.ReportCategory;
-import com.example.demo.Enums.Widget;
-import com.example.demo.Enums.Widths;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Material.MaterialAddEdit.Components.ColorSelector;
+import com.example.demo.Pages.Reports.Common.CommonBriefPageExplanation;
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.CustomReportPageBuilder;
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.LeftSideReportCreate;
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.RightSideReportCreate;
-import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.MaterialReportPage;
 import com.example.demo.Services.CustomReportService;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
-import com.vaadin.flow.component.textfield.TextArea;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
-import java.util.*;
+import java.time.LocalDate;
 
 
-@Route(value = "reportCreator", layout = MainLayout.class)
-public class ReportCreationPage extends VerticalLayout implements BeforeEnterObserver {
+@Route(value = "viewCustomReport/:id", layout = MainLayout.class)
+public class ReportCreationViewPage extends VerticalLayout implements BeforeEnterObserver {
 
     CommonComponents commonComponents;
     Common common;
@@ -55,8 +36,18 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
     CustomReportService customReportService;
 
+    CommonBriefPageExplanation commonBriefPageExplanation;
 
-    public ReportCreationPage(CommonComponents commonComponents, Common common,CustomReportPageBuilder customReportPageBuilder,CustomReportService customReportService) {
+    int itemChoice = 0;
+
+    Report report = new Report();
+
+    HorizontalLayout layout = new HorizontalLayout();
+
+    HorizontalLayout filterMemory;
+
+
+    public ReportCreationViewPage(CommonComponents commonComponents, Common common, CustomReportPageBuilder customReportPageBuilder, CustomReportService customReportService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.customReportPageBuilder = customReportPageBuilder;
@@ -64,6 +55,8 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
         this.leftSideReportCreate = new LeftSideReportCreate(commonComponents,common,customReportPageBuilder);
         this.rightSideReportCreate = new RightSideReportCreate(commonComponents,common);
         this.customReportService = customReportService;
+
+        this.commonBriefPageExplanation = new CommonBriefPageExplanation(commonComponents,common);
 
         setPadding(false);
         setSpacing(false);
@@ -73,12 +66,21 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
         addClassName("animation-page");
 
+
     }
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
 
         removeAll();
+
+        int page = Math.toIntExact( Integer.parseInt(beforeEnterEvent.getRouteParameters().get("id").orElse(null)));
+
+        this.itemChoice = page;
+
+         report = customReportService.getReportAccordingToId((long) itemChoice);
+
+        filterMemory = commonBriefPageExplanation.briefExplanation(report.getReportName(), report.getReportColor());
 
 
         add(mainLayout());
@@ -87,12 +89,11 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
     public HorizontalLayout mainLayout() {
 
-        HorizontalLayout layout = new HorizontalLayout();
 
         layout.setWidthFull();
 
         layout.setFlexGrow(1);
-        //layout.setWidth("1650px");
+        //layout.setWidth("1650px"); // no limit to the size
         layout.setPadding(true);
         layout.getStyle().set("margin-top", "5px");
 
@@ -100,17 +101,12 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
 
         layout.add(
-                leftSideReportCreate.briefPageExplanation(),
+                filterMemory,
                 leftRightJoin()
         );
 
-        leftSideReportCreate.setReportAddedEdited(e->{
-            customReportService.saveNewReport(e);
-        });
 
-        customReportService.setSuccess(ee->{
-            UI.getCurrent().navigate("Reports");
-        });
+
 
 
 
@@ -122,28 +118,40 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
 
 
-    public SplitLayout leftRightJoin() {
+    public HorizontalLayout leftRightJoin() {
+
+        commonBriefPageExplanation.setFromToDateConsumer(e->{
+            updateData(e.getFrom(),e.getTo());
+        });
 
 
+        // load data using left not efficiant way but because left side is used in edit and add new one it is used here this makes things less compicated in the long run
+        leftSideReportCreate.leftSide(rightSide,report,false,common.currentMonthStart(),common.nextMonthDate());
 
-
-
-        VerticalLayout leftSide = leftSideReportCreate.leftSide(rightSide,null,true,common.currentMonthStart(),common.nextMonthDate());
 
         HorizontalLayout rightSides = rightSideReportCreate.rightSideReportCustom(rightSide,false);
-        rightSides.setPadding(false);
-
-        SplitLayout splitLayout = new SplitLayout(leftSide, rightSides);
-        splitLayout.addClassName("smooth-panel");
-
-
-        splitLayout.setSplitterPosition(35);
-        splitLayout.setWidthFull();
-        splitLayout.setHeightFull();
 
 
 
-        return splitLayout;
+        return rightSides;
+    }
+
+    public void updateData(LocalDate from, LocalDate to) {
+
+        layout.removeAll();
+
+        // load data using left not efficiant way but because left side is used in edit and add new one it is used here this makes things less compicated in the long run
+        leftSideReportCreate.leftSide(rightSide,report,false,from,to);
+
+
+        HorizontalLayout rightSides = rightSideReportCreate.rightSideReportCustom(rightSide,false);
+
+
+        layout.add(
+                filterMemory,
+                rightSides
+        );
+
     }
 
 

@@ -28,6 +28,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import javax.swing.plaf.PanelUI;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -48,6 +49,10 @@ public class CustomReportPageBuilder {
 
     ProductReportCharts productReportCharts;
     ProductReportMiniStatCrafter productReportMiniStatCrafter;
+
+    // main UI creator
+
+    RightSideReportCreate rightSideReportCreate;
 
 
     // servies
@@ -81,6 +86,8 @@ public class CustomReportPageBuilder {
 
         this.sessionCrafter = new SessionCrafter();
 
+        this.rightSideReportCreate = new RightSideReportCreate(commonComponents,common);
+
 
     }
 
@@ -88,7 +95,8 @@ public class CustomReportPageBuilder {
 
 
 
-    public void updateScene(HorizontalLayout layout, String color, List<ReportItems> reportItemsList){
+    public void updateScene(LocalDate from, LocalDate to, HorizontalLayout layout, String color, List<ReportItems> reportItemsList, boolean creatingEditing){
+
 
 
 
@@ -113,8 +121,8 @@ public class CustomReportPageBuilder {
 
                 case ORDER_MINI_STATS ->
                         orderReportMiniStatCrafter.miniStatHolder(
-                                common.currentMonthStart(),
-                                common.nextMonthDate(),
+                                from,
+                                to,
                                 color,
                                 s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
@@ -122,40 +130,40 @@ public class CustomReportPageBuilder {
 
                 case ORDER_BY_STATUS ->
                         orderReportCharts.ordersByStatusChart(
-                                common.currentMonthStart(),
-                                common.nextMonthDate(),
+                                from,
+                                to,
                                 s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
                 case ORDER_VALUE_OVER_TIME ->
                         orderReportCharts.OrderRevenueAccordingToMonth(
-                                common.currentMonthStart(),
-                                common.nextMonthDate(),
+                                from,
+                                to,
                                 s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
                 case ORDER_TOP_CUSTOMERS ->
                         orderReportCharts.topCustomerOrder(
-                                common.currentMonthStart(),
-                                common.nextMonthDate(),
+                                from,
+                                to,
                                 s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
                 case ORDER_RECENT_ORDERS ->
                         orderReportCharts.recentOrdersList(
-                                common.currentMonthStart(),
-                                common.nextMonthDate(),
+                                from,
+                                to,
                                 s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
                 case PRODUCT_MINI_STATS ->
                         productReportMiniStatCrafter.miniStatHolder(
-                                common.currentMonthStart(),
-                                common.nextMonthDate(),
+                                from,
+                                to,
                                 color,
                                 s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
@@ -163,8 +171,8 @@ public class CustomReportPageBuilder {
 
                 case PRODUCT_TOP_SELLING_PRODUCTS ->
                         productReportCharts.OrderRevenueAccordingToMonth(
-                                common.currentMonthStart(),
-                                common.nextMonthDate(),
+                                from,
+                                to,
                                 color,
                                 s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
@@ -172,24 +180,24 @@ public class CustomReportPageBuilder {
 
                 case PRODUCT_BY_CATEGORY ->
                         productReportCharts.productByCategory(
-                                common.currentMonthStart(),
-                                common.nextMonthDate(),
+                                from,
+                                to,
                                 s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
                 case PRODUCT_LOW_STOCK ->
                         productReportCharts.lowStockAlerts(
-                                common.currentMonthStart(),
-                                common.nextMonthDate(),
+                                from,
+                                to,
                                 s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
 
                 case PRODUCT_PERFORMANCE ->
                         productReportCharts.productPerformance(
-                                common.currentMonthStart(),
-                                common.nextMonthDate(),
+                                from,
+                                to,
                                 s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
@@ -197,8 +205,8 @@ public class CustomReportPageBuilder {
                 case MATERIAL_MINI_STATS ->
                         new MaterialReportMiniStatCrafter(commonComponents, common, materialService)
                         .miniStatHolder(
-                                common.currentMonthStart(),
-                                common.nextMonthDate(),
+                                from,
+                                to,
                                 color,
                                 s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
@@ -207,8 +215,8 @@ public class CustomReportPageBuilder {
                 case MATERIAL_BY_STATUS ->
                         new MaterialReportCharts(commonComponents, common, materialService)
                         .ProductByStatusChart(
-                                common.currentMonthStart(),
-                                common.nextMonthDate(),
+                                from,
+                                to,
                                 s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
@@ -225,8 +233,8 @@ public class CustomReportPageBuilder {
                 case MATERIAL_LOW_STOCK ->
                         new MaterialReportCharts(commonComponents, common, materialService)
                         .topCustomerOrder(
-                                common.currentMonthStart(),
-                                common.nextMonthDate(),
+                                from,
+                                to,
                                 s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
@@ -234,13 +242,13 @@ public class CustomReportPageBuilder {
                 case MATERIAL_RECENT_MOVEMENT ->
                         new MaterialReportCharts(commonComponents, common, materialService)
                         .materialStockMovement(
-                                common.currentMonthStart(),
-                                common.nextMonthDate(),
+                                from,
+                                to,
                                 s.getWidth() == Widths.CUSTOM ? s.getUserPreferredWidth() : s.getWidth().getWidth(),
                                 jwt
                         );
             };
-            layoutAdd(s.getCustomId(),component, holder , s.getWidth(), s.getUserPreferredWidth());
+            layoutAdd(s.getCustomId(),component, holder , s.getWidth(), s.getUserPreferredWidth(),creatingEditing);
 
         }
 
@@ -248,6 +256,7 @@ public class CustomReportPageBuilder {
 
             ui.access(() -> {
                 layout.removeAll();
+
                 layout.add(holder);
             });
 
@@ -258,13 +267,13 @@ public class CustomReportPageBuilder {
 
 
 
-    public void layoutAdd(String customId,Component component,HorizontalLayout holder, Widths widths, String userWidth){
+    public void layoutAdd(String customId,Component component,HorizontalLayout holder, Widths widths, String userWidth, boolean editingEnabled){
 
 
         component.getStyle().set("position","relative");
         Span span = new Span(widths == Widths.CUSTOM ? userWidth : widths.getName());
-        ;
-        if(widths.equals(Widths.CUSTOM)) {
+
+        if(widths.equals(Widths.CUSTOM) && editingEnabled) {
 
             component.getStyle().set("resize", "horizontal");
             component.getStyle().set("overflow", "hidden");
@@ -299,7 +308,7 @@ public class CustomReportPageBuilder {
 
         span.getStyle()
                 .set("position","absolute")
-                .set("top","5px")
+                .set("top","2px")
                 .set("right","5px")
                 .set("z-index","100");
 
@@ -313,11 +322,14 @@ public class CustomReportPageBuilder {
 
         if(component instanceof HasComponents h){
             if(h instanceof Div d) {
-                holder.add(wrapperForDiv(d,span,widhth));
+                holder.add(wrapperForDiv(d,span,widhth,editingEnabled));
             }
             else{
-                component.addClassNames("island-layout");
-                h.add(span);
+                if(editingEnabled) {
+                    component.addClassNames("island-layout");
+                    h.add(span);
+                }
+
                 holder.add(
                         component
                 );
@@ -331,12 +343,17 @@ public class CustomReportPageBuilder {
 
     }
 
-    public Div wrapperForDiv(Div div,Span span, String widths){
+    public Div wrapperForDiv(Div div,Span span, String widths, boolean editingEnabled){
 
 
         Div v = new Div();
         v.setWidth(widths);
-        v.addClassNames("island-layout");
+        if(editingEnabled) {
+            v.addClassNames("island-layout");
+            v.add(
+                    span
+            );
+        }
         v.getStyle().set("position","relative");
 
 
@@ -349,7 +366,6 @@ public class CustomReportPageBuilder {
 
 
         v.add(
-                span,
                 div
         );
 
@@ -359,12 +375,7 @@ public class CustomReportPageBuilder {
     }
 
 
-    public void loadData(Report report, HorizontalLayout rightSide){
 
-        updateScene(rightSide, report.getReportColor(),report.getReportItemsList());
-
-
-    }
 
 
 

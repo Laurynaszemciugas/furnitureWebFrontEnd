@@ -31,7 +31,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import lombok.Setter;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -67,6 +69,10 @@ public class LeftSideReportCreate {
     Consumer<Report> reportAddedEdited;
     HorizontalLayout rightMemory = new HorizontalLayout();
 
+    boolean includeEditingHelpers;
+    LocalDate from;
+    LocalDate to;
+
 
     public LeftSideReportCreate(CommonComponents commonComponents, Common common,CustomReportPageBuilder customReportPageBuilder) {
         this.commonComponents = commonComponents;
@@ -83,7 +89,12 @@ public class LeftSideReportCreate {
 
     }
 
-    public VerticalLayout leftSide(HorizontalLayout rightSide, Report loadData){
+    public VerticalLayout leftSide(HorizontalLayout rightSide, Report loadData,boolean includeHelpers,LocalDate fromDate, LocalDate toDate){
+
+
+        includeEditingHelpers = includeHelpers;
+        from = fromDate;
+        to = toDate;
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
@@ -95,8 +106,12 @@ public class LeftSideReportCreate {
 
 
 
+
+
         return v;
     }
+
+
 
     public HorizontalLayout briefPageExplanation(){
         HorizontalLayout h = new HorizontalLayout();
@@ -288,7 +303,7 @@ public class LeftSideReportCreate {
 
                 updateGrid();
 
-                customReportPageBuilder.updateScene(rightSide, colorPicker.getValue(), report.getReportItemsList());
+                customReportPageBuilder.updateScene(common.currentMonthStart(),common.nextMonthDate(),rightSide, colorPicker.getValue(), report.getReportItemsList(),includeEditingHelpers);
 
                 commonComponents.showNotification("Added " + widgets.getValue().getTitle() + " widget with " + widths.getValue().getName()  ,3000, Notification.Position.BOTTOM_CENTER,NotificationVariant.LUMO_SUCCESS);
                 widgets.clear();
@@ -354,7 +369,7 @@ public class LeftSideReportCreate {
                 e.setWidth(sa.getValue());
                 updateGrid();
 
-                customReportPageBuilder.updateScene(rightSide,colorPicker.getValue(),report.getReportItemsList());
+                customReportPageBuilder.updateScene(from,to,rightSide,colorPicker.getValue(),report.getReportItemsList(),includeEditingHelpers);
 
             });
 
@@ -365,7 +380,7 @@ public class LeftSideReportCreate {
                 increaseIndexList(e.getCustomId());
                 updateGrid();
 
-                customReportPageBuilder.updateScene(rightSide,colorPicker.getValue(),report.getReportItemsList());
+                customReportPageBuilder.updateScene(from,to,rightSide,colorPicker.getValue(),report.getReportItemsList(),includeEditingHelpers);
 
             });
 
@@ -374,7 +389,7 @@ public class LeftSideReportCreate {
             decreaseIndex.addClickListener(eee->{
                 decreaseIndexList(e.getCustomId());
                 updateGrid();
-                customReportPageBuilder.updateScene(rightSide,colorPicker.getValue(),report.getReportItemsList());
+                customReportPageBuilder.updateScene(from,to,rightSide,colorPicker.getValue(),report.getReportItemsList(),includeEditingHelpers);
 
             });
 
@@ -385,7 +400,7 @@ public class LeftSideReportCreate {
                 report.getReportItemsList().remove(e);
                 updateGrid();
 
-                customReportPageBuilder.updateScene(rightSide,colorPicker.getValue(),report.getReportItemsList());
+                customReportPageBuilder.updateScene(from,to,rightSide,colorPicker.getValue(),report.getReportItemsList(),includeEditingHelpers);
 
             });
 
@@ -401,7 +416,7 @@ public class LeftSideReportCreate {
                 integerField.addValueChangeListener(eeee->{
                     e.setUserPreferredWidth(eeee.getValue() + "px");
                     e.setWidthIsStatic(false);
-                    customReportPageBuilder.updateScene(rightSide,colorPicker.getValue(),report.getReportItemsList());
+                    customReportPageBuilder.updateScene(from,to,rightSide,colorPicker.getValue(),report.getReportItemsList(),includeEditingHelpers);
                 });
 
                 sizeActions.add(
@@ -456,7 +471,7 @@ public class LeftSideReportCreate {
         removeAllButton.addClickListener(e->{
            report.getReportItemsList().clear();
            updateGrid();
-            customReportPageBuilder.updateScene(rightSide,colorPicker.getValue(),report.getReportItemsList());
+            customReportPageBuilder.updateScene(from,to,rightSide,colorPicker.getValue(),report.getReportItemsList(),includeEditingHelpers);
 
         });
 
@@ -489,13 +504,13 @@ public class LeftSideReportCreate {
             colorSelector.loadColor(loadData.getReportColor());
 
             updateGrid();
-            customReportPageBuilder.updateScene(rightSide, colorPicker.getValue(), report.getReportItemsList());
+            customReportPageBuilder.updateScene(from,to,rightSide, colorPicker.getValue(), report.getReportItemsList(),includeEditingHelpers);
 
 
         }
 
         colorSelector.setColorChanged(e->{
-            customReportPageBuilder.updateScene(rightSide, colorPicker.getValue(), report.getReportItemsList());
+            customReportPageBuilder.updateScene(from,to,rightSide, colorPicker.getValue(), report.getReportItemsList(),includeEditingHelpers);
         });
 
 
@@ -578,7 +593,7 @@ public class LeftSideReportCreate {
             }
 
             updateGrid();
-            customReportPageBuilder.updateScene(rightMemory, colorPicker.getValue(), report.getReportItemsList());
+            customReportPageBuilder.updateScene(from,to,rightMemory, colorPicker.getValue(), report.getReportItemsList(),includeEditingHelpers);
 
 
         });
