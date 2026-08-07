@@ -36,6 +36,14 @@ public class CustomReportService {
     }
 
     @SneakyThrows
+    public void editCustomReport(Report report){
+
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("customReport/editCustomReport", HttpMethod.POST,report, ErrorResponse.class,false), null,success,true);
+
+    }
+
+    @SneakyThrows
     public List<CustomReportFeed> getCustomReportFeed() {
 
         return Arrays.stream(httpCallLogic.HttpCall("customReport/getCustomReportFeed", HttpMethod.GET,"", CustomReportFeed[].class,false)).toList();

@@ -1,5 +1,6 @@
 package com.example.demo.Common;
 
+import com.example.demo.Common.DTOS.PlacesToBreak;
 import com.example.demo.Common.Logic.ErrorDisplay;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Enums.Warnings;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 @Service
@@ -389,6 +392,51 @@ public class Common {
 
     public void reloadPage(){
         UI.getCurrent().getPage().reload();
+    }
+
+
+    public String textConverter(String text){
+
+
+        List<PlacesToBreak> placesOfTheBreak = new ArrayList<>();
+
+        // index calculator due to using auto for loop
+        int i = 0;
+
+        for(var s : text.toCharArray()){
+
+            // get first letter
+            if(i == 0){
+                placesOfTheBreak.add(new PlacesToBreak(s,i));
+            }
+
+            // get letter and its place if it is uppercase which indicates break in the text
+            if(Character.isUpperCase(s)){
+                placesOfTheBreak.add(new PlacesToBreak(s,i + placesOfTheBreak.size() -1)); // make so if uppercase letter is found add so much and remove one to compensate
+            }
+
+
+            // increase the index
+            i++;
+        }
+
+
+        StringBuilder stringBuilder = new StringBuilder(text);
+
+        for(var s : placesOfTheBreak){
+            if(s.getIndex() != 0) {
+                System.out.println(s.getIndex());
+                stringBuilder.insert(s.getIndex(), " ");
+            }
+            else{
+                stringBuilder.replace(s.getIndex(),s.getIndex()+1, String.valueOf(Character.toUpperCase(s.getLetter())));
+            }
+        }
+
+
+
+        return String.valueOf(stringBuilder);
+
     }
 
 }

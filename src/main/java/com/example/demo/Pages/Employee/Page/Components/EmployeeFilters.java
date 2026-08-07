@@ -90,7 +90,6 @@ public class EmployeeFilters {
                     null,
                     filterData,
                     "employeeAcIn",
-                    "Activity",
                     employeeAcInConsumer
             );
 
@@ -104,7 +103,6 @@ public class EmployeeFilters {
                     null,
                     filterData,
                     "employeeAcIn",
-                    "Activity",
                     employeeAcInConsumer
             );
         });
@@ -116,7 +114,6 @@ public class EmployeeFilters {
                     null,
                     filterData,
                     "employeeAcIn",
-                    "Activity",
                     employeeAcInConsumer
             );
         });
@@ -128,7 +125,6 @@ public class EmployeeFilters {
                     null,
                     filterData,
                     "employeeAcIn",
-                    "Activity",
                     employeeAcInConsumer
             );
         });
@@ -240,7 +236,7 @@ public class EmployeeFilters {
         employeeCategoryComboBox.setItems(EmployeeRole.values());
         currentFilterDisplay.setComponentValue("employeeCategory",filterData,employeeCategoryComboBox);
         employeeCategoryComboBox.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(), EmployeeRole.ALL,null,filterData,"employeeCategory","Employee category",employeeCategoryConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(), EmployeeRole.ALL,null,filterData,"employeeCategory",employeeCategoryConsumer);
         });
 
 
@@ -250,7 +246,7 @@ public class EmployeeFilters {
         employeeDepartmentComboBox.setItems(EmployeeDepartment.values());
         currentFilterDisplay.setComponentValue("employeeDepartment",filterData,employeeDepartmentComboBox);
         employeeDepartmentComboBox.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(),EmployeeDepartment.ALL,null,filterData,"employeeDepartment","Employee department",employeeDepartmentConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(),EmployeeDepartment.ALL,null,filterData,"employeeDepartment",employeeDepartmentConsumer);
         });
 
 
@@ -269,21 +265,21 @@ public class EmployeeFilters {
         hourlyRate.setWidthFull();
         currentFilterDisplay.setComponentValue("hourlyRate",filterData,hourlyRate);
         hourlyRate.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(),0.0,null,filterData,"hourlyRate","Hourly salary",hourlyRateConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(),0.0,null,filterData,"hourlyRate",hourlyRateConsumer);
         });
 
 
         DatePicker dateFrom = new DatePicker("Joined from");
             currentFilterDisplay.setComponentValue("fromJoined",filterData,dateFrom);
         dateFrom.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(),LocalDate.of(1000,12,12),null,filterData,"fromJoined","From date",fromJoinedConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(),LocalDate.of(1000,12,12),null,filterData,"fromJoined",fromJoinedConsumer);
         });
 
 
         DatePicker dateTo = new DatePicker("Joined to");
         currentFilterDisplay.setComponentValue("toJoined",filterData,dateTo);
         dateTo.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(),LocalDate.of(1000,12,12),null,filterData,"toJoined","To date",toJoinedConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(),LocalDate.of(1000,12,12),null,filterData,"toJoined",toJoinedConsumer);
         });
 
         HorizontalLayout dateFromTo = commonComponents.doubleValueRow(

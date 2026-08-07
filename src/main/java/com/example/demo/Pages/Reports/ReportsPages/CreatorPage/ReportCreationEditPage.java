@@ -90,12 +90,12 @@ public class ReportCreationEditPage extends VerticalLayout implements BeforeEnte
 
 
         layout.add(
-                leftSideReportCreate.briefPageExplanation(),
+                leftSideReportCreate.briefPageExplanation("Edit custom report","Edit report"),
                 leftRightJoin()
         );
 
         leftSideReportCreate.setReportAddedEdited(e->{
-            customReportService.saveNewReport(e);
+            customReportService.editCustomReport(e);
         });
 
         customReportService.setSuccess(ee->{

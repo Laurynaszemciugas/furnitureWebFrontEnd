@@ -126,7 +126,9 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
 
 
-        filterData = sessionCrafter.extractSession("productPageFilters",ProductFilterHolder.class) == null ? new ProductFilterHolder() : sessionCrafter.extractSession("productPageFilters",ProductFilterHolder.class);
+        filterData = sessionCrafter.extractSession("productPageFilters",ProductFilterHolder.class) == null ?
+                new ProductFilterHolder() :
+                sessionCrafter.extractSession("productPageFilters",ProductFilterHolder.class);
 
         currentFilterDisplay.preLoadFilters(ProductFilterHolder.class,"productPageFilters");
 
@@ -205,6 +207,8 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
 
         productPageFilters.setClearFilters(e->{
+            currentFilterDisplay.clearAllData();
+            filterData = new ProductFilterHolder();
             loadData();
         });
 

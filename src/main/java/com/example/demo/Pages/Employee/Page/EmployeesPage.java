@@ -8,6 +8,7 @@ import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.Employee.EmployeeBriefDto;
 import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
+import com.example.demo.ControllerModels.Filter.Prodcut.ProductFilterHolder;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Employee.Page.Components.EmployeeBriefExplanations;
 import com.example.demo.Pages.Employee.Page.Components.EmployeeFilters;
@@ -96,7 +97,16 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
 
             removeAll();
 
-            add(mainLayout());
+        filterData = sessionCrafter.extractSession("employeePageFilters", EmployeeFilterHolder.class) == null ?
+                new EmployeeFilterHolder() :
+                sessionCrafter.extractSession("employeePageFilters",EmployeeFilterHolder.class);
+
+        currentFilterDisplay.preLoadFilters(EmployeeFilterHolder.class,"employeePageFilters");
+
+
+
+
+        add(mainLayout());
 
     }
 
@@ -161,6 +171,7 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
         });
         employeeFilters.setClearFilters(e->{
             filterData =  e;
+            currentFilterDisplay.clearAllData();
             reloadData();
         });
 
@@ -174,7 +185,7 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
 
         verticalLayout.removeAll();
 
-        filterData = new EmployeeFilterHolder();
+        //filterData = new EmployeeFilterHolder();
 
         filterMemory.removeAll();
         filterMemory.add(
@@ -243,6 +254,10 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
                         gridHolder.add(gridFilterHolder(e));
                     });
                 });
+
+        sessionCrafter.createSession("employeePageFilters",filterData);
+
+
     }
 
 

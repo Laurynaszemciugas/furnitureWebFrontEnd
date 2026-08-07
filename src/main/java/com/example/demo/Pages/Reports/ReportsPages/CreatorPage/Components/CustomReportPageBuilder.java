@@ -257,6 +257,10 @@ public class CustomReportPageBuilder {
             ui.access(() -> {
                 layout.removeAll();
 
+                if(creatingEditing){
+                    layout.add(rightSideReportCreate.rightSideTop());
+                }
+
                 layout.add(holder);
             });
 

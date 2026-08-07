@@ -113,7 +113,7 @@ public class LeftSideReportCreate {
 
 
 
-    public HorizontalLayout briefPageExplanation(){
+    public HorizontalLayout briefPageExplanation(String name, String button){
         HorizontalLayout h = new HorizontalLayout();
 
         h.addClassName("smooth-panel");
@@ -125,7 +125,7 @@ public class LeftSideReportCreate {
         HorizontalLayout buttonHolder = new HorizontalLayout();
 
         Button cancel = commonComponents.normalThemeButton("Cancel","Reports", ButtonVariant.LUMO_ICON);
-        Button createOrder = commonComponents.normalThemeButtonNoNavigate("Create report", ButtonVariant.LUMO_PRIMARY);
+        Button createOrder = commonComponents.normalThemeButtonNoNavigate(button, ButtonVariant.LUMO_PRIMARY);
 
         createOrder.addClickListener(e->{
 
@@ -146,6 +146,7 @@ public class LeftSideReportCreate {
                     customReport.setReportCategory(reportCategory.getValue());
                     customReport.setDescription(reportDescription.getValue());
                     customReport.setDashboardWidget(dashboardWidgetComboBox.getValue());
+                    customReport.setId(report.getId());
 
                     List<ReportItems> reportItemsList = new ArrayList<>();
 
@@ -181,7 +182,7 @@ public class LeftSideReportCreate {
                 createOrder
         );
         h.add(
-                commonComponents.biefPageExplanation("Create custom report"),
+                commonComponents.biefPageExplanation(name),
                 buttonHolder
 
         );
@@ -500,6 +501,7 @@ public class LeftSideReportCreate {
             reportCategory.setValue(loadData.getReportCategory());
             reportDescription.setValue(loadData.getDescription());
             dashboardWidgetComboBox.setValue(loadData.getDashboardWidget());
+            report.setId(loadData.getId());
 
             colorSelector.loadColor(loadData.getReportColor());
 

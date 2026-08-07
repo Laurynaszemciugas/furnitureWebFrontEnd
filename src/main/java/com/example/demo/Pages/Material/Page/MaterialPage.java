@@ -6,6 +6,7 @@ import com.example.demo.Common.CurrentFilterDisplay;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
+import com.example.demo.ControllerModels.Filter.Prodcut.ProductFilterHolder;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Material.Page.Components.MaterialBriefExplanations;
@@ -51,6 +52,7 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
     Div gridHolder = new Div();
 
+
     public MaterialPage(CommonComponents commonComponents, Common common,MaterialService materialService) {
         this.commonComponents = commonComponents;
         this.common = common;
@@ -87,6 +89,15 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
 
         removeAll();
+
+
+        filterData = sessionCrafter.extractSession("materialPageFilters",MaterialFilterHolder.class) == null ?
+                new MaterialFilterHolder() :
+                sessionCrafter.extractSession("materialPageFilters",MaterialFilterHolder.class);
+
+
+        currentFilterDisplay.preLoadFilters(MaterialFilterHolder.class,"materialPageFilters");
+
         add(mainLayout());
 
     }
@@ -156,6 +167,7 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
         //clear
         materialFilters.setClearFilters(e->{
             setNewPage();
+            currentFilterDisplay.clearAllData();
             filterData =  e;
             reloadData();
         });
@@ -188,7 +200,7 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
         verticalLayout.removeAll();
 
-        filterData = new MaterialFilterHolder();
+        //filterData = new MaterialFilterHolder();
 
         filterMemory.removeAll();
         filterMemory.add(
@@ -240,6 +252,11 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
                         gridHolder.add(gridFilterHolder(e));
                     });
                 });
+
+
+        sessionCrafter.createSession("materialPageFilters",filterData);
+
+
     }
 
 

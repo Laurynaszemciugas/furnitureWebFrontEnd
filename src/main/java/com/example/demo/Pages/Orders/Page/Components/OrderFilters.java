@@ -95,7 +95,7 @@ public class OrderFilters {
         DatePicker from = new DatePicker("Date from");
         currentFilterDisplay.setComponentValue("dateFromChoice",filterData,from);
         from.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(), LocalDate.of(1000,12,12),null,filterData,"dateFromChoice","Date from",fromDateConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(), LocalDate.of(1000,12,12),null,filterData,"dateFromChoice",fromDateConsumer);
         });
 
 
@@ -103,7 +103,7 @@ public class OrderFilters {
         DatePicker to = new DatePicker("Date to");
         currentFilterDisplay.setComponentValue("dateToChoice",filterData,to);
         to.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(), LocalDate.of(1000,12,12),null,filterData,"dateToChoice","Date to",toDateConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(), LocalDate.of(1000,12,12),null,filterData,"dateToChoice",toDateConsumer);
         });
 
 
@@ -127,7 +127,7 @@ public class OrderFilters {
         amountOfProducts.setStepButtonsVisible(true);
         currentFilterDisplay.setComponentValue("amountOfProductsChoice",filterData,amountOfProducts);
         amountOfProducts.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue()), 0L,null,filterData,"amountOfProductsChoice","Amount of products",amountOfProductsConsumer);
+            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue()), 0L,null,filterData,"amountOfProductsChoice",amountOfProductsConsumer);
         });
 
 
@@ -140,7 +140,7 @@ public class OrderFilters {
         fromAmount.setStepButtonsVisible(true);
         currentFilterDisplay.setComponentValue("priceFromChoice",filterData,fromAmount);
         fromAmount.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(), 0.0,null,filterData,"priceFromChoice","Order price from",fromCostConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(), 0.0,null,filterData,"priceFromChoice",fromCostConsumer);
         });
 
 
@@ -153,7 +153,7 @@ public class OrderFilters {
         toAmount.setStepButtonsVisible(true);
         currentFilterDisplay.setComponentValue("priceToChoice",filterData,toAmount);
         toAmount.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(), 0.0,null,filterData,"priceToChoice","Order price to",toCostConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(), 0.0,null,filterData,"priceToChoice",toCostConsumer);
         });
 
 
@@ -178,7 +178,7 @@ public class OrderFilters {
                 .findFirst().orElse(null));
 
         employeesComboBox.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue().getId()), 0L,e.getValue().getFullName(),filterData,"employee","Employee in order",employeeId);
+            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue().getId()), 0L,e.getValue().getFullName(),filterData,"employee",employeeId);
         });
 
         ComboBox<OrderAddProducts> materialComboBox = new ComboBox<>("Products in order");
@@ -190,7 +190,7 @@ public class OrderFilters {
         materialComboBox.setValue(productFeedModelList.stream().filter(e->e.getId().equals(filterData.getProducts()))
                 .findFirst().orElse(null));
         materialComboBox.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue().getId()), 0L,e.getValue().getProductName(),filterData,"products","Products in order",productId);
+            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue().getId()), 0L,e.getValue().getProductName(),filterData,"products",productId);
         });
 
         filterHolder.add(
@@ -231,7 +231,6 @@ public class OrderFilters {
                     null,
                     filterData,
                     "orderStatusChoice",
-                    "Order status",
                     orderStatusConsumer
             );
         });
@@ -244,7 +243,6 @@ public class OrderFilters {
                     null,
                     filterData,
                     "orderStatusChoice",
-                    "Order status",
                     orderStatusConsumer
             );
         });
@@ -257,7 +255,6 @@ public class OrderFilters {
                     null,
                     filterData,
                     "orderStatusChoice",
-                    "Order status",
                     orderStatusConsumer
             );
         });
@@ -271,7 +268,6 @@ public class OrderFilters {
                     null,
                     filterData,
                     "orderStatusChoice",
-                    "Order status",
                     orderStatusConsumer
             );
         });
@@ -285,7 +281,6 @@ public class OrderFilters {
                     null,
                     filterData,
                     "orderStatusChoice",
-                    "Order status",
                     orderStatusConsumer
             );
         });

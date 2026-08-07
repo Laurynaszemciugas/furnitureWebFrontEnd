@@ -7,6 +7,7 @@ import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
+import com.example.demo.ControllerModels.Filter.Prodcut.ProductFilterHolder;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.ControllerModels.Orders.NewOrderFeedData;
 import com.example.demo.ControllerModels.Orders.OrdersFeedData;
@@ -136,6 +137,13 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         removeAll();
 
 
+        filterData = sessionCrafter.extractSession("orderPageFilters", OrderFilterHolder.class) == null ?
+                new OrderFilterHolder() :
+                sessionCrafter.extractSession("orderPageFilters",OrderFilterHolder.class);
+
+        currentFilterDisplay.preLoadFilters(OrderFilterHolder.class,"orderPageFilters");
+
+
         add(mainLayout());
 
     }
@@ -229,6 +237,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
         orderFilters.setClearFilters(e->{
             currentFilterDisplay.clearAllData();
+            filterData = new OrderFilterHolder();
             addUIData();
         });
         paganation.setOnPageChange(e->{
@@ -260,7 +269,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         verticalLayout.removeAll();
 
 
-        filterData = new OrderFilterHolder();
+        //filterData = new OrderFilterHolder();
 
 
 
@@ -341,6 +350,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
                     });
                 });
 
+        sessionCrafter.createSession("orderPageFilters",filterData);
 
     }
 

@@ -97,7 +97,6 @@ public class MaterialFilters {
                     null,
                     filterData,
                     "stockChoice",
-                    "Stock",
                     stockConsumer
             );
 
@@ -111,7 +110,6 @@ public class MaterialFilters {
                     null,
                     filterData,
                     "stockChoice",
-                    "Stock",
                     stockConsumer
             );
         });
@@ -123,7 +121,6 @@ public class MaterialFilters {
                     null,
                     filterData,
                     "stockChoice",
-                    "Stock",
                     stockConsumer
             );
         });
@@ -135,7 +132,6 @@ public class MaterialFilters {
                     null,
                     filterData,
                     "stockChoice",
-                    "Stock",
                     stockConsumer
             );
         });
@@ -256,7 +252,7 @@ public class MaterialFilters {
         materialTypeComboBox.setItemLabelGenerator(MaterialType::getDisplayName);
         currentFilterDisplay.setComponentValue("materialTypeChoice",filterData,materialTypeComboBox);
         materialTypeComboBox.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(),MaterialType.ALL,null,filterData,"materialTypeChoice","Material type",materialTypeConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(),MaterialType.ALL,null,filterData,"materialTypeChoice",materialTypeConsumer);
         });
 
 
@@ -266,7 +262,7 @@ public class MaterialFilters {
         activeInactiveComboBox.setItemLabelGenerator(ActiveInactive::getGetDisplayNames);
         currentFilterDisplay.setComponentValue("activeInactive",filterData,activeInactiveComboBox);
         activeInactiveComboBox.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(),ActiveInactive.ALL,null,filterData,"activeInactive","Activity",activeInactiveConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(),ActiveInactive.ALL,null,filterData,"activeInactive",activeInactiveConsumer);
         });
 
 
@@ -277,7 +273,7 @@ public class MaterialFilters {
         stockAmount.setMin(0);
         currentFilterDisplay.setComponentValue("stockAmountChoice",filterData,stockAmount);
         stockAmount.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue()),0L,null,filterData,"stockAmountChoice","Stock amount",stockAmountConsumer);
+            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue()),0L,null,filterData,"stockAmountChoice",stockAmountConsumer);
         });
 
         // ================= MIN AMOUNT =================================
@@ -286,7 +282,7 @@ public class MaterialFilters {
         stockAmount.setMin(0);
         currentFilterDisplay.setComponentValue("minThresholdChoice",filterData,minThreshold);
         minThreshold.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue()),0L,null,filterData,"minThresholdChoice","Min threshold",minThresholdConsumer);
+            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue()),0L,null,filterData,"minThresholdChoice",minThresholdConsumer);
         });
 
 
@@ -302,7 +298,7 @@ public class MaterialFilters {
         currentFilterDisplay.setComponentValue("unitPriceChoice",filterData,unitPrice);
         System.out.println(filterData.getUnitPriceChoice()  + " unit price");
         unitPrice.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(),0.0,null,filterData,"unitPriceChoice","Unit price",unitPriceConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(),0.0,null,filterData,"unitPriceChoice",unitPriceConsumer);
         });
 
 
@@ -317,20 +313,22 @@ public class MaterialFilters {
         DatePicker dateFrom = new DatePicker("Date from");
             currentFilterDisplay.setComponentValue("fromDateChoice",filterData,dateFrom);
         dateFrom.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(),LocalDate.of(1000,12,12),null,filterData,"fromDateChoice","From date",fromDateConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(),LocalDate.of(1000,12,12),null,filterData,"fromDateChoice",fromDateConsumer);
         });
 
 
         DatePicker dateTo = new DatePicker("Date to");
         currentFilterDisplay.setComponentValue("todDateChoice",filterData,dateTo);
         dateTo.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(),LocalDate.of(1000,12,12),null,filterData,"todDateChoice","To date",toDateConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(),LocalDate.of(1000,12,12),null,filterData,"todDateChoice",toDateConsumer);
         });
 
         HorizontalLayout dateFromTo = commonComponents.doubleValueRow(
                 dateFrom,
                 dateTo
         );
+
+
         dialogHolder.add(
                 materialTypeComboBox,
                 activeInactiveComboBox,

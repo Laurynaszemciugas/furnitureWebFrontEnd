@@ -100,7 +100,7 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
 
         layout.add(
-                leftSideReportCreate.briefPageExplanation(),
+                leftSideReportCreate.briefPageExplanation("Create custom report","Create report"),
                 leftRightJoin()
         );
 
@@ -130,7 +130,7 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
         VerticalLayout leftSide = leftSideReportCreate.leftSide(rightSide,null,true,common.currentMonthStart(),common.nextMonthDate());
 
-        HorizontalLayout rightSides = rightSideReportCreate.rightSideReportCustom(rightSide,false);
+        HorizontalLayout rightSides = rightSideReportCreate.rightSideReportCustom(rightSide,true);
         rightSides.setPadding(false);
 
         SplitLayout splitLayout = new SplitLayout(leftSide, rightSides);

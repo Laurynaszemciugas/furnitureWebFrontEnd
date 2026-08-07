@@ -2,6 +2,7 @@ package com.example.demo.Common;
 
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.Filter.Common.FilterMeta;
+import com.vaadin.copilot.shaded.checkerframework.checker.units.qual.C;
 import com.vaadin.copilot.shaded.guava.base.Objects;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
@@ -224,9 +225,9 @@ public class CurrentFilterDisplay {
 
 
     @SneakyThrows
-    public <T,S> void filterSetter(T getValue, T ifNull, Object otherNull, S filterDTO, String referenceName, String filterName, Consumer<T> consumer){
+    public <T,S> void filterSetter(T getValue, T ifNull, Object otherNull, S filterDTO, String referenceName, Consumer<T> consumer){
 
-        checkIfValueIsNullValue(filterName,ifNull,filterDTO);
+        checkIfValueIsNullValue(common.textConverter(referenceName),ifNull,filterDTO);
 
         T valueItem = getValue == null ? ifNull : getValue;
 
@@ -243,7 +244,7 @@ public class CurrentFilterDisplay {
             field.setAccessible(true);
             field.set(filterDTO, valueItem);
 
-            addFilter(filterName, getValue,referenceName,filterDTO,ifNull);
+            addFilter(common.textConverter(referenceName), getValue,referenceName,filterDTO,ifNull);
             consumer.accept(valueItem);
         }
         else{
@@ -251,7 +252,7 @@ public class CurrentFilterDisplay {
             field.setAccessible(true);
             field.set(filterDTO, getValue);
 
-            addFilter(filterName, nameOfTheFilter,referenceName,filterDTO,ifNull);
+            addFilter(common.textConverter(referenceName), nameOfTheFilter,referenceName,filterDTO,ifNull);
 
             consumer.accept(valueItem);
         }
@@ -272,8 +273,8 @@ public class CurrentFilterDisplay {
 
         T stuff = sessionCrafter.extractSession(sessionName,tClass);
 
-        System.out.println("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-        System.out.println(stuff);
+
+
 
         if(stuff == null){
 
@@ -294,7 +295,7 @@ public class CurrentFilterDisplay {
             if (Objects.equal(defaultVal, givenValue)) {
                 continue;
             } else {
-                addFilter(s.getName(), s.get(stuff), s.getName(), stuff, s.get(defaultValues));
+                addFilter(common.textConverter(s.getName()), s.get(stuff), s.getName(), stuff, s.get(defaultValues));
             }
         }
         }

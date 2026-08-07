@@ -147,7 +147,6 @@ public class ProductPageFilters {
                     null,
                     filterData,
                     "stockChoice",
-                    "Stock",
                     stockConsumer
             );
         });
@@ -159,7 +158,6 @@ public class ProductPageFilters {
                     null,
                     filterData,
                     "stockChoice",
-                    "Stock",
                     stockConsumer
             );
 
@@ -172,7 +170,6 @@ public class ProductPageFilters {
                     null,
                     filterData,
                     "stockChoice",
-                    "Stock",
                     stockConsumer
             );
         });
@@ -184,7 +181,6 @@ public class ProductPageFilters {
                     null,
                     filterData,
                     "stockChoice",
-                    "Stock",
                     stockConsumer
             );
         });
@@ -205,6 +201,7 @@ public class ProductPageFilters {
 
         clear.addClickListener(e->{
             clearFilters.accept("");
+
         });
 
         HorizontalLayout stuff = new HorizontalLayout();
@@ -263,13 +260,13 @@ public class ProductPageFilters {
         dialog.getFooter().add(dialogClose);
 
 
-        ComboBox<Category> types = new ComboBox<>("Categorys");
+        ComboBox<Category> types = new ComboBox<>("Category");
         types.setItems(Category.values());
         types.setWidthFull();
 
         currentFilterDisplay.setComponentValue("category",filterData,types);
         types.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(), Category.ALL,null,filterData,"category","Products category",categoryConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(), Category.ALL,null,filterData,"category",categoryConsumer);
         });
 
 
@@ -279,14 +276,14 @@ public class ProductPageFilters {
 
         currentFilterDisplay.setComponentValue("visibility",filterData,visibilityComboBox);
         visibilityComboBox.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(), Visibility.ALL,null,filterData,"visibility","Products visibility",visibilityConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(), Visibility.ALL,null,filterData,"visibility",visibilityConsumer);
         });
 
         DatePicker fromDate = new DatePicker("Created from date");
 
         currentFilterDisplay.setComponentValue("createdFrom",filterData,fromDate);
         fromDate.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(), LocalDate.of(1000,12,12),null,filterData,"createdFrom","Created from date",fromDateConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(), LocalDate.of(1000,12,12),null,filterData,"createdFrom",fromDateConsumer);
         });
 
 
@@ -294,7 +291,7 @@ public class ProductPageFilters {
 
         currentFilterDisplay.setComponentValue("createdTo",filterData,toDate);
         toDate.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(), LocalDate.of(1000,12,12),null,filterData,"createdTo","Created to date",toDateConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(), LocalDate.of(1000,12,12),null,filterData,"createdTo",toDateConsumer);
         });
 
         HorizontalLayout dateHolder = commonComponents.doubleValueRow(
@@ -307,7 +304,7 @@ public class ProductPageFilters {
 
         currentFilterDisplay.setComponentValue("discount",filterData,discount);
         discount.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue() == null ? 0L : e.getValue(), 0L,null,filterData,"discount","Discount",discountConsumer);
+            currentFilterDisplay.filterSetter(e.getValue() == null ? 0L : e.getValue(), 0L,null,filterData,"discount",discountConsumer);
         });
         discount.setStepButtonsVisible(true);
         discount.setStep(1);
@@ -316,7 +313,7 @@ public class ProductPageFilters {
         NumberField price = new NumberField("Price");
         currentFilterDisplay.setComponentValue("price",filterData,price);
         price.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(), 0.0,null,filterData,"price","Product price",priceConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(), 0.0,null,filterData,"price",priceConsumer);
         });
         price.setStepButtonsVisible(true);
         price.setStep(10);
@@ -328,7 +325,7 @@ public class ProductPageFilters {
                 .findFirst().orElse(null));
 
         materialComboBox.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue().getId()), 0L,e.getValue().getMaterialName(),filterData,"materialId","Material",materialId);
+            currentFilterDisplay.filterSetter(e.getValue() == null ? null : Long.valueOf(e.getValue().getId()), 0L,e.getValue().getMaterialName(),filterData,"materialId",materialId);
         });
         materialComboBox.setWidthFull();
         materialComboBox.setItemLabelGenerator(ComboBoxMaterial::getMaterialName);
@@ -342,6 +339,9 @@ public class ProductPageFilters {
                 discount,
                 price,
                 materialComboBox);
+        dialogStuff.setPadding(false);
+        dialogStuff.setSpacing(false);
+
         dialog.add(dialogStuff);
 
         dialog.open();
