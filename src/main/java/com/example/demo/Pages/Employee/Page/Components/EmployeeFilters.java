@@ -43,6 +43,10 @@ public class EmployeeFilters {
     Consumer<EmployeeFilterHolder> clearFilters;
 
 
+
+
+
+
     boolean firstLoad = true;
 
     public EmployeeFilters(CommonComponents commonComponents, Common common) {
@@ -82,50 +86,83 @@ public class EmployeeFilters {
         buttonHolderhOLDER.setWidthFull();
         buttonHolderhOLDER.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
-        Button all = commonComponents.normalButtonNoNavigate(EmployeeAcIn.ALL.getDisplayName(), "transparent-button");
+        Button all = commonComponents.normalButtonNoNavigate(EmployeeRole.ALL.getDisplayName(), "transparent-button");
         all.addClickListener(e->{
             currentFilterDisplay.filterSetter(
-                    EmployeeAcIn.ALL,
-                    EmployeeAcIn.ALL,
+                    EmployeeRole.ALL,
+                    EmployeeRole.ALL,
                     null,
                     filterData,
-                    "employeeAcIn",
-                    employeeAcInConsumer
+                    "employeeCategory",
+                    employeeCategoryConsumer
             );
 
         });
         all.addClassName("active");
-        Button active = commonComponents.normalButtonNoNavigate(EmployeeAcIn.ACTIVE.getDisplayName(), "transparent-button");
-        active.addClickListener(e->{
+        Button worker = commonComponents.normalButtonNoNavigate(EmployeeRole.WORKER.getDisplayName(), "transparent-button");
+        worker.addClickListener(e->{
             currentFilterDisplay.filterSetter(
-                    EmployeeAcIn.ACTIVE,
-                    EmployeeAcIn.ALL,
+                    EmployeeRole.WORKER,
+                    EmployeeRole.ALL,
                     null,
                     filterData,
-                    "employeeAcIn",
-                    employeeAcInConsumer
+                    "employeeCategory",
+                    employeeCategoryConsumer
             );
         });
-        Button inactive = commonComponents.normalButtonNoNavigate(EmployeeAcIn.INACTIVE.getDisplayName(), "transparent-button");
-        inactive.addClickListener(e->{
+        Button assembler = commonComponents.normalButtonNoNavigate(EmployeeRole.ASSEMBLER.getDisplayName(), "transparent-button");
+        assembler.addClickListener(e->{
             currentFilterDisplay.filterSetter(
-                    EmployeeAcIn.INACTIVE,
-                    EmployeeAcIn.ALL,
+                    EmployeeRole.ASSEMBLER,
+                    EmployeeRole.ALL,
                     null,
                     filterData,
-                    "employeeAcIn",
-                    employeeAcInConsumer
+                    "employeeCategory",
+                    employeeCategoryConsumer
             );
         });
-        Button onLeave = commonComponents.normalButtonNoNavigate(EmployeeAcIn.ON_LEAVE.getDisplayName(), "transparent-button");
-        onLeave.addClickListener(e->{
+        Button carpenter = commonComponents.normalButtonNoNavigate(EmployeeRole.CARPENTER.getDisplayName(), "transparent-button");
+        carpenter.addClickListener(e->{
             currentFilterDisplay.filterSetter(
-                    EmployeeAcIn.ON_LEAVE,
-                    EmployeeAcIn.ALL,
+                    EmployeeRole.CARPENTER,
+                    EmployeeRole.ALL,
                     null,
                     filterData,
-                    "employeeAcIn",
-                    employeeAcInConsumer
+                    "employeeCategory",
+                    employeeCategoryConsumer
+            );
+        });
+        Button finisher = commonComponents.normalButtonNoNavigate(EmployeeRole.FINISHER.getDisplayName(), "transparent-button");
+        finisher.addClickListener(e->{
+            currentFilterDisplay.filterSetter(
+                    EmployeeRole.FINISHER,
+                    EmployeeRole.ALL,
+                    null,
+                    filterData,
+                    "employeeCategory",
+                    employeeCategoryConsumer
+            );
+        });
+        Button werehouse = commonComponents.normalButtonNoNavigate(EmployeeRole.WAREHOUSE.getDisplayName(), "transparent-button");
+        werehouse.addClickListener(e->{
+            currentFilterDisplay.filterSetter(
+                    EmployeeRole.WAREHOUSE,
+                    EmployeeRole.ALL,
+                    null,
+                    filterData,
+                    "employeeCategory",
+                    employeeCategoryConsumer
+            );
+        });
+        Button manager = commonComponents.normalButtonNoNavigate(EmployeeRole.MANAGER.getDisplayName(), "transparent-button");
+        manager.addClickListener(e->{
+            currentFilterDisplay.filterSetter(
+                    EmployeeRole.MANAGER,
+                    EmployeeRole.ALL,
+                    null,
+                    filterData,
+                    "employeeCategory",
+                    employeeCategoryConsumer
             );
         });
 
@@ -139,9 +176,11 @@ public class EmployeeFilters {
 
         buttonHolder.add(
                 all,
-                active,
-                inactive,
-                onLeave
+                assembler,
+                carpenter,
+                finisher,
+                werehouse,
+                manager
         );
 
         buttonHolderhOLDER.add(
@@ -150,7 +189,13 @@ public class EmployeeFilters {
         );
 
 
-        List<Button> buttonList = List.of(all,active,inactive,onLeave);
+        List<Button> buttonList = List.of(
+                all,
+                assembler,
+                carpenter,
+                finisher,
+                werehouse,
+                manager);
 
         for(var s : buttonList){
 
@@ -230,14 +275,7 @@ public class EmployeeFilters {
         dialogHolder.setPadding(false);
 
 
-        // ========================== employee category ============================
-        ComboBox<EmployeeRole> employeeCategoryComboBox = new ComboBox<>("Employee category");
-        employeeCategoryComboBox.setWidthFull();
-        employeeCategoryComboBox.setItems(EmployeeRole.values());
-        currentFilterDisplay.setComponentValue("employeeCategory",filterData,employeeCategoryComboBox);
-        employeeCategoryComboBox.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(), EmployeeRole.ALL,null,filterData,"employeeCategory",employeeCategoryConsumer);
-        });
+
 
 
         // ========================== employee category ============================
@@ -249,6 +287,15 @@ public class EmployeeFilters {
             currentFilterDisplay.filterSetter(e.getValue(),EmployeeDepartment.ALL,null,filterData,"employeeDepartment",employeeDepartmentConsumer);
         });
 
+        // ========================== employee activity ============================
+        ComboBox<EmployeeAcIn> employeeAcInComboBox = new ComboBox<>("Employee activity");
+        employeeAcInComboBox.setWidthFull();
+        employeeAcInComboBox.setItems(EmployeeAcIn.values());
+        employeeAcInComboBox.setItemLabelGenerator(EmployeeAcIn::getDisplayName);
+        currentFilterDisplay.setComponentValue("employeeAcIn",filterData,employeeAcInComboBox);
+        employeeAcInComboBox.addValueChangeListener(e->{
+            currentFilterDisplay.filterSetter(e.getValue(), EmployeeAcIn.ALL,null,filterData,"employeeAcIn",employeeAcInConsumer);
+        });
 
 
 
@@ -287,7 +334,7 @@ public class EmployeeFilters {
                 dateTo
         );
         dialogHolder.add(
-                employeeCategoryComboBox,
+                employeeAcInComboBox,
                 employeeDepartmentComboBox,
                 hourlyRate,
                 dateFromTo

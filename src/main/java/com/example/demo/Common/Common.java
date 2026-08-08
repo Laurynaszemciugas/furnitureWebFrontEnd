@@ -3,7 +3,9 @@ package com.example.demo.Common;
 import com.example.demo.Common.DTOS.PlacesToBreak;
 import com.example.demo.Common.Logic.ErrorDisplay;
 import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.ControllerModels.CommonDtos.ActionTracker;
 import com.example.demo.Enums.Warnings;
+import com.example.demo.Services.ActionTrackerService.ActionService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.html.Span;
@@ -34,11 +36,15 @@ public class Common {
     Consumer<Boolean> booleanConsumer;
 
 
+
     public Common(CommonComponents commonComponents) {
         this.commonComponents = commonComponents;
         this.errorDisplay = new ErrorDisplay(commonComponents);
         this.sessionCrafter = new SessionCrafter();
+
     }
+
+
 
 
 

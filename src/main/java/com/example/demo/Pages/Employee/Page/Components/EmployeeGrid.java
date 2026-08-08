@@ -3,6 +3,7 @@ package com.example.demo.Pages.Employee.Page.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Employee.EmployeeBriefDto;
+import com.example.demo.Enums.EmployeeAcIn;
 import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -98,14 +99,14 @@ public class EmployeeGrid {
             if (e.getEmployeeCategory() != null) {
                 switch (e.getEmployeeCategory()) {
 
-                    case INTERN -> {
+                    case WAREHOUSE -> {
                         span.getStyle()
                                 .set("background", "rgba(245, 158, 11, 0.15)")
                                 .set("color", "#f59e0b")
                                 .set("border", "1px solid rgba(245,158,11,0.3)");
                     }
 
-                    case JUNIOR_WORKER -> {
+                    case WORKER -> {
                         span.getStyle()
                                 .set("background", "rgba(34, 197, 94, 0.15)")
                                 .set("color", "#22c55e")
@@ -129,12 +130,7 @@ public class EmployeeGrid {
 
 
 
-                    case PAINTER -> {
-                        span.getStyle()
-                                .set("background", "rgba(168, 85, 247, 0.15)")
-                                .set("color", "#a855f7")
-                                .set("border", "1px solid rgba(168,85,247,0.3)");
-                    }
+
 
                     case FINISHER -> {
                         span.getStyle()
@@ -143,42 +139,6 @@ public class EmployeeGrid {
                                 .set("border", "1px solid rgba(20,184,166,0.3)");
                     }
 
-                    case QUALITY_CHECKER -> {
-                        span.getStyle()
-                                .set("background", "rgba(132, 204, 22, 0.15)")
-                                .set("color", "#84cc16")
-                                .set("border", "1px solid rgba(132,204,22,0.3)");
-                    }
-
-                    case WAREHOUSE_WORKER -> {
-                        span.getStyle()
-                                .set("background", "rgba(100, 116, 139, 0.15)")
-                                .set("color", "#64748b")
-                                .set("border", "1px solid rgba(100,116,139,0.3)");
-                    }
-
-                    case LOGISTICS_WORKER -> {
-                        span.getStyle()
-                                .set("background", "rgba(249, 115, 22, 0.15)")
-                                .set("color", "#f97316")
-                                .set("border", "1px solid rgba(249,115,22,0.3)");
-                    }
-
-                    case DELIVERY_DRIVER -> {
-                        span.getStyle()
-                                .set("background", "rgba(59, 130, 246, 0.15)")
-                                .set("color", "#3b82f6")
-                                .set("border", "1px solid rgba(59,130,246,0.3)");
-                    }
-
-
-
-                    case SUPERVISOR -> {
-                        span.getStyle()
-                                .set("background", "rgba(37, 99, 235, 0.15)")
-                                .set("color", "#2563eb")
-                                .set("border", "1px solid rgba(37,99,235,0.3)");
-                    }
 
                     case MANAGER -> {
                         span.getStyle()
@@ -299,6 +259,10 @@ public class EmployeeGrid {
 
 
             Button delete = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.TRASH,"Red");
+
+            if(e.getEmployeeAcIn().equals(EmployeeAcIn.INACTIVE)){
+                delete.setVisible(false);
+            }
 
             delete.addClickListener(deleteValue->{
                 common.deleteConfirmation(e.getFullName());
