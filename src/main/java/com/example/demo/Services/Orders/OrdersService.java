@@ -6,6 +6,7 @@ import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.ControllerModels.Common.GraphDataDateValue;
 import com.example.demo.ControllerModels.Common.MiniStatHolder;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
+import com.example.demo.ControllerModels.DashBoard.DashBoardMonthlyOrdersCompleted;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
 import com.example.demo.ControllerModels.OrderAdd.ConsumerData;
@@ -152,7 +153,15 @@ public class OrdersService {
 
     }
 
+// dashboard
 
+    @SneakyThrows
+    public DashBoardMonthlyOrdersCompleted getDashboardOrderMini(LocalDate from, LocalDate to){
+
+
+                return httpCallLogic.HttpCall("order/getDashboardOrderMini", HttpMethod.GET,String.format("%s/%s",from,to), DashBoardMonthlyOrdersCompleted.class,true);
+
+    }
 
 
 

@@ -6,11 +6,14 @@ import com.example.demo.ControllerModels.DashBoard.DashBoardEmployeeMiniInfo;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialStock;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialUsageInfo;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMonthlyOrdersCompleted;
+import com.example.demo.Services.Orders.OrdersService;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 
 @Service
 public class MiniStatistics {
@@ -19,9 +22,27 @@ public class MiniStatistics {
     CommonComponents commonComponents;
     Common common;
 
-    public MiniStatistics(CommonComponents commonComponents, Common common) {
+    OrdersService ordersService;
+
+
+    String formattedVs = "";
+
+    public MiniStatistics(CommonComponents commonComponents, Common common, OrdersService ordersService) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.ordersService = ordersService;
+
+        formattedVs = String.format(
+                "vs %s - %s",
+                common.dateFormatter(
+                        LocalDate.now().withDayOfMonth(1).minusMonths(1).atStartOfDay(),
+                        "MMMM d"
+                ),
+                common.dateFormatter(
+                        LocalDate.now().withDayOfMonth(1).minusDays(1).atStartOfDay(),
+                        "MMMM d, yyyy"
+                )
+        );
     }
 
     // ===================================== mini stats =====================================
@@ -56,7 +77,6 @@ public class MiniStatistics {
                         "Monthly Orders 'Completed'",
                         "Screenshot 2026-04-27 001745.png",
                         "Orders",
-                        ordersCompletedCompleted,
                         "Compared to last months 'Completed' orders",
                         "280px",
                         "170px"),
@@ -93,19 +113,19 @@ public class MiniStatistics {
             String name,
             String image,
             String units,
-            DashBoardMonthlyOrdersCompleted ordersData,
             String description,
             String width,
             String height
     ) {
 
-        boolean empty = (ordersData == null || ordersData.isEmpty());
+        DashBoardMonthlyOrdersCompleted ordersData = ordersService.getDashboardOrderMini(common.currentMonthStart(),common.nextMonthDate());
 
-        long value = empty ? 0 : ordersData.getThisMonthOrders();
-        long previousValue = empty ? 0 : ordersData.getPreviousMonthOrders();
+        long value = ordersData.getThisMonthOrders();
+        long previousValue = ordersData.getPreviousMonthOrders();
 
+        boolean empty = ordersData.isEmpty();
 
-        double changePercent = empty ? 0 : common.diffrenceCalculator(value, previousValue);
+        double changePercent = common.diffrenceCalculator(value, previousValue);
 
 
         Span trend = commonComponents.spanCrafter(empty ? "▲ 0.00%" :  (value >= previousValue  ? "▲ " : "▼ ") + String.format("%.2f",changePercent) + "%","stat-trend");
@@ -118,8 +138,8 @@ public class MiniStatistics {
         VerticalLayout island = new VerticalLayout(
                 commonComponents.spanCrafter(name,"stat-title"),
                 commonComponents.doubleValueRow(commonComponents.spanCrafter(empty ? "No data" : String.valueOf(value),"stat-value"), commonComponents.spanCrafter(units,"stat-units")),
-                commonComponents.doubleValueRow(commonComponents.spanCrafter(empty ? "No data": "Last Month " + previousValue,"stat-example"), commonComponents.spanCrafter(units,"stat-units")),
                 trend,
+                commonComponents.spanCrafter(empty ? "No data": formattedVs ,"stat-description"),
                 commonComponents.spanCrafter(description,"stat-description"));
         island.addClassName("stat-card");
 
