@@ -55,7 +55,7 @@ public class DashBoardPage extends VerticalLayout implements BeforeEnterObserver
 
 
         add(
-                loadingOverlay(),
+//                loadingOverlay(),
                 mainLayout());
 
     }
@@ -91,7 +91,7 @@ public class DashBoardPage extends VerticalLayout implements BeforeEnterObserver
         setSizeFull();
         setAlignItems(Alignment.CENTER);
 
-
+        addClassName("animation-page");
 
     }
 
@@ -118,12 +118,12 @@ public class DashBoardPage extends VerticalLayout implements BeforeEnterObserver
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top","5px");
-        verticalLayout.addClassName("main-island");
 
 
 
 
         verticalLayout.add(
+                commonComponents.biefPageExplanation("Dashboard"),
                 miniStatistics.miniStats(data.getMiniStatOne(),
                         data.getMiniStatTwo(),
                         data.getMiniStatThree(),
@@ -132,7 +132,6 @@ public class DashBoardPage extends VerticalLayout implements BeforeEnterObserver
                 activityGraphHolder(),
                 topEmployeMaterialQuickAction());
 
-        verticalLayout.setAlignItems(Alignment.CENTER);
 
         return verticalLayout;
     }
@@ -141,7 +140,7 @@ public class DashBoardPage extends VerticalLayout implements BeforeEnterObserver
     // graph and the activitylog holder
     public HorizontalLayout activityGraphHolder(){
         VerticalLayout activityFeed2 = activityFeed.activityFeedCrafter(data.getLoadActivityList());
-        VerticalLayout graphHolder = graphStatistics.graph(data.getGraphData());
+        VerticalLayout graphHolder = graphStatistics.graph();
         graphHolder.setWidth("400px");
         HorizontalLayout h = new HorizontalLayout(graphHolder, activityFeed2);
         h.setWidthFull();

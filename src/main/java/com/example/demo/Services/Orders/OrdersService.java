@@ -164,6 +164,14 @@ public class OrdersService {
     }
 
 
+    @SneakyThrows
+    public List<GraphDataDateValue> getGraphDashboard(LocalDate fromDate, LocalDate toDate) {
+
+        return Arrays.stream(httpCallLogic.HttpCall("order/getGraphDashboard", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), GraphDataDateValue[].class,true)).toList();
+
+    }
+
+
 
     }
 

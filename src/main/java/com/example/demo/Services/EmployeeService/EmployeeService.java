@@ -4,6 +4,8 @@ import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.ControllerModels.Common.MiniStatHolder;
 import com.example.demo.ControllerModels.CommonDtos.Employee;
 import com.example.demo.ControllerModels.CommonDtos.Materials;
+import com.example.demo.ControllerModels.DashBoard.DashBoardEmployeeMiniInfo;
+import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialUsageInfo;
 import com.example.demo.ControllerModels.Employee.EmployeeBriefDto;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
@@ -74,6 +76,16 @@ public class EmployeeService {
     @SneakyThrows
     public Employee getEmployee(Long id) {
         return httpCallLogic.HttpCall("employee/getEmployee", HttpMethod.GET,id, Employee.class,true);
+    }
+
+
+    // dashboard
+
+    @SneakyThrows
+    public DashBoardEmployeeMiniInfo getEmployeeMiniStats(LocalDate from, LocalDate to) {
+
+        return httpCallLogic.HttpCall("employee/getEmployeeMiniStats", HttpMethod.GET,String.format("%s/%s",from,to), DashBoardEmployeeMiniInfo.class,true);
+
     }
 
 

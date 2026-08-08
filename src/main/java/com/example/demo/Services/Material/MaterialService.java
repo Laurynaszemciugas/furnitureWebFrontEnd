@@ -4,6 +4,8 @@ import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.ControllerModels.Common.GraphDataDateValue;
 import com.example.demo.ControllerModels.Common.MiniStatHolder;
 import com.example.demo.ControllerModels.CommonDtos.Materials;
+import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialStock;
+import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialUsageInfo;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
@@ -140,6 +142,21 @@ public class MaterialService {
 
     }
 
+    // dashboard
+
+    @SneakyThrows
+    public DashBoardMaterialStock getDashBoardMiniStatas(LocalDate from, LocalDate to) {
+
+        return httpCallLogic.HttpCall("material/getDashBoardMiniStatas", HttpMethod.GET,String.format("%s/%s",from,to), DashBoardMaterialStock.class,true);
+
+    }
+
+    @SneakyThrows
+    public DashBoardMaterialUsageInfo getMiniDashboardTwoMoreIndepth(LocalDate from, LocalDate to) {
+
+        return httpCallLogic.HttpCall("material/getMiniDashboardTwoMoreIndepth", HttpMethod.GET,String.format("%s/%s",from,to), DashBoardMaterialUsageInfo.class,true);
+
+    }
 
 
 

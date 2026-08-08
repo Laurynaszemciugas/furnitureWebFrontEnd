@@ -6,6 +6,8 @@ import com.example.demo.ControllerModels.DashBoard.DashBoardEmployeeMiniInfo;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialStock;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialUsageInfo;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMonthlyOrdersCompleted;
+import com.example.demo.Services.EmployeeService.EmployeeService;
+import com.example.demo.Services.Material.MaterialService;
 import com.example.demo.Services.Orders.OrdersService;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -23,14 +25,19 @@ public class MiniStatistics {
     Common common;
 
     OrdersService ordersService;
+    MaterialService materialService;
+    EmployeeService employeeService;
+
 
 
     String formattedVs = "";
 
-    public MiniStatistics(CommonComponents commonComponents, Common common, OrdersService ordersService) {
+    public MiniStatistics(CommonComponents commonComponents, Common common, OrdersService ordersService,MaterialService materialService,EmployeeService employeeService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.ordersService = ordersService;
+        this.materialService = materialService;
+        this.employeeService = employeeService;
 
         formattedVs = String.format(
                 "vs %s - %s",
@@ -64,7 +71,6 @@ public class MiniStatistics {
         HorizontalLayout employeeCard = new HorizontalLayout(employeeMiniStat(
                 "Employee mini information",
                 "Screenshot 2026-04-27 001745.png",
-                employeeData,
                 "Material usage this month compared to last",
                 null,
                 "170px"));
@@ -83,15 +89,13 @@ public class MiniStatistics {
                 materialsStockMiniStats(
                         "Material Stock 'Current'",
                         "Screenshot 2026-04-27 001745.png",
-                        dashBoardMaterialStock,
                         "Current material stock",
                         "280px",
                         "170px"),
                 materialUsageMiniStat(
                         "Material mini information",
                         "Screenshot 2026-04-27 001745.png",
-                        materialData,
-                        "Material usage this month compared to last",
+                        "Top employee units produced",
                         "280px",
                         "170px"),
 
@@ -139,9 +143,9 @@ public class MiniStatistics {
                 commonComponents.spanCrafter(name,"stat-title"),
                 commonComponents.doubleValueRow(commonComponents.spanCrafter(empty ? "No data" : String.valueOf(value),"stat-value"), commonComponents.spanCrafter(units,"stat-units")),
                 trend,
-                commonComponents.spanCrafter(empty ? "No data": formattedVs ,"stat-description"),
-                commonComponents.spanCrafter(description,"stat-description"));
-        island.addClassName("stat-card");
+                commonComponents.spanCrafter(empty ? "No data": formattedVs ,"stat-description"));
+//                commonComponents.spanCrafter(description,"stat-description"));
+        island.addClassName("island");
 
         island.setPadding(true);
         island.setSpacing(false);
@@ -155,11 +159,12 @@ public class MiniStatistics {
     public VerticalLayout materialsStockMiniStats(
             String name,
             String image,
-            DashBoardMaterialStock dashBoardMaterialStock,
             String description,
             String width,
             String height
     ) {
+
+        DashBoardMaterialStock dashBoardMaterialStock = materialService.getDashBoardMiniStatas(common.currentMonthStart(),common.nextMonthDate());
 
         boolean empty = (dashBoardMaterialStock != null && dashBoardMaterialStock.isEmpty());
 
@@ -187,11 +192,12 @@ public class MiniStatistics {
     public VerticalLayout materialUsageMiniStat(
             String name,
             String image,
-            DashBoardMaterialUsageInfo materialData,
             String description,
             String width,
             String height
     ) {
+
+        DashBoardMaterialUsageInfo materialData = materialService.getMiniDashboardTwoMoreIndepth(common.currentMonthStart(),common.nextMonthDate());
 
         boolean empty = (materialData == null || materialData.isEmpty());
 
@@ -220,8 +226,8 @@ public class MiniStatistics {
         VerticalLayout island = new VerticalLayout(
                 commonComponents.spanCrafter(name,"stat-title"),
                 commonComponents.doubleValueRow(commonComponents.spanCrafter(String.valueOf(totalCostOfMaterialsUsedThisMonth),"stat-value"), commonComponents.spanCrafter("Eur","stat-unit")),
-                commonComponents.doubleValueRow(commonComponents.spanCrafter("Last month " + totalCostOfMaterialUsedLastMonth,"stat-example"), commonComponents.spanCrafter("Eur","stat-unit") ),
                 trend,
+                commonComponents.spanCrafter(formattedVs,"stat-description"),
                 commonComponents.doubleValueRow(commonComponents.spanCrafter(mostUsedMaterial,"stat-example"), commonComponents.spanCrafter("Compared to all usage -  " + totalMaterialUsageCount,"stat-description")));
 
 
@@ -239,7 +245,6 @@ public class MiniStatistics {
     public VerticalLayout employeeMiniStat(
             String name,
             String image,
-            DashBoardEmployeeMiniInfo employeeData,
             String description,
             String width,
             String height
@@ -251,15 +256,13 @@ public class MiniStatistics {
         double totalPaidLastMonth = 0.0;
         double totalUnpaidLastMonth = 0.0;
 
+        DashBoardEmployeeMiniInfo employeeData = employeeService.getEmployeeMiniStats(common.currentMonthStart(),common.nextMonthDate());
 
         boolean empty = (employeeData == null);
 
             topEmployee =  empty ? "No data" :employeeData.getTopEmployee();
             topEmployeeProduced = empty ? 0 :employeeData.getTopEmployeeProduced();
-            totalPaidThisMonth = empty ? 0 : employeeData.getTotalPaidSalary();
-            totalUnpaidThisMonth = empty ? 0 : employeeData.getTotalUnpaidSalary();
-            totalPaidLastMonth = empty ? 0 : employeeData.getTotalPaidLastMonth();
-            totalUnpaidLastMonth = empty ? 0 : employeeData.getTotalUnpaidLastMonth();
+
 
         // find change according to this month and previous
 
@@ -291,9 +294,8 @@ public class MiniStatistics {
         // Layout
         VerticalLayout island = new VerticalLayout(
                 commonComponents.spanCrafter(name,"stat-title"),
-                commonComponents.doubleValueRow(commonComponents.spanCrafter(topEmployee,"stat-value"), commonComponents.spanCrafter(topEmployeeProduced + " units produced","stat-unit")),
-                commonComponents.tripleValueRow(commonComponents.spanCrafter(String.valueOf(totalPaidThisMonth),"stat-example"), commonComponents.spanCrafter("This month paid salary Eur  ","stat-description"),trendHolder1),
-                commonComponents.tripleValueRow(commonComponents.spanCrafter(String.valueOf(totalUnpaidThisMonth),"stat-example"), commonComponents.spanCrafter("This month unpaid salary Eur  ","stat-description"),trendHolder2),
+                commonComponents.spanCrafter(topEmployee,"stat-value"),
+                commonComponents.spanCrafter(topEmployeeProduced + " units produced","stat-unit"),
                 commonComponents.spanCrafter(description,"stat-description")
 
         );

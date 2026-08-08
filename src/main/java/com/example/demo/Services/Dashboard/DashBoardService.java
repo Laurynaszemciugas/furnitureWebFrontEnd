@@ -51,10 +51,7 @@ public class DashBoardService {
         DashBoardEmployeeMiniInfo employeeData = new DashBoardEmployeeMiniInfo();
         employeeData.setTopEmployee("John");
         employeeData.setTopEmployeeProduced(1200L);
-        employeeData.setTotalPaidSalary(5000.0);
-        employeeData.setTotalUnpaidSalary(800.0);
-        employeeData.setTotalPaidLastMonth(7000);
-        employeeData.setTotalUnpaidLastMonth(600.0);
+
 
         return employeeData;
 
