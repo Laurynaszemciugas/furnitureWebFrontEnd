@@ -96,20 +96,7 @@ public class DashBoardPage extends VerticalLayout implements BeforeEnterObserver
     }
 
 
-    private Component loadingOverlay() {
-        Div overlay = new Div();
-        overlay.addClassName("loading-overlay");
 
-        Div loader = new Div();
-        loader.addClassName("modern-loader");
-
-        Span text = new Span("Loading dashboard...");
-        text.addClassName("loading-text");
-
-        overlay.add(loader, text);
-
-        return overlay;
-    }
 
 
     // main layout all stuff go here

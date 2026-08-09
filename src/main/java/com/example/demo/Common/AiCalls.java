@@ -1,0 +1,190 @@
+package com.example.demo.Common;
+
+
+import tools.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpTimeoutException;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
+
+public class AiCalls {
+
+
+    public <T> T fillDataAutomatically(String prompt, Class<T> referenceToDataNeeded) throws IOException, InterruptedException {
+
+        T value = null;
+
+
+            ObjectMapper mapper = new ObjectMapper();
+            HttpClient client = HttpClient.newHttpClient();
+
+            String json = mapper.writeValueAsString(
+                    Map.of(
+                            "model", "qwen2.5:3b",
+                            "prompt", prompt,
+                            "stream", false
+                    )
+            );
+
+
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:11434/api/generate"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+
+
+            HttpResponse<String> response = client.send(
+                    request,
+                    HttpResponse.BodyHandlers.ofString()
+            );
+
+            System.out.println("================================");
+            System.out.println(response.body());
+            System.out.println("=================================");
+
+            AiResponse aiResponse = mapper.readValue(response.body(), AiResponse.class);
+
+            value = mapper.readValue(aiResponse.getResponse(), referenceToDataNeeded);
+
+
+
+
+
+
+        return value;
+
+    }
+
+
+
+
+
+    public<T> String classToStringConverter(T value, Class<T> tClass, String userPrompt) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+
+        stringBuilder.append("\n");
+        stringBuilder.append("USER INPUT:\n");
+        stringBuilder.append(userPrompt);
+        stringBuilder.append("\n");
+        stringBuilder.append("END USER INPUT.\n\n");
+
+        stringBuilder.append(
+                "IMPORTANT RULES:\n" +
+                        "- Return ONLY valid JSON.\n" +
+                        "- Return exactly the fields required by the provided JSON schema.\n" +
+                        "- Do not add or remove fields.\n" +
+                        "- Do not rename fields.\n" +
+                        "- Do not return null values.\n" +
+                        "- Do not return empty strings.\n" +
+                        "- Generate a meaningful value for every field.\n" +
+                        "- Generate realistic values based on the USER INPUT.\n" +
+                        "- Do not copy placeholder, default, example, or schema values as actual values.\n" +
+                        "- Do not use None unless the field genuinely cannot have a meaningful value.\n" +
+                        "- Do not use 0 or 0.0 when a realistic value can be inferred.\n" +
+                        "- Infer reasonable missing information from the material described by the USER INPUT.\n" +
+                        "- Use the USER INPUT as the primary source of information.\n" +
+                        "- Correct obvious spelling mistakes when interpreting the USER INPUT.\n" +
+                        "- If provided json values is 0 it is INTEGER, if 0.0 it is Double\n" +
+
+                        "ENUM RULES:\n" +
+                        "- For every ENUM field, return exactly ONE value from its corresponding allowed list.\n" +
+                        "- NEVER invent an enum value.\n" +
+                        "- NEVER use synonyms for enum values.\n" +
+                        "- NEVER translate enum values.\n" +
+                        "- NEVER modify enum values.\n" +
+                        "- NEVER combine multiple enum values.\n" +
+                        "- Copy enum values exactly.\n\n" +
+
+                        "COLOR RULES:\n" +
+                        "- If a color is mentioned in the USER INPUT, convert it to HEX format.\n" +
+                        "- If no color is mentioned, infer a realistic color appropriate for the material.\n" +
+                        "- materialColor must always be a valid HEX color at the start add #.\n\n" +
+
+                        "NUMERIC RULES:\n" +
+                        "- materialPrice must be a realistic price for the material.\n" +
+                        "- materialUnitWeight must be a realistic weight for the material unit.\n" +
+                        "- materialMinThreshold must be a realistic minimum stock threshold.\n" +
+                        "- materialStock must be a realistic current stock amount.\n" +
+                        "- defaultRestockPeriod must be a realistic number of days.\n" +
+                        "- All numeric fields must be JSON numbers, not strings.\n\n" +
+
+                        "DATE RULES:\n" +
+                        "- deliveryDate must be a realistic future delivery date.\n" +
+                        "- Use YYYY-MM-DD format.\n\n" +
+
+                        "FIELD RULES:\n" +
+                        "- materialName: generate a specific realistic material name based on the USER INPUT.\n" +
+                        "- materialDescription: describe the material using the USER INPUT.\n" +
+                        "- careInstructions: generate realistic care instructions for the material.\n" +
+                        "- materialUrl: generate a reasonable material URL.\n" +
+                        "- materialUnit: choose the most appropriate unit for the material.\n\n"
+        );
+
+
+        stringBuilder.append(
+                "\nDo not explain your answer. Generate the JSON object directly."
+        );
+
+
+
+        stringBuilder.append("{");
+
+
+        T defaultValues = tClass.getDeclaredConstructor().newInstance();
+
+        for(var s : tClass.getDeclaredFields()){
+
+            s.setAccessible(true);
+
+            Object providedObject = s.get(value);
+            Object defaultObject = s.get(defaultValues);
+
+            if(Objects.equals(providedObject,null)){
+
+                Object showTheValue;
+
+                if(s.getType().isEnum()){
+                    Object[] values = s.getType().getEnumConstants();
+                    showTheValue = Arrays.toString(values);
+
+
+                }
+                else{
+                    showTheValue = defaultObject;
+                }
+
+
+                String text = String.format("\"%s\": \"%s\",",s.getName(),showTheValue);
+
+                stringBuilder.append(text);
+            }
+
+        }
+
+        stringBuilder.append("}");
+        stringBuilder.append(" Fill the values with realistic data.");
+
+
+        System.out.println("=============================");
+        System.out.println(stringBuilder);
+        System.out.println("=============================");
+
+
+
+        return String.valueOf(stringBuilder);
+    }
+
+}

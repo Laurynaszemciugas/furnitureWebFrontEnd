@@ -621,7 +621,7 @@ background-color: #d4edda;
     align-content: center;
     gap: 18px;
     background: #f8fafc;
-    animation: hideLoader 1.6s ease forwards;
+    animation: hideLoader 200000s ease forwards;
 }
 
 .modern-loader {
@@ -1122,91 +1122,7 @@ vaadin-grid vaadin-button:hover {
 }
 
 
-/* ============================================================
-   1. GLOBAL BLUE ACCENTS
-   ============================================================ */
-html {
-  --lumo-base-color: #ffffff;
-  --lumo-primary-color: #1d4ed8; /* Deep rich vibrant blue */
-  --lumo-primary-text-color: #1d4ed8;
-}
 
-/* ============================================================
-   2. HIGH-CONTRAST RESTING STATE
-   Uses a crisp border + a subtle dark shadow to separate from white
-   ============================================================ */
-vaadin-text-field::part(input-field),
-vaadin-password-field::part(input-field),
-vaadin-email-field::part(input-field),
-vaadin-number-field::part(input-field),
-vaadin-integer-field::part(input-field),
-vaadin-text-area::part(input-field),
-vaadin-combo-box::part(input-field),
-vaadin-select::part(input-field),
-vaadin-date-picker::part(input-field),
-vaadin-time-picker::part(input-field) {
-  background-color: #ffffff;
-  border-radius: 8px;
-  /* Crisp 1px slate line + a grounded bottom shadow */
-  border: 1px solid #cbd5e1;
-  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.06);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* ============================================================
-   3. HOVER STATE
-   Border darkens significantly to punch out from the white page
-   ============================================================ */
-vaadin-text-field:hover::part(input-field),
-vaadin-password-field:hover::part(input-field),
-vaadin-email-field:hover::part(input-field),
-vaadin-number-field:hover::part(input-field),
-vaadin-integer-field:hover::part(input-field),
-vaadin-text-area:hover::part(input-field),
-vaadin-combo-box:hover::part(input-field),
-vaadin-select:hover::part(input-field),
-vaadin-date-picker:hover::part(input-field),
-vaadin-time-picker:hover::part(input-field) {
-  border-color: #64748b; /* Strong slate gray */
-  box-shadow: 0 4px 8px rgba(15, 23, 42, 0.1);
-  transform: translateY(-1px);
-}
-
-/* ============================================================
-   4. THE MAXIMUM "POP" FOCUS STATE
-   Bold blue border with a multi-layered electric blue ring
-   ============================================================ */
-vaadin-text-field[focused]::part(input-field),
-vaadin-password-field[focused]::part(input-field),
-vaadin-email-field[focused]::part(input-field),
-vaadin-number-field[focused]::part(input-field),
-vaadin-integer-field[focused]::part(input-field),
-vaadin-text-area[focused]::part(input-field),
-vaadin-combo-box[focused]::part(input-field),
-vaadin-select[focused]::part(input-field),
-vaadin-date-picker[focused]::part(input-field),
-vaadin-time-picker[focused]::part(input-field) {
-  transform: translateY(0);
-  background-color: #ffffff;
-  border-color: #1d4ed8;
-  /* Double shadow: solid inner focus line + glowing outer blue aura */
-  box-shadow:
-    0 0 0 1px #1d4ed8,
-    0 0 0 4px rgba(29, 78, 216, 0.25),
-    0 4px 12px rgba(29, 78, 216, 0.15);
-}
-
-/* ============================================================
-   5. DROPDOWN OVERLAYS (ComboBox / Select)
-   Gives popups a clear dark border and heavy shadow
-   ============================================================ */
-vaadin-combo-box-overlay,
-vaadin-select-overlay {
-  --lumo-base-color: #ffffff;
-  border-radius: 8px;
-  border: 1px solid #cbd5e1;
-  box-shadow: 0 12px 24px -4px rgba(15, 23, 42, 0.15);
-}
 
 /* ============================================================
     The "Island" Dotted Layout Effect

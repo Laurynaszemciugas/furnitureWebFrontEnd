@@ -1,18 +1,26 @@
 package com.example.demo.Pages.Material.MaterialAddEdit.Components;
 
+import com.example.demo.Common.AiCalls;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ObjectConverter;
+import com.example.demo.Common.MaterialAiDto;
 import com.example.demo.ControllerModels.Common.CommonImagesData;
 import com.example.demo.ControllerModels.CommonDtos.MaterialImageData;
 import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.Enums.*;
 import com.example.demo.Common.Logic.ProductEditImage;
+import com.example.demo.Pages.Material.MaterialAddEdit.MaterialAddPage;
 import com.example.demo.Services.Material.MaterialService;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -24,11 +32,18 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import lombok.Setter;
+import lombok.SneakyThrows;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 @Setter
@@ -46,7 +61,7 @@ public class RightSideMaterials {
     ComboBox<ActiveInactive> materialStatus = new ComboBox<>("Material status");
 
     TextArea description = new TextArea("Description");
-    TextArea careInstuctions = new TextArea("Care instructions");
+    TextArea careInstructions = new TextArea("Care instructions");
 
     TextField materialColor = new TextField("Material color");
     ComboBox<MaterialType> materialFinishType = new ComboBox("Material finish type");
@@ -77,6 +92,11 @@ public class RightSideMaterials {
 
     Consumer<Materials> materialsConsumer;
 
+
+    AiCalls aiCalls;
+
+    VerticalLayout rightSide = new VerticalLayout();
+
     public RightSideMaterials(CommonComponents commonComponents, Common common, MaterialService materialService, ObjectConverter objectConverter) {
 
         this.commonComponents = commonComponents;
@@ -85,6 +105,8 @@ public class RightSideMaterials {
         this.materialService = materialService;
         this.objectConverter = objectConverter;
 
+        this.aiCalls = new AiCalls();
+
 
 
         configueFields();
@@ -92,6 +114,86 @@ public class RightSideMaterials {
 
 
 
+    }
+
+    @SneakyThrows
+    public static void bind(Object form, Object dto) {
+
+
+        // get the dti class to get fields
+        Class<?> dtosClass = dto.getClass();
+
+        // spin loop thru the class items
+        for(var s : form.getClass().getDeclaredFields()){
+
+            s.setAccessible(true);
+            // find component of this iteration
+            Object component = s.get(form);
+
+            // check if it is vaadin components
+            if(!(component instanceof HasValue<?,?>)){
+                continue;
+            }
+
+            // get its name
+            String fieldName = s.getName();
+
+            // get field to extract value from it
+            Field field = dtosClass.getDeclaredField(fieldName);
+            field.setAccessible(true);
+
+            // extract the value
+            Object value = field.get(dto);
+
+
+            // check if values is not null if is skip
+            if(value ==  null){
+                continue;
+            }
+
+
+            // set value to specific component
+            setComponentValue((HasValue<?, ?>) component, value);
+
+
+
+
+
+
+
+
+
+        }
+
+
+
+
+        }
+
+    private static void setComponentValue(
+            HasValue component,
+            Object value
+    ) {
+
+        if (component instanceof IntegerField) {
+            component.setValue(((Number) value).intValue());
+        }
+
+        else if (component instanceof NumberField) {
+            component.setValue(((Number) value).doubleValue());
+        }
+
+        else if (component instanceof ComboBox) {
+            component.setValue(value);
+        }
+
+        else if (component instanceof DatePicker) {
+            component.setValue(value);
+        }
+
+        else {
+            component.setValue(value);
+        }
     }
 
 
@@ -134,7 +236,7 @@ public class RightSideMaterials {
 
             description.setValue(materials.getDescription() == null ? "" : materials.getDescription());
 
-            careInstuctions.setValue(materials.getCareInstructions() == null ? "" : materials.getCareInstructions());
+            careInstructions.setValue(materials.getCareInstructions() == null ? "" : materials.getCareInstructions());
 
             materialColor.setValue(materials.getMaterialColor() == null ? "" : materials.getMaterialColor());
 
@@ -204,7 +306,7 @@ public class RightSideMaterials {
                 mat.setDescription(description.getValue());
                 mat.setMaterialType(materialType.getValue());
                 mat.setMaterialUrl(materialUrl.getValue());
-                mat.setCareInstructions(careInstuctions.getValue());
+                mat.setCareInstructions(careInstructions.getValue());
                 mat.setMaterialColor(materialColor.getValue());
                 mat.setMaterialTextures(materialTexture.getValue());
                 mat.setMaterialFinishType(materialFinishType.getValue());
@@ -262,17 +364,134 @@ public class RightSideMaterials {
         verticalLayout.setWidthFull();
         verticalLayout.addClassName("island");
 
+        verticalLayout.getStyle().set("position","relative");
+
+        String prompt = "Tai tvirta ąžuolo mediena, šviesiai rudos spalvos, su banguotu raštu. Kaina 2,55 euro už kilogramą.";
+
+
+        Button aiButton = new Button("AI");
+        aiButton.getStyle().set("position","absolute").set("right","10px").set("top","10px");
+
+        aiButton.addClickListener(e -> {
+
+            UI ui = UI.getCurrent();
+
+            rightSide.removeAll();
+            rightSide.add(loadingOverlay("Loading AI response please wait",ui));
+
+            CompletableFuture.runAsync(() -> {
+
+                try {
+
+                    MaterialAiDto aiDto =
+                            aiCalls.fillDataAutomatically(
+                                    aiCalls.classToStringConverter(
+                                            new MaterialAiDto(
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    ActiveInactive.ALL,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null
+                                            ),
+                                            MaterialAiDto.class,
+                                            prompt
+                                    ),
+                                    MaterialAiDto.class
+                            );
+
+                    common.timer(4050);
+
+                    ui.access(() -> {
+
+                        // Fill the existing fields
+                        bind(this, aiDto);
+
+                        // Rebuild the layout
+                        rightSide.removeAll();
+
+                        rightSide.add(
+                                basicInfo(),
+                                appearance(),
+                                pricingExtendedDetails(),
+                                reStockData()
+                        );
+                    });
+
+                } catch (Exception ex) {
+
+                    // if fails build it up
+
+                    ui.access(() -> {
+                        rightSide.removeAll();
+
+                        rightSide.add(
+                                basicInfo(),
+                                appearance(),
+                                pricingExtendedDetails(),
+                                reStockData()
+                        );
+                    });
+                }
+
+            });
+
+        });
+
         verticalLayout.add(
+                aiButton,
                 commonComponents.spanCrafterWordNoHide("Basic information","activityFeed-name"),
                 commonComponents.doubleValueRow(materialName,materialType),
                 commonComponents.doubleValueRow(materialUrl,materialStatus),
                 description,
-                careInstuctions
+                careInstructions
         );
 
 
 
         return  verticalLayout;
+    }
+
+    private Component loadingOverlay(String loadingText, UI ui) {
+        Div overlay = new Div();
+        overlay.addClassName("loading-overlay");
+
+        Div loader = new Div();
+        loader.addClassName("modern-loader");
+
+        Span text = new Span(loadingText+ "...");
+        text.addClassName("loading-text");
+
+        Button stuckWaiting = new Button("Stuck waiting ? ", e-> common.reloadPage());
+        stuckWaiting.setVisible(false);
+        stuckWaiting.addThemeVariants(ButtonVariant.PRIMARY);
+
+        overlay.add(loader, text,stuckWaiting);
+
+        ScheduledExecutorService scheduler =
+                Executors.newSingleThreadScheduledExecutor();
+
+        scheduler.schedule(() -> {
+            ui.access(() -> {
+                stuckWaiting.setVisible(true);
+            });
+
+            scheduler.shutdown();
+
+        }, 2, TimeUnit.SECONDS);
+
+        return overlay;
     }
 
     public VerticalLayout appearance(){
@@ -345,8 +564,8 @@ public class RightSideMaterials {
         description.setWidthFull();
         description.setHeight("100px");
 
-        careInstuctions.setWidthFull();
-        careInstuctions.setHeight("80px");
+        careInstructions.setWidthFull();
+        careInstructions.setHeight("80px");
 
         materialColor.setWidthFull();
 
@@ -364,11 +583,11 @@ public class RightSideMaterials {
 
         materialPrice.setWidthFull();
         materialPrice.setStepButtonsVisible(true);
-        materialPrice.setStep(0.5);
+        materialPrice.setStep(0.05);
 
         materialUnitWeight.setWidthFull();
         materialUnitWeight.setStepButtonsVisible(true);
-        materialUnitWeight.setStep(0.1);
+        materialUnitWeight.setStep(0.01);
 
         materialMinThreshold.setWidthFull();
         materialMinThreshold.setStepButtonsVisible(true);
@@ -430,7 +649,7 @@ public class RightSideMaterials {
                 )
                 .bind(v -> null, (v, value) -> {});
 
-        binder.forField(careInstuctions)
+        binder.forField(careInstructions)
                 .bind(v -> null, (v, value) -> {});
 
         binder.forField(materialColor)
@@ -486,7 +705,7 @@ public class RightSideMaterials {
         binder.forField(deliveryDate)
                 .asRequired("Default restock date is required")
                 .withValidator(
-                        value -> value != null && !value.isAfter(LocalDate.now()),
+                        value -> value != null && !value.isBefore(LocalDate.now()),
                         "Default restock date cannot be after today"
                 )
                 .bind(v -> null, (v, value) -> {});
@@ -528,7 +747,7 @@ public class RightSideMaterials {
     public VerticalLayout rightSide(){
 
 
-        VerticalLayout rightSide = new VerticalLayout();
+
         rightSide.setPadding(false);
         rightSide.setWidthFull();
 

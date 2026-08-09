@@ -31,9 +31,11 @@ public class ColorSelector {
         }
 
         textField.addValueChangeListener(e -> {
-            if (e.isFromClient() && e.getValue() != null) {
+            if ( e.getValue() != null) {
                 colorPicker.setValue(e.getValue());
-                colorChanged.accept(true);
+                if(e.isFromClient()) {
+                    colorChanged.accept(true);
+                }
                 if(e.getValue().equalsIgnoreCase("#ffffff")){
                     colorPicker.setValue("#ddd4d4");
                     textField.setValue("#ddd4d4");
@@ -42,18 +44,19 @@ public class ColorSelector {
         });
 
         colorPicker.addValueChangeListener(e -> {
-            if (e.isFromClient()) {
+
                 textField.setValue(e.getValue());
                 if(e.getValue().equalsIgnoreCase("#ffffff")){
                     colorPicker.setValue("#ddd4d4");
                     textField.setValue("#ddd4d4");
                 }
                 try {
-                    colorChanged.accept(true);
+                    if(e.isFromClient()) {
+                        colorChanged.accept(true);
+                    }
                 } catch (NullPointerException ex) {
                     System.out.println("color picker was used but not its consummer this is not serious");
                 }
-            }
         });
 
         textField.setWidthFull();
