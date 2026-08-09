@@ -13,8 +13,8 @@ import lombok.Setter;
 public class DashBoardMaterialStock {
 
 
-    private long lowMaterial;
-    private long noStockMaterial;
+    private Long lowMaterial;
+    private Long noStockMaterial;
 
     public boolean isEmpty() {
         return lowMaterial == 0L && noStockMaterial == 0L;

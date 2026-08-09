@@ -12,7 +12,7 @@ import lombok.Setter;
 public class DashBoardEmployeeMiniInfo {
 
     String topEmployee;
-    long topEmployeeProduced;
+    Long topEmployeeProduced;
 
 
 

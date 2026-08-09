@@ -17,8 +17,8 @@ public class DashBoardService {
     public DashBoardMonthlyOrdersCompleted loadMonthlyDataMiniStatOne(){
 
         DashBoardMonthlyOrdersCompleted ordersCompletedCompleted = new DashBoardMonthlyOrdersCompleted();
-        ordersCompletedCompleted.setThisMonthOrders(0);
-        ordersCompletedCompleted.setPreviousMonthOrders(200000);
+        ordersCompletedCompleted.setThisMonthOrders(0l);
+        ordersCompletedCompleted.setPreviousMonthOrders(200000l);
 
 
         return ordersCompletedCompleted;
@@ -28,8 +28,8 @@ public class DashBoardService {
 
         DashBoardMaterialStock dashBoardMaterialStock = new DashBoardMaterialStock();
 
-        dashBoardMaterialStock.setLowMaterial(20);
-        dashBoardMaterialStock.setNoStockMaterial(10);
+        dashBoardMaterialStock.setLowMaterial(20l);
+        dashBoardMaterialStock.setNoStockMaterial(10l);
 
         return dashBoardMaterialStock;
     }
@@ -38,9 +38,9 @@ public class DashBoardService {
 
         DashBoardMaterialUsageInfo materialData = new DashBoardMaterialUsageInfo();
         materialData.setMostUsedMaterial("wood");
-        materialData.setTotalMaterialsUsed(10);
-        materialData.setTotalUsedMaterialCost(40);
-        materialData.setLastMonthTotalUsedMaterialCost(2);
+        materialData.setTotalMaterialsUsed(10L);
+        materialData.setTotalUsedMaterialCost(40.0);
+        materialData.setLastMonthTotalUsedMaterialCost(2.0);
 
         return materialData;
 
@@ -73,10 +73,10 @@ public class DashBoardService {
 
         List<MaterialLowNo> materialLowNoList = new ArrayList<>();
 
-        materialLowNoList.add(new MaterialLowNo(123,"Steel Rod", 1L, 20L, 3.50));
-        materialLowNoList.add(new MaterialLowNo(3,"Aluminum Sheet", 12L, 20L, 4.20));
-        materialLowNoList.add(new MaterialLowNo(123,"Copper Wire", 0L, 15L, 6.10));
-        materialLowNoList.add(new MaterialLowNo(1,"Plastic Granules", 8L, 25L, 2.30));
+        materialLowNoList.add(new MaterialLowNo(123L,"Steel Rod", 1L, 20L, 3.50));
+        materialLowNoList.add(new MaterialLowNo(3L,"Aluminum Sheet", 12L, 20L, 4.20));
+        materialLowNoList.add(new MaterialLowNo(123L,"Copper Wire", 0L, 15L, 6.10));
+        materialLowNoList.add(new MaterialLowNo(1L,"Plastic Granules", 8L, 25L, 2.30));
 
         return materialLowNoList;
     }
@@ -90,9 +90,9 @@ public class DashBoardService {
                         "Screenshot 2026-04-27 001745.png",
                         "Lucas Anderson",
                         1560L,
-                        2,
+                        2.0,
                         190L,
-                        1
+                        1L
                 )
         );
 
@@ -101,9 +101,9 @@ public class DashBoardService {
                         "Screenshot 2026-04-27 001745.png",
                         "Olivia Martinez",
                         1340L,
-                        24,
+                        24.0,
                         176L
-                        ,123
+                        ,123L
                 )
         );
 
@@ -112,9 +112,9 @@ public class DashBoardService {
                         "Screenshot 2026-04-27 001745.png",
                         "Ethan Thomas",
                         920L,
-                        10,
+                        10.0,
                         158L,
-                        23
+                        23L
                 )
         );
 
@@ -123,9 +123,9 @@ public class DashBoardService {
                         "Screenshot 2026-04-27 001745.png",
                         "Sophia White",
                         1685L,
-                        22,
+                        22.0,
                         198L,
-                        44
+                        44L
                 )
         );
 

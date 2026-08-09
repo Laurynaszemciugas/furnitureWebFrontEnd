@@ -124,10 +124,7 @@ public class DashBoardPage extends VerticalLayout implements BeforeEnterObserver
 
         verticalLayout.add(
                 commonComponents.biefPageExplanation("Dashboard"),
-                miniStatistics.miniStats(data.getMiniStatOne(),
-                        data.getMiniStatTwo(),
-                        data.getMiniStatThree(),
-                        data.getMiniStatFour()),
+                miniStatistics.miniStats(),
 
                 activityGraphHolder(),
                 topEmployeMaterialQuickAction());

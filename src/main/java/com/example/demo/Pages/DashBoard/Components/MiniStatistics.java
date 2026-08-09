@@ -54,7 +54,7 @@ public class MiniStatistics {
 
     // ===================================== mini stats =====================================
 
-    public HorizontalLayout miniStats(DashBoardMonthlyOrdersCompleted ordersCompletedCompleted,DashBoardMaterialStock dashBoardMaterialStock,DashBoardMaterialUsageInfo materialData,DashBoardEmployeeMiniInfo employeeData){
+    public HorizontalLayout miniStats(){
 
         HorizontalLayout horizontalLayout = new HorizontalLayout();
         horizontalLayout.setWidthFull();
@@ -124,8 +124,10 @@ public class MiniStatistics {
 
         DashBoardMonthlyOrdersCompleted ordersData = ordersService.getDashboardOrderMini(common.currentMonthStart(),common.nextMonthDate());
 
-        long value = ordersData.getThisMonthOrders();
-        long previousValue = ordersData.getPreviousMonthOrders();
+        Long value = ordersData.getThisMonthOrders() == null
+                ? 0L
+                : ordersData.getThisMonthOrders();
+        Long previousValue = ordersData.getPreviousMonthOrders() == null ? 0L : ordersData.getPreviousMonthOrders();
 
         boolean empty = ordersData.isEmpty();
 
@@ -168,8 +170,8 @@ public class MiniStatistics {
 
         boolean empty = (dashBoardMaterialStock != null && dashBoardMaterialStock.isEmpty());
 
-        long lowMaterial = empty ? 0 : dashBoardMaterialStock.getLowMaterial();
-        long noStockMaterial = empty ? 0 : dashBoardMaterialStock.getNoStockMaterial();
+        Long lowMaterial = dashBoardMaterialStock.getLowMaterial() == null ? 0L : dashBoardMaterialStock.getLowMaterial();
+        Long noStockMaterial = dashBoardMaterialStock.getNoStockMaterial() == null ? 0L : dashBoardMaterialStock.getNoStockMaterial();
 
 
         // Layout
@@ -201,10 +203,10 @@ public class MiniStatistics {
 
         boolean empty = (materialData == null || materialData.isEmpty());
 
-        String mostUsedMaterial = empty ? "No data" : materialData.getMostUsedMaterial();
-        long totalMaterialUsageCount = empty ? 0 : materialData.getTotalMaterialsUsed();
-        double totalCostOfMaterialsUsedThisMonth = empty ? 0 : materialData.getTotalUsedMaterialCost();
-        double totalCostOfMaterialUsedLastMonth = empty ? 0 : materialData.getLastMonthTotalUsedMaterialCost();
+        String mostUsedMaterial = materialData.getMostUsedMaterial() == null ? "No data" : materialData.getMostUsedMaterial();
+        Long totalMaterialUsageCount = materialData.getTotalMaterialsUsed() == null ? 0L : materialData.getTotalMaterialsUsed();
+        Double totalCostOfMaterialsUsedThisMonth = materialData.getTotalUsedMaterialCost() == null ? 0L : materialData.getTotalUsedMaterialCost();
+        Double totalCostOfMaterialUsedLastMonth = materialData.getLastMonthTotalUsedMaterialCost() == null ? 0L : materialData.getLastMonthTotalUsedMaterialCost();
 
 
 
@@ -260,8 +262,8 @@ public class MiniStatistics {
 
         boolean empty = (employeeData == null);
 
-            topEmployee =  empty ? "No data" :employeeData.getTopEmployee();
-            topEmployeeProduced = empty ? 0 :employeeData.getTopEmployeeProduced();
+            topEmployee =  employeeData.getTopEmployee() == null ? "No data" :employeeData.getTopEmployee();
+            topEmployeeProduced = employeeData.getTopEmployeeProduced() == null ? 0 :employeeData.getTopEmployeeProduced();
 
 
         // find change according to this month and previous
