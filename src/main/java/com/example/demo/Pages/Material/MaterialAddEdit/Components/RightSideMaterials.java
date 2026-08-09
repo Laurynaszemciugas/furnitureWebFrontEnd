@@ -117,49 +117,33 @@ public class RightSideMaterials {
     }
 
     @SneakyThrows
-    public static void bind(Object form, Object dto) {
+    public<T> void bind(T form, T dto) {
 
-
-        // get the dti class to get fields
-        Class<?> dtosClass = dto.getClass();
-
-        // spin loop thru the class items
-        for(var s : form.getClass().getDeclaredFields()){
+        for(var s : dto.getClass().getDeclaredFields()){
 
             s.setAccessible(true);
-            // find component of this iteration
-            Object component = s.get(form);
 
-            // check if it is vaadin components
+            String name = s.getName();
+
+            Field field = form.getClass().getDeclaredField(name);
+
+
+            Object component = field.get(form);
+
             if(!(component instanceof HasValue<?,?>)){
                 continue;
             }
 
-            // get its name
-            String fieldName = s.getName();
 
-            // get field to extract value from it
-            Field field = dtosClass.getDeclaredField(fieldName);
-            field.setAccessible(true);
+            Object value = s.get(dto);
 
-            // extract the value
-            Object value = field.get(dto);
-
-
-            // check if values is not null if is skip
-            if(value ==  null){
+            if(value == null){
                 continue;
             }
 
+            setComponentValue((HasValue<?, ?>) component,value);
 
-            // set value to specific component
-            setComponentValue((HasValue<?, ?>) component, value);
-
-
-
-
-
-
+        }
 
 
 
@@ -168,7 +152,42 @@ public class RightSideMaterials {
 
 
 
-        }
+
+
+//// get the dti class to get fields
+//Class<?> dtosClass = dto.getClass();
+//
+//// spin loop thru the class items
+//        for(var s : form.getClass().getDeclaredFields()){
+//
+//        s.setAccessible(true);
+//// find component of this iteration
+//Object component = s.get(form);
+//
+//// check if it is vaadin components
+//            if(!(component instanceof HasValue<?,?>)){
+//        continue;
+//        }
+//
+//// get its name
+//String fieldName = s.getName();
+//
+//// get field to extract value from it
+//Field field = dtosClass.getDeclaredField(fieldName);
+//            field.setAccessible(true);
+//
+//// extract the value
+//Object value = field.get(dto);
+//
+//
+//// check if values is not null if is skip
+//            if(value ==  null){
+//        continue;
+//        }
+//
+//
+//// set value to specific component
+//setComponentValue((HasValue<?, ?>) component, value);
 
     private static void setComponentValue(
             HasValue component,
