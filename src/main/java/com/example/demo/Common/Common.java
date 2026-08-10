@@ -431,7 +431,6 @@ public class Common {
 
         for(var s : placesOfTheBreak){
             if(s.getIndex() != 0) {
-                System.out.println(s.getIndex());
                 stringBuilder.insert(s.getIndex(), " ");
             }
             else{

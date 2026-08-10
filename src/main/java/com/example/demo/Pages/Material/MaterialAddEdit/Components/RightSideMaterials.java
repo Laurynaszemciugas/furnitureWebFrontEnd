@@ -12,13 +12,16 @@ import com.example.demo.Enums.*;
 import com.example.demo.Common.Logic.ProductEditImage;
 import com.example.demo.Pages.Material.MaterialAddEdit.MaterialAddPage;
 import com.example.demo.Services.Material.MaterialService;
+import com.vaadin.copilot.shaded.checkerframework.checker.units.qual.C;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
@@ -116,104 +119,7 @@ public class RightSideMaterials {
 
     }
 
-    @SneakyThrows
-    public<T> void bind(T form, T dto) {
 
-        for(var s : dto.getClass().getDeclaredFields()){
-
-            s.setAccessible(true);
-
-            String name = s.getName();
-
-            Field field = form.getClass().getDeclaredField(name);
-
-
-            Object component = field.get(form);
-
-            if(!(component instanceof HasValue<?,?>)){
-                continue;
-            }
-
-
-            Object value = s.get(dto);
-
-            if(value == null){
-                continue;
-            }
-
-            setComponentValue((HasValue<?, ?>) component,value);
-
-        }
-
-
-
-        }
-
-
-
-
-
-
-//// get the dti class to get fields
-//Class<?> dtosClass = dto.getClass();
-//
-//// spin loop thru the class items
-//        for(var s : form.getClass().getDeclaredFields()){
-//
-//        s.setAccessible(true);
-//// find component of this iteration
-//Object component = s.get(form);
-//
-//// check if it is vaadin components
-//            if(!(component instanceof HasValue<?,?>)){
-//        continue;
-//        }
-//
-//// get its name
-//String fieldName = s.getName();
-//
-//// get field to extract value from it
-//Field field = dtosClass.getDeclaredField(fieldName);
-//            field.setAccessible(true);
-//
-//// extract the value
-//Object value = field.get(dto);
-//
-//
-//// check if values is not null if is skip
-//            if(value ==  null){
-//        continue;
-//        }
-//
-//
-//// set value to specific component
-//setComponentValue((HasValue<?, ?>) component, value);
-
-    private static void setComponentValue(
-            HasValue component,
-            Object value
-    ) {
-
-        if (component instanceof IntegerField) {
-            component.setValue(((Number) value).intValue());
-        }
-
-        else if (component instanceof NumberField) {
-            component.setValue(((Number) value).doubleValue());
-        }
-
-        else if (component instanceof ComboBox) {
-            component.setValue(value);
-        }
-
-        else if (component instanceof DatePicker) {
-            component.setValue(value);
-        }
-
-        else {
-            component.setValue(value);
-        }
-    }
 
 
     public void setProductEditImage(ProductEditImage productEditImage) {
@@ -375,6 +281,272 @@ public class RightSideMaterials {
         return h;
     }
 
+    @SneakyThrows
+    public<T> T dialogTest(T dto, Class<T> tClass, VerticalLayout layout, VerticalLayout layoutComponents){
+
+        Dialog dialog = new Dialog();
+        dialog.setWidth("1000px");
+
+        UI ui = UI.getCurrent();
+
+
+        layout.setPadding(false);
+        layout.setSpacing(false);
+        layout.removeAll();
+        layout.add(
+                layoutComponents
+        );
+
+        HorizontalLayout container = new HorizontalLayout();
+        container.setWidthFull();
+        container.addClassName("layout-flex");
+
+        T defaultValues = tClass.getDeclaredConstructor().newInstance();
+
+
+        for(var s : dto.getClass().getDeclaredFields()){
+            s.setAccessible(true);
+            Checkbox checkbox = new Checkbox("Select ");
+
+            checkbox.addValueChangeListener(e->{
+
+
+
+
+            });
+
+
+
+            HorizontalLayout row = commonComponents.doubleValueRow(
+                    commonComponents.spanCrafter(
+                            common.textConverter(s.getName()),
+                            "stat-example"
+                    ),
+                    checkbox
+            );
+
+            row.getStyle().set("flex", "1 1 252px");
+            //h.getStyle().set("max-width", "620px");
+            row.getStyle().set("min-width", "252px");
+            row.addClassName("island_hv");
+            row.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+            row.setAlignItems(FlexComponent.Alignment.CENTER);
+
+            row.addClickListener(e->{
+
+
+
+               if(row.hasClassName("selected")){
+                   row.removeClassName("selected");
+                   checkbox.setValue(false);
+
+                   checkbox.setLabel("Select");
+
+
+                   try {
+                       s.set(dto,s.get(defaultValues));
+                   } catch (IllegalAccessException ex) {
+                       throw new RuntimeException(ex);
+                   }
+
+               }
+               else{
+
+                   checkbox.setLabel("Selected");
+
+
+                   row.addClassName("selected");
+                   checkbox.setValue(true);
+
+                   try {
+                       s.set(dto,null);
+                       System.out.println(dto);
+                   } catch (IllegalAccessException ex) {
+                       throw new RuntimeException(ex);
+                   }
+
+
+
+               }
+            });
+
+            container.add(row);
+        }
+
+        TextArea aiPrompt = new TextArea("Ai prompt");
+
+        aiPrompt.setWidthFull();
+        aiPrompt.setHeight("200px");
+
+
+        dialog.add(
+                commonComponents.spanCrafter("Ai prompt 'Tell Ai what to do'","activityFeed-name"),
+                aiPrompt,
+                commonComponents.spanCrafter("Select fields which Ai need to fill'","activityFeed-name"),
+                container);
+
+        Button cancel = new Button("Cancel", e-> dialog.close());
+        Button generate = new Button("Generate");
+        generate.addThemeVariants(ButtonVariant.PRIMARY);
+        Button selectAll = new Button("Select All");
+        selectAll.addThemeVariants(ButtonVariant.SUCCESS);
+
+
+        selectAll.addClickListener(e->{
+
+            container.removeAll();
+            for(var s : dto.getClass().getDeclaredFields()) {
+
+                s.setAccessible(true);
+                Checkbox checkbox = new Checkbox("Select ");
+                checkbox.setValue(true);
+
+                checkbox.setLabel("Selected");
+
+                try {
+                    s.set(dto,null);
+                    System.out.println(dto);
+                } catch (IllegalAccessException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                HorizontalLayout row = commonComponents.doubleValueRow(
+                        commonComponents.spanCrafter(
+                                common.textConverter(s.getName()),
+                                "stat-example"
+                        ),
+                        checkbox
+                );
+
+                row.addClickListener(ee->{
+
+
+
+                    if(row.hasClassName("selected")){
+                        row.removeClassName("selected");
+                        checkbox.setValue(false);
+
+                        checkbox.setLabel("Select");
+
+
+                        try {
+                            s.set(dto,s.get(defaultValues));
+                        } catch (IllegalAccessException ex) {
+                            throw new RuntimeException(ex);
+                        }
+
+                    }
+                    else{
+
+                        checkbox.setLabel("Selected");
+
+
+                        row.addClassName("selected");
+                        checkbox.setValue(true);
+
+                        try {
+                            s.set(dto,null);
+                            System.out.println(dto);
+                        } catch (IllegalAccessException ex) {
+                            throw new RuntimeException(ex);
+                        }
+
+
+
+                    }
+                });
+
+
+
+                row.addClassName("selected");
+                row.getStyle().set("flex", "1 1 252px");
+                //h.getStyle().set("max-width", "620px");
+                row.getStyle().set("min-width", "252px");
+                row.addClassName("island_hv");
+                row.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+                row.setAlignItems(FlexComponent.Alignment.CENTER);
+
+                container.add(row);
+
+            }
+        });
+
+
+        generate.addClickListener(e->{
+
+            ui.access(() -> {
+                dialog.close();
+            });
+
+            layout.removeAll();
+            layout.add(loadingOverlay("Loading AI response please wait",ui));
+
+            CompletableFuture.runAsync(() -> {
+
+                try {
+
+                    MaterialAiDto aiDto =
+                            aiCalls.fillDataAutomatically(
+                                    aiCalls.classToStringConverter(
+                                            dto,
+                                            tClass,
+                                            aiPrompt.getValue()
+                                    ),
+                                    MaterialAiDto.class
+                            );
+
+                    //common.timer(250);
+
+                    ui.access(() -> {
+
+
+
+                        // Fill the existing fields
+                        aiCalls.bind(this, aiDto);
+
+                        // Rebuild the layout
+                        layout.removeAll();
+
+                        layout.add(
+                                layoutComponents
+                        );
+
+                    });
+
+
+                } catch (Exception ex) {
+
+                    // if fails build it up
+
+                    ui.access(() -> {
+                        layout.removeAll();
+
+                        rightSide.add(
+                               layoutComponents
+                        );
+                    });
+
+                }
+
+            });
+
+
+
+        });
+
+
+
+        dialog.getFooter().add(selectAll,cancel,generate);
+
+
+
+            dialog.open();
+
+
+        return dto;
+
+    }
+
 
 
     public VerticalLayout basicInfo(){
@@ -391,80 +563,25 @@ public class RightSideMaterials {
         Button aiButton = new Button("AI");
         aiButton.getStyle().set("position","absolute").set("right","10px").set("top","10px");
 
+
+
         aiButton.addClickListener(e -> {
 
-            UI ui = UI.getCurrent();
 
-            rightSide.removeAll();
-            rightSide.add(loadingOverlay("Loading AI response please wait",ui));
+            VerticalLayout component = new VerticalLayout();
+            component.setPadding(false);
+            component.add(
+                    basicInfo(),
+                    appearance(),
+                    pricingExtendedDetails(),
+                    reStockData()
+            );
 
-            CompletableFuture.runAsync(() -> {
 
-                try {
+            dialogTest(new MaterialAiDto(), MaterialAiDto.class,rightSide,component);
 
-                    MaterialAiDto aiDto =
-                            aiCalls.fillDataAutomatically(
-                                    aiCalls.classToStringConverter(
-                                            new MaterialAiDto(
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    ActiveInactive.ALL,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null
-                                            ),
-                                            MaterialAiDto.class,
-                                            prompt
-                                    ),
-                                    MaterialAiDto.class
-                            );
 
-                    common.timer(4050);
 
-                    ui.access(() -> {
-
-                        // Fill the existing fields
-                        bind(this, aiDto);
-
-                        // Rebuild the layout
-                        rightSide.removeAll();
-
-                        rightSide.add(
-                                basicInfo(),
-                                appearance(),
-                                pricingExtendedDetails(),
-                                reStockData()
-                        );
-                    });
-
-                } catch (Exception ex) {
-
-                    // if fails build it up
-
-                    ui.access(() -> {
-                        rightSide.removeAll();
-
-                        rightSide.add(
-                                basicInfo(),
-                                appearance(),
-                                pricingExtendedDetails(),
-                                reStockData()
-                        );
-                    });
-                }
-
-            });
 
         });
 
@@ -602,7 +719,7 @@ public class RightSideMaterials {
 
         materialPrice.setWidthFull();
         materialPrice.setStepButtonsVisible(true);
-        materialPrice.setStep(0.05);
+        materialPrice.setStep(0.01);
 
         materialUnitWeight.setWidthFull();
         materialUnitWeight.setStepButtonsVisible(true);

@@ -34,7 +34,7 @@ public class ColorSelector {
             if ( e.getValue() != null) {
                 colorPicker.setValue(e.getValue());
                 if(e.isFromClient()) {
-                    colorChanged.accept(true);
+                    //colorChanged.accept(true);
                 }
                 if(e.getValue().equalsIgnoreCase("#ffffff")){
                     colorPicker.setValue("#ddd4d4");
@@ -52,7 +52,7 @@ public class ColorSelector {
                 }
                 try {
                     if(e.isFromClient()) {
-                        colorChanged.accept(true);
+                        //colorChanged.accept(true);
                     }
                 } catch (NullPointerException ex) {
                     System.out.println("color picker was used but not its consummer this is not serious");

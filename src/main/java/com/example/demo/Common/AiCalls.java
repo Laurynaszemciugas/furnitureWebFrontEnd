@@ -1,9 +1,16 @@
 package com.example.demo.Common;
 
 
+import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.NumberField;
+import lombok.SneakyThrows;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -113,24 +120,12 @@ public class AiCalls {
                         "- If no color is mentioned, infer a realistic color appropriate for the material.\n" +
                         "- materialColor must always be a valid HEX color at the start add #.\n\n" +
 
-                        "NUMERIC RULES:\n" +
-                        "- materialPrice must be a realistic price for the material.\n" +
-                        "- materialUnitWeight must be a realistic weight for the material unit.\n" +
-                        "- materialMinThreshold must be a realistic minimum stock threshold.\n" +
-                        "- materialStock must be a realistic current stock amount.\n" +
-                        "- defaultRestockPeriod must be a realistic number of days.\n" +
-                        "- All numeric fields must be JSON numbers, not strings.\n\n" +
 
                         "DATE RULES:\n" +
                         "- deliveryDate must be a realistic future delivery date.\n" +
-                        "- Use YYYY-MM-DD format.\n\n" +
+                        "- Use YYYY-MM-DD format.\n\n"
 
-                        "FIELD RULES:\n" +
-                        "- materialName: generate a specific realistic material name based on the USER INPUT.\n" +
-                        "- materialDescription: describe the material using the USER INPUT.\n" +
-                        "- careInstructions: generate realistic care instructions for the material.\n" +
-                        "- materialUrl: generate a reasonable material URL.\n" +
-                        "- materialUnit: choose the most appropriate unit for the material.\n\n"
+
         );
 
 
@@ -186,5 +181,79 @@ public class AiCalls {
 
         return String.valueOf(stringBuilder);
     }
+
+
+    // binding data
+
+
+
+    @SneakyThrows
+    public<T> void bind(T form, T dto) {
+
+        for(var s : dto.getClass().getDeclaredFields()){
+
+            s.setAccessible(true);
+
+            String name = s.getName();
+
+            Field field = form.getClass().getDeclaredField(name);
+            field.setAccessible(true);
+
+            Object component = field.get(form);
+
+            if(!(component instanceof HasValue<?,?>)){
+                continue;
+            }
+
+
+            Object value = s.get(dto);
+
+            if(value == null){
+                continue;
+            }
+
+            setComponentValue((HasValue<?, ?>) component,value);
+
+        }
+
+
+
+    }
+
+
+
+    public void setComponentValue(
+            HasValue component,
+            Object value
+    ) {
+
+        if (component instanceof IntegerField) {
+            component.setValue(((Number) value).intValue());
+        }
+
+        else if (component instanceof NumberField) {
+            component.setValue(((Number) value).doubleValue());
+        }
+
+        else if (component instanceof ComboBox) {
+            component.setValue(value);
+        }
+
+        else if (component instanceof DatePicker) {
+            component.setValue(value);
+        }
+
+        else {
+            component.setValue(value);
+        }
+    }
+
+
+
+
+
+
+
+
 
 }
