@@ -284,7 +284,7 @@ public class RightSideMaterials {
     }
 
     @SneakyThrows
-    public<T> T dialogTest(T dto, Class<T> tClass, VerticalLayout layout, VerticalLayout layoutComponents){
+    public<T,S> T dialogTest(T dto, Class<T> tClass, VerticalLayout layout, VerticalLayout layoutComponents, S refrenceToTheForm){
 
         Dialog dialog = new Dialog();
         dialog.setWidth("1000px");
@@ -310,12 +310,7 @@ public class RightSideMaterials {
             s.setAccessible(true);
             Checkbox checkbox = new Checkbox("Select ");
 
-            checkbox.addValueChangeListener(e->{
 
-
-
-
-            });
 
 
 
@@ -487,14 +482,14 @@ public class RightSideMaterials {
 
                 try {
 
-                    MaterialAiDto aiDto =
+                    T aiDto =
                             aiCalls.fillDataAutomatically(
                                     aiCalls.classToStringConverter(
                                             dto,
                                             tClass,
                                             aiPrompt.getValue()
                                     ),
-                                    MaterialAiDto.class
+                                    tClass
                             );
 
                     //common.timer(250);
@@ -504,7 +499,7 @@ public class RightSideMaterials {
 
 
                         // Fill the existing fields
-                        aiCalls.bind(this, aiDto);
+                        aiCalls.bind(refrenceToTheForm, aiDto);
 
                         // Rebuild the layout
                         layout.removeAll();
@@ -581,7 +576,7 @@ public class RightSideMaterials {
             );
 
 
-            dialogTest(new MaterialAiDto(), MaterialAiDto.class,rightSide,component);
+            dialogTest(new MaterialAiDto(), MaterialAiDto.class,rightSide,component,this);
 
 
 
