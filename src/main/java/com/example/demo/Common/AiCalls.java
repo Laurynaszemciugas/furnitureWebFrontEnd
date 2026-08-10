@@ -106,14 +106,33 @@ public class AiCalls {
                         "- Correct obvious spelling mistakes when interpreting the USER INPUT.\n" +
                         "- If provided json values is 0 it is INTEGER, if 0.0 it is Double\n" +
 
-                        "ENUM RULES:\n" +
-                        "- For every ENUM field, return exactly ONE value from its corresponding allowed list.\n" +
-                        "- NEVER invent an enum value.\n" +
-                        "- NEVER use synonyms for enum values.\n" +
-                        "- NEVER translate enum values.\n" +
-                        "- NEVER modify enum values.\n" +
-                        "- NEVER combine multiple enum values.\n" +
-                        "- Copy enum values exactly.\n\n" +
+                        "For every enum field:\n" +
+                        "- Return EXACTLY ONE value.\n" +
+                        "- The returned value MUST be one of the listed enum values.\n" +
+                        "- NEVER return the list of allowed values.\n" +
+                        "- NEVER include square brackets [] in an enum value.\n" +
+                        "- NEVER include commas in an enum value.\n" +
+                        "- NEVER return multiple enum values.\n" +
+                        "- NEVER return an array for an enum field.\n" +
+                        "- NEVER return the enum options as a string.\n" +
+                        "- Copy the selected enum value EXACTLY as written." +
+                        "WRONG:\n" +
+                        "\"materialType\": \"[WOOD, METAL, PLASTIC]\"\n" +
+                        "\n" +
+                        "WRONG:\n" +
+                        "\"materialType\": [\"WOOD\"]\n" +
+                        "\n" +
+                        "WRONG:\n" +
+                        "\"materialType\": \"WOOD, METAL\"\n" +
+                        "\n" +
+                        "CORRECT:\n" +
+                        "\"materialType\": \"WOOD\"\n" +
+                        "\n" +
+                        "If the allowed values are:\n" +
+                        "[WOOD, METAL, PLASTIC, GLASS]\n" +
+                        "\n" +
+                        "and the material is wood, you MUST return:\n" +
+                        "\"materialType\": \"WOOD\"" +
 
                         "COLOR RULES:\n" +
                         "- If a color is mentioned in the USER INPUT, convert it to HEX format.\n" +
