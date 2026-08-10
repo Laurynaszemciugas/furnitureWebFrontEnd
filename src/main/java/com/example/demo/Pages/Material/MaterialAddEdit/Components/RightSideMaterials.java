@@ -12,6 +12,7 @@ import com.example.demo.Enums.*;
 import com.example.demo.Common.Logic.ProductEditImage;
 import com.example.demo.Pages.Material.MaterialAddEdit.MaterialAddPage;
 import com.example.demo.Services.Material.MaterialService;
+import com.vaadin.copilot.shaded.checkerframework.checker.units.qual.A;
 import com.vaadin.copilot.shaded.checkerframework.checker.units.qual.C;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasValue;
@@ -24,6 +25,7 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -560,7 +562,8 @@ public class RightSideMaterials {
         String prompt = "Tai tvirta ąžuolo mediena, šviesiai rudos spalvos, su banguotu raštu. Kaina 2,55 euro už kilogramą.";
 
 
-        Button aiButton = new Button("AI");
+        Button aiButton = commonComponents.buttonThemeAndIconNoNavigate("AI",ButtonVariant.LUMO_PRIMARY, VaadinIcon.MAGIC,"WHITE");
+        aiButton.setTooltipText("Generate information with a prompt");
         aiButton.getStyle().set("position","absolute").set("right","10px").set("top","10px");
 
 
