@@ -20,7 +20,6 @@ public class MaterialAiDto {
     private String materialName = "None";
     private MaterialType materialType = MaterialType.ALL;
     private String materialUrl = "None";
-    private ActiveInactive materialStatus = ActiveInactive.ALL;
 
     private String description = "None";
     private String careInstructions = "None";

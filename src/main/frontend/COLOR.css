@@ -4,7 +4,7 @@
 
 body[theme~="dark"] {
 background-color: var(--mainColor);
-    --mainColor: black;
+    --mainColor: yellow;
 }
 
 body[theme~="light"] {
@@ -15,9 +15,7 @@ body[theme~="light"] {
 /* --- ACCENT COLORS --- */
 /* Default fallback */
 
-body {
-    --mainColor: white;
-}
+
 
 body {
     --buttonAccent: red;

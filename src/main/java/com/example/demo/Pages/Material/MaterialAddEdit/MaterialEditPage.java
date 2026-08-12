@@ -8,6 +8,7 @@ import com.example.demo.Common.Logic.ProductEditImage;
 import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Material.MaterialAddEdit.Components.RightSideMaterials;
+import com.example.demo.Services.AI.AIService;
 import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -33,17 +34,19 @@ public class MaterialEditPage extends VerticalLayout implements BeforeEnterObser
 
 
     int itemChoice = 0;
+    AIService aiService;
 
-
-    public MaterialEditPage(CommonComponents commonComponents, Common common, ObjectConverter objectConverter, MaterialService materialService) {
+    public MaterialEditPage(CommonComponents commonComponents, Common common, ObjectConverter objectConverter, MaterialService materialService,AIService aiService) {
         this.commonComponents = commonComponents;
         this.common = common;
 
         this.objectConverter = objectConverter;
         this.materialService = materialService;
 
+        this.aiService = aiService;
+
         this.productEditImage = new ProductEditImage(commonComponents,common);
-        this.rightSideAddMaterials = new RightSideMaterials(commonComponents,common,materialService,objectConverter);
+        this.rightSideAddMaterials = new RightSideMaterials(commonComponents,common,materialService,objectConverter,aiService);
 
         this.rightSideAddMaterials.setProductEditImage(productEditImage);
 

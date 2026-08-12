@@ -18,6 +18,7 @@ public class TestSwichingAccentsColors extends VerticalLayout {
 
 
 
+
         Button button = new Button("Test button");
         button.addClassName("accentButton");
 

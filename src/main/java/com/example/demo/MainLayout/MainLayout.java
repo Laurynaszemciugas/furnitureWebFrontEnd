@@ -1,6 +1,7 @@
 package com.example.demo.MainLayout;
 
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -25,6 +26,7 @@ public class MainLayout extends AppLayout {
     private VerticalLayout drawerLarge = new VerticalLayout();
 
 
+    SessionCrafter sessionCrafter;
 
 
 
@@ -33,6 +35,7 @@ public class MainLayout extends AppLayout {
             CommonComponents common) {
         this.common = common;
 
+        this.sessionCrafter = new SessionCrafter();
         // change the drawer size to large
         addClassName("custom-layout-large");
 
@@ -48,6 +51,8 @@ public class MainLayout extends AppLayout {
 
         addToDrawer(drawerSmall, drawerLarge);
 
+
+        sessionCrafter.createSession("UI",UI.getCurrent());
 
     }
 

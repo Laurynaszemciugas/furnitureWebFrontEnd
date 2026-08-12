@@ -1,6 +1,7 @@
 package com.example.demo.Common;
 
 
+import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -89,64 +90,9 @@ public class AiCalls {
         stringBuilder.append("END USER INPUT.\n\n");
 
         stringBuilder.append(
-                "IMPORTANT RULES:\n" +
-                        "- Return ONLY valid JSON.\n" +
-                        "- Return exactly the fields required by the provided JSON schema.\n" +
-                        "- Do not add or remove fields.\n" +
-                        "- Do not rename fields.\n" +
-                        "- Do not return null values.\n" +
-                        "- Do not return empty strings.\n" +
-                        "- Generate a meaningful value for every field.\n" +
-                        "- Generate realistic values based on the USER INPUT.\n" +
-                        "- Do not copy placeholder, default, example, or schema values as actual values.\n" +
-                        "- Do not use None unless the field genuinely cannot have a meaningful value.\n" +
-                        "- Do not use 0 or 0.0 when a realistic value can be inferred.\n" +
-                        "- Infer reasonable missing information from the material described by the USER INPUT.\n" +
-                        "- Use the USER INPUT as the primary source of information.\n" +
-                        "- Correct obvious spelling mistakes when interpreting the USER INPUT.\n" +
-                        "- If provided json values is 0 it is INTEGER, if 0.0 it is Double\n" +
-
-                        "For every enum field:\n" +
-                        "- Return EXACTLY ONE value.\n" +
-                        "- The returned value MUST be one of the listed enum values.\n" +
-                        "- NEVER return the list of allowed values.\n" +
-                        "- NEVER include square brackets [] in an enum value.\n" +
-                        "- NEVER include commas in an enum value.\n" +
-                        "- NEVER return multiple enum values.\n" +
-                        "- NEVER return an array for an enum field.\n" +
-                        "- NEVER return the enum options as a string.\n" +
-                        "- Copy the selected enum value EXACTLY as written." +
-                        "WRONG:\n" +
-                        "\"materialType\": \"[WOOD, METAL, PLASTIC]\"\n" +
-                        "\n" +
-                        "WRONG:\n" +
-                        "\"materialType\": [\"WOOD\"]\n" +
-                        "\n" +
-                        "WRONG:\n" +
-                        "\"materialType\": \"WOOD, METAL\"\n" +
-                        "\n" +
-                        "CORRECT:\n" +
-                        "\"materialType\": \"WOOD\"\n" +
-                        "\n" +
-                        "If the allowed values are:\n" +
-                        "[WOOD, METAL, PLASTIC, GLASS]\n" +
-                        "\n" +
-                        "and the material is wood, you MUST return:\n" +
-                        "\"materialType\": \"WOOD\"" +
-
-                        "COLOR RULES:\n" +
-                        "- If a color is mentioned in the USER INPUT, convert it to HEX format.\n" +
-                        "- If no color is mentioned, infer a realistic color appropriate for the material.\n" +
-                        "- materialColor must always be a valid HEX color at the start add #.\n\n" +
-
-
-                        "DATE RULES:\n" +
-                        "- deliveryDate must be a realistic future delivery date.\n" +
-                        "- Use YYYY-MM-DD format.\n\n"
-
+                "YOUR TASK:\n" + "Fill the values of the fields in the PROVIDED JSON.\n\n" + "CRITICAL FIELD RULE:\n" + "- The PROVIDED JSON defines the EXACT fields that must be returned.\n" + "- Return exactly the same fields that exist in the PROVIDED JSON.\n" + "- ONLY replace the values of existing fields.\n" + "- NEVER add new fields.\n" + "- NEVER remove fields.\n" + "- NEVER rename fields.\n" + "- NEVER change the JSON structure.\n" + "- NEVER create fields based only on information found in USER INPUT.\n" + "- If USER INPUT contains information for a field that does not exist in the PROVIDED JSON, IGNORE that information.\n\n" + "OUTPUT RULES:\n" + "- Return ONLY one valid JSON object.\n" + "- Do NOT return markdown.\n" + "- Do NOT return ```json.\n" + "- Do NOT return explanations.\n" + "- Do NOT return comments.\n" + "- Do NOT return text before the JSON.\n" + "- Do NOT return text after the JSON.\n" + "- Do NOT return multiple JSON objects.\n\n" + "VALUE RULES:\n" + "- Replace placeholder/default values with meaningful realistic values.\n" + "- Use USER INPUT as the primary source of information.\n" + "- Correct obvious spelling mistakes in USER INPUT when necessary.\n" + "- Infer missing information only when needed to produce a meaningful value.\n" + "- Do NOT copy placeholder values such as \"None\", 0, 0.0, or example values unless they are genuinely the correct value.\n" + "- Keep the original JSON field names exactly unchanged.\n\n" + "ENUM RULES:\n" + "- An enum field MUST contain exactly ONE enum value.\n" + "- The value MUST be one of the allowed enum values.\n" + "- Copy the enum value EXACTLY as written.\n" + "- NEVER return the list of enum values.\n" + "- NEVER return multiple enum values.\n" + "- NEVER return an array for an enum field.\n" + "- NEVER put [] around an enum value.\n" + "- NEVER put commas inside an enum value.\n" + "- NEVER convert the enum list into the field value.\n\n" + "ENUM EXAMPLE:\n" + "Allowed values:\n" + "[WOOD, METAL, PLASTIC, GLASS]\n\n" + "Correct:\n" + "\"materialType\": \"METAL\"\n\n" + "Incorrect:\n" + "\"materialType\": \"[WOOD, METAL, PLASTIC, GLASS]\"\n\n" + "Incorrect:\n" + "\"materialType\": [\"METAL\"]\n\n" + "Incorrect:\n" + "\"materialType\": \"WOOD, METAL\"\n\n" + "IMPORTANT:\n" + "The list of allowed enum values is RULE INFORMATION, NOT the value to output.\n" + "Choose ONE value from the list and output only that value.\n\n" + "NUMBER RULES:\n" + "- If the PROVIDED JSON contains a numeric placeholder written as 0, return an integer value.\n" + "- If the PROVIDED JSON contains a numeric placeholder written as 0.0, return a decimal value.\n" + "- Do NOT return numbers as strings.\n\n" + "COLOR RULES:\n" + "- If USER INPUT specifies a color, convert it to HEX.\n" + "- If no color is specified, infer a realistic color.\n" + "- materialColor must be a valid HEX color beginning with #.\n\n" + "DATE RULES:\n" + "- deliveryDate must be a realistic future date.\n" + "- Format deliveryDate as YYYY-MM-DD.\n\n" + "FINAL CHECK BEFORE OUTPUT:\n" + "- Same fields as PROVIDED JSON? YES.\n" + "- No additional fields? YES.\n" + "- No missing fields? YES.\n" + "- Every enum field contains exactly ONE enum value? YES.\n" + "- Only valid JSON? YES.\n" + "- No explanation or extra text? YES.\n\n" + "OUTPUT ONLY THE JSON OBJECT."
 
         );
-
 
         stringBuilder.append(
                 "\nDo not explain your answer. Generate the JSON object directly."
@@ -158,6 +104,8 @@ public class AiCalls {
 
 
         T defaultValues = tClass.getDeclaredConstructor().newInstance();
+
+        StringBuilder builderEnum = new StringBuilder();
 
         for(var s : tClass.getDeclaredFields()){
 
@@ -172,13 +120,14 @@ public class AiCalls {
 
                 if(s.getType().isEnum()){
                     Object[] values = s.getType().getEnumConstants();
-                    showTheValue = Arrays.toString(values);
 
+                    builderEnum.append(String.format("\"%s\": \"%s\" %s",s.getName(),"is an enum its values ,",Arrays.toString(values)) );
 
+                    stringBuilder.append(builderEnum);
                 }
-                else{
+
                     showTheValue = defaultObject;
-                }
+
 
 
                 String text = String.format("\"%s\": \"%s\",",s.getName(),showTheValue);
@@ -189,7 +138,7 @@ public class AiCalls {
         }
 
         stringBuilder.append("}");
-        stringBuilder.append(" Fill the values with realistic data.");
+        stringBuilder.append(" JSON ONLY.");
 
 
         System.out.println("=============================");
@@ -209,32 +158,33 @@ public class AiCalls {
     @SneakyThrows
     public<T> void bind(T form, T dto) {
 
-        for(var s : dto.getClass().getDeclaredFields()){
+        if(dto.getClass() != ErrorResponse.class) {
+            for (var s : dto.getClass().getDeclaredFields()) {
 
-            s.setAccessible(true);
+                s.setAccessible(true);
 
-            String name = s.getName();
+                String name = s.getName();
 
-            Field field = form.getClass().getDeclaredField(name);
-            field.setAccessible(true);
+                Field field = form.getClass().getDeclaredField(name);
+                field.setAccessible(true);
 
-            Object component = field.get(form);
+                Object component = field.get(form);
 
-            if(!(component instanceof HasValue<?,?>)){
-                continue;
+                if (!(component instanceof HasValue<?, ?>)) {
+                    continue;
+                }
+
+
+                Object value = s.get(dto);
+
+                if (value == null) {
+                    continue;
+                }
+
+                setComponentValue((HasValue<?, ?>) component, value);
+
             }
-
-
-            Object value = s.get(dto);
-
-            if(value == null){
-                continue;
-            }
-
-            setComponentValue((HasValue<?, ?>) component,value);
-
         }
-
 
 
     }

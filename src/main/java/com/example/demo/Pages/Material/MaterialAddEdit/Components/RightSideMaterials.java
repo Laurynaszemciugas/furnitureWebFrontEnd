@@ -1,16 +1,15 @@
 package com.example.demo.Pages.Material.MaterialAddEdit.Components;
 
-import com.example.demo.Common.AiCalls;
-import com.example.demo.Common.Common;
-import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.*;
 import com.example.demo.Common.Logic.ObjectConverter;
-import com.example.demo.Common.MaterialAiDto;
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.Common.CommonImagesData;
 import com.example.demo.ControllerModels.CommonDtos.MaterialImageData;
 import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.Enums.*;
 import com.example.demo.Common.Logic.ProductEditImage;
 import com.example.demo.Pages.Material.MaterialAddEdit.MaterialAddPage;
+import com.example.demo.Services.AI.AIService;
 import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.copilot.shaded.checkerframework.checker.units.qual.A;
 import com.vaadin.copilot.shaded.checkerframework.checker.units.qual.C;
@@ -102,7 +101,13 @@ public class RightSideMaterials {
 
     VerticalLayout rightSide = new VerticalLayout();
 
-    public RightSideMaterials(CommonComponents commonComponents, Common common, MaterialService materialService, ObjectConverter objectConverter) {
+    AIService aiService;
+
+    SessionCrafter sessionCrafter;
+
+    int selectedItems = 0;
+
+    public RightSideMaterials(CommonComponents commonComponents, Common common, MaterialService materialService, ObjectConverter objectConverter,AIService aiService) {
 
         this.commonComponents = commonComponents;
         this.common = common;
@@ -110,7 +115,10 @@ public class RightSideMaterials {
         this.materialService = materialService;
         this.objectConverter = objectConverter;
 
+        this.sessionCrafter = new SessionCrafter();
         this.aiCalls = new AiCalls();
+
+        this.aiService = aiService;
 
 
 
@@ -149,9 +157,9 @@ public class RightSideMaterials {
 
             mat.setId(materials.getId());
 
-            if(!materials.getImages().isEmpty()) {
+            mat.setImages(materials.getImages());
+
                 productEditImage.loadData(objectConverter.convert(materials.getImages(), CommonImagesData.class));
-            }
 
             materialName.setValue(materials.getMaterialName() == null ? "" : materials.getMaterialName());
 
@@ -226,7 +234,7 @@ public class RightSideMaterials {
                 mat.setMaterialName(materialName.getValue());
                 mat.setInStock(materialStock.getValue().longValue());
                 mat.setMinThresHold(materialMinThreshold.getValue().longValue());
-                mat.setEnabled(ActiveInactive.ACTIVE);
+                mat.setEnabled(materialStatus.getValue());
                 mat.setMaterialWeight(materialUnitWeight.getValue());
                 mat.setUnitPrice(materialPrice.getValue());
                 mat.setUnit(materialUnit.getValue());
@@ -252,6 +260,9 @@ public class RightSideMaterials {
                     mat.setImages(objectConverter.convert(newImages, MaterialImageData.class));
 
                 }
+
+
+
 
 
 
@@ -286,6 +297,8 @@ public class RightSideMaterials {
     @SneakyThrows
     public<T,S> T dialogTest(T dto, Class<T> tClass, VerticalLayout layout, VerticalLayout layoutComponents, S refrenceToTheForm){
 
+        selectedItems = 0;
+
         Dialog dialog = new Dialog();
         dialog.setWidth("1000px");
 
@@ -306,6 +319,7 @@ public class RightSideMaterials {
 
         Button cancel = new Button("Cancel", e-> dialog.close());
         Button generate = new Button("Generate");
+        generate.setEnabled(false);
         generate.addThemeVariants(ButtonVariant.PRIMARY);
         Button selectAll = new Button("Select All");
         selectAll.addThemeVariants(ButtonVariant.SUCCESS);
@@ -350,6 +364,14 @@ public class RightSideMaterials {
 
                    checkbox.setLabel("Select");
 
+                   selectedItems--;
+
+                   if(selectedItems  >= 1){
+                       generate.setEnabled(true);
+                   }
+                   else{
+                       generate.setEnabled(false);
+                   }
 
                    try {
                        s.set(dto,s.get(defaultValues));
@@ -359,6 +381,15 @@ public class RightSideMaterials {
 
                }
                else{
+
+                   selectedItems++;
+
+                   if(selectedItems >= 0){
+                       generate.setEnabled(true);
+                   }
+                   else{
+                       generate.setEnabled(false);
+                   }
 
                    checkbox.setLabel("Selected");
 
@@ -388,6 +419,9 @@ public class RightSideMaterials {
             container.removeAll();
             for(var s : dto.getClass().getDeclaredFields()) {
 
+                selectedItems++;
+                generate.setEnabled(true);
+
                 s.setAccessible(true);
                 Checkbox checkbox = new Checkbox("Select ");
                 checkbox.setValue(true);
@@ -412,12 +446,20 @@ public class RightSideMaterials {
                 row.addClickListener(ee->{
 
 
-
                     if(row.hasClassName("selected")){
                         row.removeClassName("selected");
                         checkbox.setValue(false);
 
                         checkbox.setLabel("Select");
+
+                        selectedItems--;
+
+                        if(selectedItems  >= 1){
+                            generate.setEnabled(true);
+                        }
+                        else{
+                            generate.setEnabled(false);
+                        }
 
 
                         try {
@@ -428,6 +470,15 @@ public class RightSideMaterials {
 
                     }
                     else{
+
+                        selectedItems++;
+
+                        if(selectedItems  >= 1){
+                            generate.setEnabled(true);
+                        }
+                        else{
+                            generate.setEnabled(false);
+                        }
 
                         checkbox.setLabel("Selected");
 
@@ -464,7 +515,7 @@ public class RightSideMaterials {
 
 
         generate.addClickListener(e->{
-
+            String jwt = sessionCrafter.extractSession("JWT", String.class);
             ui.access(() -> {
                 dialog.close();
             });
@@ -476,15 +527,28 @@ public class RightSideMaterials {
 
                 try {
 
-                    T aiDto =
-                            aiCalls.fillDataAutomatically(
-                                    aiCalls.classToStringConverter(
-                                            dto,
-                                            tClass,
-                                            aiPrompt.getValue()
-                                    ),
-                                    tClass
-                            );
+                    AiQuestion aiQuestion = new AiQuestion();
+
+                    aiQuestion.setPrompt(
+                            aiCalls.classToStringConverter(
+                            dto,
+                            tClass,
+                            aiPrompt.getValue()
+                    ));
+
+                    aiQuestion.setReferenceToDataNeeded("Materials");
+
+
+
+                    T aiDto =  aiService.getMaterialDataAccordingToId(aiQuestion,jwt,tClass,ui);
+//                            aiCalls.fillDataAutomatically(
+//                                    aiCalls.classToStringConverter(
+//                                            dto,
+//                                            tClass,
+//                                            aiPrompt.getValue()
+//                                    ),
+//                                    tClass
+//                            );
 
                     //common.timer(250);
 
@@ -507,6 +571,8 @@ public class RightSideMaterials {
 
                 } catch (Exception ex) {
 
+
+                    System.out.println(ex);
                     // if fails build it up
 
                     ui.access(() -> {

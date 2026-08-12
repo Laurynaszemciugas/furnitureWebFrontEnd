@@ -16,18 +16,22 @@ public class ColorSelector {
 
     Input colorPicker = new Input();
 
-        public TextField colorSelector(TextField textField) {
+    public TextField colorSelector(TextField textField) {
 
-            textField.setTooltipText("Select color the format must be HEX");
+        textField.setTooltipText("Select color the format must be HEX");
 
         colorPicker.addClassName("color-button");
         colorPicker.setHeight("35px");
         colorPicker.setMaxWidth("50px");
         colorPicker.setType("color");
-        colorPicker.setValue("#1e88e5");
 
         if (textField.getValue() == null || textField.getValue().isEmpty()) {
             textField.setValue("#1e88e5");
+            colorPicker.setValue("#1e88e5");
+
+        }
+        else{
+            colorPicker.setValue(textField.getValue());
         }
 
         textField.addValueChangeListener(e -> {
@@ -45,18 +49,18 @@ public class ColorSelector {
 
         colorPicker.addValueChangeListener(e -> {
 
-                textField.setValue(e.getValue());
-                if(e.getValue().equalsIgnoreCase("#ffffff")){
-                    colorPicker.setValue("#ddd4d4");
-                    textField.setValue("#ddd4d4");
+            textField.setValue(e.getValue());
+            if(e.getValue().equalsIgnoreCase("#ffffff")){
+                colorPicker.setValue("#ddd4d4");
+                textField.setValue("#ddd4d4");
+            }
+            try {
+                if(e.isFromClient()) {
+                    //colorChanged.accept(true);
                 }
-                try {
-                    if(e.isFromClient()) {
-                        //colorChanged.accept(true);
-                    }
-                } catch (NullPointerException ex) {
-                    System.out.println("color picker was used but not its consummer this is not serious");
-                }
+            } catch (NullPointerException ex) {
+                System.out.println("color picker was used but not its consummer this is not serious");
+            }
         });
 
         textField.setWidthFull();

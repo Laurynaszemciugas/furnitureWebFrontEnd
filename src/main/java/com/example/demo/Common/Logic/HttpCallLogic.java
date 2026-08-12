@@ -116,6 +116,14 @@ public class HttpCallLogic {
 
         // unuthorized so basically JWT token
 
+
+        if (status == 400) {
+            ErrorResponse errorResponse =
+                    mapper.readValue(body, ErrorResponse.class);
+
+            return (R) errorResponse;
+        }
+
         if(status == 401){
             throw new HttpCallException(new FrontEndError(
                     "You are not logged in.",
@@ -146,7 +154,11 @@ public class HttpCallLogic {
         common.customActionsForNotification(response.getMessage(),response.getWarning(),navigateInCaseOfSuccess,true);
 
         // only if UI needs to get some information without going to another page
-        if(response.getWarning() != Warnings.ERROR && navigateInCaseOfSuccess == null){
+        if (
+                response.getWarning() != Warnings.ERROR &&
+                        navigateInCaseOfSuccess == null &&
+                        consumer != null
+        ){
             consumer.accept(consumerValueInCaseOfSuccess);
         }
 
