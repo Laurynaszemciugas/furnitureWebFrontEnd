@@ -289,19 +289,35 @@ public class RightSideMaterials {
         Dialog dialog = new Dialog();
         dialog.setWidth("1000px");
 
-        UI ui = UI.getCurrent();
-
-
-        layout.setPadding(false);
-        layout.setSpacing(false);
-        layout.removeAll();
-        layout.add(
-                layoutComponents
-        );
 
         HorizontalLayout container = new HorizontalLayout();
         container.setWidthFull();
         container.addClassName("layout-flex");
+
+        TextArea aiPrompt = new TextArea("Ai prompt");
+        aiPrompt.setWidthFull();
+        aiPrompt.setHeight("200px");
+
+        dialog.add(
+                commonComponents.spanCrafter("Ai prompt 'Tell Ai what to do'","activityFeed-name"),
+                aiPrompt,
+                commonComponents.spanCrafter("Select fields which Ai need to fill'","activityFeed-name"),
+                container);
+
+        Button cancel = new Button("Cancel", e-> dialog.close());
+        Button generate = new Button("Generate");
+        generate.addThemeVariants(ButtonVariant.PRIMARY);
+        Button selectAll = new Button("Select All");
+        selectAll.addThemeVariants(ButtonVariant.SUCCESS);
+
+
+
+        UI ui = UI.getCurrent();
+
+        layout.removeAll();
+        layout.add(
+                layoutComponents
+        );
 
         T defaultValues = tClass.getDeclaredConstructor().newInstance();
 
@@ -309,9 +325,6 @@ public class RightSideMaterials {
         for(var s : dto.getClass().getDeclaredFields()){
             s.setAccessible(true);
             Checkbox checkbox = new Checkbox("Select ");
-
-
-
 
 
             HorizontalLayout row = commonComponents.doubleValueRow(
@@ -323,14 +336,12 @@ public class RightSideMaterials {
             );
 
             row.getStyle().set("flex", "1 1 252px");
-            //h.getStyle().set("max-width", "620px");
             row.getStyle().set("min-width", "252px");
             row.addClassName("island_hv");
             row.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
             row.setAlignItems(FlexComponent.Alignment.CENTER);
 
             row.addClickListener(e->{
-
 
 
                if(row.hasClassName("selected")){
@@ -370,25 +381,8 @@ public class RightSideMaterials {
             container.add(row);
         }
 
-        TextArea aiPrompt = new TextArea("Ai prompt");
 
-        aiPrompt.setWidthFull();
-        aiPrompt.setHeight("200px");
-
-
-        dialog.add(
-                commonComponents.spanCrafter("Ai prompt 'Tell Ai what to do'","activityFeed-name"),
-                aiPrompt,
-                commonComponents.spanCrafter("Select fields which Ai need to fill'","activityFeed-name"),
-                container);
-
-        Button cancel = new Button("Cancel", e-> dialog.close());
-        Button generate = new Button("Generate");
-        generate.addThemeVariants(ButtonVariant.PRIMARY);
-        Button selectAll = new Button("Select All");
-        selectAll.addThemeVariants(ButtonVariant.SUCCESS);
-
-
+        // select all basically reset the UI and select all and remake ui
         selectAll.addClickListener(e->{
 
             container.removeAll();
@@ -533,9 +527,11 @@ public class RightSideMaterials {
 
 
 
-        dialog.getFooter().add(selectAll,cancel,generate);
 
-
+        dialog.getFooter().add(
+                selectAll,
+                cancel,
+                generate);
 
             dialog.open();
 
@@ -623,7 +619,7 @@ public class RightSideMaterials {
 
             scheduler.shutdown();
 
-        }, 2, TimeUnit.SECONDS);
+        }, 10, TimeUnit.SECONDS);
 
         return overlay;
     }

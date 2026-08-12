@@ -47,7 +47,7 @@ public class AiCalls {
                     .uri(URI.create("http://localhost:11434/api/generate"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
-                    .timeout(Duration.ofSeconds(10))
+                    .timeout(Duration.ofSeconds(20))
                     .build();
 
 

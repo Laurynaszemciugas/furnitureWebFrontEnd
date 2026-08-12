@@ -44,6 +44,7 @@ public class MainLayout extends AppLayout {
 
         drawerSmall.setVisible(false);
 
+        addClassName("vaadin-app-layout");
 
         addToDrawer(drawerSmall, drawerLarge);
 

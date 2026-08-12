@@ -25,11 +25,17 @@ body {
 /* collapsed */
 .custom-layout-small::part(drawer) {
     width: 80px;
+    transition: width 0.2s ease-in-out;
 }
 
 /* expanded */
 .custom-layout-large::part(drawer) {
     width: 250px;
+    transition: width 0.2s ease-in-out;
+}
+
+vaadin-app-layout {
+    --vaadin-app-layout-transition: none;
 }
 
 

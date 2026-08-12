@@ -1,0 +1,50 @@
+/* --- DARK / LIGHT THEME --- */
+
+
+
+body[theme~="dark"] {
+background-color: var(--mainColor);
+    --mainColor: black;
+}
+
+body[theme~="light"] {
+
+    --mainColor: white;
+}
+
+/* --- ACCENT COLORS --- */
+/* Default fallback */
+
+body {
+    --mainColor: white;
+}
+
+body {
+    --buttonAccent: red;
+}
+
+/* Global accent variables triggered by pure Java attributes */
+body[accent="red"] {
+    --buttonAccent: red;
+}
+
+body[accent="yellow"] {
+    --buttonAccent: yellow;
+}
+
+body[accent="blue"] {
+    --buttonAccent: blue;
+}
+
+
+/* --- COMPONENT STYLES --- */
+.accentButton {
+    background-color: var(--buttonAccent);
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.mainPage {
+    background-color: var(--mainColor);
+    transition: background-color 0.3s;
+}
