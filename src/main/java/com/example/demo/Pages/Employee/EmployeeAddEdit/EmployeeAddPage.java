@@ -4,6 +4,7 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Employee.EmployeeAddEdit.Components.EmployeeAddEditComponents;
+import com.example.demo.Services.AI.AIService;
 import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -20,7 +21,7 @@ public class EmployeeAddPage extends VerticalLayout implements BeforeEnterObserv
     CommonComponents commonComponents;
     Common common;
     EmployeeService employeeService;
-
+    AIService aiService;
 
     EmployeeAddEditComponents addEditComponents;
 
@@ -32,12 +33,14 @@ public class EmployeeAddPage extends VerticalLayout implements BeforeEnterObserv
 
 
 
-    public EmployeeAddPage(CommonComponents commonComponents, Common common, EmployeeService employeeService) {
+    public EmployeeAddPage(CommonComponents commonComponents, Common common, EmployeeService employeeService,AIService aiService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.employeeService = employeeService;
 
-        this.addEditComponents = new EmployeeAddEditComponents(commonComponents,common);
+        this.aiService = aiService;
+
+        this.addEditComponents = new EmployeeAddEditComponents(commonComponents,common,aiService);
 
         setPadding(false);
         setSpacing(false);

@@ -2,19 +2,23 @@ package com.example.demo.Pages.Employee.EmployeeAddEdit.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.EmployeeAiDto;
 import com.example.demo.Common.Logic.SinglePhotoLogic;
+import com.example.demo.Common.MaterialAiDto;
 import com.example.demo.ControllerModels.CommonDtos.Employee;
 import com.example.demo.ControllerModels.CommonDtos.User;
 import com.example.demo.Enums.EmployeeAcIn;
 import com.example.demo.Enums.EmployeeRole;
 import com.example.demo.Enums.EmployeeDepartment;
 import com.example.demo.Enums.EmploymentType;
+import com.example.demo.Services.AI.AIService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -35,7 +39,7 @@ public class EmployeeAddEditComponents {
     CommonComponents commonComponents;
     Common common;
     SinglePhotoLogic singlePhotoLogic;
-
+    AIService aiService;
 
 
     // personal info
@@ -70,13 +74,17 @@ public class EmployeeAddEditComponents {
 
     private final Binder<Void> binder = new Binder<>();
 
+// main layout
+    VerticalLayout allInfo = new VerticalLayout();
 
-    public EmployeeAddEditComponents(CommonComponents commonComponents, Common common) {
+
+    public EmployeeAddEditComponents(CommonComponents commonComponents, Common common,AIService aiService) {
         this.commonComponents = commonComponents;
         this.common = common;
 
         this.singlePhotoLogic = new SinglePhotoLogic(commonComponents,common);
 
+        this.aiService = aiService;
 
 
 
@@ -176,9 +184,40 @@ public class EmployeeAddEditComponents {
 
 
     public VerticalLayout personalInfo(){
+
+
+
+        Button aiButton = commonComponents.buttonThemeAndIconNoNavigate("AI",ButtonVariant.LUMO_PRIMARY, VaadinIcon.MAGIC,"WHITE");
+        aiButton.setTooltipText("Generate information with a prompt");
+        aiButton.getStyle().set("position","absolute").set("right","10px").set("top","10px");
+
+
+
+        aiButton.addClickListener(e -> {
+
+
+            VerticalLayout component = new VerticalLayout();
+            component.setPadding(false);
+            component.add(
+                    personalInfo(),
+                    jobInformation(),
+                    accountInformation()
+            );
+
+
+            aiService.dialogTest(new EmployeeAiDto(), EmployeeAiDto.class,allInfo,component,this,"Employees");
+
+
+
+
+        });
+
+
+
         VerticalLayout v = new VerticalLayout();
         v.setWidthFull();
         v.addClassName("island");
+        v.getStyle().set("position","relative");
 
 
         v.addClassName("animated-card");
@@ -236,6 +275,7 @@ public class EmployeeAddEditComponents {
 
 
         v.add(
+                aiButton,
                 commonComponents.spanCrafterWordNoHide("Personal information","activityFeed-name"),
                 formLayout
 
@@ -361,7 +401,6 @@ public class EmployeeAddEditComponents {
 
         loadData(employee);
 
-        VerticalLayout allInfo = new VerticalLayout();
 
         allInfo.setPadding(false);
 

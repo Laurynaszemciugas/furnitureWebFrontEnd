@@ -97,7 +97,6 @@ public class RightSideMaterials {
     Consumer<Materials> materialsConsumer;
 
 
-    AiCalls aiCalls;
 
     VerticalLayout rightSide = new VerticalLayout();
 
@@ -105,7 +104,6 @@ public class RightSideMaterials {
 
     SessionCrafter sessionCrafter;
 
-    int selectedItems = 0;
 
     public RightSideMaterials(CommonComponents commonComponents, Common common, MaterialService materialService, ObjectConverter objectConverter,AIService aiService) {
 
@@ -114,11 +112,10 @@ public class RightSideMaterials {
         this.colorSelector = new ColorSelector();
         this.materialService = materialService;
         this.objectConverter = objectConverter;
+        this.aiService = aiService;
 
         this.sessionCrafter = new SessionCrafter();
-        this.aiCalls = new AiCalls();
 
-        this.aiService = aiService;
 
 
 
@@ -294,317 +291,7 @@ public class RightSideMaterials {
         return h;
     }
 
-    @SneakyThrows
-    public<T,S> T dialogTest(T dto, Class<T> tClass, VerticalLayout layout, VerticalLayout layoutComponents, S refrenceToTheForm){
 
-        selectedItems = 0;
-
-        Dialog dialog = new Dialog();
-        dialog.setWidth("1000px");
-
-
-        HorizontalLayout container = new HorizontalLayout();
-        container.setWidthFull();
-        container.addClassName("layout-flex");
-
-        TextArea aiPrompt = new TextArea("Ai prompt");
-        aiPrompt.setWidthFull();
-        aiPrompt.setHeight("200px");
-
-        dialog.add(
-                commonComponents.spanCrafter("Ai prompt 'Tell Ai what to do'","activityFeed-name"),
-                aiPrompt,
-                commonComponents.spanCrafter("Select fields which Ai need to fill'","activityFeed-name"),
-                container);
-
-        Button cancel = new Button("Cancel", e-> dialog.close());
-        Button generate = new Button("Generate");
-        generate.setEnabled(false);
-        generate.addThemeVariants(ButtonVariant.PRIMARY);
-        Button selectAll = new Button("Select All");
-        selectAll.addThemeVariants(ButtonVariant.SUCCESS);
-
-
-
-        UI ui = UI.getCurrent();
-
-        layout.removeAll();
-        layout.add(
-                layoutComponents
-        );
-
-        T defaultValues = tClass.getDeclaredConstructor().newInstance();
-
-
-        for(var s : dto.getClass().getDeclaredFields()){
-            s.setAccessible(true);
-            Checkbox checkbox = new Checkbox("Select ");
-
-
-            HorizontalLayout row = commonComponents.doubleValueRow(
-                    commonComponents.spanCrafter(
-                            common.textConverter(s.getName()),
-                            "stat-example"
-                    ),
-                    checkbox
-            );
-
-            row.getStyle().set("flex", "1 1 252px");
-            row.getStyle().set("min-width", "252px");
-            row.addClassName("island_hv");
-            row.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-            row.setAlignItems(FlexComponent.Alignment.CENTER);
-
-            row.addClickListener(e->{
-
-
-               if(row.hasClassName("selected")){
-                   row.removeClassName("selected");
-                   checkbox.setValue(false);
-
-                   checkbox.setLabel("Select");
-
-                   selectedItems--;
-
-                   if(selectedItems  >= 1){
-                       generate.setEnabled(true);
-                   }
-                   else{
-                       generate.setEnabled(false);
-                   }
-
-                   try {
-                       s.set(dto,s.get(defaultValues));
-                   } catch (IllegalAccessException ex) {
-                       throw new RuntimeException(ex);
-                   }
-
-               }
-               else{
-
-                   selectedItems++;
-
-                   if(selectedItems >= 0){
-                       generate.setEnabled(true);
-                   }
-                   else{
-                       generate.setEnabled(false);
-                   }
-
-                   checkbox.setLabel("Selected");
-
-
-                   row.addClassName("selected");
-                   checkbox.setValue(true);
-
-                   try {
-                       s.set(dto,null);
-                       System.out.println(dto);
-                   } catch (IllegalAccessException ex) {
-                       throw new RuntimeException(ex);
-                   }
-
-
-
-               }
-            });
-
-            container.add(row);
-        }
-
-
-        // select all basically reset the UI and select all and remake ui
-        selectAll.addClickListener(e->{
-
-            container.removeAll();
-            for(var s : dto.getClass().getDeclaredFields()) {
-
-                selectedItems++;
-                generate.setEnabled(true);
-
-                s.setAccessible(true);
-                Checkbox checkbox = new Checkbox("Select ");
-                checkbox.setValue(true);
-
-                checkbox.setLabel("Selected");
-
-                try {
-                    s.set(dto,null);
-                    System.out.println(dto);
-                } catch (IllegalAccessException ex) {
-                    throw new RuntimeException(ex);
-                }
-
-                HorizontalLayout row = commonComponents.doubleValueRow(
-                        commonComponents.spanCrafter(
-                                common.textConverter(s.getName()),
-                                "stat-example"
-                        ),
-                        checkbox
-                );
-
-                row.addClickListener(ee->{
-
-
-                    if(row.hasClassName("selected")){
-                        row.removeClassName("selected");
-                        checkbox.setValue(false);
-
-                        checkbox.setLabel("Select");
-
-                        selectedItems--;
-
-                        if(selectedItems  >= 1){
-                            generate.setEnabled(true);
-                        }
-                        else{
-                            generate.setEnabled(false);
-                        }
-
-
-                        try {
-                            s.set(dto,s.get(defaultValues));
-                        } catch (IllegalAccessException ex) {
-                            throw new RuntimeException(ex);
-                        }
-
-                    }
-                    else{
-
-                        selectedItems++;
-
-                        if(selectedItems  >= 1){
-                            generate.setEnabled(true);
-                        }
-                        else{
-                            generate.setEnabled(false);
-                        }
-
-                        checkbox.setLabel("Selected");
-
-
-                        row.addClassName("selected");
-                        checkbox.setValue(true);
-
-                        try {
-                            s.set(dto,null);
-                            System.out.println(dto);
-                        } catch (IllegalAccessException ex) {
-                            throw new RuntimeException(ex);
-                        }
-
-
-
-                    }
-                });
-
-
-
-                row.addClassName("selected");
-                row.getStyle().set("flex", "1 1 252px");
-                //h.getStyle().set("max-width", "620px");
-                row.getStyle().set("min-width", "252px");
-                row.addClassName("island_hv");
-                row.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-                row.setAlignItems(FlexComponent.Alignment.CENTER);
-
-                container.add(row);
-
-            }
-        });
-
-
-        generate.addClickListener(e->{
-            String jwt = sessionCrafter.extractSession("JWT", String.class);
-            ui.access(() -> {
-                dialog.close();
-            });
-
-            layout.removeAll();
-            layout.add(loadingOverlay("Loading AI response please wait",ui));
-
-            CompletableFuture.runAsync(() -> {
-
-                try {
-
-                    AiQuestion aiQuestion = new AiQuestion();
-
-                    aiQuestion.setPrompt(
-                            aiCalls.classToStringConverter(
-                            dto,
-                            tClass,
-                            aiPrompt.getValue()
-                    ));
-
-                    aiQuestion.setReferenceToDataNeeded("Materials");
-
-
-
-                    T aiDto =  aiService.getMaterialDataAccordingToId(aiQuestion,jwt,tClass,ui);
-//                            aiCalls.fillDataAutomatically(
-//                                    aiCalls.classToStringConverter(
-//                                            dto,
-//                                            tClass,
-//                                            aiPrompt.getValue()
-//                                    ),
-//                                    tClass
-//                            );
-
-                    //common.timer(250);
-
-                    ui.access(() -> {
-
-
-
-                        // Fill the existing fields
-                        aiCalls.bind(refrenceToTheForm, aiDto);
-
-                        // Rebuild the layout
-                        layout.removeAll();
-
-                        layout.add(
-                                layoutComponents
-                        );
-
-                    });
-
-
-                } catch (Exception ex) {
-
-
-                    System.out.println(ex);
-                    // if fails build it up
-
-                    ui.access(() -> {
-                        layout.removeAll();
-
-                        rightSide.add(
-                               layoutComponents
-                        );
-                    });
-
-                }
-
-            });
-
-
-
-        });
-
-
-
-
-        dialog.getFooter().add(
-                selectAll,
-                cancel,
-                generate);
-
-            dialog.open();
-
-
-        return dto;
-
-    }
 
 
 
@@ -615,9 +302,6 @@ public class RightSideMaterials {
         verticalLayout.addClassName("island");
 
         verticalLayout.getStyle().set("position","relative");
-
-        String prompt = "Tai tvirta ąžuolo mediena, šviesiai rudos spalvos, su banguotu raštu. Kaina 2,55 euro už kilogramą.";
-
 
         Button aiButton = commonComponents.buttonThemeAndIconNoNavigate("AI",ButtonVariant.LUMO_PRIMARY, VaadinIcon.MAGIC,"WHITE");
         aiButton.setTooltipText("Generate information with a prompt");
@@ -638,7 +322,7 @@ public class RightSideMaterials {
             );
 
 
-            dialogTest(new MaterialAiDto(), MaterialAiDto.class,rightSide,component,this);
+            aiService.dialogTest(new MaterialAiDto(), MaterialAiDto.class,rightSide,component,this,"Materials");
 
 
 
@@ -659,36 +343,7 @@ public class RightSideMaterials {
         return  verticalLayout;
     }
 
-    private Component loadingOverlay(String loadingText, UI ui) {
-        Div overlay = new Div();
-        overlay.addClassName("loading-overlay");
 
-        Div loader = new Div();
-        loader.addClassName("modern-loader");
-
-        Span text = new Span(loadingText+ "...");
-        text.addClassName("loading-text");
-
-        Button stuckWaiting = new Button("Stuck waiting ? ", e-> common.reloadPage());
-        stuckWaiting.setVisible(false);
-        stuckWaiting.addThemeVariants(ButtonVariant.PRIMARY);
-
-        overlay.add(loader, text,stuckWaiting);
-
-        ScheduledExecutorService scheduler =
-                Executors.newSingleThreadScheduledExecutor();
-
-        scheduler.schedule(() -> {
-            ui.access(() -> {
-                stuckWaiting.setVisible(true);
-            });
-
-            scheduler.shutdown();
-
-        }, 10, TimeUnit.SECONDS);
-
-        return overlay;
-    }
 
     public VerticalLayout appearance(){
 

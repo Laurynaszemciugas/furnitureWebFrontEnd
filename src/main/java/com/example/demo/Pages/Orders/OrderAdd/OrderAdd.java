@@ -6,6 +6,7 @@ import com.example.demo.ControllerModels.Orders.OrderAddProducts;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Orders.Page.Components.AssignEmployees;
 import com.example.demo.Pages.Orders.OrderAdd.Components.OrderBothSidesAddSide;
+import com.example.demo.Services.AI.AIService;
 import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.Products.ProductService;
@@ -31,6 +32,7 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
     AssignEmployees assignEmployees;
     EmployeeService employeeService;
     OrdersService ordersService;
+    AIService aiService;
 
     OrderBothSidesAddSide orderBothSidesAddSide;
     List<OrderAddProducts> listOfProducts = new ArrayList<>();
@@ -40,7 +42,8 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
             Common common,
             ProductService productService,
             EmployeeService employeeService,
-            OrdersService ordersService
+            OrdersService ordersService,
+            AIService aiService
             ) {
 
         this.commonComponents = commonComponents;
@@ -49,7 +52,8 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
         this.employeeService = employeeService;
         this.assignEmployees = new AssignEmployees(commonComponents,common,employeeService);
         this.ordersService = ordersService;
-        this.orderBothSidesAddSide = new OrderBothSidesAddSide(commonComponents,common,employeeService,productService);
+        this.aiService = aiService;
+        this.orderBothSidesAddSide = new OrderBothSidesAddSide(commonComponents,common,employeeService,productService,aiService);
 
         setPadding(false);
         setSpacing(false);
@@ -84,7 +88,7 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
 
         verticalLayout.add(
                     orderBothSidesAddSide.briefPageExplanation(),
-                joinLeftRight()
+                    orderBothSidesAddSide.joinLeftRight()
         );
 
         return verticalLayout;
@@ -100,52 +104,7 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
 
 
 
-    public HorizontalLayout joinLeftRight(){
-        HorizontalLayout h = new HorizontalLayout();
-        h.setWidthFull();
-        h.addClassName("layout-flex");
 
-        VerticalLayout left = orderBothSidesAddSide.leftSide();
-        VerticalLayout right = rightSide();
-
-        left.setWidth("500px");
-
-        right.setWidth("500px");
-
-        h.add(
-                left,
-                right
-        );
-
-        h.expand(left);
-
-
-        return h;
-    }
-
-
-
-
-
-
-
-
-
-
-
-    public VerticalLayout rightSide(){
-        VerticalLayout v = new VerticalLayout();
-        v.setWidthFull();
-        v.setPadding(false);
-
-        v.add(
-                orderBothSidesAddSide.orderSettings(),
-                orderBothSidesAddSide.orderNote()
-        );
-
-
-        return v;
-    }
 
 
 

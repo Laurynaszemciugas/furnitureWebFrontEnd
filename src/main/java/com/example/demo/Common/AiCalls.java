@@ -13,6 +13,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -20,6 +21,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -126,6 +128,8 @@ public class AiCalls {
                     stringBuilder.append(builderEnum);
                 }
 
+
+
                     showTheValue = defaultObject;
 
 
@@ -165,7 +169,13 @@ public class AiCalls {
 
                 String name = s.getName();
 
-                Field field = form.getClass().getDeclaredField(name);
+                Field field;
+
+                try {
+                    field = form.getClass().getDeclaredField(name);
+                } catch (NoSuchFieldException e) {
+                    continue;
+                }
                 field.setAccessible(true);
 
                 Object component = field.get(form);

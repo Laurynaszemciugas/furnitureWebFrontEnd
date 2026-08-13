@@ -2,12 +2,14 @@ package com.example.demo.Pages.Orders.OrderAdd.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.OrderAiDto;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.User;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.PayMethod;
 import com.example.demo.Enums.PayStatus;
 import com.example.demo.Pages.Orders.Page.Components.AssignEmployees;
+import com.example.demo.Services.AI.AIService;
 import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.button.Button;
@@ -15,6 +17,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -38,20 +41,21 @@ public class OrderBothSidesAddSide {
     EmployeeService employeeService;
     OrderAddProductListAddRemove orderAddProductListAddRemove;
     ProductService productService;
+    AIService aiService;
 
     Binder<Void> binder = new Binder<>();
     // Data fields
-    TextField selectCustomer = new TextField("Customer");
-    TextField customerGmail = new TextField("Email");
-    TextField customerPhoneNumber = new TextField("Phone");
-    TextArea customerAddress = new TextArea("Billing address");
+    TextField orderCreatedByName = new TextField("Customer");
+    TextField orderCreatedByGmail = new TextField("Email");
+    TextField phoneNumber = new TextField("Phone");
+    TextArea billingAddress = new TextArea("Billing address");
     TextArea orderNote = new TextArea();
 
     ComboBox<OrderStatus> orderStatusComboBox = new ComboBox<>("Order status");
-    ComboBox<PayStatus> payStatusComboBox = new ComboBox<>("Payment status");
-    ComboBox<PayMethod> payMethodComboBox = new ComboBox<>("Payment method");
+    ComboBox<PayStatus> payStatus = new ComboBox<>("Payment status");
+    ComboBox<PayMethod> payMethod = new ComboBox<>("Payment method");
     DateTimePicker createdDate = new DateTimePicker("Order Created date");
-    DateTimePicker dueDate = new DateTimePicker("Order Due date");
+    DateTimePicker estimatedDueDate = new DateTimePicker("Order Due date");
 
 
     Orders selectedOrder = new Orders();
@@ -59,13 +63,16 @@ public class OrderBothSidesAddSide {
 
     Consumer<Orders> consumer;
 
-    public OrderBothSidesAddSide(CommonComponents commonComponents, Common common, EmployeeService employeeService,ProductService productService) {
+    HorizontalLayout h = new HorizontalLayout();
+
+    public OrderBothSidesAddSide(CommonComponents commonComponents, Common common, EmployeeService employeeService,ProductService productService,AIService aiService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.employeeService = employeeService;
         this.productService = productService;
         this.assignEmployees = new AssignEmployees(commonComponents,common,employeeService);
         this.orderAddProductListAddRemove = new OrderAddProductListAddRemove(commonComponents,common,productService);
+        this.aiService = aiService;
 
 
         binder();
@@ -91,19 +98,19 @@ public class OrderBothSidesAddSide {
 
                 selectedOrder.setOrderNote(orderNote.getValue());
                 selectedOrder.setOrderStatus(orderStatusComboBox.getValue());
-                selectedOrder.setPayStatus(payStatusComboBox.getValue());
-                selectedOrder.setPayMethod(payMethodComboBox.getValue());
+                selectedOrder.setPayStatus(payStatus.getValue());
+                selectedOrder.setPayMethod(payMethod.getValue());
                 selectedOrder.setCreated(createdDate.getValue());
-                selectedOrder.setEstimatedDueDate(dueDate.getValue());
-                selectedOrder.setOrderCreatedByName(selectCustomer.getValue());
-                selectedOrder.setOrderCreatedByGmail(customerGmail.getValue());
+                selectedOrder.setEstimatedDueDate(estimatedDueDate.getValue());
+                selectedOrder.setOrderCreatedByName(orderCreatedByName.getValue());
+                selectedOrder.setOrderCreatedByGmail(orderCreatedByGmail.getValue());
                 User user = new User();
-                user.setGmail(customerGmail.getValue());
+                user.setGmail(orderCreatedByGmail.getValue());
                 selectedOrder.setOrderPlacedBy(user);
 
 
-                selectedOrder.setBillingAddress(customerAddress.getValue());
-                selectedOrder.setPhoneNumber(customerPhoneNumber.getValue());
+                selectedOrder.setBillingAddress(billingAddress.getValue());
+                selectedOrder.setPhoneNumber(phoneNumber.getValue());
 
 
 
@@ -169,17 +176,17 @@ public class OrderBothSidesAddSide {
 
         FormLayout first = new FormLayout();
         first.add(
-                selectCustomer,
-                customerGmail,
-                customerPhoneNumber
+                orderCreatedByName,
+                orderCreatedByGmail,
+                phoneNumber
         );
         first.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0", 3)
         );
 
-        customerAddress.setHeight("120px");
+        billingAddress.setHeight("120px");
         FormLayout second = new FormLayout();
-        second.add(customerAddress);
+        second.add(billingAddress);
         second.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0", 1)
         );
@@ -195,8 +202,51 @@ public class OrderBothSidesAddSide {
 
 
     public VerticalLayout orderSettings(){
-        VerticalLayout v = new VerticalLayout();
 
+        Button aiButton = commonComponents.buttonThemeAndIconNoNavigate("AI",ButtonVariant.LUMO_PRIMARY, VaadinIcon.MAGIC,"WHITE");
+        aiButton.setTooltipText("Generate information with a prompt");
+        aiButton.getStyle().set("position","absolute").set("right","10px").set("top","10px");
+
+
+
+        aiButton.addClickListener(e -> {
+
+
+            HorizontalLayout component = new HorizontalLayout();
+            component.setWidthFull();
+            component.addClassName("layout-flex");
+
+            VerticalLayout left = leftSide();
+            VerticalLayout right = rightSide();
+
+            left.setWidth("500px");
+
+            right.setWidth("500px");
+
+            component.add(
+                    left,
+                    right
+            );
+
+            component.expand(left);
+
+            component.setPadding(false);
+            component.add(
+                    left,
+                    right
+            );
+
+
+            aiService.dialogTest(new OrderAiDto(), OrderAiDto.class,h,component,this,"Orders");
+
+
+
+
+        });
+
+
+        VerticalLayout v = new VerticalLayout();
+        v.getStyle().set("position","relative");
         v.addClassName("animated-card");
 
         v.setWidthFull();
@@ -208,12 +258,12 @@ public class OrderBothSidesAddSide {
         orderStatusComboBox.setValue(OrderStatus.Pending);
 
 
-        payStatusComboBox.setWidthFull();
-        payStatusComboBox.setItems(PayStatus.values());
+        payStatus.setWidthFull();
+        payStatus.setItems(PayStatus.values());
 
 
-        payMethodComboBox.setWidthFull();
-        payMethodComboBox.setItems(PayMethod.values());
+        payMethod.setWidthFull();
+        payMethod.setItems(PayMethod.values());
 
 
         createdDate.setWidthFull();
@@ -221,16 +271,17 @@ public class OrderBothSidesAddSide {
         createdDate.setValue(LocalDateTime.now());
 
 
-        dueDate.setWidthFull();
+        estimatedDueDate.setWidthFull();
 
 
         v.add(
+                aiButton,
                 commonComponents.spanCrafterWordNoHide("Order settings","activityFeed-name"),
                 orderStatusComboBox,
-                payStatusComboBox,
-                payMethodComboBox,
+                payStatus,
+                payMethod,
                 createdDate,
-                dueDate
+                estimatedDueDate
         );
 
 
@@ -262,6 +313,53 @@ public class OrderBothSidesAddSide {
 
 
 
+    public HorizontalLayout joinLeftRight(){
+
+        h.setWidthFull();
+        h.addClassName("layout-flex");
+
+        VerticalLayout left = leftSide();
+        VerticalLayout right = rightSide();
+
+        left.setWidth("500px");
+
+        right.setWidth("500px");
+
+        h.add(
+                left,
+                right
+        );
+
+        h.expand(left);
+
+
+        return h;
+    }
+
+
+
+
+
+
+
+
+
+
+
+    public VerticalLayout rightSide(){
+        VerticalLayout v = new VerticalLayout();
+        v.setWidthFull();
+        v.setPadding(false);
+
+        v.add(
+                orderSettings(),
+                orderNote()
+        );
+
+
+        return v;
+    }
+
 
 
 
@@ -270,11 +368,11 @@ public class OrderBothSidesAddSide {
 
 
     public void binder(){
-        binder.forField(selectCustomer)
+        binder.forField(orderCreatedByName)
                 .asRequired("Customer is required")
                 .bind(v -> null, (v, value) -> {});
 
-        binder.forField(customerGmail)
+        binder.forField(orderCreatedByGmail)
                 .asRequired("Email is required")
                 .withValidator(
                         email -> email == null || email.isBlank() ||
@@ -283,11 +381,11 @@ public class OrderBothSidesAddSide {
                 )
                 .bind(v -> null, (v, value) -> {});
 
-        binder.forField(customerPhoneNumber)
+        binder.forField(phoneNumber)
                 .asRequired("Phone number is required")
                 .bind(v -> null, (v, value) -> {});
 
-        binder.forField(customerAddress)
+        binder.forField(billingAddress)
                 .asRequired("Address is required")
                 .bind(v -> null, (v, value) -> {});
 
@@ -296,11 +394,11 @@ public class OrderBothSidesAddSide {
                 .asRequired("Order status is required")
                 .bind(v -> null, (v, value) -> {});
 
-        binder.forField(payStatusComboBox)
+        binder.forField(payStatus)
                 .asRequired("Order pay status is required")
                 .bind(v -> null, (v, value) -> {});
 
-        binder.forField(payMethodComboBox)
+        binder.forField(payMethod)
                 .asRequired("Order pay method is required")
                 .bind(v -> null, (v, value) -> {});
 
@@ -308,7 +406,7 @@ public class OrderBothSidesAddSide {
                 .asRequired("Order create date is required")
                 .bind(v -> null, (v, value) -> {});
 
-        binder.forField(dueDate)
+        binder.forField(estimatedDueDate)
                 .asRequired("Order due date is required")
                 .withValidator(
                         due -> due == null ||
