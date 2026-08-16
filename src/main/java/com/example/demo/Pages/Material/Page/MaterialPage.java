@@ -3,6 +3,8 @@ package com.example.demo.Pages.Material.Page;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.CurrentFilterDisplay;
+import com.example.demo.Common.Logic.InternetScraper.Scraper;
+import com.example.demo.Common.Logic.InternetScraper.View;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
@@ -13,6 +15,7 @@ import com.example.demo.Pages.Material.Page.Components.MaterialBriefExplanations
 import com.example.demo.Pages.Material.Page.Components.MaterialFilters;
 import com.example.demo.Pages.Material.Page.Components.MaterialGrid;
 import com.example.demo.Pages.Material.Page.Components.MaterialMiniStats;
+import com.example.demo.Services.InternetScraping.ScraperService;
 import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
@@ -52,14 +55,25 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
     Div gridHolder = new Div();
 
+    ScraperService scraperService;
 
-    public MaterialPage(CommonComponents commonComponents, Common common,MaterialService materialService) {
+    Scraper scraper;
+    View view;
+
+    public MaterialPage(CommonComponents commonComponents, Common common,MaterialService materialService,Scraper scraper,ScraperService scraperService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.paganation = new Paganation();
         this.materialMiniStats = new MaterialMiniStats(commonComponents,common);
         this.materialFilters = new MaterialFilters(commonComponents,common);
-        this.materialGrid = new MaterialGrid(commonComponents,common,materialService);
+        this.scraperService = scraperService;
+
+
+
+        this.scraper = scraper;
+        this.view = new View(scraper,commonComponents,common,scraperService);
+
+        this.materialGrid = new MaterialGrid(commonComponents,common,materialService,view,scraper);
         this.materialBriefExplanations = new MaterialBriefExplanations(commonComponents,common);
         this.materialService = materialService;
         this.currentFilterDisplay = new CurrentFilterDisplay(commonComponents,common);

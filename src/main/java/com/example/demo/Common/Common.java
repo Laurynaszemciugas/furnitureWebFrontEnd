@@ -6,8 +6,12 @@ import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.CommonDtos.ActionTracker;
 import com.example.demo.Enums.Warnings;
 import com.example.demo.Services.ActionTrackerService.ActionService;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -23,6 +27,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 @Service
@@ -442,6 +449,37 @@ public class Common {
 
         return String.valueOf(stringBuilder);
 
+    }
+
+    public Component loadingOverlay(String loadingText, UI ui) {
+        Div overlay = new Div();
+        overlay.addClassName("loading-overlay");
+
+        Div loader = new Div();
+        loader.addClassName("modern-loader");
+
+        Span text = new Span(loadingText+ "...");
+        text.addClassName("loading-text");
+
+        Button stuckWaiting = new Button("Stuck waiting ? ", e-> reloadPage());
+        stuckWaiting.setVisible(false);
+        stuckWaiting.addThemeVariants(ButtonVariant.PRIMARY);
+
+        overlay.add(loader, text,stuckWaiting);
+
+        ScheduledExecutorService scheduler =
+                Executors.newSingleThreadScheduledExecutor();
+
+        scheduler.schedule(() -> {
+            ui.access(() -> {
+                stuckWaiting.setVisible(true);
+            });
+
+            scheduler.shutdown();
+
+        }, 10, TimeUnit.SECONDS);
+
+        return overlay;
     }
 
 }

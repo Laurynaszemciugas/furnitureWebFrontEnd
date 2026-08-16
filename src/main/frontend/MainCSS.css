@@ -619,7 +619,7 @@ background-color: #d4edda;
 */
 
 .loading-overlay {
-    position: fixed;
+position: absolute;
     inset: 0;
     z-index: 999;
     display: grid;

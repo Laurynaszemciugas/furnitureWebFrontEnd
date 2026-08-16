@@ -22,6 +22,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class CommonComponents {
@@ -265,6 +268,10 @@ public class CommonComponents {
         Button navigate = buttonThemeAndIcon(buttonName,navigateTo,ButtonVariant.LUMO_PRIMARY,VaadinIcon.PLUS,"white");
         navigate.addThemeVariants(ButtonVariant.PRIMARY);
 
+        if(buttonName == null){
+            navigate.setVisible(false);
+        }
+
 
 
         VerticalLayout emptyView = new VerticalLayout(spanCrafterWordNoHide(title,"stat-value"),image,navigate);
@@ -380,6 +387,7 @@ public class CommonComponents {
         div.addClassNames("skeleton", "skeleton-line", widthClass);
         return div;
     }
+
 
 
 

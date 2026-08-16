@@ -2,6 +2,8 @@ package com.example.demo.Pages.Material.Page.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.InternetScraper.Scraper;
+import com.example.demo.Common.Logic.InternetScraper.View;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.MaterialType;
@@ -30,11 +32,18 @@ public class MaterialGrid {
     MaterialService materialService;
 
 
+    View view;
+    Scraper scraper;
 
-    public MaterialGrid(CommonComponents commonComponents, Common common,MaterialService materialService) {
+
+    public MaterialGrid(CommonComponents commonComponents, Common common,MaterialService materialService,View view,Scraper scraper) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.materialService = materialService;
+
+        this.view = view;
+        this.scraper = scraper;
+
     }
 
     public VerticalLayout gridHolder(List<MaterialBriefDto> materiaData){
@@ -255,9 +264,16 @@ public class MaterialGrid {
                });
             });
 
+            Button checkInternet = new Button(commonComponents.iconCrafter(VaadinIcon.GLOBE_WIRE,"25px","Blue"));
+
+            checkInternet.addClickListener(ew->{
+                view.layout(e.getName());
+            });
+
             h.add(
                     delete,
-                    edit
+                    edit,
+                    checkInternet
 
             );
 
