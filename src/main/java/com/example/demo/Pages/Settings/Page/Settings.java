@@ -6,17 +6,21 @@ import com.example.demo.Common.Logic.SinglePhotoLogic;
 import com.example.demo.Enums.Role;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Reports.Page.Components.BriefReportPageExplanation;
+import com.example.demo.Pages.Settings.Components.ProfileAccount;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -31,7 +35,14 @@ public class Settings extends VerticalLayout implements BeforeEnterObserver {
     CommonComponents commonComponents;
     Common common;
 
-    SinglePhotoLogic singlePhotoLogic;
+
+
+    Tab profileAccount;
+    Tab payment;
+    Tab shipping;
+    VerticalLayout content = new VerticalLayout();
+
+    ProfileAccount profileAndAccount;
 
 
     public Settings(CommonComponents commonComponents,  Common common) {
@@ -39,6 +50,8 @@ public class Settings extends VerticalLayout implements BeforeEnterObserver {
 
         this.commonComponents = commonComponents;
         this.common = common;
+
+        this.profileAndAccount = new ProfileAccount(commonComponents,common);
 
         setPadding(false);
         setSpacing(false);
@@ -49,7 +62,6 @@ public class Settings extends VerticalLayout implements BeforeEnterObserver {
         addClassName("animation-page");
 
 
-        this.singlePhotoLogic = new SinglePhotoLogic(commonComponents,common);
 
 
 
@@ -70,15 +82,28 @@ public class Settings extends VerticalLayout implements BeforeEnterObserver {
     }
 
     public VerticalLayout mainLayout() {
+
+        profileAccount = new Tab("Profile & Account");
+        payment = new Tab("Payment");
+        shipping = new Tab("Shipping");
+
+
+        Tabs tabs = new Tabs(profileAccount, payment, shipping);
+        tabs.addSelectedChangeListener(
+                event -> setContent(event.getSelectedTab()));
+
+        setContent(profileAccount);
+
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top", "5px");
 
+
+
         verticalLayout.add(
                 commonComponents.biefPageExplanation("Settings"),
-                profileAccount(),
-                accountOverview(),
-                accountOverviewIslands()
+                tabs,
+                content
         );
 
 
@@ -87,170 +112,39 @@ public class Settings extends VerticalLayout implements BeforeEnterObserver {
         return verticalLayout;
     }
 
-    public VerticalLayout profileAccount(){
-
-        TextField fullName = new TextField("Full name");
-        TextField username = new TextField("Username");
-        EmailField emailAddress = new EmailField("Email address");
-        ComboBox<Role> role = new ComboBox<>("Role");
-        TextField phoneNumber = new TextField("Phone number");
-        TextArea bio = new TextArea("Bio");
-
-        FormLayout formLayout = new FormLayout();
-
-        formLayout.add(fullName,username,emailAddress,role,phoneNumber,bio);
 
 
-        VerticalLayout v = new VerticalLayout();
-        v.addClassName("island");
+    public VerticalLayout profileAccountTab(){
 
-        v.setWidthFull();
+        VerticalLayout div = new VerticalLayout();
 
-        Div div = new Div();
-        div.setWidth("700px");
         div.add(
-                singlePhotoLogic.imageGetterShower()
-        );
-
-        HorizontalLayout h = new HorizontalLayout();
-        h.setWidthFull();
-        h.add(
-                div,
-                formLayout
-        );
-
-        HorizontalLayout options = new HorizontalLayout();
-        options.setJustifyContentMode(JustifyContentMode.END);
-        options.setWidthFull();
-        options.setPadding(false);
-
-        Button button = new Button("Save changes");
-        button.addThemeVariants(ButtonVariant.PRIMARY);
-
-        options.add(
-                button
-        );
-
-        v.add(
-                briefExplanationOfTheSettings("Profile information","Update your personal information and how others see you"),
-                h,
-                options
-
-        );
-
-        return v;
-    }
-
-    public VerticalLayout accountOverview(){
-
-        VerticalLayout v = new VerticalLayout();
-        v.addClassName("island");
-
-        HorizontalLayout h = new HorizontalLayout();
-        h.setWidthFull();
-        h.setPadding(false);
-
-        h.add(
-                accountOverviewIslands(VaadinIcon.CALENDAR,"Blue","Member since","jan 15 2024","1 year 4 months"),
-                accountOverviewIslands(VaadinIcon.ABACUS,"GREEN","Email status","Verified","jonh@gmail.com"),
-                accountOverviewIslands(VaadinIcon.SHIELD,"Cyan","Account status","Active","no issues found"),
-                accountOverviewIslands(VaadinIcon.CLOCK,"BLUE","Last login","jan 15 2024","IP: 192.162.1.1")
-        );
-
-        v.add(
-                briefExplanationOfTheSettings("Account overview","View your account details and status"),
-                h
-
-
-        );
-
-        return v;
-
-    }
-
-    public HorizontalLayout accountOverviewIslands(VaadinIcon icon, String iconColor, String first, String second, String third){
-
-        HorizontalLayout h = new HorizontalLayout();
-        h.setPadding(false);
-        h.setAlignItems(Alignment.CENTER);
-        h.addClassName("island");
-
-
-        h.getStyle().set("flex", "1 1 252px");
-        //h.getStyle().set("max-width", "620px");
-        h.getStyle().set("min-width", "252px");
-
-
-        VerticalLayout v = new VerticalLayout();
-        v.setPadding(false);
-        v.setSpacing(false);
-
-        v.add(
-                commonComponents.spanCrafter(first,"stat-description"),
-                commonComponents.spanCrafter(second,"stat-example"),
-                commonComponents.spanCrafter(third,"stat-description")
+                profileAndAccount.AllInOne()
         );
 
 
-        h.add(
-                commonComponents.iconCrafter(icon,"45px",iconColor),
-                v
-        );
-
-
-
-
-
-        return h;
-
-    }
-
-    public VerticalLayout accountOverviewIslands(){
-
-        VerticalLayout h = new VerticalLayout();
-        h.setPadding(false);
-        h.setAlignItems(Alignment.CENTER);
-        h.addClassName("island");
-
-
-        ComboBox<String> dateFormat = new ComboBox<>("Date format");
-        Checkbox notificationsToGmail = new Checkbox("Notification preferences");
-
-        FormLayout formLayout = new FormLayout();
-
-        formLayout.add(
-                dateFormat,
-                notificationsToGmail
-        );
-
-
-        h.add(
-                briefExplanationOfTheSettings("Personal preferences","Manage your personal preferences and notification settings"),
-                formLayout
-        );
-
-
-
-
-        return h;
+        return div;
 
     }
 
 
-    public VerticalLayout briefExplanationOfTheSettings(String name, String desc){
-
-        VerticalLayout h = new VerticalLayout();
-        h.setSpacing(false);
-        h.setPadding(false);
-        h.setWidthFull();
-
-        h.add(
-                commonComponents.spanCrafter(name,"activityFeed-name"),
-                commonComponents.spanCrafter(desc,"stat-description")
-        );
 
 
-        return h;
 
+
+
+
+
+    private void setContent(Tab tab) {
+        content.removeAll();
+
+        if (tab.equals(profileAccount)) {
+            content.add(profileAccountTab());
+        } else if (tab.equals(payment)) {
+            content.add(new Paragraph("This is the Payment tab"));
+        } else {
+            content.add(new Paragraph("This is the Shipping tab"));
+        }
     }
+
 }
