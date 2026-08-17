@@ -2,28 +2,13 @@ package com.example.demo.Pages.Settings.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.Common.Logic.SinglePhotoLogic;
-import com.example.demo.Enums.Role;
 import com.example.demo.MainLayout.MainLayout;
-import com.example.demo.Pages.Reports.Page.Components.BriefReportPageExplanation;
+import com.example.demo.Pages.Settings.Components.ApperanceTab;
 import com.example.demo.Pages.Settings.Components.ProfileAccount;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
-import com.vaadin.flow.component.textfield.EmailField;
-import com.vaadin.flow.component.textfield.TextArea;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
@@ -38,11 +23,12 @@ public class Settings extends VerticalLayout implements BeforeEnterObserver {
 
 
     Tab profileAccount;
-    Tab payment;
+    Tab appearance;
     Tab shipping;
     VerticalLayout content = new VerticalLayout();
 
     ProfileAccount profileAndAccount;
+    ApperanceTab apearnce;
 
 
     public Settings(CommonComponents commonComponents,  Common common) {
@@ -52,6 +38,7 @@ public class Settings extends VerticalLayout implements BeforeEnterObserver {
         this.common = common;
 
         this.profileAndAccount = new ProfileAccount(commonComponents,common);
+        this.apearnce = new ApperanceTab(commonComponents,common);
 
         setPadding(false);
         setSpacing(false);
@@ -84,11 +71,11 @@ public class Settings extends VerticalLayout implements BeforeEnterObserver {
     public VerticalLayout mainLayout() {
 
         profileAccount = new Tab("Profile & Account");
-        payment = new Tab("Payment");
+        appearance = new Tab("Appearance");
         shipping = new Tab("Shipping");
 
 
-        Tabs tabs = new Tabs(profileAccount, payment, shipping);
+        Tabs tabs = new Tabs(profileAccount, appearance, shipping);
         tabs.addSelectedChangeListener(
                 event -> setContent(event.getSelectedTab()));
 
@@ -114,18 +101,8 @@ public class Settings extends VerticalLayout implements BeforeEnterObserver {
 
 
 
-    public VerticalLayout profileAccountTab(){
-
-        VerticalLayout div = new VerticalLayout();
-
-        div.add(
-                profileAndAccount.AllInOne()
-        );
 
 
-        return div;
-
-    }
 
 
 
@@ -139,9 +116,9 @@ public class Settings extends VerticalLayout implements BeforeEnterObserver {
         content.removeAll();
 
         if (tab.equals(profileAccount)) {
-            content.add(profileAccountTab());
-        } else if (tab.equals(payment)) {
-            content.add(new Paragraph("This is the Payment tab"));
+            content.add(profileAndAccount.AllInOne());
+        } else if (tab.equals(appearance)) {
+            content.add(apearnce.allInOne());
         } else {
             content.add(new Paragraph("This is the Shipping tab"));
         }

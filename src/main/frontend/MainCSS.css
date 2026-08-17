@@ -1157,6 +1157,33 @@ vaadin-grid vaadin-button:hover {
  }
 
 
+ /* ============================================================
+     The "Island" line Layout Effect
+     ============================================================ */
+  .island-layout-solid {
+
+ backdrop-filter: blur(8px);
+     -webkit-backdrop-filter: blur(8px);
+
+     border: 2px solid #cbd5e1; /* Subtle slate dotted line */
+     border-radius: 16px;
+
+    background-color: rgba(255, 255, 255, 0.95);
+    border-color: #2563eb; /* Turns blue when touched/hovered */
+    box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.15),
+                0 8px 10px -6px rgba(37, 99, 235, 0.1);
+    transform: translateY(-2px);
+
+    position: relative;
+    z-index: 1;
+  }
+
+
+
+
+
+
+
 
 .island_hv {
      background: #ffffff;

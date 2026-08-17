@@ -175,13 +175,16 @@ public class ProfileAccount {
 
         ComboBox<String> dateFormat = new ComboBox<>("Date format");
         ComboBox<String> timeZone = new ComboBox<>("Time zone");
+        ComboBox<String> language = new ComboBox<>("Language");
         Checkbox notificationsToGmail = new Checkbox("Receive notification to gmail");
+
 
         FormLayout formLayout = new FormLayout();
 
         formLayout.add(
                 dateFormat,
                 timeZone,
+                language,
                 notificationsToGmail
         );
 
