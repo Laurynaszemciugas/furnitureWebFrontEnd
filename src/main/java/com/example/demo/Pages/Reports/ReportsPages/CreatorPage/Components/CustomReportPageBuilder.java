@@ -288,16 +288,29 @@ public class CustomReportPageBuilder {
         // custom check on resize
         component.getElement().executeJs("""
     const element = this;
-    let startWidth = element.offsetWidth;
 
-    document.addEventListener('mouseup', () => {
-        const newWidth = element.offsetWidth;
+    let resizeTimer;
+    let lastWidth = element.offsetWidth;
 
-        if (newWidth !== startWidth) {
-            element.dispatchEvent(new CustomEvent('resize-finished'));
-            startWidth = newWidth;
-        }
+    const observer = new ResizeObserver(() => {
+        clearTimeout(resizeTimer);
+
+        resizeTimer = setTimeout(() => {
+            const newWidth = element.offsetWidth;
+
+            if (newWidth !== lastWidth) {
+                element.dispatchEvent(new CustomEvent('resize-finished', {
+                    bubbles: false
+                }));
+
+                lastWidth = newWidth;
+            }
+        }, 300);
     });
+
+    observer.observe(element);
+
+    this.__resizeObserver = observer;
 """);
 
         component.getElement().addEventListener("resize-finished", e -> {
