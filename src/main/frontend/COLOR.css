@@ -1,5 +1,6 @@
 /* --- DARK / LIGHT THEME --- */
 
+/*
 
 
 body[theme~="dark"] {
@@ -16,12 +17,13 @@ body[theme~="light"] {
 /* Default fallback */
 
 
-
+/*
 body {
-    --buttonAccent: red;
+    --buttonAccent: blue;
 }
 
 /* Global accent variables triggered by pure Java attributes */
+/*
 body[accent="red"] {
     --buttonAccent: red;
 }
@@ -36,6 +38,7 @@ body[accent="blue"] {
 
 
 /* --- COMPONENT STYLES --- */
+/*
 .accentButton {
     background-color: var(--buttonAccent);
     color: white;
@@ -46,3 +49,4 @@ body[accent="blue"] {
     background-color: var(--mainColor);
     transition: background-color 0.3s;
 }
+

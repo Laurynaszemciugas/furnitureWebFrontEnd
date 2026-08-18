@@ -47,10 +47,10 @@ public class ProfileAccount {
         TextArea bio = new TextArea("Bio");
 
         bio.setWidthFull();
-        bio.setHeight("150px");
+        bio.setHeight("60px");
 
         FormLayout formLayout = new FormLayout();
-
+        formLayout.setWidth("auto");
         formLayout.add(fullName,emailAddress,role,phoneNumber);
 
 
@@ -67,10 +67,15 @@ public class ProfileAccount {
         v.setWidthFull();
 
         Div div = new Div();
-        div.setWidth("700px");
         div.add(
                 singlePhotoLogic.imageGetterShower()
         );
+
+        div.getStyle().set("flex", "1 1 252px");
+        div.getStyle().set("min-width", "252px");
+
+        rightSide.getStyle().set("flex", "1 1 252px");
+        rightSide.getStyle().set("min-width", "252px");
 
         HorizontalLayout h = new HorizontalLayout();
         h.setWidthFull();
@@ -78,6 +83,9 @@ public class ProfileAccount {
                 div,
                 rightSide
         );
+        h.expand(rightSide);
+        h.addClassName("layout-flex");
+
 
         HorizontalLayout options = new HorizontalLayout();
         options.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
@@ -85,11 +93,15 @@ public class ProfileAccount {
         options.setPadding(false);
 
         Button button = new Button("Save changes");
+        button.setSuffixComponent(commonComponents.iconCrafter(VaadinIcon.CHECK,"20px","White"));
+        button.addClassName("accentButtons");
         button.addThemeVariants(ButtonVariant.PRIMARY);
 
         options.add(
                 button
         );
+
+
 
         v.add(
                 briefExplanationOfTheSettings.briefExplanationOfTheSettings("Profile information","Update your personal information and how others see you"),
@@ -109,6 +121,8 @@ public class ProfileAccount {
         HorizontalLayout h = new HorizontalLayout();
         h.setWidthFull();
         h.setPadding(false);
+
+        h.addClassName("layout-flex");
 
         h.add(
                 accountOverviewIslands(VaadinIcon.CALENDAR,"Blue","Member since","jan 15 2024","1 year 4 months"),

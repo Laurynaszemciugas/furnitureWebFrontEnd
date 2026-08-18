@@ -106,7 +106,7 @@ public class Paganation {
             if(good){
 
                 if(i == currentPage){
-                    buttonList.get(i-1).addThemeVariants(ButtonVariant.PRIMARY);
+                    buttonList.get(i-1).addClassName("accentButtons");
                 }
                 buttonList.get(i-1).setVisible(true);
             }

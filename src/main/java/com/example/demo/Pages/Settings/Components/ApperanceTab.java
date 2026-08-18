@@ -2,11 +2,16 @@ package com.example.demo.Pages.Settings.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +27,8 @@ public class ApperanceTab {
 
     List<Image> imageMemory = new ArrayList<>();
 
+    List<Icon> colorMemory = new ArrayList<>();
+
 
     public ApperanceTab(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
@@ -35,9 +42,12 @@ public class ApperanceTab {
 
         VerticalLayout v = new VerticalLayout();
 
+        Button b = new Button("Button");
+        b.addClassName("accentButtons");
         v.add(
                 profileAccount(),
-                accentColor()
+                accentColor(),
+                b
         );
 
         return v;
@@ -132,6 +142,7 @@ public class ApperanceTab {
     public VerticalLayout accentColor(){
 
 
+        String currentColor = "Blue";
 
 
         VerticalLayout v = new VerticalLayout();
@@ -140,16 +151,25 @@ public class ApperanceTab {
 
         HorizontalLayout h = new HorizontalLayout();
         h.setAlignItems(FlexComponent.Alignment.CENTER);
+        h.setJustifyContentMode(FlexComponent.JustifyContentMode.EVENLY);
         h.setWidthFull();
         h.add(
-        colorCrafter("red")
+                colorCrafter("Blue",currentColor),
+                colorCrafter("Red",currentColor),
+                colorCrafter("Orange",currentColor),
+                colorCrafter("Purple",currentColor),
+                colorCrafter("Green",currentColor),
+                colorCrafter("Grey",currentColor),
+                colorCrafter("Pink",currentColor),
+                colorCrafter("Indigo",currentColor)
         );
         h.addClassName("layout-flex");
 
 
         v.add(
                 briefExplanationOfTheSettings.briefExplanationOfTheSettings("Accent color","Choose your favorite accent color"),
-                h
+                h,
+                briefExplanationOfTheSettings.briefExplanationOfTheSettings("Accent preview ","See how accent will effect application EXCEPT CUSTOM REPORTS")
         );
 
 
@@ -160,18 +180,85 @@ public class ApperanceTab {
     }
 
 
-    public VerticalLayout colorCrafter(String color){
+    public VerticalLayout colorCrafter(String color, String currentColor){
         VerticalLayout v = new VerticalLayout();
+        v.setAlignItems(FlexComponent.Alignment.CENTER);
+        v.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
-        v.setWidth("50px");
-        v.setHeight("50px");
+        v.setWidth("60px");
+        v.setHeight("60px");
 
 
-        v.getStyle().set("border-radius","100px").set("background-color",color);
+        v.getStyle().set("border-radius","100px").set("background-color",color).set("position","relative");
 
+        Icon icon = commonComponents.iconCrafter(VaadinIcon.CHECK,"20px","White");
+        icon.getStyle().set("position","absolute");
+        icon.setVisible(false);
+
+        v.add(
+                icon
+        );
+
+        if(color.equals(currentColor)){
+            icon.setVisible(true);
+        }
+
+        v.addClickListener(e->{
+
+            UI.getCurrent().getElement().setAttribute("accent", color.toLowerCase());
+
+
+            for(var s : colorMemory ){
+                s.setVisible(false);
+            }
+
+            for(var s : colorMemory){
+                if(s.equals(icon)){
+                    icon.setVisible(true);
+                }
+            }
+        });
+
+        colorMemory.add(icon);
+
+        return v;
+
+
+    }
+
+
+    public HorizontalLayout exampleOfAccents(){
+        HorizontalLayout h = new HorizontalLayout();
+
+        h.setWidthFull();
+
+
+        Button button = new Button("Preview button");
+        button.addClassName("accentButtons");
+
+        TextField textField = new TextField("Preview text field");
+
+        Button anotherButton = new Button("Button with bottom line");
+
+
+        h.add(
+
+        );
+
+
+
+
+        return h;
+    }
+
+    public VerticalLayout sideBarSize(){
+
+        VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
 
 
         return v;
+
 
 
     }

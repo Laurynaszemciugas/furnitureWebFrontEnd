@@ -567,18 +567,18 @@ background-color: #d4edda;
 .color-button {
     background: transparent;
     border: none;
+    color: var(--buttonAccent);
     border-radius: 5px;
     border-bottom: 2px solid transparent;
     transition: border-color 0.2s ease;
 }
 
 .color-button:hover {
-    border-bottom-color: #3b82f6;
+    border-bottom-color: var(--buttonAccent);
 }
 
 .transparent-button {
     background: transparent;
-    color: black;
     border: none;
     border-radius: 0;
     box-shadow: none;
@@ -592,12 +592,12 @@ background-color: #d4edda;
 }
 
 .transparent-button:hover {
-    border-bottom-color: #3b82f6;
+    border-bottom-color: var(--buttonAccent);
 }
 
 .transparent-button.active {
-        color: #3b82f6;
-        border-bottom-color: #3b82f6;
+         color: var(--buttonAccent);
+        border-bottom-color: var(--buttonAccent);
 }
 
 
@@ -1165,11 +1165,10 @@ vaadin-grid vaadin-button:hover {
  backdrop-filter: blur(8px);
      -webkit-backdrop-filter: blur(8px);
 
-     border: 2px solid #cbd5e1; /* Subtle slate dotted line */
+     border: 3px solid var(--buttonAccent); /* Subtle slate dotted line */
      border-radius: 16px;
 
     background-color: rgba(255, 255, 255, 0.95);
-    border-color: #2563eb; /* Turns blue when touched/hovered */
     box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.15),
                 0 8px 10px -6px rgba(37, 99, 235, 0.1);
     transform: translateY(-2px);
@@ -1210,3 +1209,75 @@ vaadin-grid vaadin-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(22, 119, 255, 0.15);
 }
+
+/* --- COMPONENT STYLES --- */
+
+
+body {
+     --buttonAccent: royalblue;
+}
+
+body[accent="blue"] {
+    --buttonAccent: royalblue;
+}
+
+body[accent="red"] {
+    --buttonAccent: indianred;
+}
+
+body[accent="orange"] {
+    --buttonAccent: darkorange;
+}
+
+body[accent="purple"] {
+    --buttonAccent: mediumslateblue;
+}
+
+body[accent="green"] {
+    --buttonAccent: mediumseagreen;
+}
+
+body[accent="grey"] {
+    --buttonAccent: slategray;
+}
+
+body[accent="pink"] {
+    --buttonAccent: hotpink;
+}
+
+body[accent="indigo"] {
+    --buttonAccent: indigo;
+}
+
+
+.accentTabs {
+    --lumo-primary-text-color: var(--buttonAccent);
+    --lumo-primary-color: var(--buttonAccent);
+}
+
+.accentButtons {
+
+    background-color: var(--buttonAccent);
+    color: white;
+    transition: background-color 0.3s;
+}
+
+vaadin-text-field,
+vaadin-text-area,
+vaadin-number-field,
+vaadin-integer-field,
+vaadin-password-field,
+vaadin-email-field,
+vaadin-combo-box,
+vaadin-date-picker,
+vaadin-time-picker,
+vaadin-select,
+vaadin-checkbox,
+vaadin-radio-group {
+    --lumo-primary-color: var(--buttonAccent);
+    --lumo-primary-text-color: var(--buttonAccent);
+}
+
+
+
+

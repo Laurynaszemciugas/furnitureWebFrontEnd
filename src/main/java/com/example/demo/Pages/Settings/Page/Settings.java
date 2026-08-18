@@ -74,8 +74,12 @@ public class Settings extends VerticalLayout implements BeforeEnterObserver {
         appearance = new Tab("Appearance");
         shipping = new Tab("Shipping");
 
+        profileAccount.addClassName("accentTabs");
+        appearance.addClassName("accentTabs");
+        shipping.addClassName("accentTabs");
 
         Tabs tabs = new Tabs(profileAccount, appearance, shipping);
+        tabs.addClassName("accentTabs");
         tabs.addSelectedChangeListener(
                 event -> setContent(event.getSelectedTab()));
 
