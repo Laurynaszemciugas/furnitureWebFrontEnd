@@ -10,6 +10,7 @@ import com.example.demo.Enums.Widget;
 import com.example.demo.Enums.Widths;
 import com.example.demo.Pages.Material.MaterialAddEdit.Components.ColorSelector;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ModalityMode;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -477,6 +478,7 @@ public class LeftSideReportCreate {
         });
 
 
+
         v.add(
                 commonComponents.spanCrafter("Report settings","activityFeed-name"),
                 reportName,
@@ -628,6 +630,61 @@ public void binderCheck(){
             .bind(value -> null, (bean, value) -> {});
 
 
+}
+
+public Button leftSideDialog(HorizontalLayout rightSide, Report loadData,boolean includeHelpers,LocalDate fromDate, LocalDate toDate){
+    Dialog dialog = new Dialog();
+    dialog.setWidth("600px");
+    dialog.setHeight("500px");
+    dialog.setModality(ModalityMode.MODELESS);
+    dialog.setResizable(true);
+    dialog.setDraggable(true);
+    dialog.add(
+            leftSide(rightSide,loadData,includeHelpers,fromDate,toDate)
+    );
+
+    Button button = new Button("Open settings");
+    button.addClassName("accentButtons");
+
+    button.addClickListener(e->{
+
+
+
+        if(dialog.isOpened()){
+            dialog.close();
+            button.setText("Open settings");
+        }
+        else{
+            dialog.open();
+            button.setText("Close settings");
+        }
+
+    });
+
+
+    button.getStyle()
+            .set("position", "absolute")
+            .set("top", "100px")
+            .set("right", "50px")
+            .set("z-index", "100");
+
+    Button close = new Button("Back");
+    close.addClickListener(e->{
+       dialog.close();
+        button.setText("Open settings");
+    });
+    close.addThemeVariants(ButtonVariant.ERROR);
+
+
+    dialog.getFooter().add(close);
+
+    button.addDetachListener(e -> {
+        if (dialog.isOpened()) {
+            dialog.close();
+        }
+    });
+
+    return button;
 }
 
 

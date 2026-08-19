@@ -93,7 +93,7 @@ public class ProfileAccount {
         options.setPadding(false);
 
         Button button = new Button("Save changes");
-        button.setSuffixComponent(commonComponents.iconCrafter(VaadinIcon.CHECK,"20px","White"));
+        button.setPrefixComponent(commonComponents.iconCrafter(VaadinIcon.CHECK,"20px","White"));
         button.addClassName("accentButtons");
         button.addThemeVariants(ButtonVariant.PRIMARY);
 

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Route(value = "editReport/:id", layout = MainLayout.class)
+@Route(value = "editReport/:id")
 public class ReportCreationEditPage extends VerticalLayout implements BeforeEnterObserver {
 
     CommonComponents commonComponents;
@@ -85,13 +85,19 @@ public class ReportCreationEditPage extends VerticalLayout implements BeforeEnte
         //layout.setWidth("1650px");
         layout.setPadding(true);
         layout.getStyle().set("margin-top", "5px");
-
+        layout.getStyle().set("position","relative");
         layout.addClassName("layout-flex");
 
 
         layout.add(
                 leftSideReportCreate.briefPageExplanation("Edit custom report","Edit report"),
-                leftRightJoin()
+                leftRightJoin(),
+                leftSideReportCreate.leftSideDialog(
+                        rightSide,
+                        customReportService.getReportAccordingToId((long) itemChoice),
+                        true,
+                        common.currentMonthStart(),
+                        common.nextMonthDate())
         );
 
         leftSideReportCreate.setReportAddedEdited(e->{
@@ -112,25 +118,15 @@ public class ReportCreationEditPage extends VerticalLayout implements BeforeEnte
 
 
 
-    public SplitLayout leftRightJoin() {
+    public HorizontalLayout leftRightJoin() {
 
 
-        VerticalLayout leftSide = leftSideReportCreate.leftSide(rightSide,customReportService.getReportAccordingToId((long) itemChoice),true,common.currentMonthStart(),common.nextMonthDate());
 
         HorizontalLayout rightSides = rightSideReportCreate.rightSideReportCustom(rightSide,true);
         rightSides.setPadding(false);
+        rightSides.getStyle().set("position","relative");
 
-        SplitLayout splitLayout = new SplitLayout(leftSide, rightSides);
-        splitLayout.addClassName("smooth-panel");
-
-
-        splitLayout.setSplitterPosition(35);
-        splitLayout.setWidthFull();
-        splitLayout.setHeightFull();
-
-
-
-        return splitLayout;
+        return rightSides;
     }
 
 

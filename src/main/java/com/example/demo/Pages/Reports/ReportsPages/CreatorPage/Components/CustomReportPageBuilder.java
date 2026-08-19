@@ -66,6 +66,8 @@ public class CustomReportPageBuilder {
 
     Consumer<ReportResizedData> customIdConsumer;
 
+    LeftSideReportCreate leftSideReportCreate;
+
 
     public CustomReportPageBuilder(CommonComponents commonComponents, Common common, MaterialService materialService, OrdersService ordersService, ProductService productService, EmployeeService employeeService) {
         this.commonComponents = commonComponents;
@@ -89,6 +91,9 @@ public class CustomReportPageBuilder {
         this.rightSideReportCreate = new RightSideReportCreate(commonComponents,common);
 
 
+        this.leftSideReportCreate = new LeftSideReportCreate(commonComponents,common,this);
+
+
     }
 
 
@@ -104,6 +109,8 @@ public class CustomReportPageBuilder {
         holder.setWidthFull();
         holder.setPadding(false);
         holder.addClassName("layout-flex");
+
+
 
         UI ui = UI.getCurrent();
         String jwt = sessionCrafter.extractSession("JWT", String.class);
@@ -262,6 +269,9 @@ public class CustomReportPageBuilder {
                 }
 
                 layout.add(holder);
+
+
+
             });
 
         });
@@ -286,32 +296,34 @@ public class CustomReportPageBuilder {
 
 
         // custom check on resize
-        component.getElement().executeJs("""
-    const element = this;
-
-    let resizeTimer;
-    let lastWidth = element.offsetWidth;
-
-    const observer = new ResizeObserver(() => {
-        clearTimeout(resizeTimer);
-
-        resizeTimer = setTimeout(() => {
-            const newWidth = element.offsetWidth;
-
-            if (newWidth !== lastWidth) {
-                element.dispatchEvent(new CustomEvent('resize-finished', {
-                    bubbles: false
-                }));
-
-                lastWidth = newWidth;
-            }
-        }, 300);
-    });
-
-    observer.observe(element);
-
-    this.__resizeObserver = observer;
-""");
+        if(editingEnabled) {
+            component.getElement().executeJs("""
+                        const element = this;
+                    
+                        let resizeTimer;
+                        let lastWidth = element.offsetWidth;
+                    
+                        const observer = new ResizeObserver(() => {
+                            clearTimeout(resizeTimer);
+                    
+                            resizeTimer = setTimeout(() => {
+                                const newWidth = element.offsetWidth;
+                    
+                                if (newWidth !== lastWidth) {
+                                    element.dispatchEvent(new CustomEvent('resize-finished', {
+                                        bubbles: false
+                                    }));
+                    
+                                    lastWidth = newWidth;
+                                }
+                            }, 300);
+                        });
+                    
+                        observer.observe(element);
+                    
+                        this.__resizeObserver = observer;
+                    """);
+        }
 
         component.getElement().addEventListener("resize-finished", e -> {
             component.getElement().executeJs(

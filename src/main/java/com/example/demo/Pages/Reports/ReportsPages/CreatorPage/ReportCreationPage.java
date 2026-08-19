@@ -19,6 +19,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
@@ -37,10 +38,9 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
-import java.util.*;
 
 
-@Route(value = "reportCreator", layout = MainLayout.class)
+@Route(value = "reportCreator")
 public class ReportCreationPage extends VerticalLayout implements BeforeEnterObserver {
 
     CommonComponents commonComponents;
@@ -95,13 +95,20 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
         //layout.setWidth("1650px");
         layout.setPadding(true);
         layout.getStyle().set("margin-top", "5px");
-
+        layout.getStyle().set("position","relative");
         layout.addClassName("layout-flex");
 
 
         layout.add(
                 leftSideReportCreate.briefPageExplanation("Create custom report","Create report"),
-                leftRightJoin()
+                leftRightJoin(),
+                leftSideReportCreate.leftSideDialog(
+                        rightSide,
+                        null,
+                        true,
+                        common.currentMonthStart(),
+                        common.nextMonthDate())
+
         );
 
         leftSideReportCreate.setReportAddedEdited(e->{
@@ -122,28 +129,27 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
 
 
-    public SplitLayout leftRightJoin() {
+    public HorizontalLayout leftRightJoin() {
 
 
 
 
 
-        VerticalLayout leftSide = leftSideReportCreate.leftSide(rightSide,null,true,common.currentMonthStart(),common.nextMonthDate());
 
         HorizontalLayout rightSides = rightSideReportCreate.rightSideReportCustom(rightSide,true);
         rightSides.setPadding(false);
-
-        SplitLayout splitLayout = new SplitLayout(leftSide, rightSides);
-        splitLayout.addClassName("smooth-panel");
-
-
-        splitLayout.setSplitterPosition(35);
-        splitLayout.setWidthFull();
-        splitLayout.setHeightFull();
+        rightSides.getStyle().set("position","relative");
 
 
 
-        return splitLayout;
+
+
+
+
+
+
+
+        return rightSides;
     }
 
 

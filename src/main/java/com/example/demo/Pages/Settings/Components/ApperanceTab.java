@@ -5,6 +5,7 @@ import com.example.demo.Common.CommonComponents;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -42,12 +43,9 @@ public class ApperanceTab {
 
         VerticalLayout v = new VerticalLayout();
 
-        Button b = new Button("Button");
-        b.addClassName("accentButtons");
         v.add(
                 profileAccount(),
-                accentColor(),
-                b
+                accentColor()
         );
 
         return v;
@@ -69,9 +67,9 @@ public class ApperanceTab {
         h.setAlignItems(FlexComponent.Alignment.CENTER);
         h.setWidthFull();
         h.add(
-                themeCrafter("Light","Clean and bright","Light"),
-                themeCrafter("Dark","Easy on the eyes","Light"),
-                themeCrafter("System","Match system settings","Light"   )
+                themeCrafter("Light","Clean and bright","Light","LightTheme.png"),
+                themeCrafter("Dark","Easy on the eyes","Light","DarkTheme.png"),
+                themeCrafter("System","Match system settings","Light","SystemTheme.png"   )
         );
         h.addClassName("layout-flex");
 
@@ -88,7 +86,7 @@ public class ApperanceTab {
         return v;
     }
 
-    public VerticalLayout themeCrafter(String name, String desc, String selectedName){
+    public VerticalLayout themeCrafter(String name, String desc, String selectedName, String img){
 
         VerticalLayout v = new VerticalLayout();
         v.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -100,10 +98,13 @@ public class ApperanceTab {
         v.getStyle().set("min-width", "252px");
 
 
-        Image image = new Image("Screenshot 2026-04-27 001745.png", "image error");
+
+        Image image = new Image(img, "image error");
         image.setHeight("200px");
         image.setWidthFull();
         image.getStyle().set("border-radius","10px");
+
+       image.add("island");
 
 
 
@@ -169,7 +170,8 @@ public class ApperanceTab {
         v.add(
                 briefExplanationOfTheSettings.briefExplanationOfTheSettings("Accent color","Choose your favorite accent color"),
                 h,
-                briefExplanationOfTheSettings.briefExplanationOfTheSettings("Accent preview ","See how accent will effect application EXCEPT CUSTOM REPORTS")
+                briefExplanationOfTheSettings.briefExplanationOfTheSettings("Accent preview ","See how accent will effect application EXCEPT CUSTOM REPORTS"),
+                exampleOfAccents()
         );
 
 
@@ -230,6 +232,8 @@ public class ApperanceTab {
     public HorizontalLayout exampleOfAccents(){
         HorizontalLayout h = new HorizontalLayout();
 
+        h.setAlignItems(FlexComponent.Alignment.BASELINE);
+
         h.setWidthFull();
 
 
@@ -239,10 +243,13 @@ public class ApperanceTab {
         TextField textField = new TextField("Preview text field");
 
         Button anotherButton = new Button("Button with bottom line");
+        anotherButton.addClassName("color-button");
 
 
         h.add(
-
+                button,
+                textField,
+                anotherButton
         );
 
 
