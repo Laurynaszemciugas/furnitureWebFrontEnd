@@ -2,6 +2,7 @@ package com.example.demo.Pages.Settings.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.MainLayout.MainLayout;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -13,14 +14,17 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ApperanceTab {
 
     CommonComponents commonComponents;
     Common common;
+
 
 
     BriefExplanationOfSettings briefExplanationOfTheSettings;
@@ -30,12 +34,17 @@ public class ApperanceTab {
 
     List<Icon> colorMemory = new ArrayList<>();
 
+    List<Image> sideBarMemory = new ArrayList<>();
+
 
     public ApperanceTab(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
 
         this.briefExplanationOfTheSettings = new BriefExplanationOfSettings(commonComponents,common);
+
+
+
 
     }
 
@@ -45,7 +54,8 @@ public class ApperanceTab {
 
         v.add(
                 profileAccount(),
-                accentColor()
+                accentColor(),
+                sideBarSize()
         );
 
         return v;
@@ -232,6 +242,7 @@ public class ApperanceTab {
     public HorizontalLayout exampleOfAccents(){
         HorizontalLayout h = new HorizontalLayout();
 
+        h.addClassName("layout-flex");
         h.setAlignItems(FlexComponent.Alignment.BASELINE);
 
         h.setWidthFull();
@@ -258,11 +269,30 @@ public class ApperanceTab {
         return h;
     }
 
+
+
+
     public VerticalLayout sideBarSize(){
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
 
+        String selected = "Large";
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        h.setWidthFull();
+
+        h.add(
+                sideBarButtonCrafter("Large","Expanded view more space and details",selected,"LightTheme.png"),
+                sideBarButtonCrafter("Small","Compact view to show more content",selected,"LightTheme.png")
+
+        );
+
+        v.add(
+                briefExplanationOfTheSettings.briefExplanationOfTheSettings("Sidebar size","Customize the sidebar size and behavior"),
+                h
+        );
 
         return v;
 
@@ -270,6 +300,63 @@ public class ApperanceTab {
 
     }
 
+
+    public VerticalLayout sideBarButtonCrafter(String name, String desc, String selectedName, String img){
+
+        VerticalLayout v = new VerticalLayout();
+        v.setAlignItems(FlexComponent.Alignment.CENTER);
+        v.setSpacing(false);
+
+
+        v.getStyle().set("flex", "1 1 252px");
+        v.getStyle().set("max-width", "620px");
+        v.getStyle().set("min-width", "252px");
+
+
+
+        Image image = new Image(img, "image error");
+        image.setHeight("200px");
+        image.setWidthFull();
+        image.getStyle().set("border-radius","10px");
+
+        image.add("island");
+
+
+
+        if(name.equals(selectedName)){
+            image.addClassName("island-layout-solid");
+        }
+
+        sideBarMemory.add(image);
+
+        image.addClickListener(e -> {
+
+            UI.getCurrent()
+                    .getChildren()
+                    .filter(component -> component instanceof MainLayout)
+                    .findFirst()
+                    .ifPresent(component ->
+                            ((MainLayout) component).changeSidebar(name)
+                    );
+
+            for (var s : sideBarMemory) {
+                s.removeClassName("island-layout-solid");
+            }
+
+            image.addClassName("island-layout-solid");
+        });
+
+
+
+        v.add(
+                image,
+                commonComponents.spanCrafter(name,"activityFeed-name"),
+                commonComponents.spanCrafter(desc,"stat-description")
+        );
+
+
+        return v;
+    }
 
 
 

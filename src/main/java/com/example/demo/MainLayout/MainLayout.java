@@ -1,7 +1,9 @@
 package com.example.demo.MainLayout;
 
+import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.Pages.Settings.Components.ApperanceTab;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -20,7 +22,9 @@ import com.vaadin.flow.server.VaadinSession;
 public class MainLayout extends AppLayout {
 
 
-    CommonComponents common;
+    CommonComponents commonComponents;
+    Common common;
+
 
     private VerticalLayout drawerSmall = new VerticalLayout();
     private VerticalLayout drawerLarge = new VerticalLayout();
@@ -31,9 +35,10 @@ public class MainLayout extends AppLayout {
 
 
 
-    public MainLayout(
-            CommonComponents common) {
+    public MainLayout(CommonComponents commonComponents, Common common) {
+        this.commonComponents = commonComponents;
         this.common = common;
+
 
         this.sessionCrafter = new SessionCrafter();
         // change the drawer size to large
@@ -56,9 +61,28 @@ public class MainLayout extends AppLayout {
 
     }
 
+    public void changeSidebar(String size) {
+
+        boolean small = size.equals("Small");
+
+        drawerSmall.setVisible(small);
+        drawerLarge.setVisible(!small);
+
+        removeClassName("custom-layout-large");
+        removeClassName("custom-layout-small");
+
+        if (small) {
+            addClassName("custom-layout-small");
+        } else {
+            addClassName("custom-layout-large");
+        }
+    }
+
 
 
     private VerticalLayout createDrawerLarge() {
+
+
 
         Button toggle = new Button("Switch scenes", e -> switchDrawer());
 
@@ -100,14 +124,14 @@ public class MainLayout extends AppLayout {
 
 
         leftSideBar.add(
-                common.normalButtons("DashBoard","DashBoard",VaadinIcon.DASHBOARD),
-                common.normalButtons("Products/1","Products",VaadinIcon.PACKAGE),
-                common.normalButtons("Orders","Orders",VaadinIcon.CLIPBOARD),
-                common.normalButtons("Materials","Materials",VaadinIcon.STOCK),
-                common.normalButtons("Employees","Employees",VaadinIcon.USERS),
-                common.normalButtons("Reports","Reports",VaadinIcon.CHART_LINE),
-                common.normalButtons("bob","Quick actions",VaadinIcon.MENU),
-                common.normalButtons("bob","Settings",VaadinIcon.MENU),
+                commonComponents.normalButtons("DashBoard","DashBoard",VaadinIcon.DASHBOARD),
+                commonComponents.normalButtons("Products/1","Products",VaadinIcon.PACKAGE),
+                commonComponents.normalButtons("Orders","Orders",VaadinIcon.CLIPBOARD),
+                commonComponents.normalButtons("Materials","Materials",VaadinIcon.STOCK),
+                commonComponents.normalButtons("Employees","Employees",VaadinIcon.USERS),
+                commonComponents.normalButtons("Reports","Reports",VaadinIcon.CHART_LINE),
+                commonComponents.normalButtons("bob","Quick actions",VaadinIcon.MENU),
+                commonComponents.normalButtons("Settings","Settings",VaadinIcon.COG),
                 logOut);
 
 
@@ -164,13 +188,13 @@ public class MainLayout extends AppLayout {
         Button button = new Button("32423");
         button.getStyle().set("background-color","green").set("cursor", "pointer");;
         leftSideBar.add(
-                common.smallIconButtons("123",VaadinIcon.MENU,"white"),
-                common.smallIconButtons("123",VaadinIcon.MENU,"white"),
-                common.smallIconButtons("123",VaadinIcon.MENU,"white"),
-                common.smallIconButtons("123",VaadinIcon.MENU,"white"),
-                common.smallIconButtons("123",VaadinIcon.MENU,"white"),
-                common.smallIconButtons("123",VaadinIcon.MENU,"white"),
-                common.smallIconButtons("123",VaadinIcon.MENU,"white"),
+                commonComponents.smallIconButtons("DashBoard",VaadinIcon.DASHBOARD,"white"),
+                commonComponents.smallIconButtons("Products/1",VaadinIcon.PACKAGE,"white"),
+                commonComponents.smallIconButtons("Orders",VaadinIcon.CLIPBOARD,"white"),
+                commonComponents.smallIconButtons("Materials",VaadinIcon.USERS,"white"),
+                commonComponents.smallIconButtons("Employees",VaadinIcon.CHART_LINE,"white"),
+                commonComponents.smallIconButtons("Reports",VaadinIcon.MENU,"white"),
+                commonComponents.smallIconButtons("Settings",VaadinIcon.COG,"white"),
                 logOut);
 
         leftSideBar.add(toggle);
@@ -189,7 +213,7 @@ public class MainLayout extends AppLayout {
 
         // toggle button
 
-        Icon drawerStepOne = common.iconCrafter(VaadinIcon.MENU,"40px","black");
+        Icon drawerStepOne = commonComponents.iconCrafter(VaadinIcon.MENU,"40px","black");
 
 
         DrawerToggle toggle = new DrawerToggle();

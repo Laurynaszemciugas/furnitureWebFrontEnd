@@ -188,6 +188,11 @@ public class CommonComponents {
     public Button smallIconButtons(String navigate, VaadinIcon icon, String color){
         Button button = new Button();
         button.addClassName("clean-btn");
+
+        button.addClickListener(e->{
+            UI.getCurrent().navigate(navigate);
+        });
+
         button.setIcon(iconCrafter(icon,"40px",color));
         return button;
 

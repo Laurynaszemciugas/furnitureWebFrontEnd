@@ -31,6 +31,7 @@ public class Settings extends VerticalLayout implements BeforeEnterObserver {
     ApperanceTab apearnce;
 
 
+
     public Settings(CommonComponents commonComponents,  Common common) {
 
 
@@ -39,6 +40,8 @@ public class Settings extends VerticalLayout implements BeforeEnterObserver {
 
         this.profileAndAccount = new ProfileAccount(commonComponents,common);
         this.apearnce = new ApperanceTab(commonComponents,common);
+
+
 
         setPadding(false);
         setSpacing(false);
@@ -53,6 +56,8 @@ public class Settings extends VerticalLayout implements BeforeEnterObserver {
 
 
     }
+
+
 
 
     @Override
