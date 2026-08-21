@@ -1,7 +1,8 @@
-package com.example.demo.Pages.Reports.ReportsPages;
+package com.example.demo.Pages.Reports.ReportsPages.CreatorPage;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
 import com.example.demo.ControllerModels.CommonDtos.CreateReport.Report;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Material.MaterialAddEdit.Components.ColorSelector;
@@ -10,10 +11,8 @@ import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.Custom
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.LeftSideReportCreate;
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.RightSideReportCreate;
 import com.example.demo.Services.CustomReportService;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
@@ -44,7 +43,7 @@ public class ReportCreationViewPage extends VerticalLayout implements BeforeEnte
 
     HorizontalLayout layout = new HorizontalLayout();
 
-    HorizontalLayout filterMemory;
+    VerticalLayout filterMemory = new VerticalLayout();
 
 
     public ReportCreationViewPage(CommonComponents commonComponents, Common common, CustomReportPageBuilder customReportPageBuilder, CustomReportService customReportService) {
@@ -80,7 +79,10 @@ public class ReportCreationViewPage extends VerticalLayout implements BeforeEnte
 
          report = customReportService.getReportAccordingToId((long) itemChoice);
 
-        filterMemory = commonBriefPageExplanation.briefExplanation(report.getReportName(), report.getReportColor());
+        filterMemory.add(
+                commonComponents.breadCrums(new BreadCrumsDto("Reports", "Reports"),new BreadCrumsDto("View custom report", null)),
+                commonBriefPageExplanation.briefExplanation(report.getReportName(), report.getReportColor())
+        );
 
 
         add(mainLayout());

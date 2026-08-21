@@ -3,6 +3,7 @@ package com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
 import com.example.demo.Enums.Widths;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Reports.Common.CommonBriefPageExplanation;
@@ -60,6 +61,7 @@ public class ProductReportPage extends VerticalLayout implements BeforeEnterObse
         briefExplanationMemory.setPadding(false);
         briefExplanationMemory.setWidthFull();
         briefExplanationMemory.add(
+                commonComponents.breadCrums(new BreadCrumsDto("Reports", "Reports"),new BreadCrumsDto("Products Report", null)),
                 biefExplanation.briefExplanation("Product report","#47B25D")
         );
 
@@ -104,6 +106,7 @@ public class ProductReportPage extends VerticalLayout implements BeforeEnterObse
 
 
         layout.add(
+
                 briefExplanationMemory,
                 productReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#47B25D", Widths.FULL_WIDTH.getWidth(),jwt),
                 charts.OrderRevenueAccordingToMonth(common.currentMonthStart(), common.nextMonthDate(),"#47B25D",Widths.HALF_WIDTH.getWidth(),jwt),

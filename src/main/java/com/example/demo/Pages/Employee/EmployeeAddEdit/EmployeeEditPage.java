@@ -3,6 +3,7 @@ package com.example.demo.Pages.Employee.EmployeeAddEdit;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Employee.EmployeeAddEdit.Components.EmployeeAddEditComponents;
 import com.example.demo.Services.AI.AIService;
@@ -53,6 +54,8 @@ public class EmployeeEditPage extends VerticalLayout implements BeforeEnterObser
 
         addEditComponents.configureFields();
 
+        addClassName("animation-page");
+
     }
 
 
@@ -73,7 +76,6 @@ public class EmployeeEditPage extends VerticalLayout implements BeforeEnterObser
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top", "5px");
-        verticalLayout.addClassName("main-island");
 
 
 
@@ -83,6 +85,7 @@ public class EmployeeEditPage extends VerticalLayout implements BeforeEnterObser
 
 
         verticalLayout.add(
+                commonComponents.breadCrums(new BreadCrumsDto("Employees", "Employees"),new BreadCrumsDto("Edit employee", null)),
                 addEditComponents.briefExplanation("Add new employee", "Save"),
                 addEditComponents.employeeInformation(employeeService.getEmployee((long) itemChoice))
         );

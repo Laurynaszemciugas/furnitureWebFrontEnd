@@ -2,6 +2,7 @@ package com.example.demo.Pages.Reports.ReportsPages.CreatorPage;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
 import com.example.demo.ControllerModels.CommonDtos.CreateReport.Report;
 import com.example.demo.ControllerModels.CommonDtos.CreateReport.ReportItems;
 import com.example.demo.Enums.ReportCategory;
@@ -90,6 +91,7 @@ public class ReportCreationEditPage extends VerticalLayout implements BeforeEnte
 
 
         layout.add(
+                commonComponents.breadCrums(new BreadCrumsDto("Reports", "Reports"),new BreadCrumsDto("Edit report", null)),
                 leftSideReportCreate.briefPageExplanation("Edit custom report","Edit report"),
                 leftRightJoin(),
                 leftSideReportCreate.leftSideDialog(

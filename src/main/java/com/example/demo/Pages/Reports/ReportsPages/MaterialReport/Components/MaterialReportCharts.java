@@ -723,7 +723,7 @@ public class MaterialReportCharts {
 
         v.setWidth(widths);
 
-        Span span = commonComponents.spanCrafter("Recent orders summary","activityFeed-name");
+        Span span = commonComponents.spanCrafter("Material movement","activityFeed-name");
 
         Grid<StockMovementGrid> grid = new Grid<>(StockMovementGrid.class,false);
         grid.setItems(list);
@@ -796,7 +796,7 @@ public class MaterialReportCharts {
             Span span1 = new Span();
             span1.addClassName("stat-example");
 
-            span1.setText(e.getBalance() == null ? "Something went wrong" : e.getBalance().toString());
+            span1.setText(e.getBalance() == null ? "Newly added material" : e.getBalance().toString());
 
             return span1;
 

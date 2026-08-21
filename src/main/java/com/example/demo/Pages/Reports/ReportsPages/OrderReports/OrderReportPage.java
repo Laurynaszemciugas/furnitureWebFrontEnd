@@ -3,6 +3,7 @@ package com.example.demo.Pages.Reports.ReportsPages.OrderReports;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.Widths;
 import com.example.demo.MainLayout.MainLayout;
@@ -67,6 +68,7 @@ public class OrderReportPage extends VerticalLayout implements BeforeEnterObserv
         briefExplanationMemory.setPadding(false);
         briefExplanationMemory.setWidthFull();
         briefExplanationMemory.add(
+                commonComponents.breadCrums(new BreadCrumsDto("Reports", "Reports"),new BreadCrumsDto("Orders Report", null)),
                 biefExplanation.briefExplanation("Orders report","#035afc")
         );
 

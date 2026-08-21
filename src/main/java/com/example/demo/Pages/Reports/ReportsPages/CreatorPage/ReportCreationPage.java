@@ -2,6 +2,7 @@ package com.example.demo.Pages.Reports.ReportsPages.CreatorPage;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
 import com.example.demo.ControllerModels.CommonDtos.CreateReport.Report;
 import com.example.demo.ControllerModels.CommonDtos.CreateReport.ReportItems;
 import com.example.demo.ControllerModels.CommonDtos.User;
@@ -100,6 +101,7 @@ public class ReportCreationPage extends VerticalLayout implements BeforeEnterObs
 
 
         layout.add(
+                commonComponents.breadCrums(new BreadCrumsDto("Reports", "Reports"),new BreadCrumsDto("Create new report", null)),
                 leftSideReportCreate.briefPageExplanation("Create custom report","Create report"),
                 leftRightJoin(),
                 leftSideReportCreate.leftSideDialog(

@@ -3,6 +3,7 @@ package com.example.demo.Pages.Reports.ReportsPages.MaterialReport;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
 import com.example.demo.Enums.Widths;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Reports.Common.CommonBriefPageExplanation;
@@ -58,6 +59,7 @@ public class MaterialReportPage extends VerticalLayout implements BeforeEnterObs
         briefExplanationMemory.setPadding(false);
         briefExplanationMemory.setWidthFull();
         briefExplanationMemory.add(
+                commonComponents.breadCrums(new BreadCrumsDto("Reports", "Reports"),new BreadCrumsDto("Materials Report", null)),
                 biefExplanation.briefExplanation("Material report","#9768EF")
         );
 

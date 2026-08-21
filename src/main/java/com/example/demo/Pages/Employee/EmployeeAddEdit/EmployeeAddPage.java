@@ -2,6 +2,7 @@ package com.example.demo.Pages.Employee.EmployeeAddEdit;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Employee.EmployeeAddEdit.Components.EmployeeAddEditComponents;
 import com.example.demo.Services.AI.AIService;
@@ -78,6 +79,7 @@ public class EmployeeAddPage extends VerticalLayout implements BeforeEnterObserv
 
 
         verticalLayout.add(
+                commonComponents.breadCrums(new BreadCrumsDto("Employees", "Employees"),new BreadCrumsDto("Add new employee", null)),
                 addEditComponents.briefExplanation("Add new employee","Create new"),
                 addEditComponents.employeeInformation(null)
         );
