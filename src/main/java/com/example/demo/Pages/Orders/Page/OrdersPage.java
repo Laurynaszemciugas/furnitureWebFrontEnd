@@ -200,6 +200,17 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
             setNewPage();
             updateFeed();
         });
+
+        orderFilters.setActiveInactiveConsumer(e->{
+            filterData.setOrderActiveInactive(e);
+
+            setNewPage();
+            updateFeed();
+        });
+
+
+
+
         orderFilters.setFromCostConsumer(e->{
             filterData.setPriceFromChoice(e);
             setNewPage();
@@ -328,6 +339,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
     public void updateFeed(){
 
+
         UI ui = UI.getCurrent();
         String jwt = sessionCrafter.extractSession("JWT", String.class);
 
@@ -347,10 +359,14 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
                     ui.access(() -> {
                          feedHolder.removeAll();
                          feedHolder.add(ordersLeftSide.orderFeedHolder(e));
+
                     });
                 });
 
+
         sessionCrafter.createSession("orderPageFilters",filterData);
+
+        paganation.updateUIFromExternal(filterData.getPage()+1);
 
     }
 
@@ -406,6 +422,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
     public void setNewPage(){
         filterData.setPage(0);
         paganation.updateUIFromExternal(1);
+        updateFeed();
     }
 
 

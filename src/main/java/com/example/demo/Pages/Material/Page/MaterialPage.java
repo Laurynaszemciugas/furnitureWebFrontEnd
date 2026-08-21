@@ -270,6 +270,7 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
         sessionCrafter.createSession("materialPageFilters",filterData);
 
+        paganation.updateUIFromExternal(filterData.getPage()+1);
 
     }
 

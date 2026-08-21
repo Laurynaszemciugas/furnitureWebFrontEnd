@@ -6,6 +6,7 @@ import com.example.demo.Common.CurrentFilterDisplay;
 import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
 import com.example.demo.ControllerModels.Orders.OrderAddProducts;
 import com.example.demo.DTOS.ComboBoxEmployees;
+import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.example.demo.Services.Products.ProductService;
@@ -48,6 +49,7 @@ public class OrderFilters {
     Consumer<Long> employeeId;
     Consumer<Long> productId;
 
+    Consumer<ActiveInactive> activeInactiveConsumer;
 
 
     CurrentFilterDisplay currentFilterDisplay;
@@ -131,6 +133,16 @@ public class OrderFilters {
         });
 
 
+        ComboBox<ActiveInactive> activeInactiveComboBox = new ComboBox("Products active/inactive");
+        activeInactiveComboBox.setItems(ActiveInactive.values());
+        activeInactiveComboBox.setItemLabelGenerator(ActiveInactive::getGetDisplayNames);
+        activeInactiveComboBox.setWidthFull();
+        currentFilterDisplay.setComponentValue("orderActiveInactive",filterData,activeInactiveComboBox);
+        activeInactiveComboBox.addValueChangeListener(e->{
+            currentFilterDisplay.filterSetter(activeInactiveComboBox.getValue(), ActiveInactive.ALL,null,filterData,"orderActiveInactive",activeInactiveConsumer);
+        });
+
+
 
         // =========== FROM AMOUNT =====================
         NumberField fromAmount = new NumberField("Order price from");
@@ -197,6 +209,7 @@ public class OrderFilters {
                 amountHolder,
                 dateHolder,
                 amountOfProducts,
+                activeInactiveComboBox,
                 employeesComboBox,
                 materialComboBox
         );

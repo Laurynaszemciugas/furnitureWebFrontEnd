@@ -2,6 +2,7 @@ package com.example.demo.ControllerModels.CommonDtos;
 
 import com.example.demo.ControllerModels.CommonDtos.EmployeeJoin.OrderEmployees;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
+import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.PayMethod;
 import com.example.demo.Enums.PayStatus;
@@ -35,6 +36,7 @@ public class Orders {
     private String billingAddress;
     private LocalDateTime created;
     private LocalDate createdDate;
+    private ActiveInactive activeInactive;
     private String orderCreatedByName; // fallback if user doesnt have an account
     private String orderCreatedByGmail; // fallback if user doesnt have an account
 

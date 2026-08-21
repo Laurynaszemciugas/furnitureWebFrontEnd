@@ -65,7 +65,13 @@ public class CurrentFilterDisplay {
             map.remove(filterName);
 
             for (Map.Entry<String, FilterMeta> entry : map.entrySet()) {
-                h.add(filterExisting(entry.getKey(),entry.getValue(),filterData));
+
+                Component component = filterExisting(entry.getKey(),entry.getValue(),filterData);
+
+                if(component != null){
+                    h.add(component);
+                }
+
             }
 
             return;
@@ -88,7 +94,11 @@ public class CurrentFilterDisplay {
 
         for (Map.Entry<String, FilterMeta> entry : map.entrySet()) {
             System.out.println(map.size());
-            h.add(filterExisting(entry.getKey(),entry.getValue(),filterData));
+            Component component = filterExisting(entry.getKey(),entry.getValue(),filterData);
+
+            if(component != null){
+                h.add(component);
+            }
         }
 
     }
@@ -100,6 +110,8 @@ public class CurrentFilterDisplay {
         h.removeAll();
         for (Map.Entry<String, FilterMeta> entry : map.entrySet()) {
 
+
+
             if(entry.getKey().equals(filterName)){
                 System.out.println(filterName);
                 if(entry.getValue().getValue().equals(nullValue)){
@@ -108,20 +120,37 @@ public class CurrentFilterDisplay {
                 }
             }
 
-            h.add(filterExisting(entry.getKey(),entry.getValue(),filterData));
+
+
+            Component component = filterExisting(entry.getKey(),entry.getValue(),filterData);
+
+            if(component != null){
+                h.add(component);
+            }
+
 
         }
     }
 
     public <T,S> HorizontalLayout filterExisting(String filterName,FilterMeta filterMeta,S filterData){
 
-        if(!map.isEmpty()){
-            v.setVisible(true);
-        }
-        else{
-            v.setVisible(false);
+        boolean forbidden = false;
+
+        if(filterName.equals("Page")){
+            forbidden = true;
+            return null;
         }
 
+        if(!map.isEmpty() || !forbidden){
+            v.setVisible(true);
+
+        }
+        else{
+                v.setVisible(false);
+        }
+
+        System.out.println("gggggggggggggggggggggggggggggggggggggggggggggggggggg");
+        System.out.println(filterName);
 
 
         HorizontalLayout vv = new HorizontalLayout();
@@ -150,6 +179,20 @@ public class CurrentFilterDisplay {
             if(map.isEmpty()){
                 v.setVisible(false);
             }
+            else{
+
+
+                for (Map.Entry<String, FilterMeta> entry : map.entrySet()) {
+
+
+
+                    if(entry.getValue().equals("Page")){
+                        map.remove(entry);
+                    }
+
+                }
+
+            }
 
 
 
@@ -162,6 +205,8 @@ public class CurrentFilterDisplay {
 
         Span span = new Span(String.format("%s | %s",filterName,filterMeta.getValue()));
         vv.add(span,removeButton);
+
+
 
         h.add(vv);
 
@@ -226,6 +271,7 @@ public class CurrentFilterDisplay {
 
     @SneakyThrows
     public <T,S> void filterSetter(T getValue, T ifNull, Object otherNull, S filterDTO, String referenceName, Consumer<T> consumer){
+
 
         checkIfValueIsNullValue(common.textConverter(referenceName),ifNull,filterDTO);
 
