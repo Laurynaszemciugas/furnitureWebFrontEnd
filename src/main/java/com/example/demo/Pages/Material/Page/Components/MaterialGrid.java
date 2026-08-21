@@ -251,6 +251,8 @@ public class MaterialGrid {
 
             Button delete = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.TRASH,"Red");
 
+
+
             if(e.getActiveInactive().equals(ActiveInactive.INACTIVE)){
                 delete.setVisible(false);
             }

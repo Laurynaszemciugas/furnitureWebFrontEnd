@@ -52,6 +52,14 @@ public class OrdersService {
     }
 
     @SneakyThrows
+    public void deleteOrder(Long id){
+
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("order/deleteOrder", HttpMethod.GET,id, ErrorResponse.class,true),null,success,true);
+
+    }
+
+    @SneakyThrows
     public Long getPageCount(OrderFilterHolder orderFilterHolder){
                 return httpCallLogic.HttpCall("order/getAmountOfPages", HttpMethod.POST,orderFilterHolder, Long.class,false);
     }

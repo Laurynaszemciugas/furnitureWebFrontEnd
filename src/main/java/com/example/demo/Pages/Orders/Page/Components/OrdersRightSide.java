@@ -453,6 +453,8 @@ public class OrdersRightSide {
         Button button = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.TRASH,"Blue");
         button.setVisible(false);
 
+
+
         button.addClickListener(e->{
             selectedOrder.getProductsData().removeIf(product -> product.getId().equals(id));
 

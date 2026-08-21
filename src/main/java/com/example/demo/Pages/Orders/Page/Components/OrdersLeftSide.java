@@ -3,7 +3,11 @@ package com.example.demo.Pages.Orders.Page.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Orders.OrdersFeedData;
+import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.OrderStatus;
+import com.example.demo.Services.Orders.OrdersService;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -27,14 +31,16 @@ public class OrdersLeftSide {
     Common common;
 
 
+    OrdersService ordersService;
 
     Consumer<Long> orderList;
 
     Consumer<Long> newOrderList;
 
-    public OrdersLeftSide(CommonComponents commonComponents, Common common) {
+    public OrdersLeftSide(CommonComponents commonComponents, Common common,OrdersService ordersService) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.ordersService = ordersService;
 
 
     }
@@ -54,7 +60,7 @@ public class OrdersLeftSide {
 
         if(ordersFeedData != null && !ordersFeedData.isEmpty()) {
             for (var s : ordersFeedData) {
-                feed.add(createOrderPreview(s.getId(), s.getOrderStatus(), s.getProductCount(), s.getEstimatedDueDate(), s.getCreated(),s.getTotalPrice(), s.getAddress(), s.getGmail()));
+                feed.add(createOrderPreview(s.getId(), s.getOrderStatus(), s.getProductCount(), s.getEstimatedDueDate(), s.getCreated(),s.getTotalPrice(), s.getAddress(), s.getGmail(),s.getActiveInactive()));
             }
         }
         else{
@@ -70,7 +76,7 @@ public class OrdersLeftSide {
 
     }
 
-    public VerticalLayout createOrderPreview(Long orderId, OrderStatus orderStatus, Long products, LocalDateTime dueDate, LocalDateTime created,Double price, String address, String gmail){
+    public VerticalLayout createOrderPreview(Long orderId, OrderStatus orderStatus, Long products, LocalDateTime dueDate, LocalDateTime created,Double price, String address, String gmail, ActiveInactive activeInactive){
         VerticalLayout preview = new VerticalLayout();
         preview.setPadding(false);
 
@@ -98,6 +104,17 @@ public class OrdersLeftSide {
             default -> status.addClassName("status-none");
         }
 
+
+        Span activity = commonComponents.spanCrafter(activeInactive.getGetDisplayNames(),"stock-badge");
+        activity.getStyle().set("padding","8px");
+
+        switch (activeInactive){
+            case ACTIVE -> activity.addClassName("status-finished");
+            case INACTIVE -> activity.addClassName("status-cancelled");
+            default -> activity.addClassName("status-none");
+        }
+
+
         HorizontalLayout firstLayer = new HorizontalLayout();
         firstLayer.addClassName("layout-flex");
         firstLayer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
@@ -105,7 +122,7 @@ public class OrdersLeftSide {
         firstLayer.setWidthFull();
         firstLayer.add(
                 commonComponents.spanCrafter(String.format("%s-%d", "ORD", orderId),"stat-blue"),
-                status
+                new HorizontalLayout(activity,status)
         );
 
         // ====================== second layer =====================================
@@ -133,14 +150,42 @@ public class OrdersLeftSide {
         );
 
 
+
+
+        Button delete = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.TRASH,"Red");
+        delete.getStyle().set("position","absolute").set("bottom","-10px").set("right","-20px");
+
+        if (activeInactive.equals(ActiveInactive.INACTIVE)) {
+            delete.setVisible(false);
+
+        }
+
+        delete.addClickListener(e->{
+
+            common.deleteConfirmation("Order-Delete");
+
+            common.setBooleanConsumer(ee->{
+                if(ee){
+                    ordersService.deleteOrder(orderId);
+                }
+
+            });
+
+
+
+        });
+
+
         HorizontalLayout thirdLayer = new HorizontalLayout();
+        thirdLayer.getStyle().set("position","Relative");
         thirdLayer.addClassName("layout-flex");
         thirdLayer.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
         thirdLayer.setAlignItems(FlexComponent.Alignment.CENTER);
         thirdLayer.setWidthFull();
         thirdLayer.add(
                 commonComponents.spanCrafter(String.format("Address: %s", address),"stat-title"),
-                commonComponents.spanCrafter(String.format("gmail: %s", gmail),"stat-title")
+                commonComponents.spanCrafter(String.format("gmail: %s", gmail),"stat-title"),
+                delete
         );
 
 
@@ -180,7 +225,7 @@ public class OrdersLeftSide {
 
         if(ordersFeedData != null && !ordersFeedData.isEmpty()) {
             for (var s : ordersFeedData) {
-                feed.add(newCreateOrderPreview(s.getId(), s.getOrderStatus(), s.getProductCount(), s.getEstimatedDueDate(), s.getCreated(),s.getTotalPrice(), s.getAddress(), s.getGmail()));
+                feed.add(newCreateOrderPreview(s.getId(), s.getOrderStatus(), s.getProductCount(), s.getEstimatedDueDate(), s.getCreated(),s.getTotalPrice(), s.getAddress(), s.getGmail(), s.getActiveInactive()));
             }
         }
         else{
@@ -196,7 +241,7 @@ public class OrdersLeftSide {
 
     }
 
-    public VerticalLayout newCreateOrderPreview(Long orderId, OrderStatus orderStatus, Long products, LocalDateTime dueDate, LocalDateTime created,Double price, String address, String gmail){
+    public VerticalLayout newCreateOrderPreview(Long orderId, OrderStatus orderStatus, Long products, LocalDateTime dueDate, LocalDateTime created, Double price, String address, String gmail, ActiveInactive activeInactive){
         VerticalLayout preview = new VerticalLayout();
         preview.setPadding(false);
 
@@ -222,6 +267,10 @@ public class OrdersLeftSide {
             case NEW -> status.addClassName("status-new");
             default -> status.addClassName("status-none");
         }
+
+
+
+
 
         HorizontalLayout firstLayer = new HorizontalLayout();
         firstLayer.addClassName("layout-flex");

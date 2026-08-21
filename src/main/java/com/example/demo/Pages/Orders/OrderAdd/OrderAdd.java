@@ -2,6 +2,7 @@ package com.example.demo.Pages.Orders.OrderAdd;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
 import com.example.demo.ControllerModels.Orders.OrderAddProducts;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Orders.Page.Components.AssignEmployees;
@@ -87,6 +88,7 @@ public class OrderAdd extends VerticalLayout implements BeforeEnterObserver {
         verticalLayout.getStyle().set("margin-top", "5px");
 
         verticalLayout.add(
+                    commonComponents.breadCrums(new BreadCrumsDto("Orders", "Orders"),new BreadCrumsDto("Add new order", "OrdersAdd")),
                     orderBothSidesAddSide.briefPageExplanation(),
                     orderBothSidesAddSide.joinLeftRight()
         );

@@ -1,6 +1,7 @@
 package com.example.demo.Common;
 
 import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -394,6 +395,68 @@ public class CommonComponents {
     }
 
 
+
+    public HorizontalLayout breadCrums(BreadCrumsDto... dto){
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setSpacing(false);
+
+        boolean first = true;
+
+        VaadinIcon icon = VaadinIcon.HOME;
+
+        for(var s : dto){
+
+            if(!first){
+                icon = VaadinIcon.ANGLE_RIGHT;
+            }
+
+            first = false;
+
+
+
+            h.add(breadCrumsItems(s.getName(),s.getNavigateTo(),icon));
+        }
+
+
+        return h;
+
+    }
+
+
+    public HorizontalLayout breadCrumsItems(String name, String navigateTo, VaadinIcon icon){
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setAlignItems(FlexComponent.Alignment.BASELINE);
+        h.setSpacing(false);
+        Button button = new Button();
+        button.getStyle().set("background-color","transparent");
+        button.setText(name);
+
+        button.addClassName("accentText");
+
+        Icon icon1  = icon.create();
+        icon1.setSize("20px");
+        icon1.addClassName("accentText");
+
+        button.addClickListener(e->{
+            if(navigateTo == null){
+
+            }
+            else {
+                UI.getCurrent().navigate(navigateTo);
+            }
+        });
+
+
+
+        h.add(
+                icon1,
+                button
+        );
+
+        return h;
+    }
 
 
 

@@ -4,6 +4,7 @@ package com.example.demo.Pages.Products.ProductsEdit.Page;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ObjectConverter;
+import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
 import com.example.demo.ControllerModels.Common.CommonImagesData;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.MainLayout.MainLayout;
@@ -70,6 +71,8 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
 
 
 
+        addClassName("animation-page");
+
 
     }
 
@@ -111,7 +114,6 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
     public HorizontalLayout joinImagesInfo(){
         HorizontalLayout h =new HorizontalLayout();
         h.setWidthFull();
-        h.addClassName("island");
         h.getStyle().set("flex-wrap","wrap");
 
         Product product = productEditService.productEditDtoLoad(Long.valueOf(productId));
@@ -121,6 +123,7 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
         Div holder = new Div(images,productEditImage.uploadStuff(),
                 reviewCrafter.commentsHolder(product.getComments()));
         VerticalLayout fields = productEditRightSideFields.rightSide(product);
+        fields.setPadding(false);
 
         h.add(holder,fields);
         h.expand(fields);
@@ -132,8 +135,13 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
 
 
 
-    public HorizontalLayout briefPageExplanation(){
-        HorizontalLayout left = productEditRightSideFields.briefPageExplanation("Edit existing product");
+    public VerticalLayout briefPageExplanation(){
+        VerticalLayout left = new VerticalLayout();
+
+        left.add(
+                commonComponents.breadCrums(new BreadCrumsDto("Products", "Products/1"),new BreadCrumsDto("Edit existing product", null)),
+                productEditRightSideFields.briefPageExplanation("Edit existing product")
+        );
         left.setWidthFull();
 
         return left;

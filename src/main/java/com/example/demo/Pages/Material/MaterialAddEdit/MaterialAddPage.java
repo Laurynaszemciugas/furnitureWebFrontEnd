@@ -3,6 +3,7 @@ package com.example.demo.Pages.Material.MaterialAddEdit;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ObjectConverter;
+import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
 import com.example.demo.ControllerModels.Common.CommonImagesData;
 import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.MainLayout.MainLayout;
@@ -105,6 +106,7 @@ public class MaterialAddPage extends VerticalLayout implements BeforeEnterObserv
 
 
         verticalLayout.add(
+                commonComponents.breadCrums(new BreadCrumsDto("Materials", "Materials"),new BreadCrumsDto("Add new material", null)),
                 rightSideAddMaterials.briefExplanation("Create new Material","Create new"),
                 rightSideAddMaterials.leftRighJoin(null)
         );

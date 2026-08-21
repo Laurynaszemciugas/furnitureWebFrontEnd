@@ -4,6 +4,7 @@ package com.example.demo.Pages.Products.ProductAdd.Page;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ObjectConverter;
+import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
 import com.example.demo.ControllerModels.Common.CommonImagesData;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.MainLayout.MainLayout;
@@ -69,7 +70,7 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
         setAlignItems(Alignment.CENTER);
 
 
-
+        addClassName("animation-page");
 
 
     }
@@ -88,7 +89,7 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
     public VerticalLayout mainLayout() {
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setMaxWidth("1650px");
-        verticalLayout.addClassName("main-island");
+
         verticalLayout.getStyle().set("margin-top", "5px");
 
         productEditRightSideFields.setConsumer(e->{
@@ -96,6 +97,7 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
         });
 
         verticalLayout.add(
+                commonComponents.breadCrums(new BreadCrumsDto("Products", "Products/1"),new BreadCrumsDto("Add new product", "ProductsAdd")),
                 productEditRightSideFields.briefPageExplanation("Add new product"),
                 joinImagesInfo());
 

@@ -1255,6 +1255,10 @@ body[accent="indigo"] {
     --lumo-primary-color: var(--buttonAccent);
 }
 
+.accentText {
+        color: var(--buttonAccent);
+}
+
 .accentButtons {
 
     background-color: var(--buttonAccent);

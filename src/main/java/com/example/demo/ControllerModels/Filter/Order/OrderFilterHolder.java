@@ -23,7 +23,7 @@ public class OrderFilterHolder {
     private LocalDate dateFromChoice= LocalDate.of(1000,12,12);
     private LocalDate dateToChoice= LocalDate.of(1000,12,12);
     private Long amountOfProductsChoice= 0L;
-    private ActiveInactive orderActiveInactive = ActiveInactive.ALL;
+    private ActiveInactive orderActiveInactive = ActiveInactive.ACTIVE;
     private int page = 0;
     private int pageCount = 5;
 

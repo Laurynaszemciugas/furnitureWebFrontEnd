@@ -1,9 +1,14 @@
 package com.example.demo;
 
+import com.example.demo.Common.Common;
+import com.example.demo.Common.CommonComponents;
+import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 
@@ -11,7 +16,14 @@ import com.vaadin.flow.router.Route;
 @Route("TEST_THE_COLOR_SWITCHING")
 public class TestSwichingAccentsColors extends VerticalLayout {
 
-    public TestSwichingAccentsColors() {
+    CommonComponents commonComponents;
+    Common common;
+
+    public TestSwichingAccentsColors(CommonComponents commonComponents,Common common) {
+
+
+        this.commonComponents = commonComponents;
+        this.common = common;
 
         setSizeFull();
         addClassName("mainPage");
@@ -29,7 +41,7 @@ public class TestSwichingAccentsColors extends VerticalLayout {
         button1.addClickListener(e -> {
             System.out.println("red");
             // Pure Java: Set an attribute on the body tag
-            UI.getCurrent().getElement().setAttribute("accent", "red");
+            UI.getCurrent().getElement().setAttribute("accent", "green");
         });
 
         // Yellow Switch
@@ -85,5 +97,70 @@ public class TestSwichingAccentsColors extends VerticalLayout {
                 new Button(),
                 new Button()
         );
+
+
+        add(
+                breadCrums(new BreadCrumsDto("Home","Dashboard"), new BreadCrumsDto("Random", "Random"))
+        );
+
     }
+
+
+    public HorizontalLayout breadCrums(BreadCrumsDto ... dto){
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setSpacing(false);
+
+        boolean first = true;
+
+        VaadinIcon icon = VaadinIcon.HOME;
+
+        for(var s : dto){
+
+            if(!first){
+                icon = VaadinIcon.ANGLE_RIGHT;
+            }
+
+            first = false;
+
+
+
+           h.add(breadCrumsItems(s.getName(),s.getNavigateTo(),icon));
+        }
+
+
+        return h;
+
+    }
+
+
+    public HorizontalLayout breadCrumsItems(String name, String navigateTo, VaadinIcon icon){
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setAlignItems(Alignment.BASELINE);
+        h.setSpacing(false);
+        Button button = new Button();
+        button.getStyle().set("background-color","transparent");
+        button.setText(name);
+
+        button.addClassName("accentText");
+
+        Icon icon1  = icon.create();
+        icon1.setSize("20px");
+        icon1.addClassName("accentText");
+
+        button.addClickListener(e->{
+             UI.getCurrent().navigate(navigateTo);
+        });
+
+
+
+        h.add(
+                icon1,
+                button
+        );
+
+        return h;
+    }
+
 }

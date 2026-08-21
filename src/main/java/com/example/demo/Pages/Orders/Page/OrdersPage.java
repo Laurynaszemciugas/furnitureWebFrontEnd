@@ -90,7 +90,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
         this.productService = productService;
         this.ordersRightSide = new OrdersRightSide(commonComponents,common,employeeService,productService,ordersService);
-        this.ordersLeftSide = new OrdersLeftSide(commonComponents,common);
+        this.ordersLeftSide = new OrdersLeftSide(commonComponents,common, ordersService);
         this.orderFilters = new OrderFilters(commonComponents, common,employeeService,productService);
         this.briefOrderPageExplanation = new BriefOrderPageExplanation(commonComponents,common);
         this.paganation = new Paganation();
