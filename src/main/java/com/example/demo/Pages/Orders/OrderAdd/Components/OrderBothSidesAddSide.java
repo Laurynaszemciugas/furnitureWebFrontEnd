@@ -255,7 +255,8 @@ public class OrderBothSidesAddSide {
 
         orderStatusComboBox.setWidthFull();
         orderStatusComboBox.setItems(OrderStatus.values());
-        orderStatusComboBox.setValue(OrderStatus.Pending);
+        orderStatusComboBox.setValue(OrderStatus.NEW);
+        orderStatusComboBox.setReadOnly(true);
 
 
         payStatus.setWidthFull();

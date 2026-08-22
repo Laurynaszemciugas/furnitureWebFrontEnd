@@ -3,7 +3,13 @@ package com.example.demo.Pages.Settings.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SinglePhotoLogic;
+import com.example.demo.ControllerModels.CommonDtos.User;
+import com.example.demo.ControllerModels.User.ProfileInformation;
+import com.example.demo.Enums.DateFormat;
+import com.example.demo.Enums.Language;
 import com.example.demo.Enums.Role;
+import com.example.demo.Enums.TimeZone;
+import com.example.demo.Services.UserService.UserService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -25,11 +31,14 @@ public class ProfileAccount {
 
     SinglePhotoLogic singlePhotoLogic;
 
+    UserService userService;
+
     BriefExplanationOfSettings briefExplanationOfTheSettings;
 
-    public ProfileAccount(CommonComponents commonComponents, Common common) {
+    public ProfileAccount(CommonComponents commonComponents, Common common,UserService userService) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.userService = userService;
 
         this.singlePhotoLogic = new SinglePhotoLogic(commonComponents,common);
         this.briefExplanationOfTheSettings = new BriefExplanationOfSettings(commonComponents,common);
@@ -41,10 +50,46 @@ public class ProfileAccount {
     public VerticalLayout profileAccount(){
 
         TextField fullName = new TextField("Full name");
+        fullName.setReadOnly(true);
         EmailField emailAddress = new EmailField("Email address");
-        ComboBox<Role> role = new ComboBox<>("Role");
+        emailAddress.setReadOnly(true);
+        TextField role = new TextField("Role");
+        role.setReadOnly(true);
         TextField phoneNumber = new TextField("Phone number");
         TextArea bio = new TextArea("Bio");
+
+
+
+
+        ProfileInformation profileInformation = userService.getProfileInfo();
+
+
+        fullName.setValue(profileInformation.getFullName() != null
+                ? profileInformation.getFullName()
+                : "");
+
+
+        emailAddress.setValue(profileInformation.getEmailAddress() != null
+                ? profileInformation.getEmailAddress()
+                : "");
+
+
+        if (profileInformation.getRole() != null) {
+            role.setValue(profileInformation.getRole().toString());
+        }
+
+
+        phoneNumber.setValue(profileInformation.getPhoneNumber() != null
+                ? profileInformation.getPhoneNumber()
+                : "");
+
+
+        bio.setValue(profileInformation.getBio() != null
+                ? profileInformation.getBio()
+                : "");
+
+
+
 
         bio.setWidthFull();
         bio.setHeight("60px");
@@ -67,6 +112,9 @@ public class ProfileAccount {
         v.setWidthFull();
 
         Div div = new Div();
+
+        singlePhotoLogic.setImageData(profileInformation.getImageUrl());
+
         div.add(
                 singlePhotoLogic.imageGetterShower()
         );
@@ -97,9 +145,24 @@ public class ProfileAccount {
         button.addClassName("accentButtons");
         button.addThemeVariants(ButtonVariant.PRIMARY);
 
+        button.addClickListener(e->{
+
+            User user = new User();
+            user.setPhoneNumber(phoneNumber.getValue());
+            user.setBio(bio.getValue());
+
+            userService.saveProfileInfo(user);
+
+
+
+        });
+
+
         options.add(
                 button
         );
+
+
 
 
 
@@ -187,9 +250,12 @@ public class ProfileAccount {
         h.addClassName("island");
 
 
-        ComboBox<String> dateFormat = new ComboBox<>("Date format");
-        ComboBox<String> timeZone = new ComboBox<>("Time zone");
-        ComboBox<String> language = new ComboBox<>("Language");
+        ComboBox<DateFormat> dateFormat = new ComboBox<>("Date format");
+        dateFormat.setItems(DateFormat.values());
+        ComboBox<TimeZone> timeZone = new ComboBox<>("Time zone");
+        timeZone.setItems(TimeZone.values());
+        ComboBox<Language> language = new ComboBox<>("Language");
+        language.setItems(Language.values());
         Checkbox notificationsToGmail = new Checkbox("Receive notification to gmail");
 
 

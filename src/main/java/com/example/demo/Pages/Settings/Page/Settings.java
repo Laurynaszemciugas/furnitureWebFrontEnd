@@ -5,6 +5,7 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Settings.Components.ApperanceTab;
 import com.example.demo.Pages.Settings.Components.ProfileAccount;
+import com.example.demo.Services.UserService.UserService;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -30,15 +31,15 @@ public class Settings extends VerticalLayout implements BeforeEnterObserver {
     ProfileAccount profileAndAccount;
     ApperanceTab apearnce;
 
+    UserService userService;
 
-
-    public Settings(CommonComponents commonComponents,  Common common) {
+    public Settings(CommonComponents commonComponents,  Common common,UserService userService) {
 
 
         this.commonComponents = commonComponents;
         this.common = common;
 
-        this.profileAndAccount = new ProfileAccount(commonComponents,common);
+        this.profileAndAccount = new ProfileAccount(commonComponents,common,userService);
         this.apearnce = new ApperanceTab(commonComponents,common);
 
 
