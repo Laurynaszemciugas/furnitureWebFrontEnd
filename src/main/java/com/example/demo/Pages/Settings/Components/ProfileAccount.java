@@ -4,11 +4,12 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SinglePhotoLogic;
 import com.example.demo.ControllerModels.CommonDtos.User;
+import com.example.demo.ControllerModels.CommonDtos.UserSettings;
+import com.example.demo.ControllerModels.User.AccountOverview;
+import com.example.demo.ControllerModels.User.PersonalPrefrences;
 import com.example.demo.ControllerModels.User.ProfileInformation;
-import com.example.demo.Enums.DateFormat;
-import com.example.demo.Enums.Language;
-import com.example.demo.Enums.Role;
-import com.example.demo.Enums.TimeZone;
+import com.example.demo.Enums.*;
+import com.example.demo.Services.LoginService.LoginService;
 import com.example.demo.Services.UserService.UserService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -24,6 +25,10 @@ import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 
+import java.lang.reflect.Member;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
 public class ProfileAccount {
 
     CommonComponents commonComponents;
@@ -35,10 +40,14 @@ public class ProfileAccount {
 
     BriefExplanationOfSettings briefExplanationOfTheSettings;
 
-    public ProfileAccount(CommonComponents commonComponents, Common common,UserService userService) {
+    LoginService loginService;
+
+    public ProfileAccount(CommonComponents commonComponents, Common common,UserService userService,LoginService loginService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.userService = userService;
+
+        this.loginService = loginService;
 
         this.singlePhotoLogic = new SinglePhotoLogic(commonComponents,common);
         this.briefExplanationOfTheSettings = new BriefExplanationOfSettings(commonComponents,common);
@@ -187,11 +196,49 @@ public class ProfileAccount {
 
         h.addClassName("layout-flex");
 
+
+        AccountOverview accountOverview = userService.getAccountOverview();
+
+        System.out.println("Account overview: " + accountOverview);
+
+        String memberSince = common.dateFormatter(
+                accountOverview.getCreated()
+        );
+
+        long daysPassed = ChronoUnit.DAYS.between(
+                accountOverview.getCreated().toLocalDate(),
+                LocalDate.now()
+        );
+
+        String verification = accountOverview.getVerification() != null
+                ? accountOverview.getVerification().toString()
+                : "Unverified";
+
+        String gmail = accountOverview.getGmail();
+
+        String active;
+
+        if (accountOverview.getBannedTill() == null) {
+            active = "Active";
+        } else {
+            active = "Inactive";
+        }
+
+        String lastLogin = accountOverview.getLastLogin() != null
+                ? common.dateFormatter(accountOverview.getLastLogin())
+                : "Never";
+
+        String ip = accountOverview.getIp() != null
+                ? accountOverview.getIp()
+                : "Unknown";
+
+
+
         h.add(
-                accountOverviewIslands(VaadinIcon.CALENDAR,"Blue","Member since","jan 15 2024","1 year 4 months"),
-                accountOverviewIslands(VaadinIcon.ABACUS,"GREEN","Email status","Verified","jonh@gmail.com"),
-                accountOverviewIslands(VaadinIcon.SHIELD,"Cyan","Account status","Active","no issues found"),
-                accountOverviewIslands(VaadinIcon.CLOCK,"BLUE","Last login","jan 15 2024","IP: 192.162.1.1")
+                accountOverviewIslands(VaadinIcon.CALENDAR,"Blue","Member since",memberSince,daysPassed + " Days"),
+                accountOverviewIslands(VaadinIcon.ABACUS,"GREEN","Email status",verification,gmail),
+                accountOverviewIslands(VaadinIcon.SHIELD,"Cyan","Account status",active,""),
+                accountOverviewIslands(VaadinIcon.CLOCK,"BLUE","Last login",lastLogin,"IP: " + ip)
         );
 
         v.add(
@@ -250,14 +297,38 @@ public class ProfileAccount {
         h.addClassName("island");
 
 
+        PersonalPrefrences personalPrefrences = userService.getPersonalPrefrences();
+
+
+        DateFormat dateFormatGot = personalPrefrences.getDateFormat() != null
+                ? personalPrefrences.getDateFormat()
+                : DateFormat.DD_MM_YYYY;
+
+        TimeZone timeZoneGot = personalPrefrences.getTimeZone() != null
+                ? personalPrefrences.getTimeZone()
+                : TimeZone.UTC;
+
+        Language languageGot = personalPrefrences.getLanguage() != null
+                ? personalPrefrences.getLanguage()
+                : Language.EN;
+
+        boolean activeNotificationGot = personalPrefrences.isActiveNotification();
+
+
         ComboBox<DateFormat> dateFormat = new ComboBox<>("Date format");
         dateFormat.setItems(DateFormat.values());
+        dateFormat.setValue(dateFormatGot);
+
         ComboBox<TimeZone> timeZone = new ComboBox<>("Time zone");
         timeZone.setItems(TimeZone.values());
+        timeZone.setValue(timeZoneGot);
+
         ComboBox<Language> language = new ComboBox<>("Language");
         language.setItems(Language.values());
-        Checkbox notificationsToGmail = new Checkbox("Receive notification to gmail");
+        language.setValue(languageGot);
 
+        Checkbox notificationsToGmail = new Checkbox("Receive notification to gmail");
+        notificationsToGmail.setValue(activeNotificationGot);
 
         FormLayout formLayout = new FormLayout();
 
@@ -268,10 +339,46 @@ public class ProfileAccount {
                 notificationsToGmail
         );
 
+        Button button = new Button("Save changes");
+        button.setPrefixComponent(commonComponents.iconCrafter(VaadinIcon.CHECK,"20px","White"));
+        button.addClassName("accentButtons");
+        button.addThemeVariants(ButtonVariant.PRIMARY);
+
+        HorizontalLayout options = new HorizontalLayout();
+        options.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        options.setWidthFull();
+        options.setPadding(false);
+
+        options.add(
+                button
+        );
+
+        button.addClickListener(e->{
+
+            User user = new User();
+            UserSettings userSettings = new UserSettings();
+
+            userSettings.setLanguage(language.getValue());
+            userSettings.setDateFormat(dateFormat.getValue());
+            userSettings.setReceiveGmail(notificationsToGmail.getValue());
+            userSettings.setTimeZone(timeZone.getValue());
+
+            user.setUserSettingsList(userSettings);
+
+
+
+            userService.savePersonalPrefrences(user);
+
+            loginService.createSettings();
+            common.reloadPage();
+
+        });
+
 
         h.add(
                 briefExplanationOfTheSettings.briefExplanationOfTheSettings("Personal preferences","Manage your personal preferences and notification settings"),
-                formLayout
+                formLayout,
+                options
         );
 
 

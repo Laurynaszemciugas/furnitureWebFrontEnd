@@ -5,6 +5,8 @@ import com.example.demo.ControllerModels.CommonDtos.User;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
+import com.example.demo.ControllerModels.User.AccountOverview;
+import com.example.demo.ControllerModels.User.PersonalPrefrences;
 import com.example.demo.ControllerModels.User.ProfileInformation;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,33 @@ public class UserService {
                 httpCallLogic.HttpCall("user/saveProfileInfo", HttpMethod.POST, user, ErrorResponse.class,false),"Settings",success,true);
 
     }
+
+    public AccountOverview getAccountOverview() {
+
+        return httpCallLogic.HttpCall("user/getAccountOverview", HttpMethod.GET,null, AccountOverview.class,false);
+
+    }
+
+    public PersonalPrefrences getPersonalPrefrences() {
+
+        return httpCallLogic.HttpCall("user/getPersonalPrefrences", HttpMethod.GET,null, PersonalPrefrences.class,false);
+
+    }
+
+
+    public void savePersonalPrefrences(User user) {
+
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("user/savePersonalPrefrences", HttpMethod.POST, user, ErrorResponse.class,false),"Settings",success,true);
+
+    }
+
+
+//    public AccountOverview getAccountOverview() {
+//
+//        return httpCallLogic.HttpCall("user/getAccountOverview", HttpMethod.GET,null, AccountOverview.class,false);
+//
+//    }
 
 
 }

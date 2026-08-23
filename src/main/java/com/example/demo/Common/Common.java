@@ -4,6 +4,7 @@ import com.example.demo.Common.DTOS.PlacesToBreak;
 import com.example.demo.Common.Logic.ErrorDisplay;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.CommonDtos.ActionTracker;
+import com.example.demo.ControllerModels.CommonDtos.UserSettings;
 import com.example.demo.Enums.Warnings;
 import com.example.demo.Services.ActionTrackerService.ActionService;
 import com.vaadin.flow.component.Component;
@@ -248,7 +249,37 @@ public class Common {
         return source;
     }
 
-    public String dateFormatter(LocalDateTime localDateTime, String format) {
+    public String dateFormatter(LocalDateTime localDateTime) {
+
+        UserSettings userSettings = sessionCrafter.extractSession("settings", UserSettings.class);
+
+        String format = "";
+
+        if (userSettings == null) {
+
+            format = "yyyy";
+
+        } else {
+
+
+         userSettings.getDateFormat().getPattern();
+    }
+
+        System.out.println("format");
+        System.out.println(format);
+
+        DateTimeFormatter dateTimeFormatter;
+        if (localDateTime != null) {
+            dateTimeFormatter = DateTimeFormatter.ofPattern(userSettings.getDateFormat().getPattern());
+        } else {
+            return "null";
+        }
+        return localDateTime.format(dateTimeFormatter);
+    }
+
+    public String dateFormatterWithFormat(LocalDateTime localDateTime, String format) {
+
+
         DateTimeFormatter dateTimeFormatter;
         if (localDateTime != null) {
             dateTimeFormatter = DateTimeFormatter.ofPattern(format);

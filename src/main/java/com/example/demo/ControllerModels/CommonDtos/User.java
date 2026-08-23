@@ -1,7 +1,6 @@
 package com.example.demo.ControllerModels.CommonDtos;
 
-import com.example.demo.Enums.AccountStatus;
-import com.example.demo.Enums.Role;
+import com.example.demo.Enums.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +8,8 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,13 +24,29 @@ public class User {
     private String recoveryPin;
     private Role role;
     private AccountStatus accountStatus;
-    private LocalDate bannedTill;
+    private LocalDateTime bannedTill;
     private LocalDateTime created;
 
     private String bio;
 
     private String phoneNumber;
 
+    private DateFormat dateFormat;
+    private TimeZone timeZone;
+    private Language language;
+    private Verification verification;
+
+    private LocalDateTime lastLogin;
+
+    private boolean receiveGmail;
+
+    private String ip;
+
+
     private String fullName;
     private String imageUrl;
+
+    private UserSettings userSettingsList;
+
+
 }

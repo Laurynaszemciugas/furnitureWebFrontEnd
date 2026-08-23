@@ -54,7 +54,8 @@ public class LoginPage extends VerticalLayout {
             user.setPassword(textField2.getValue());
             System.out.println(user.getGmail());
             System.out.println(user.getPassword());
-           loginService.getJWTToken(user);
+            loginService.getJWTToken(user);
+            loginService.createSettings();
         });
 
         v.add(textField1,textField2,button);

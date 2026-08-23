@@ -284,7 +284,7 @@ public class MiniReportCard {
         v.add(
                 commonComponents.spanCrafter(title,"activityFeed-name"),
                 commonComponents.spanCrafter(description,"stat-example"),
-                commonComponents.spanCrafter(created == null ? "" :  "Created - "+ common.dateFormatter(created,"dd MMM yyyy"),"stat-description")
+                commonComponents.spanCrafter(created == null ? "" :  "Created - "+ common.dateFormatter(created),"stat-description")
         );
 
         Button deleteButton = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.ERROR,VaadinIcon.TRASH,"Red");

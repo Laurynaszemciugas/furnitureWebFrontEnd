@@ -226,7 +226,7 @@ public class MaterialGrid {
         // ======================== Material create date =====================================
         grid.addComponentColumn(e->{
 
-            String date = common.dateFormatter(e.getCreated(),"MMMM d yyyy");
+            String date = common.dateFormatter(e.getCreated());
 
             Span span = commonComponents.spanCrafter(date,"stat-example");
 

@@ -215,7 +215,7 @@ public class OrdersRightSide {
             orderId.setText(id);
             orderId.getStyle().set("color","blue");
 
-            String createdDate = common.dateFormatter(selectedOrder.getCreated(),"MMMM d, yyyy ● h:mma");
+            String createdDate = common.dateFormatterWithFormat(selectedOrder.getCreated(),"MMMM d, yyyy ● h:mma");
 
             created.setText(String.format("%s - %s", "Order created",createdDate));
 
@@ -565,7 +565,7 @@ public class OrdersRightSide {
 
         orderPlaced.add(
                 commonComponents.spanCrafter("Order Placed","stat-title"),
-                commonComponents.spanCrafter(common.dateFormatter(created,"MMMM d, yyyy ● h:mma"),"stat-title")
+                commonComponents.spanCrafter(common.dateFormatterWithFormat(created,"MMMM d, yyyy ● h:mma"),"stat-title")
 
         );
 
@@ -574,7 +574,7 @@ public class OrdersRightSide {
         orderDue.setWidthFull();
 
 
-        dueDateForChange = commonComponents.spanCrafter(common.dateFormatter(dueDate,"MMMM d, yyyy ● h:mma"),"stat-title");
+        dueDateForChange = commonComponents.spanCrafter(common.dateFormatterWithFormat(dueDate,"MMMM d, yyyy ● h:mma"),"stat-title");
         Button editDate = commonComponents.buttonThemeAndIconNoNavigate("Edit", ButtonVariant.LUMO_ICON, VaadinIcon.PENCIL,"Blue");
 
         if(selectedOrder.getOrderStatus().equals(OrderStatus.Finished) || selectedOrder.getOrderStatus().equals(OrderStatus.LACK_OF_SUPPLY)){
@@ -623,7 +623,7 @@ public class OrdersRightSide {
         Button button = new Button("Change");
         button.addClickListener(e->{
             LocalDateTime newDate = datePicker.getValue();
-            dueDateForChange.setText(common.dateFormatter(newDate,"MMMM d, yyyy ● h:mma"));
+            dueDateForChange.setText(common.dateFormatterWithFormat(newDate,"MMMM d, yyyy ● h:mma"));
             selectedOrder.setEstimatedDueDate(newDate);
             dialog.close();
         });

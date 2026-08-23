@@ -774,7 +774,7 @@ public class OrderReportCharts {
             Span span1 = new Span();
             span1.addClassName("stat-example");
 
-            span1.setText(common.dateFormatter(e.getDueDate(),"MMMM dd, yyyy"));
+            span1.setText(common.dateFormatter(e.getDueDate()));
 
             return span1;
 

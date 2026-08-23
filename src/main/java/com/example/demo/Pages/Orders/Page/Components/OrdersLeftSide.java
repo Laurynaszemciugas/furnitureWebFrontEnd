@@ -143,8 +143,8 @@ public class OrdersLeftSide {
         secondLayer.setWidthFull();
         secondLayer.add(
                 productNames,
-                commonComponents.spanCrafter(String.format("%s: %s","Created date",common.dateFormatter(created,"MMMM d, yyyy ● h:mma")),"stat-title"),
-                commonComponents.spanCrafter(String.format("%s: %s","Due date",common.dateFormatter(dueDate,"MMMM d, yyyy ● h:mma")),"stat-title"),
+                commonComponents.spanCrafter(String.format("%s: %s","Created date",common.dateFormatterWithFormat(created,"MMMM d, yyyy ● h:mma")),"stat-title"),
+                commonComponents.spanCrafter(String.format("%s: %s","Due date",common.dateFormatterWithFormat(dueDate,"MMMM d, yyyy ● h:mma")),"stat-title"),
                 commonComponents.spanCrafter(String.format("%.2f %s",price,"Eur"),"stat-example")
 
         );
@@ -300,8 +300,8 @@ public class OrdersLeftSide {
         secondLayer.setWidthFull();
         secondLayer.add(
                 productNames,
-                commonComponents.spanCrafter(String.format("%s: %s","Created date",common.dateFormatter(created,"MMMM d, yyyy ● h:mma")),"stat-title"),
-                commonComponents.spanCrafter(String.format("%s: %s","Due date",common.dateFormatter(dueDate,"MMMM d, yyyy ● h:mma")),"stat-title"),
+                commonComponents.spanCrafter(String.format("%s: %s","Created date",common.dateFormatterWithFormat(created,"MMMM d, yyyy ● h:mma")),"stat-title"),
+                commonComponents.spanCrafter(String.format("%s: %s","Due date",common.dateFormatterWithFormat(dueDate,"MMMM d, yyyy ● h:mma")),"stat-title"),
                 commonComponents.spanCrafter(String.format("%.2f %s",price,"Eur"),"stat-example")
 
         );

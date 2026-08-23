@@ -735,7 +735,7 @@ public class MaterialReportCharts {
 
             span1.addClassName("stat-title");
 
-            span1.setText(common.dateFormatter(e.getCreated(),"MMMM dd, yyyy"));
+            span1.setText(common.dateFormatter(e.getCreated()));
 
             return span1;
 

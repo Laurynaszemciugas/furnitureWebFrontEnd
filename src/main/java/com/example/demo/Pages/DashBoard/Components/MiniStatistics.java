@@ -41,11 +41,11 @@ public class MiniStatistics {
 
         formattedVs = String.format(
                 "vs %s - %s",
-                common.dateFormatter(
+                common.dateFormatterWithFormat(
                         LocalDate.now().withDayOfMonth(1).minusMonths(1).atStartOfDay(),
                         "MMMM d"
                 ),
-                common.dateFormatter(
+                common.dateFormatterWithFormat(
                         LocalDate.now().withDayOfMonth(1).minusDays(1).atStartOfDay(),
                         "MMMM d, yyyy"
                 )
