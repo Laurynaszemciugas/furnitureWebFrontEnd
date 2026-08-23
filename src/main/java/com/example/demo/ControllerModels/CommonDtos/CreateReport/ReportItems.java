@@ -21,7 +21,6 @@ public class ReportItems {
 
     private Widths width;
 
-    private Boolean widthIsStatic;
     private String userPreferredWidth;
 
     @JsonIgnore

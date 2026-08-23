@@ -79,6 +79,7 @@ public class ReportCreationViewPage extends VerticalLayout implements BeforeEnte
 
          report = customReportService.getReportAccordingToId((long) itemChoice);
 
+
         filterMemory.add(
                 commonComponents.breadCrums(new BreadCrumsDto("Reports", "Reports"),new BreadCrumsDto("View custom report", null)),
                 commonBriefPageExplanation.briefExplanation(report.getReportName(), report.getReportColor())
@@ -125,6 +126,8 @@ public class ReportCreationViewPage extends VerticalLayout implements BeforeEnte
         commonBriefPageExplanation.setFromToDateConsumer(e->{
             updateData(e.getFrom(),e.getTo());
         });
+
+
 
 
         // load data using left not efficiant way but because left side is used in edit and add new one it is used here this makes things less compicated in the long run

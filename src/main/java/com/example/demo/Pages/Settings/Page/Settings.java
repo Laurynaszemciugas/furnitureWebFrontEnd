@@ -45,7 +45,7 @@ public class Settings extends VerticalLayout implements BeforeEnterObserver {
         this.loginService = loginService;
 
         this.profileAndAccount = new ProfileAccount(commonComponents,common,userService,loginService);
-        this.apearnce = new ApperanceTab(commonComponents,common);
+        this.apearnce = new ApperanceTab(commonComponents,common,userService);
 
 
 

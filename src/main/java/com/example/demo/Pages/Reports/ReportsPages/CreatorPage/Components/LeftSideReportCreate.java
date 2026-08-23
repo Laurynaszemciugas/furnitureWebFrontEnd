@@ -93,6 +93,8 @@ public class LeftSideReportCreate {
     public VerticalLayout leftSide(HorizontalLayout rightSide, Report loadData,boolean includeHelpers,LocalDate fromDate, LocalDate toDate){
 
 
+
+
         includeEditingHelpers = includeHelpers;
         from = fromDate;
         to = toDate;
@@ -301,7 +303,7 @@ public class LeftSideReportCreate {
 
 
                 List<ReportItems> reportItems = report.getReportItemsList();
-                reportItems.add(new ReportItems(null, randomId(widgets.getValue().toString()), widgets.getValue(), widths.getValue(),true,"auto", report));
+                reportItems.add(new ReportItems(null, randomId(widgets.getValue().toString()), widgets.getValue(), widths.getValue(),"auto", report));
 
                 updateGrid();
 
@@ -417,7 +419,7 @@ public class LeftSideReportCreate {
 
                 integerField.addValueChangeListener(eeee->{
                     e.setUserPreferredWidth(eeee.getValue() + "px");
-                    e.setWidthIsStatic(false);
+
                     customReportPageBuilder.updateScene(from,to,rightSide,colorPicker.getValue(),report.getReportItemsList(),includeEditingHelpers);
                 });
 
@@ -431,7 +433,7 @@ public class LeftSideReportCreate {
                 sizeActions.add(
                         widthsComboBox
                 );
-                e.setWidthIsStatic(true);
+
             }
 
 
@@ -664,8 +666,8 @@ public Button leftSideDialog(HorizontalLayout rightSide, Report loadData,boolean
 
     button.getStyle()
             .set("position", "absolute")
-            .set("top", "100px")
-            .set("right", "50px")
+            .set("top", "150px")
+            .set("right", "40px")
             .set("z-index", "100");
 
     Button close = new Button("Back");

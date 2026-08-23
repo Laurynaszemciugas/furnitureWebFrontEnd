@@ -2,7 +2,11 @@ package com.example.demo.Pages.Settings.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.ControllerModels.CommonDtos.UserSettings;
+import com.example.demo.ControllerModels.User.Appearance;
 import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.Services.UserService.UserService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -25,6 +29,7 @@ public class ApperanceTab {
     CommonComponents commonComponents;
     Common common;
 
+    SessionCrafter sessionCrafter;
 
 
     BriefExplanationOfSettings briefExplanationOfTheSettings;
@@ -36,10 +41,16 @@ public class ApperanceTab {
 
     List<Image> sideBarMemory = new ArrayList<>();
 
+    UserService userService;
 
-    public ApperanceTab(CommonComponents commonComponents, Common common) {
+
+    public ApperanceTab(CommonComponents commonComponents, Common common,UserService userService) {
         this.commonComponents = commonComponents;
         this.common = common;
+
+        this.userService = userService;
+
+        this.sessionCrafter = new SessionCrafter();
 
         this.briefExplanationOfTheSettings = new BriefExplanationOfSettings(commonComponents,common);
 
@@ -52,10 +63,12 @@ public class ApperanceTab {
 
         VerticalLayout v = new VerticalLayout();
 
+        Appearance appearance = userService.getAppearance();
+
         v.add(
-                profileAccount(),
-                accentColor(),
-                sideBarSize()
+                profileAccount(appearance.getTheme()),
+                accentColor(appearance.getAccent()),
+                sideBarSize(appearance.getSidebarSize())
         );
 
         return v;
@@ -64,7 +77,7 @@ public class ApperanceTab {
 
 
 
-    public VerticalLayout profileAccount(){
+    public VerticalLayout profileAccount(String value){
 
 
 
@@ -77,9 +90,9 @@ public class ApperanceTab {
         h.setAlignItems(FlexComponent.Alignment.CENTER);
         h.setWidthFull();
         h.add(
-                themeCrafter("Light","Clean and bright","Light","LightTheme.png"),
-                themeCrafter("Dark","Easy on the eyes","Light","DarkTheme.png"),
-                themeCrafter("System","Match system settings","Light","SystemTheme.png"   )
+                themeCrafter("Light","Clean and bright",value,"LightTheme.png"),
+                themeCrafter("Dark","Easy on the eyes",value,"DarkTheme.png"),
+                themeCrafter("System","Match system settings",value,"SystemTheme.png"   )
         );
         h.addClassName("layout-flex");
 
@@ -126,6 +139,11 @@ public class ApperanceTab {
 
         image.addClickListener(e->{
 
+            UserSettings userSettings = sessionCrafter.extractSession("settings", UserSettings.class);
+            userSettings.setTheme(name);
+            sessionCrafter.createSession("settings", userSettings);
+
+
             for(var s : imageMemory){
                 s.removeClassName("island-layout-solid");
             }
@@ -135,6 +153,7 @@ public class ApperanceTab {
                     s.addClassName("island-layout-solid");
                 }
             }
+            userService.saveTheme(name);
         });
 
 
@@ -150,10 +169,9 @@ public class ApperanceTab {
     }
 
 
-    public VerticalLayout accentColor(){
+    public VerticalLayout accentColor(String value){
 
 
-        String currentColor = "Blue";
 
 
         VerticalLayout v = new VerticalLayout();
@@ -165,14 +183,14 @@ public class ApperanceTab {
         h.setJustifyContentMode(FlexComponent.JustifyContentMode.EVENLY);
         h.setWidthFull();
         h.add(
-                colorCrafter("Blue",currentColor),
-                colorCrafter("Red",currentColor),
-                colorCrafter("Orange",currentColor),
-                colorCrafter("Purple",currentColor),
-                colorCrafter("Green",currentColor),
-                colorCrafter("Grey",currentColor),
-                colorCrafter("Pink",currentColor),
-                colorCrafter("Indigo",currentColor)
+                colorCrafter("Blue",value),
+                colorCrafter("Red",value),
+                colorCrafter("Orange",value),
+                colorCrafter("Purple",value),
+                colorCrafter("Green",value),
+                colorCrafter("Grey",value),
+                colorCrafter("Pink",value),
+                colorCrafter("Indigo",value)
         );
         h.addClassName("layout-flex");
 
@@ -216,6 +234,12 @@ public class ApperanceTab {
         }
 
         v.addClickListener(e->{
+
+             UserSettings userSettings = sessionCrafter.extractSession("settings", UserSettings.class);
+             userSettings.setAccent(color);
+            sessionCrafter.createSession("settings", userSettings);
+
+            userService.saveAccent(color);
 
             UI.getCurrent().getElement().setAttribute("accent", color.toLowerCase());
 
@@ -272,20 +296,19 @@ public class ApperanceTab {
 
 
 
-    public VerticalLayout sideBarSize(){
+    public VerticalLayout sideBarSize(String value){
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
 
-        String selected = "Large";
 
         HorizontalLayout h = new HorizontalLayout();
         h.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         h.setWidthFull();
 
         h.add(
-                sideBarButtonCrafter("Large","Expanded view more space and details",selected,"LightTheme.png"),
-                sideBarButtonCrafter("Small","Compact view to show more content",selected,"LightTheme.png")
+                sideBarButtonCrafter("Large","Expanded view more space and details",value,"LightTheme.png"),
+                sideBarButtonCrafter("Small","Compact view to show more content",value,"LightTheme.png")
 
         );
 
@@ -331,6 +354,12 @@ public class ApperanceTab {
 
         image.addClickListener(e -> {
 
+
+            UserSettings userSettings = sessionCrafter.extractSession("settings", UserSettings.class);
+            userSettings.setSidebarSize(name);
+            sessionCrafter.createSession("settings", userSettings);
+
+
             UI.getCurrent()
                     .getChildren()
                     .filter(component -> component instanceof MainLayout)
@@ -339,11 +368,15 @@ public class ApperanceTab {
                             ((MainLayout) component).changeSidebar(name)
                     );
 
+
             for (var s : sideBarMemory) {
                 s.removeClassName("island-layout-solid");
             }
 
             image.addClassName("island-layout-solid");
+
+            userService.saveSidebar(name);
+
         });
 
 

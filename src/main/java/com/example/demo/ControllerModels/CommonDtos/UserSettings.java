@@ -26,6 +26,12 @@ public class UserSettings {
 
     private boolean receiveGmail;
 
+    private String theme;
+
+    private String accent;
+
+    private String sidebarSize;
+
     private User user;
 
 

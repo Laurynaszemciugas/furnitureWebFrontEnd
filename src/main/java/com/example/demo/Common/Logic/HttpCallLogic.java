@@ -8,6 +8,7 @@ import com.example.demo.ErrorHandling.Exseptions.HttpCallException;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 import java.net.URI;
@@ -56,7 +57,6 @@ public class HttpCallLogic {
     }
 
 
-    @SneakyThrows
     public <R,T> R HttpCallWithJwt(String endpoint, HttpMethod httpMethod, T data, Class<R> responseType, boolean pathVariable, String jwt ){
 
 
@@ -69,80 +69,104 @@ public class HttpCallLogic {
 //            ));
 //        }
 
-        HttpRequest.BodyPublisher bodyPublisher;
+        try {
 
-        String pathValue = "";
+            HttpRequest.BodyPublisher bodyPublisher;
 
-        if(pathVariable){
-            pathValue = "/" + data;
-        }
+            String pathValue = "";
 
-        //get full path
-        String fullUrl = baseURL + endpoint + pathValue;
+            if (pathVariable) {
+                pathValue = "/" + data;
+            }
 
-
-        if (data == null || httpMethod == HttpMethod.GET || httpMethod == HttpMethod.DELETE) {
-            bodyPublisher = HttpRequest.BodyPublishers.noBody();
-        }
-        else {
-            String jsonBody = mapper.writeValueAsString(data);
-            bodyPublisher = HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8);
-        }
+            //get full path
+            String fullUrl = baseURL + endpoint + pathValue;
 
 
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(baseURL + endpoint + pathValue))
-                .header("Authorization","Bearer " + jwt)
-                .header("Content-Type", "application/json")
-                .header("Accept", "application/json")
-                .method(httpMethod.name(), bodyPublisher)
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        //get data response
-        String body = response.body();
-        int status = response.statusCode();
-
-        // small data show
-        System.out.println("============================="  + "=============================");
-        System.out.println("HTTP CALL: " + httpMethod + " " + fullUrl);
-        System.out.println("STATUS: " + status);
-        System.out.println("BODY LENGTH: " + (body == null ? "null" : body.length()));
-        String bod = body.length() > 100 ? " Body to long " : body;
-        System.out.println("BODY: >>>" + bod + "<<<");
+            if (data == null || httpMethod == HttpMethod.GET || httpMethod == HttpMethod.DELETE) {
+                bodyPublisher = HttpRequest.BodyPublishers.noBody();
+            } else {
+                String jsonBody = mapper.writeValueAsString(data);
+                bodyPublisher = HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8);
+            }
 
 
-        // unuthorized so basically JWT token
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(baseURL + endpoint + pathValue))
+                    .header("Authorization", "Bearer " + jwt)
+                    .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+                    .method(httpMethod.name(), bodyPublisher)
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            //get data response
+            String body = response.body();
+            int status = response.statusCode();
+
+            // small data show
+            System.out.println("=============================" + "=============================");
+            System.out.println("HTTP CALL: " + httpMethod + " " + fullUrl);
+            System.out.println("STATUS: " + status);
+            System.out.println("BODY LENGTH: " + (body == null ? "null" : body.length()));
+            String bod = body.length() > 10000 ? " Body to long " : body;
+            System.out.println("BODY: >>>" + bod + "<<<");
 
 
-        if (status == 400) {
-            ErrorResponse errorResponse =
-                    mapper.readValue(body, ErrorResponse.class);
-
-            return (R) errorResponse;
-        }
-
-        if(status == 401){
-            throw new HttpCallException(new FrontEndError(
-                    "You are not logged in.",
-                    "Please log in again.",
-                    status));
-
-        }
+            // unuthorized so basically JWT token
 
 
-        // server is offline
-        if(status == 502){
-            throw new HttpCallException(new FrontEndError(
-                    "Server isn't responding",
-                    "Please try again later.",
-                    status));
-        }
+            if (status == 400) {
+                ErrorResponse errorResponse =
+                        mapper.readValue(body, ErrorResponse.class);
+
+                return (R) errorResponse;
+            }
+
+            if (status == 401) {
+                throw new HttpCallException(new FrontEndError(
+                        "You are not logged in.",
+                        "Please log in again.",
+                        status));
+
+            }
 
 
-        return mapper.readValue(body, responseType);
+            // server is offline
+            if (status == 502) {
+                throw new HttpCallException(new FrontEndError(
+                        "Server isn't responding",
+                        "Please try again later.",
+                        status));
+            }
+
+            return mapper.readValue(body, responseType);
+
+         } catch (JacksonException e) {
+
+        System.out.println("======================================");
+        System.out.println("JACKSON DESERIALIZATION ERROR");
+        System.out.println("Message: " + e.getMessage());
+        System.out.println("Path: " + e.getPathReference());
+        System.out.println("======================================");
+
+        e.printStackTrace();
+
+        throw new RuntimeException(e);
+
+    } catch (Exception e) {
+
+        System.out.println("======================================");
+        System.out.println("HTTP CALL ERROR");
+        System.out.println("Exception: " + e.getClass().getName());
+        System.out.println("Message: " + e.getMessage());
+        System.out.println("======================================");
+
+        e.printStackTrace();
+
+        throw new RuntimeException(e);
+    }
 
     }
 

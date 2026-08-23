@@ -78,6 +78,8 @@ public class ReportCreationEditPage extends VerticalLayout implements BeforeEnte
 
     public HorizontalLayout mainLayout() {
 
+
+
         HorizontalLayout layout = new HorizontalLayout();
 
         layout.setWidthFull();
@@ -89,7 +91,9 @@ public class ReportCreationEditPage extends VerticalLayout implements BeforeEnte
         layout.getStyle().set("position","relative");
         layout.addClassName("layout-flex");
 
+        System.out.println("1111111111111111111111111111111111111111111111111111111111111111111111111111111");
 
+        System.out.println("1111111111111111111111111111111111111111111111111111111111111111111111111111111");
         layout.add(
                 commonComponents.breadCrums(new BreadCrumsDto("Reports", "Reports"),new BreadCrumsDto("Edit report", null)),
                 leftSideReportCreate.briefPageExplanation("Edit custom report","Edit report"),
@@ -101,6 +105,11 @@ public class ReportCreationEditPage extends VerticalLayout implements BeforeEnte
                         common.currentMonthStart(),
                         common.nextMonthDate())
         );
+
+
+        System.out.println("222222222222222222222222222222222222222222222222222222222222");
+
+
 
         leftSideReportCreate.setReportAddedEdited(e->{
             customReportService.editCustomReport(e);

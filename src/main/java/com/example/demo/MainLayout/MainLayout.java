@@ -3,6 +3,7 @@ package com.example.demo.MainLayout;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.ControllerModels.CommonDtos.UserSettings;
 import com.example.demo.Pages.Settings.Components.ApperanceTab;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -58,6 +59,27 @@ public class MainLayout extends AppLayout {
 
 
         sessionCrafter.createSession("UI",UI.getCurrent());
+
+        loadSettings();
+
+    }
+
+    public void loadSettings(){
+
+        System.out.println("settings loading");
+
+        UserSettings userSettings = sessionCrafter.extractSession("settings", UserSettings.class);
+
+        System.out.println(userSettings.getSidebarSize());
+        System.out.println(userSettings.getAccent());
+
+        UI ui = sessionCrafter.extractSession("UI", UI.class);
+
+        ui.getElement().setAttribute("accent", userSettings.getAccent().toLowerCase());
+
+        changeSidebar(userSettings.getSidebarSize());
+
+        // also later make dark light theme
 
     }
 

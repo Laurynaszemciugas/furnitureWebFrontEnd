@@ -38,7 +38,6 @@ public class User {
 
     private LocalDateTime lastLogin;
 
-    private boolean receiveGmail;
 
     private String ip;
 
