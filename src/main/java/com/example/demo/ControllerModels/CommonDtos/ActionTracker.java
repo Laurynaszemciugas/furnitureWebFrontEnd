@@ -18,5 +18,6 @@ public class ActionTracker {
 
     private LocalDateTime created;
 
+    private String name;
 
 }

@@ -39,9 +39,10 @@ public class TopEmployees {
                 .orElse(null);
     }
 
-    public VerticalLayout topEmployees(List<TopEmployeesModel> topEmployeesModelList){
+    public VerticalLayout topEmployees(){
 
 
+        List<TopEmployeesModel> topEmployeesModelList = new ArrayList<>();
 
         boolean empty = (topEmployeesModelList == null || topEmployeesModelList.isEmpty());
 
@@ -62,7 +63,7 @@ public class TopEmployees {
         }
         else{
             for(var s : topEmployeesModelList){
-                material2.add(topEmployeeCrafter(s.getProfilePicUrl(),s.getName(),s.getUnitsProduced(),s.getHourlySalary(),s.getHoursWorkedTotal(),s.getHoursWorkedThisMonth()));
+                material2.add(topEmployeeCrafter(s.getProfilePicUrl(),s.getName(),s.getUnitsProduced(),s.getHourlySalary()));
             }
         }
 
@@ -86,7 +87,7 @@ public class TopEmployees {
 
 
 
-    public HorizontalLayout topEmployeeCrafter(String profilePic, String employeeName,long unitsProduced, double hourlySalary, long hoursWorkedTotal, long hoursWorkedThisMonth){
+    public HorizontalLayout topEmployeeCrafter(String profilePic, String employeeName,long unitsProduced, double hourlySalary){
 
 
 
@@ -105,9 +106,10 @@ public class TopEmployees {
         image.getStyle().set("border-radius","30px");
 
         VerticalLayout e = new VerticalLayout(
-                commonComponents.tripleValueRow(commonComponents.spanCrafterWordNoHide(employeeName,"activityFeed-name"),commonComponents.spanCrafterWordNoHide(" - ","activityFeed-name"),commonComponents.spanCrafterWordNoHide(String.format("%d %s",unitsProduced,"- units produced"),"stat-example")),
-                commonComponents.doubleValueRow(commonComponents.spanCrafterWordNoHide(String.format("%s %.2f","Hourly salary", hourlySalary),"stat-title"),commonComponents.spanCrafterWordNoHide(String.format("%s %s %d","●","hours worked in total",hoursWorkedTotal),"stat-title")),
-                commonComponents.spanCrafterWordNoHide(String.format("%s %.2f %s","Estimated pay this month - ", estimatedPayThisMonth(hourlySalary,hoursWorkedThisMonth), "Eur"),"stat-title")
+                commonComponents.tripleValueRow(commonComponents.spanCrafterWordNoHide(employeeName,"activityFeed-name"),
+                        commonComponents.spanCrafterWordNoHide(" - ","activityFeed-name"),
+                        commonComponents.spanCrafterWordNoHide(String.format("%d %s",unitsProduced,"- units produced"),"stat-example")),
+                commonComponents.spanCrafterWordNoHide(String.format("%s %.2f","Hourly salary", hourlySalary),"stat-description")
         );
         e.setWidthFull();
         e.setPadding(false);

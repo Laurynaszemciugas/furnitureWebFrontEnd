@@ -2,7 +2,11 @@ package com.example.demo.Pages.DashBoard.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.ControllerModels.CommonDtos.UserSettings;
 import com.example.demo.ControllerModels.DashBoard.MaterialLowNo;
+import com.example.demo.Services.Material.MaterialService;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Span;
@@ -13,6 +17,7 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,13 +26,23 @@ public class MaterialLowNoStock {
     CommonComponents commonComponents;
     Common common;
 
-    public MaterialLowNoStock(CommonComponents commonComponents, Common common) {
+    SessionCrafter sessionCrafter;
+
+    MaterialService materialService;
+
+    public MaterialLowNoStock(CommonComponents commonComponents, Common common, MaterialService materialService) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.materialService = materialService;
+
+        this.sessionCrafter = new SessionCrafter();
     }
 
 
-    public VerticalLayout materialLowNoStock(List<MaterialLowNo> materialLowNoList){
+    public VerticalLayout materialLowNoStock(){
+
+
+        List<MaterialLowNo> materialLowNoList = materialService.getMaterialLowNoStock();
 
         boolean empty = materialLowNoList.isEmpty();
 
@@ -55,7 +70,11 @@ public class MaterialLowNoStock {
         scroller.setHeight("400px");
 
         // simple button in the middle
-        HorizontalLayout buttonAtTheBottom = new HorizontalLayout(commonComponents.normalThemeButton("View All Material", "s", ButtonVariant.LUMO_PRIMARY));
+
+        Button button = commonComponents.normalThemeButton("View All Material", "Materials", ButtonVariant.LUMO_PRIMARY);
+        button.addClassName("accentButtons");
+
+        HorizontalLayout buttonAtTheBottom = new HorizontalLayout(button);
         buttonAtTheBottom.setWidthFull();
         buttonAtTheBottom.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
@@ -73,8 +92,11 @@ public class MaterialLowNoStock {
 
         double howMuchToReachInStock = howMuchToReachTresh(currentStock, minTresh, pieceCost);
 
+        UserSettings userSettings = sessionCrafter.extractSession("settings", UserSettings.class);
+
+
         // icon for nicer view
-        HorizontalLayout iconHolder = new HorizontalLayout(commonComponents.iconCrafter(VaadinIcon.CIRCLE,"20px","blue"));
+        HorizontalLayout iconHolder = new HorizontalLayout(commonComponents.iconCrafter(VaadinIcon.CIRCLE,"20px",userSettings.getAccent()));
         iconHolder.getStyle().set("margin-top","5px");
 
         // badge
@@ -85,9 +107,10 @@ public class MaterialLowNoStock {
 
         // edit button
 
-        Button editShortCut = commonComponents.smallIconButtons("1", VaadinIcon.PENCIL,"black");
+
+        Button editShortCut = commonComponents.smallIconButtons("1", VaadinIcon.PENCIL,userSettings.getAccent());
         editShortCut.addClickListener(e->{
-            System.out.println(id);
+            UI.getCurrent().navigate("MaterialEdit/" + id);
         });
 
         HorizontalLayout editData = new HorizontalLayout(editShortCut);

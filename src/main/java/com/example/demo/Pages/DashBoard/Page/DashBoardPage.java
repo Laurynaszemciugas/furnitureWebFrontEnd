@@ -124,7 +124,7 @@ public class DashBoardPage extends VerticalLayout implements BeforeEnterObserver
 
     // graph and the activitylog holder
     public HorizontalLayout activityGraphHolder(){
-        VerticalLayout activityFeed2 = activityFeed.activityFeedCrafter(data.getLoadActivityList());
+        VerticalLayout activityFeed2 = activityFeed.activityFeedCrafter();
         VerticalLayout graphHolder = graphStatistics.graph();
         graphHolder.setWidth("400px");
         HorizontalLayout h = new HorizontalLayout(graphHolder, activityFeed2);
@@ -146,7 +146,7 @@ public class DashBoardPage extends VerticalLayout implements BeforeEnterObserver
         VerticalLayout quick = quickAction.quickActionButtons(data.getLoadQuickActions());
 
 
-        HorizontalLayout h = new HorizontalLayout(materialLowNoStock.materialLowNoStock(data.getLoadMaterialLowNoStock()), topEmployees.topEmployees(data.getLoadTopEmployees()), quick);
+        HorizontalLayout h = new HorizontalLayout(materialLowNoStock.materialLowNoStock(), topEmployees.topEmployees(), quick);
         h.setWidthFull();
         h.setFlexGrow(1, quick);
 

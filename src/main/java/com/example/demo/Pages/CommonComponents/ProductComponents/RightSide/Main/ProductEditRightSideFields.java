@@ -3,6 +3,8 @@ package com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Main
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ObjectConverter;
+import com.example.demo.Common.MaterialAiDto;
+import com.example.demo.Common.ProductAiDto;
 import com.example.demo.ControllerModels.Common.*;
 import com.example.demo.ControllerModels.CommonDtos.*;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
@@ -14,6 +16,7 @@ import com.example.demo.Enums.Visibility;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.Grids;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Components.MaterialAndDetails;
 import com.example.demo.Common.Logic.ProductEditImage;
+import com.example.demo.Services.AI.AIService;
 import com.example.demo.Services.CommonService.CommonService;
 import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.flow.component.HasComponents;
@@ -123,15 +126,19 @@ public class ProductEditRightSideFields {
     }
 
 
+    AIService aiService;
 
+    VerticalLayout v =new VerticalLayout();
 
+    Product productEditDtos = new Product();
 
 
     public ProductEditRightSideFields(CommonComponents commonComponents,
                                       Common common,
                                       CommonService commonService,
                                       ObjectConverter objectConverter,
-                                      MaterialService materialService
+                                      MaterialService materialService,
+                                      AIService aiService
     ) {
         this.commonComponents = commonComponents;
         this.common = common;
@@ -140,6 +147,7 @@ public class ProductEditRightSideFields {
         this.materialService = materialService;
         this.grids = new Grids(commonComponents,common,materialService);
         this.materialAndDetails = new MaterialAndDetails(commonComponents,common,commonService,grids);
+        this.aiService = aiService;
 
 
 
@@ -171,8 +179,11 @@ public class ProductEditRightSideFields {
     }
 
 
-    public VerticalLayout rightSide(Product productEditDtos){
+    public VerticalLayout rightSide(Product productEditDtoss){
 
+        productEditDtos = productEditDtoss;
+
+        v.removeAll();
 
         manualStock.addClickListener(e->{
            if(!manualStock.getValue()){
@@ -182,36 +193,14 @@ public class ProductEditRightSideFields {
 
         loadData(productEditDtos);
 
-        VerticalLayout v =new VerticalLayout();
+
         v.setWidth("700px");
+        v.setPadding(false);
 
 
 
 
-        FormLayout pricingInventoryOne = new FormLayout();
 
-        pricingInventoryOne.setResponsiveSteps(
-                new FormLayout.ResponsiveStep("0", 3)
-        );
-
-
-
-        pricingInventoryOne.add(price, discount, materialCost);
-
-
-        FormLayout pricingInventoryTwo = new FormLayout();
-        pricingInventoryTwo.setResponsiveSteps(
-                new FormLayout.ResponsiveStep("0", 2)
-        );
-
-        pricingInventoryTwo.add(stockQuantity, lowThreshold);
-
-        FormLayout pricingInventoryThree = new FormLayout();
-        pricingInventoryTwo.setResponsiveSteps(
-                new FormLayout.ResponsiveStep("0", 2)
-        );
-
-        pricingInventoryThree.add(manualStock);
 
 
 
@@ -272,25 +261,12 @@ public class ProductEditRightSideFields {
 
             });
 
-        FormLayout categoryTags = new FormLayout();
-        categoryTags.add(category,tags);
 
 
 
 
-        FormLayout productStatus = new FormLayout();
-        visibility.addValueChangeListener(e->{
-           if(e.getValue().equals(Visibility.NonVisible)){
-               status.setValue(Status.Disabled);
-               status.setEnabled(false);
-           }
-           else{
-               status.setEnabled(true);
-           }
-        });
 
 
-        productStatus.add(status,visibility);
 
 
         addNewMaterial = commonComponents.buttonThemeAndIcon("Add Material",null, ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White");
@@ -321,13 +297,13 @@ public class ProductEditRightSideFields {
                 basicInfo(),
                 specs(),
 
-                pricingInv(pricingInventoryOne,pricingInventoryTwo,pricingInventoryThree),
+                pricingInv(),
 
-                categoriesTags(categoryTags),
+                categoriesTags(),
 
 
 
-                productStatus(productStatus),
+                productStatus(),
                 requiredMaterials()
 
 
@@ -364,7 +340,10 @@ public class ProductEditRightSideFields {
     public void loadData(Product productEditDto){
         Double sumPrice = 0.0;
 
-
+        listExtraDetailsGrids.clear();
+        materialInfoList.clear();
+        tagss.clear();
+        tagsSelected.removeAll();
 
         manualStock.setValue(productEditDto.isStockCalculatedManually());
 
@@ -595,12 +574,50 @@ public class ProductEditRightSideFields {
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
+        v.getStyle().set("position","relative");
         FormLayout basicInfo = new FormLayout();
 
         basicInfo.add(productName, sku, description);
         basicInfo.setColspan(description,2);
 
+        Button aiButton = commonComponents.buttonThemeAndIconNoNavigate("AI",ButtonVariant.LUMO_PRIMARY, VaadinIcon.MAGIC,"WHITE");
+        aiButton.setTooltipText("Generate information with a prompt");
+        aiButton.getStyle().set("position","absolute").set("right","10px").set("top","10px");
+
+
+
+
+        aiButton.addClickListener(e -> {
+
+            VerticalLayout component = new VerticalLayout();
+
+            component.setPadding(false);
+            component.add(
+                    basicInfo(),
+                    specs(),
+
+                    pricingInv(),
+
+                    categoriesTags(),
+
+
+
+                    productStatus(),
+                    requiredMaterials()
+            );
+
+
+            aiService.dialogTest(new ProductAiDto(), ProductAiDto.class,v,component,this,"Products");
+
+
+
+        });
+
+
+
+
         v.add(
+                aiButton,
                 commonComponents.spanCrafterWordNoHide("Basic information","activityFeed-name"),
                 basicInfo
         );
@@ -622,29 +639,60 @@ public class ProductEditRightSideFields {
         return v;
     }
 
-    public VerticalLayout pricingInv(FormLayout one, FormLayout two, FormLayout three){
+    public VerticalLayout pricingInv(){
+
+
+        FormLayout pricingInventoryOne = new FormLayout();
+
+        pricingInventoryOne.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("0", 3)
+        );
+
+
+
+        pricingInventoryOne.add(price, discount, materialCost);
+
+
+        FormLayout pricingInventoryTwo = new FormLayout();
+        pricingInventoryTwo.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("0", 2)
+        );
+
+        pricingInventoryTwo.add(stockQuantity, lowThreshold);
+
+        FormLayout pricingInventoryThree = new FormLayout();
+        pricingInventoryTwo.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("0", 2)
+        );
+
+        pricingInventoryThree.add(manualStock);
+
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
 
         v.add(
                 commonComponents.spanCrafterWordNoHide("Pricing & Inventory","activityFeed-name"),
-                one,
-                two,
-                three
+                pricingInventoryOne,
+                pricingInventoryTwo,
+                pricingInventoryThree
         );
 
         return v;
     }
 
-    public VerticalLayout categoriesTags(FormLayout one){
+    public VerticalLayout categoriesTags(){
+
+
+        FormLayout categoryTags = new FormLayout();
+        categoryTags.add(category,tags);
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
 
         v.add(
                 commonComponents.spanCrafterWordNoHide("Selected Tags","activityFeed-name"),
-                one,
+                categoryTags,
                 tagsSelected
 
 
@@ -653,14 +701,29 @@ public class ProductEditRightSideFields {
         return v;
     }
 
-    public VerticalLayout productStatus(FormLayout one){
+    public VerticalLayout productStatus(){
+
+
+        FormLayout productStatus = new FormLayout();
+        visibility.addValueChangeListener(e->{
+            if(e.getValue().equals(Visibility.NonVisible)){
+                status.setValue(Status.Disabled);
+                status.setEnabled(false);
+            }
+            else{
+                status.setEnabled(true);
+            }
+        });
+
+
+        productStatus.add(status,visibility);
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
 
         v.add(
                 commonComponents.spanCrafterWordNoHide("Product Status","activityFeed-name"),
-                one
+                productStatus
 
 
         );

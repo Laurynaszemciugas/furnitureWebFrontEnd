@@ -132,6 +132,9 @@ public class HttpCallLogic {
 
             }
 
+            System.out.println("parsing");
+            mapper.readValue(body, responseType);
+            System.out.println("parsed");
 
             // server is offline
             if (status == 502) {

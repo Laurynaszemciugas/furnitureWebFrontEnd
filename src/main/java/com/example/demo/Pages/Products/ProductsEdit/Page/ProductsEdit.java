@@ -11,6 +11,7 @@ import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Common.Logic.ProductEditImage;
 import com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Main.ProductEditRightSideFields;
 import com.example.demo.Common.ReviewCrafter;
+import com.example.demo.Services.AI.AIService;
 import com.example.demo.Services.CommonService.CommonService;
 import com.example.demo.Services.Material.MaterialService;
 import com.example.demo.Services.ProductEditService.ProductEditService;
@@ -44,20 +45,23 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
     int productId = 0;
 
 
+    AIService aiService;
 
     public ProductsEdit(CommonComponents commonComponents,
                         Common common,
                         CommonService commonService,
                         ProductEditService productEditService,
                         ObjectConverter objectConverter,
-                        MaterialService materialService) {
+                        MaterialService materialService,
+                        AIService aiService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.commonService = commonService;
         this.productEditService = productEditService;
         this.objectConverter = objectConverter;
         this.materialService = materialService;
-        this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonService,objectConverter,materialService);
+        this.aiService = aiService;
+        this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonService,objectConverter,materialService,aiService);
         this.productEditImage = new ProductEditImage(commonComponents,common);
         this.reviewCrafter = new ReviewCrafter(commonComponents,common);
 

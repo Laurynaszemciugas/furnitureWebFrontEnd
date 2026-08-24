@@ -57,16 +57,7 @@ public class DashBoardService {
 
     }
 
-    public List<ActivityFeedModel> loadActivityList(){
 
-        List<ActivityFeedModel> activityFeedModelList = new ArrayList<>();
-
-        activityFeedModelList.add(new ActivityFeedModel("Created new orderCreated new orderCreated new orderCreated new order", "John", 15L,"green"));
-        activityFeedModelList.add(new ActivityFeedModel("Deleted product", "Sarah", 40L,"red"));
-        activityFeedModelList.add(new ActivityFeedModel("Updated price", "Mike", 5L,"yellow"));
-
-        return activityFeedModelList;
-    }
 
 
     public List<MaterialLowNo> loadMaterialLowNoStock(){
@@ -90,9 +81,7 @@ public class DashBoardService {
                         "Screenshot 2026-04-27 001745.png",
                         "Lucas Anderson",
                         1560L,
-                        2.0,
-                        190L,
-                        1L
+                        2.0
                 )
         );
 
@@ -101,9 +90,7 @@ public class DashBoardService {
                         "Screenshot 2026-04-27 001745.png",
                         "Olivia Martinez",
                         1340L,
-                        24.0,
-                        176L
-                        ,123L
+                        24.0
                 )
         );
 
@@ -112,9 +99,7 @@ public class DashBoardService {
                         "Screenshot 2026-04-27 001745.png",
                         "Ethan Thomas",
                         920L,
-                        10.0,
-                        158L,
-                        23L
+                        10.0
                 )
         );
 
@@ -123,9 +108,7 @@ public class DashBoardService {
                         "Screenshot 2026-04-27 001745.png",
                         "Sophia White",
                         1685L,
-                        22.0,
-                        198L,
-                        44L
+                        22.0
                 )
         );
 
@@ -161,7 +144,7 @@ public class DashBoardService {
         data.setMiniStatThree(loadMaterialDataMiniStatThree());
         data.setMiniStatFour(loadEmployeeDataMiniStatFourth());
         data.setGraphData(dashBoardGraphDataList());
-        data.setLoadActivityList(loadActivityList());
+        data.setLoadActivityList(null);
         data.setLoadMaterialLowNoStock(loadMaterialLowNoStock());
         data.setLoadTopEmployees(loadTopEmployees());
         data.setLoadQuickActions(quickActionList());

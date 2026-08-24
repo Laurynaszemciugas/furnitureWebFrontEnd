@@ -6,6 +6,7 @@ import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.ControllerModels.Common.GraphDataDateValue;
 import com.example.demo.ControllerModels.Common.MiniStatHolder;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
+import com.example.demo.ControllerModels.DashBoard.ActivityFeedModel;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMonthlyOrdersCompleted;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
@@ -176,6 +177,14 @@ public class OrdersService {
     public List<GraphDataDateValue> getGraphDashboard(LocalDate fromDate, LocalDate toDate) {
 
         return Arrays.stream(httpCallLogic.HttpCall("order/getGraphDashboard", HttpMethod.GET,String.format("%s/%s",fromDate,toDate), GraphDataDateValue[].class,true)).toList();
+
+    }
+
+
+    @SneakyThrows
+    public List<ActivityFeedModel> getActionTracker() {
+
+        return Arrays.stream(httpCallLogic.HttpCall("order/getActionTracker", HttpMethod.GET,null, ActivityFeedModel[].class,false)).toList();
 
     }
 

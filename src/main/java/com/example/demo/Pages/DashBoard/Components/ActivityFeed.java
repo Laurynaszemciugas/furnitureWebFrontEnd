@@ -2,7 +2,11 @@ package com.example.demo.Pages.DashBoard.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.ControllerModels.CommonDtos.UserSettings;
 import com.example.demo.ControllerModels.DashBoard.ActivityFeedModel;
+import com.example.demo.Services.Orders.OrdersService;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -12,6 +16,7 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,14 +25,25 @@ public class ActivityFeed {
     CommonComponents commonComponents;
     Common common;
 
-    public ActivityFeed(CommonComponents commonComponents, Common common) {
+    SessionCrafter sessionCrafter;
+
+    OrdersService ordersService;
+
+    public ActivityFeed(CommonComponents commonComponents, Common common,OrdersService ordersService) {
         this.commonComponents = commonComponents;
         this.common = common;
+
+        this.ordersService = ordersService;
+
+        this.sessionCrafter = new SessionCrafter();
     }
 
 
 
-    public VerticalLayout activityFeedCrafter(List<ActivityFeedModel> activityFeedModelList){
+    public VerticalLayout activityFeedCrafter(){
+
+
+        List<ActivityFeedModel> activityFeedModelList  = ordersService.getActionTracker();
 
         boolean empty = activityFeedModelList.isEmpty();
 
@@ -37,7 +53,10 @@ public class ActivityFeed {
         activityFeedHolder.setMaxHeight("600px");
 
 
-        HorizontalLayout buttonAtTheBottom = new HorizontalLayout(commonComponents.normalThemeButton("View All Logs", "s", ButtonVariant.LUMO_PRIMARY));
+        Button button = commonComponents.normalThemeButton("View All Logs", "Materials", ButtonVariant.LUMO_PRIMARY);
+        button.addClassName("accentButtons");
+
+        HorizontalLayout buttonAtTheBottom = new HorizontalLayout(button);
         buttonAtTheBottom.setWidthFull();
         buttonAtTheBottom.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
@@ -48,7 +67,7 @@ public class ActivityFeed {
 
         if(!empty) {
             for (var s : activityFeedModelList) {
-                actionsOfTheSystems.add(activityLogCrafter(s.getActionDescription(), s.getWhoMadeIt(), s.getHowLongAgoMinutes(), s.getColor()));
+                actionsOfTheSystems.add(activityLogCrafter(s.getActionDescription(),s.getName() ,s.getHowLongAgoMinutes()));
             }
         }
         else{
@@ -67,7 +86,7 @@ public class ActivityFeed {
 
 
     // log crafter for "activityFeedCrafter"
-    public HorizontalLayout activityLogCrafter(String nameOfTheUpdatedCreatedItem, String whoMadeAction, long howLongAgo, String color){
+    public HorizontalLayout activityLogCrafter(String nameOfTheUpdatedCreatedItem,String name, long howLongAgo){
 
         long newStatusMin = 15;
 
@@ -76,8 +95,9 @@ public class ActivityFeed {
         neww.setHeight("15px");
         neww.getStyle().set("position","absolute").set("top","10px").set("right","10px");
 
+        UserSettings userSettings = sessionCrafter.extractSession("settings", UserSettings.class);
 
-        HorizontalLayout iconHolder = new HorizontalLayout(commonComponents.iconCrafter(VaadinIcon.CIRCLE,"20px",color));
+        HorizontalLayout iconHolder = new HorizontalLayout(commonComponents.iconCrafter(VaadinIcon.CIRCLE,"20px",userSettings.getAccent()));
         iconHolder.getStyle().set("margin-top","5px");
 
         // how  long ago is in minutes
@@ -103,7 +123,7 @@ public class ActivityFeed {
 
 
         VerticalLayout verticalLayout = new VerticalLayout(commonComponents.spanCrafterWordNoHide(nameOfTheUpdatedCreatedItem,"activityFeed-name"),
-                commonComponents.spanCrafter(String.format("%s %s %d %s",whoMadeAction, "●", timePassed,timeName ),"stat-description")
+                commonComponents.spanCrafter(String.format("%s %s %d %s",name, "●", timePassed,timeName ),"stat-description")
                 );
         verticalLayout.setPadding(false);
         verticalLayout.setSpacing(false);

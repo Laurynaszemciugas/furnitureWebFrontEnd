@@ -159,6 +159,7 @@ public class ProfileAccount {
             User user = new User();
             user.setPhoneNumber(phoneNumber.getValue());
             user.setBio(bio.getValue());
+            user.setImageUrl(singlePhotoLogic.getImageData());
 
             userService.saveProfileInfo(user);
 

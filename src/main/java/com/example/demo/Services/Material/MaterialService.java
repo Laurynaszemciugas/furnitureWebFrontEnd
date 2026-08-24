@@ -4,8 +4,10 @@ import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.ControllerModels.Common.GraphDataDateValue;
 import com.example.demo.ControllerModels.Common.MiniStatHolder;
 import com.example.demo.ControllerModels.CommonDtos.Materials;
+import com.example.demo.ControllerModels.DashBoard.ActivityFeedModel;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialStock;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialUsageInfo;
+import com.example.demo.ControllerModels.DashBoard.MaterialLowNo;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
@@ -155,6 +157,14 @@ public class MaterialService {
     public DashBoardMaterialUsageInfo getMiniDashboardTwoMoreIndepth(LocalDate from, LocalDate to) {
 
         return httpCallLogic.HttpCall("material/getMiniDashboardTwoMoreIndepth", HttpMethod.GET,String.format("%s/%s",from,to), DashBoardMaterialUsageInfo.class,true);
+
+    }
+
+
+    @SneakyThrows
+    public List<MaterialLowNo> getMaterialLowNoStock() {
+
+        return Arrays.stream(httpCallLogic.HttpCall("material/getMaterialLowNoStock", HttpMethod.GET,null, MaterialLowNo[].class,false)).toList();
 
     }
 

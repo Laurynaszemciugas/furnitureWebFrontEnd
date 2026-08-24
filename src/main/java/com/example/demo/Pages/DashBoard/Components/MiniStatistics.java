@@ -71,7 +71,7 @@ public class MiniStatistics {
         HorizontalLayout employeeCard = new HorizontalLayout(employeeMiniStat(
                 "Employee mini information",
                 "Screenshot 2026-04-27 001745.png",
-                "Material usage this month compared to last",
+                "This months top employee",
                 null,
                 "170px"));
         employeeCard.setMaxWidth("720px");
@@ -229,8 +229,8 @@ public class MiniStatistics {
                 commonComponents.spanCrafter(name,"stat-title"),
                 commonComponents.doubleValueRow(commonComponents.spanCrafter(String.valueOf(totalCostOfMaterialsUsedThisMonth),"stat-value"), commonComponents.spanCrafter("Eur","stat-unit")),
                 trend,
-                commonComponents.spanCrafter(formattedVs,"stat-description"),
-                commonComponents.doubleValueRow(commonComponents.spanCrafter(mostUsedMaterial,"stat-example"), commonComponents.spanCrafter("Compared to all usage -  " + totalMaterialUsageCount,"stat-description")));
+                commonComponents.spanCrafter(formattedVs,"stat-description"));
+
 
 
         island.addClassName("stat-card");
