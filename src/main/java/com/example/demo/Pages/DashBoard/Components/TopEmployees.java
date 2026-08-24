@@ -3,6 +3,8 @@ package com.example.demo.Pages.DashBoard.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.DashBoard.TopEmployeesModel;
+import com.example.demo.Services.EmployeeService.EmployeeService;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
@@ -25,11 +27,13 @@ public class TopEmployees {
 
     String top = "";
 
+    EmployeeService employeeService;
 
-
-    public TopEmployees(CommonComponents commonComponents, Common common) {
+    public TopEmployees(CommonComponents commonComponents, Common common, EmployeeService employeeService) {
         this.commonComponents = commonComponents;
         this.common = common;
+
+        this.employeeService = employeeService;
     }
 
     public void findBestEmployee(List<TopEmployeesModel> list){
@@ -42,7 +46,7 @@ public class TopEmployees {
     public VerticalLayout topEmployees(){
 
 
-        List<TopEmployeesModel> topEmployeesModelList = new ArrayList<>();
+        List<TopEmployeesModel> topEmployeesModelList = employeeService.getTopEmployeesModel();
 
         boolean empty = (topEmployeesModelList == null || topEmployeesModelList.isEmpty());
 
@@ -72,9 +76,11 @@ public class TopEmployees {
         scroller2.setSizeFull();
         scroller2.setHeight("400px");
 
+        Button button = commonComponents.normalThemeButton("View All Employee", "s", ButtonVariant.LUMO_PRIMARY);
+        button.addClassName("accentButtons");
 
         // simple button in the middle
-        HorizontalLayout buttonAtTheBottom2 = new HorizontalLayout(commonComponents.normalThemeButton("View All Employee", "s", ButtonVariant.LUMO_PRIMARY));
+        HorizontalLayout buttonAtTheBottom2 = new HorizontalLayout(button);
         buttonAtTheBottom2.setWidthFull();
         buttonAtTheBottom2.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 

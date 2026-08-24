@@ -6,6 +6,7 @@ import com.example.demo.ControllerModels.CommonDtos.Employee;
 import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.ControllerModels.DashBoard.DashBoardEmployeeMiniInfo;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialUsageInfo;
+import com.example.demo.ControllerModels.DashBoard.TopEmployeesModel;
 import com.example.demo.ControllerModels.Employee.EmployeeBriefDto;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
@@ -88,6 +89,9 @@ public class EmployeeService {
 
     }
 
-
+    @SneakyThrows
+    public List<TopEmployeesModel> getTopEmployeesModel() {
+        return Arrays.stream(httpCallLogic.HttpCall("employee/getTopEmployeesModel", HttpMethod.GET,null , TopEmployeesModel[].class,false)).toList();
+    }
 
 }
