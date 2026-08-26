@@ -128,7 +128,7 @@ public class ProductEditRightSideFields {
 
     AIService aiService;
 
-    VerticalLayout v =new VerticalLayout();
+    VerticalLayout rightSide =new VerticalLayout();
 
     Product productEditDtos = new Product();
 
@@ -183,7 +183,7 @@ public class ProductEditRightSideFields {
 
         productEditDtos = productEditDtoss;
 
-        v.removeAll();
+        rightSide.removeAll();
 
         manualStock.addClickListener(e->{
            if(!manualStock.getValue()){
@@ -194,8 +194,8 @@ public class ProductEditRightSideFields {
         loadData(productEditDtos);
 
 
-        v.setWidth("700px");
-        v.setPadding(false);
+        rightSide.setWidth("700px");
+        rightSide.setPadding(false);
 
 
 
@@ -292,7 +292,7 @@ public class ProductEditRightSideFields {
 
 
 
-        v.add(
+        rightSide.add(
 
                 basicInfo(),
                 specs(),
@@ -315,7 +315,7 @@ public class ProductEditRightSideFields {
 
 
 
-        return v;
+        return rightSide;
     }
 
     public HorizontalLayout briefPageExplanation(String name){
@@ -455,7 +455,11 @@ public class ProductEditRightSideFields {
             if(newImages !=null){
                 System.out.println("changing pictures");
                 for(var s : newImages){
-                    s.setImageUrl(common.imageMaker(s.getImageData(),s.getImageType()));
+
+                    if(!s.getImageType().equals("Internet")) {
+                        s.setImageUrl(common.imageMaker(s.getImageData(), s.getImageType()));
+                    }
+
                 }
 
                 product.setImages(objectConverter.convert(newImages,ProductImageData.class));
@@ -595,19 +599,14 @@ public class ProductEditRightSideFields {
             component.add(
                     basicInfo(),
                     specs(),
-
                     pricingInv(),
-
                     categoriesTags(),
-
-
-
                     productStatus(),
                     requiredMaterials()
             );
 
 
-            aiService.dialogTest(new ProductAiDto(), ProductAiDto.class,v,component,this,"Products");
+            aiService.dialogTest(new ProductAiDto(), ProductAiDto.class,rightSide,component,this,"Products");
 
 
 
@@ -631,7 +630,7 @@ public class ProductEditRightSideFields {
         v.addClassName("island");
 
         v.add(
-                commonComponents.spanCrafterWordNoHide("Spefication","activityFeed-name"),
+                commonComponents.spanCrafterWordNoHide("Specification","activityFeed-name"),
                 grids.extraDetailsGridCrafter(listExtraDetailsGrids,extraDetailsGrid),
                 addNewDetail
         );

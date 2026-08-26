@@ -54,6 +54,8 @@ public class Grids {
 
     public Grid<MaterialInfo> materialGridCrafter(Grid<MaterialInfo> productFeedModelGrid, List<MaterialInfo> listMaterialGrids, Button addNewMaterial){
 
+        productFeedModelGrid.removeAllColumns();
+
         materialInfos = listMaterialGrids;
 
         addNewMaterial.addClickListener(e->{
@@ -261,6 +263,8 @@ public class Grids {
     }
 
     public Grid<ListExtraDetailsGrid> extraDetailsGridCrafter(List<ListExtraDetailsGrid> listExtraDetailsGrids,Grid<ListExtraDetailsGrid> extraDetailsGrid){
+
+        extraDetailsGrid.removeAllColumns();
 
         extraDetailsGrid.addComponentColumn(ListExtraDetailsGrid::getSpecName)
                 .setHeader("Specification name").setAutoWidth(true);

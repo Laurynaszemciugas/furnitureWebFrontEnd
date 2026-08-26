@@ -84,9 +84,28 @@ public class ProductEditImage {
         }
     }
 
+    public void addImage(){
+
+
+        feedLayout.add(createImage(null,"pnng","1","https://www.kaina24.lt/images/categories/vaizdo-technika.png"));
+        CommonImagesData imagesData = new CommonImagesData();
+        imagesData.setUuId(UUID.randomUUID().toString());
+        imagesData.setImageName("Taken from internet");
+        imagesData.setImageLogic(ImageLogic.Main);
+        imagesData.setImageUrl("https://www.kaina24.lt/images/categories/vaizdo-technika.png");
+        imagesData.setImageType("Internet");
+
+        imagesDataList.add(imagesData);
+
+        listConsumer.accept(imagesDataList);
+
+
+    }
+
     public HorizontalLayout images(List<CommonImagesData> commonImagesData) {
 
 
+        //addImage();
 
         HorizontalLayout holder = new HorizontalLayout();
         holder.setPadding(false);
@@ -155,7 +174,6 @@ public class ProductEditImage {
     // handle uploaded images
     public VerticalLayout uploadStuff(){
         VerticalLayout verticalLayout = new VerticalLayout();
-
 
 
         InMemoryUploadHandler inMemoryHandler = UploadHandler
@@ -231,6 +249,7 @@ public class ProductEditImage {
 
 
 
+
         Button mainSelected = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.PRIMARY, VaadinIcon.TRASH,"White");
         mainSelected.getStyle().set("position","absolute").set("bottom","0").set("right","2px");
         mainSelected.setVisible(false);
@@ -245,7 +264,11 @@ public class ProductEditImage {
 
         String src = "";
 
-        if(data !=null) {
+        if(data != null && mimeType.equals("Internet")){
+            src = url;
+        }
+
+        if(data !=null && !mimeType.equals("Internet")) {
             src = common.imageMaker(data,mimeType);
         }
         else{

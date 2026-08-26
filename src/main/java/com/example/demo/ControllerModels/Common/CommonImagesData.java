@@ -16,7 +16,7 @@ public class CommonImagesData {
     private Long id;
     private String uuId;
     private String imageName;
-    @ToString.Exclude
+
     private String imageUrl;
     private String imageType;
     private ImageLogic imageLogic;
