@@ -7,6 +7,7 @@ import com.example.demo.Common.MaterialAiDto;
 import com.example.demo.Common.ProductAiDto;
 import com.example.demo.ControllerModels.Common.*;
 import com.example.demo.ControllerModels.CommonDtos.*;
+import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductFinishSteps;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
 import com.example.demo.ControllerModels.Material.MaterialInfo;
 import com.example.demo.Enums.Category;
@@ -294,7 +295,9 @@ public class ProductEditRightSideFields {
 
         addNewStep.addClickListener(e->{
 
-            listStepsToPrepares.add(new ListStepsToPrepare(Long.valueOf(listStepsToPrepares.size()+1),
+            listStepsToPrepares.add(new ListStepsToPrepare(
+                    null,
+                    Long.valueOf(listStepsToPrepares.size()+1),
                     materialAndDetails.specName(""),
                     materialAndDetails.specDescription("")));
             updateStepGrid(listStepsToPrepares,listStepsToPrepareGrid);
@@ -427,17 +430,18 @@ public class ProductEditRightSideFields {
             upgradeMaterialGrid();
         }
 
-//        if(productEditDto.getMaterials() != null &&  !productEditDto.getMaterials().isEmpty()) {
-//            for(var s : productEditDto.getMaterials()) {
-//
-//                System.out.println(s.getMaterials().getId());
-//                MaterialInfo materialInfo = materialService.getMaterialInfoAccordingToId(s.getMaterials().getId());
-//                materialInfoList.add(materialInfo);
-//                sumPrice+= (s.getAmountUsed() * s.getUnitPrice());
-//
-//            }
-//            upgradeMaterialGrid();
-//        }
+        if(productEditDto.getSteps() != null &&  !productEditDto.getSteps().isEmpty()) {
+            for(var s : productEditDto.getSteps()) {
+
+                listStepsToPrepares.add(new ListStepsToPrepare(
+                        s.getId(),
+                        s.getStep(),
+                        materialAndDetails.specName(s.getStepName()),
+                        materialAndDetails.specDescription(s.getStepDescription())));
+
+            }
+            updateStepGrid(listStepsToPrepares,listStepsToPrepareGrid);
+        }
 
 
 
@@ -536,6 +540,25 @@ public class ProductEditRightSideFields {
                 extraDetails.add(details);
             }
             product.setExtraDetails(extraDetails);
+
+            // get steps
+
+                List<ProductFinishSteps> stepsToPrepares = new ArrayList<>();
+                for(var s : listStepsToPrepares){
+                    ProductFinishSteps steps = new ProductFinishSteps();
+                    steps.setProduct(product);
+                    steps.setStep(s.getStep());
+                    steps.setStepName(s.getStepName().getValue());
+                    steps.setStepDescription(s.getStepDescription().getValue());
+
+                    stepsToPrepares.add(steps);
+                }
+                product.setSteps(stepsToPrepares);
+
+
+
+
+
 
                 product.setStockCalculatedManually(manualStock.getValue());
 

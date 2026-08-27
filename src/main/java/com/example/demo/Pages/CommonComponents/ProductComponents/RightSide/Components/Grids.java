@@ -303,7 +303,7 @@ public class Grids {
 
         listStepsToPrepareGrid.addComponentColumn(e->{
 
-                return commonComponents.spanCrafter(e.getId().toString(), "stat-example");
+                return commonComponents.spanCrafter(e.getStep().toString(), "stat-example");
 
 
                 })
@@ -327,6 +327,11 @@ public class Grids {
 
             remove.addClickListener(e->{
                 listStepsToPrepares.remove(row);
+                int i = 1;
+                for(var s : listStepsToPrepares){
+                    s.setStep(Long.valueOf(i++));
+                }
+
                 updateStepGrid(listStepsToPrepares,listStepsToPrepareGrid);
             });
 

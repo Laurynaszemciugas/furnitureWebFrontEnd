@@ -13,6 +13,7 @@ import lombok.*;
 public class ListStepsToPrepare {
 
     private Long id;
+    private Long step;
     private TextField stepName;
     private TextArea stepDescription;
 
