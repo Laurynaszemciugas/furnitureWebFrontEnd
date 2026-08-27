@@ -4,6 +4,7 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Common.ListExtraDetailsGrid;
 import com.example.demo.ControllerModels.Common.ListMaterialGrid;
+import com.example.demo.ControllerModels.Common.ListStepsToPrepare;
 import com.example.demo.ControllerModels.Material.MaterialInfo;
 import com.example.demo.DTOS.ComboBoxMaterial;
 import com.example.demo.Services.Material.MaterialService;
@@ -296,6 +297,49 @@ public class Grids {
 
     }
 
+    public Grid<ListStepsToPrepare> preparationSteps(List<ListStepsToPrepare> listStepsToPrepares, Grid<ListStepsToPrepare> listStepsToPrepareGrid){
+
+        listStepsToPrepareGrid.removeAllColumns();
+
+        listStepsToPrepareGrid.addComponentColumn(e->{
+
+                return commonComponents.spanCrafter(e.getId().toString(), "stat-example");
+
+
+                })
+                .setHeader("Step").setAutoWidth(true);
+
+        listStepsToPrepareGrid.addComponentColumn(ListStepsToPrepare::getStepName)
+                .setHeader("Step name").setAutoWidth(true);
+
+        listStepsToPrepareGrid.addComponentColumn(ListStepsToPrepare::getStepDescription)
+                .setHeader("Step description").setAutoWidth(true);
+
+        listStepsToPrepareGrid.addComponentColumn(row ->{
+
+            Button remove = commonComponents.buttonThemeAndIconNoNavigate("",ButtonVariant.PRIMARY,VaadinIcon.TRASH,"RED");
+
+            HorizontalLayout h = new HorizontalLayout();
+            h.setWidthFull();
+            h.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+            h.add(remove);
+
+
+            remove.addClickListener(e->{
+                listStepsToPrepares.remove(row);
+                updateStepGrid(listStepsToPrepares,listStepsToPrepareGrid);
+            });
+
+
+            return h;
+
+        }).setHeader("Actions").setAutoWidth(true);
+
+        return listStepsToPrepareGrid;
+
+    }
+
+
 
 
 // update
@@ -305,6 +349,10 @@ public class Grids {
     }
 
     public void upgradeExtraDetailsGrid(List<ListExtraDetailsGrid> listExtraDetailsGrids,Grid<ListExtraDetailsGrid> extraDetailsGrid){
+        extraDetailsGrid.setItems(listExtraDetailsGrids);
+    }
+
+    public void updateStepGrid(List<ListStepsToPrepare> listExtraDetailsGrids,Grid<ListStepsToPrepare> extraDetailsGrid){
         extraDetailsGrid.setItems(listExtraDetailsGrids);
     }
 

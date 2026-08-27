@@ -95,8 +95,13 @@ public class ProductEditRightSideFields {
 
     Button addNewDetail;
 
+    Button addNewStep;
+
     List<ListExtraDetailsGrid> listExtraDetailsGrids = new ArrayList<>();
     Grid<ListExtraDetailsGrid> extraDetailsGrid = new Grid<>(ListExtraDetailsGrid.class,false);
+
+    List<ListStepsToPrepare> listStepsToPrepares = new ArrayList<>();
+    Grid<ListStepsToPrepare> listStepsToPrepareGrid = new Grid<>(ListStepsToPrepare.class,false);
 
 
     Grid<MaterialInfo> productFeedModelGrid = new Grid<>(MaterialInfo.class,false);
@@ -285,6 +290,17 @@ public class ProductEditRightSideFields {
 
         });
 
+        addNewStep = commonComponents.buttonThemeAndIcon("Add Step",null, ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White");
+
+        addNewStep.addClickListener(e->{
+
+            listStepsToPrepares.add(new ListStepsToPrepare(Long.valueOf(listStepsToPrepares.size()+1),
+                    materialAndDetails.specName(""),
+                    materialAndDetails.specDescription("")));
+            updateStepGrid(listStepsToPrepares,listStepsToPrepareGrid);
+
+        });
+
         productFeedModelGrid.removeAllColumns();
 
         // total material cost calculation
@@ -296,6 +312,7 @@ public class ProductEditRightSideFields {
 
                 basicInfo(),
                 specs(),
+                steps(),
 
                 pricingInv(),
 
@@ -409,6 +426,20 @@ public class ProductEditRightSideFields {
             }
             upgradeMaterialGrid();
         }
+
+//        if(productEditDto.getMaterials() != null &&  !productEditDto.getMaterials().isEmpty()) {
+//            for(var s : productEditDto.getMaterials()) {
+//
+//                System.out.println(s.getMaterials().getId());
+//                MaterialInfo materialInfo = materialService.getMaterialInfoAccordingToId(s.getMaterials().getId());
+//                materialInfoList.add(materialInfo);
+//                sumPrice+= (s.getAmountUsed() * s.getUnitPrice());
+//
+//            }
+//            upgradeMaterialGrid();
+//        }
+
+
 
         materialCost.setValue(sumPrice);
 
@@ -638,6 +669,20 @@ public class ProductEditRightSideFields {
         return v;
     }
 
+    public VerticalLayout steps(){
+
+        VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
+
+        v.add(
+                commonComponents.spanCrafterWordNoHide("Steps to finish","activityFeed-name"),
+                grids.preparationSteps(listStepsToPrepares,listStepsToPrepareGrid),
+                addNewStep
+        );
+
+        return v;
+    }
+
     public VerticalLayout pricingInv(){
 
 
@@ -836,6 +881,11 @@ public class ProductEditRightSideFields {
             }
         }
     }
+
+    public void updateStepGrid(List<ListStepsToPrepare> listExtraDetailsGrids,Grid<ListStepsToPrepare> extraDetailsGrid){
+        extraDetailsGrid.setItems(listExtraDetailsGrids);
+    }
+
 
     public void removeTags(){
 

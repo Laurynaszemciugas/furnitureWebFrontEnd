@@ -2,6 +2,7 @@ package com.example.demo.ControllerModels.CommonDtos;
 
 
 
+import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductFinishSteps;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Status;
@@ -47,6 +48,8 @@ public class Product {
     private List<ExtraDetails> extraDetails = new ArrayList<>();
 
     private List<Comments> comments= new ArrayList<>();
+
+    private List<ProductFinishSteps> steps = new ArrayList<>();
 
     @JsonIgnore
     private User user;
