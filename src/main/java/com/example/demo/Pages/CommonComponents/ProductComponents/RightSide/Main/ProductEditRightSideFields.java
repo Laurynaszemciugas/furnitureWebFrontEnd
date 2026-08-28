@@ -127,6 +127,8 @@ public class ProductEditRightSideFields {
     // memory of the material cost
     Double value;
 
+    private ProductAiDto productAiDto = new ProductAiDto();
+
     public void setConsumer (Consumer<Product> consumer){
         this.consumer = consumer;
     }
@@ -154,7 +156,7 @@ public class ProductEditRightSideFields {
         this.grids = new Grids(commonComponents,common,materialService);
         this.materialAndDetails = new MaterialAndDetails(commonComponents,common,commonService,grids);
         this.aiService = aiService;
-
+        this.productAiDto = new ProductAiDto();
 
 
 
@@ -164,6 +166,57 @@ public class ProductEditRightSideFields {
         manualStock.addClassName("stat-example");
         totalMaterialCost = commonComponents.spanCrafter("Total material cost - 0.0 Eur","stat-example");
 
+        getAiData();
+    }
+
+    public void getAiData() {
+
+
+
+
+        aiService.setProductFinishStepsConsumer(e -> {
+
+
+            listStepsToPrepares.clear();
+
+            for (var s : e) {
+
+
+                ListStepsToPrepare listStepsToPrepare =
+                        new ListStepsToPrepare(
+                                null,
+                                1L,
+                                materialAndDetails.specName(s.getStepName()),
+                                materialAndDetails.specDescription(s.getStepDescription())
+                        );
+
+                listStepsToPrepares.add(listStepsToPrepare);
+            }
+
+            grids.updateStepGrid(listStepsToPrepares,
+                    listStepsToPrepareGrid);
+        });
+
+        aiService.setProductExtraDetailsConsumer(e -> {
+
+            listExtraDetailsGrids.clear();
+
+            for (var s : e) {
+
+
+                ListExtraDetailsGrid extraDetails =
+                        new ListExtraDetailsGrid(
+                                null,
+                                materialAndDetails.specName(s.getSpecName()),
+                                materialAndDetails.specDescription(s.getSpecDescription())
+                        );
+
+                listExtraDetailsGrids.add(extraDetails);
+            }
+
+            grids.upgradeExtraDetailsGrid(listExtraDetailsGrids,
+                    extraDetailsGrid);
+        });
 
     }
 
@@ -653,6 +706,7 @@ public class ProductEditRightSideFields {
             component.add(
                     basicInfo(),
                     specs(),
+                    steps(),
                     pricingInv(),
                     categoriesTags(),
                     productStatus(),
@@ -660,7 +714,7 @@ public class ProductEditRightSideFields {
             );
 
 
-            aiService.dialogTest(new ProductAiDto(), ProductAiDto.class,rightSide,component,this,"Products");
+            aiService.dialogTest(productAiDto, ProductAiDto.class,rightSide,component,this,"Products");
 
 
 
@@ -920,7 +974,7 @@ public class ProductEditRightSideFields {
     }
 
     // material stuff components
-    
+
     // binder for textfield checks
     private void bindFields() {
 

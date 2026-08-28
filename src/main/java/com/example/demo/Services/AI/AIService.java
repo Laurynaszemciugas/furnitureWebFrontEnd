@@ -1,13 +1,13 @@
 package com.example.demo.Services.AI;
 
-import com.example.demo.Common.AiCalls;
-import com.example.demo.Common.AiQuestion;
-import com.example.demo.Common.Common;
-import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.*;
 import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.ControllerModels.CommonDtos.ExtraDetails;
 import com.example.demo.ControllerModels.CommonDtos.Materials;
+import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductFinishSteps;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vaadin.copilot.shaded.checkerframework.checker.units.qual.C;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
@@ -26,17 +26,21 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 @Service
+@Setter
 public class AIService {
 
     HttpCallLogic httpCallLogic;
@@ -48,6 +52,9 @@ public class AIService {
 
 
     int selectedItems = 0;
+
+    Consumer<List<ProductFinishSteps>> productFinishStepsConsumer;
+    Consumer<List<ExtraDetails>> productExtraDetailsConsumer;
 
 
     public AIService(CommonComponents commonComponents, Common common, HttpCallLogic httpCallLogic) {
@@ -72,6 +79,11 @@ public class AIService {
             common.customActionsForNotification(response.getMessage(),response.getWarning(),null,false);
             });
 
+        }
+
+        if (t instanceof ProductAiDto productAiDto) {
+            productFinishStepsConsumer.accept(productAiDto.getProductFinishStepsList());
+            productExtraDetailsConsumer.accept(productAiDto.getExtraDetails());
         }
 
         return t;

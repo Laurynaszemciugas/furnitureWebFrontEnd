@@ -15,12 +15,12 @@ import lombok.Setter;
 public class ProductFinishSteps {
 
 
-    private Long id;
-    private Long step;
-    private String stepName;
-    private String stepDescription;
+    private Long id = null;
+    private Long step = 0L;
+    private String stepName = "None";
+    private String stepDescription = "None";
     @JsonIgnore
-    private Product product;
+    private Product product = null;
 
 
 
