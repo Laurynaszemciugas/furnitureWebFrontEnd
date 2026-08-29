@@ -20,49 +20,49 @@ public class ImageScraper {
 
     public List<String> imageScraper(String text) throws IOException, InterruptedException {
 
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(String.format("https://www.kaina24.lt/s/%s/",text)))
-                .GET()
-                .build();
-
-        HttpResponse<String> response =
-                client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        String html = response.body();
-
-
-
-        //System.out.println(html);
-
-        Document document = Jsoup.parse(response.body());
-
-
-
-        Elements element = document.select(".product-item-h");
-
-        if (element.isEmpty()) {
-            return imageDifferentLayout(html);
-        }
-
-
         List<String> imageUrls = new ArrayList<>();
 
-        for(Element product : element){
+        if(text!=null) {
+
+            text = text.replace(" ","");
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(String.format("https://www.kaina24.lt/s/%s/", text)))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response =
+                    client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            String html = response.body();
+
+
+            //System.out.println(html);
+
+            Document document = Jsoup.parse(response.body());
+
+
+            Elements element = document.select(".product-item-h");
+
+            if (element.isEmpty()) {
+                return imageDifferentLayout(html);
+            }
 
 
 
-            String productPicture = product.select(".image-wrap img").attr("data-src");
+
+            for (Element product : element) {
 
 
+                String productPicture = product.select(".image-wrap img").attr("data-src");
 
 
-            imageUrls.add(productPicture);
+                imageUrls.add(productPicture);
 
 
+            }
 
         }
-
 
         return imageUrls;
 

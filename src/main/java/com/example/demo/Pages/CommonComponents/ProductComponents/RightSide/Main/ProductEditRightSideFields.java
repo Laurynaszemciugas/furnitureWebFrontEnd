@@ -142,9 +142,7 @@ public class ProductEditRightSideFields {
 
     Product productEditDtos = new Product();
 
-    ImageScraperView imageScraperView;
 
-    ImageScraper imageScraper;
 
 
     public ProductEditRightSideFields(CommonComponents commonComponents,
@@ -164,9 +162,6 @@ public class ProductEditRightSideFields {
         this.aiService = aiService;
         this.productAiDto = new ProductAiDto();
 
-
-        this.imageScraperView = new ImageScraperView();
-        this.imageScraper = new ImageScraper();
 
         loadNewData();
         bindFields();
@@ -700,25 +695,7 @@ public class ProductEditRightSideFields {
 
         VerticalLayout v = new VerticalLayout();
 
-        Button picturesScraper = new Button("Get images");
-        picturesScraper.getStyle().set("position","absolute").set("left","200px").set("top","10px");
 
-        picturesScraper.addClickListener(e->{
-
-
-            imageScraperView.layout(productEditDtos.getProductName());
-
-
-        });
-
-        imageScraperView.setImageUrlConsumer(e->{
-            productEditImage.addImage(e);
-        });
-
-
-        v.add(
-                picturesScraper
-        );
 
 
 

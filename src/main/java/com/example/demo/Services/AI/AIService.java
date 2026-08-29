@@ -355,16 +355,6 @@ public class AIService {
 
 
                     T aiDto =  getMaterialDataAccordingToId(aiQuestion,jwt,tClass,ui);
-//                            aiCalls.fillDataAutomatically(
-//                                    aiCalls.classToStringConverter(
-//                                            dto,
-//                                            tClass,
-//                                            aiPrompt.getValue()
-//                                    ),
-//                                    tClass
-//                            );
-
-                    //common.timer(250);
 
                     ui.access(() -> {
 

@@ -58,10 +58,17 @@ public class ProductEditImage {
 
 
 
+    ImageScraperView imageScraperView;
+
+    ImageScraper imageScraper;
+
 
     public ProductEditImage(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
+
+        this.imageScraperView = new ImageScraperView(commonComponents,common);
+        this.imageScraper = new ImageScraper();
 
 
 
@@ -113,11 +120,33 @@ public class ProductEditImage {
 
 
         //addImage();
-
-
-
-
         HorizontalLayout holder = new HorizontalLayout();
+        VerticalLayout imageHolder = new VerticalLayout();
+
+
+
+        Button picturesScraper = commonComponents.normalThemeButtonNoNavigate("Get images",ButtonVariant.LUMO_PRIMARY);
+        picturesScraper.setPrefixComponent(commonComponents.iconCrafter(VaadinIcon.CLOUD_DOWNLOAD,"25px","white"));
+        picturesScraper.getStyle().set("position","absolute").set("left","10px").set("bottom","0px");
+
+        picturesScraper.addClickListener(e->{
+
+
+            imageScraperView.layout();
+
+
+        });
+
+        imageScraperView.setImageUrlConsumer(e->{
+            addImage(e);
+        });
+
+
+        imageHolder.add(
+                picturesScraper
+        );
+
+
         holder.setPadding(false);
         holder.setSpacing(true);
         holder.setAlignItems(FlexComponent.Alignment.START);
@@ -125,7 +154,6 @@ public class ProductEditImage {
         holder.getStyle().set("position","relative");
 
 
-        VerticalLayout imageHolder = new VerticalLayout();
         imageHolder.setPadding(false);
         imageHolder.setSpacing(false);
         imageHolder.setWidth("450px");
