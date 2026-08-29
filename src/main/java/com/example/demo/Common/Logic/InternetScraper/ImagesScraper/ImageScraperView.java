@@ -396,10 +396,10 @@ public class ImageScraperView {
         image.setSrc(images.get(currentImageIndex));
         image.getStyle()
                 .set("width", "500px")
-                .set("height", "500px")
+                .set("height", "300px")
                 .set("object-fit", "contain")
-                .set("border-radius", "12px");
-
+                .set("border-radius", "8px")
+                .set("background", "#f5f5f5");
 
 
         Button left = new Button(commonComponents.iconCrafter(VaadinIcon.ANGLE_LEFT,"25px","Blue"));
