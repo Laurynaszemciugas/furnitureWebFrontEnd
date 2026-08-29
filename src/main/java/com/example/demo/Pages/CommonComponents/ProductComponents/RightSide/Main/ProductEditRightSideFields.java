@@ -2,6 +2,8 @@ package com.example.demo.Pages.CommonComponents.ProductComponents.RightSide.Main
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.InternetScraper.ImagesScraper.ImageScraper;
+import com.example.demo.Common.Logic.InternetScraper.ImagesScraper.ImageScraperView;
 import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.Common.MaterialAiDto;
 import com.example.demo.Common.ProductAiDto;
@@ -140,6 +142,10 @@ public class ProductEditRightSideFields {
 
     Product productEditDtos = new Product();
 
+    ImageScraperView imageScraperView;
+
+    ImageScraper imageScraper;
+
 
     public ProductEditRightSideFields(CommonComponents commonComponents,
                                       Common common,
@@ -159,6 +165,8 @@ public class ProductEditRightSideFields {
         this.productAiDto = new ProductAiDto();
 
 
+        this.imageScraperView = new ImageScraperView();
+        this.imageScraper = new ImageScraper();
 
         loadNewData();
         bindFields();
@@ -168,6 +176,9 @@ public class ProductEditRightSideFields {
 
         getAiData();
     }
+
+
+
 
     public void getAiData() {
 
@@ -239,6 +250,10 @@ public class ProductEditRightSideFields {
 
 
     public VerticalLayout rightSide(Product productEditDtoss){
+
+
+
+
 
         productEditDtos = productEditDtoss;
 
@@ -684,6 +699,30 @@ public class ProductEditRightSideFields {
     public VerticalLayout basicInfo(){
 
         VerticalLayout v = new VerticalLayout();
+
+        Button picturesScraper = new Button("Get images");
+        picturesScraper.getStyle().set("position","absolute").set("left","200px").set("top","10px");
+
+        picturesScraper.addClickListener(e->{
+
+
+            imageScraperView.layout(productEditDtos.getProductName());
+
+
+        });
+
+        imageScraperView.setImageUrlConsumer(e->{
+            productEditImage.addImage(e);
+        });
+
+
+        v.add(
+                picturesScraper
+        );
+
+
+
+
         v.addClassName("island");
         v.getStyle().set("position","relative");
         FormLayout basicInfo = new FormLayout();

@@ -44,6 +44,10 @@ public class Grids {
 
     List<MaterialInfo> materialInfos = new ArrayList<>();
 
+    // to stop the dublications
+    Dialog dialog = new Dialog();
+    Button back = new Button("Back");
+
     public Grids(CommonComponents commonComponents, Common common, MaterialService materialService) {
         this.commonComponents = commonComponents;
         this.common = common;
@@ -159,9 +163,10 @@ public class Grids {
 
     public void callDialog(List<MaterialInfo> materialInfoList){
 
-        Dialog dialog = new Dialog();
+        dialog.removeAll();
+        dialog.close();
 
-        Button back = new Button("Back");
+
         back.addThemeVariants(ButtonVariant.PRIMARY);
 
         List<MaterialInfo> materialInfos = materialService.getAllAvailableMaterials();

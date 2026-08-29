@@ -2,6 +2,8 @@ package com.example.demo.Common.Logic;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.InternetScraper.ImagesScraper.ImageScraper;
+import com.example.demo.Common.Logic.InternetScraper.ImagesScraper.ImageScraperView;
 import com.example.demo.ControllerModels.Common.CommonImagesData;
 import com.example.demo.Enums.ImageLogic;
 import com.vaadin.flow.component.button.Button;
@@ -17,6 +19,7 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.server.streams.InMemoryUploadHandler;
 import com.vaadin.flow.server.streams.UploadHandler;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +50,8 @@ public class ProductEditImage {
     VerticalLayout feedLayout = new VerticalLayout();
 
 
+
+
     // just a tripwire that says to controller hey i got updlaoded
     private Consumer<List<CommonImagesData>> listConsumer = list -> {};
     private Consumer<List<CommonImagesData>> mainChange = list -> {};
@@ -57,6 +62,8 @@ public class ProductEditImage {
     public ProductEditImage(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
+
+
 
         mainFound = false;
 
@@ -84,15 +91,15 @@ public class ProductEditImage {
         }
     }
 
-    public void addImage(){
+    public void addImage(String url){
 
 
-        feedLayout.add(createImage(null,"pnng","1","https://www.kaina24.lt/images/categories/vaizdo-technika.png"));
+        feedLayout.add(createImage(null,"png",null,url));
         CommonImagesData imagesData = new CommonImagesData();
         imagesData.setUuId(UUID.randomUUID().toString());
         imagesData.setImageName("Taken from internet");
-        imagesData.setImageLogic(ImageLogic.Main);
-        imagesData.setImageUrl("https://www.kaina24.lt/images/categories/vaizdo-technika.png");
+        imagesData.setImageLogic(ImageLogic.NonMain);
+        imagesData.setImageUrl(url);
         imagesData.setImageType("Internet");
 
         imagesDataList.add(imagesData);
@@ -107,11 +114,15 @@ public class ProductEditImage {
 
         //addImage();
 
+
+
+
         HorizontalLayout holder = new HorizontalLayout();
         holder.setPadding(false);
         holder.setSpacing(true);
         holder.setAlignItems(FlexComponent.Alignment.START);
         holder.addClassName("layout-flex");
+        holder.getStyle().set("position","relative");
 
 
         VerticalLayout imageHolder = new VerticalLayout();

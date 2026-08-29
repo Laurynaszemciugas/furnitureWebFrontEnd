@@ -38,6 +38,8 @@ public class MaterialAddPage extends VerticalLayout implements BeforeEnterObserv
     RightSideMaterials rightSideAddMaterials;
 
 
+
+
     AIService aiService;
 
     public MaterialAddPage(CommonComponents commonComponents, Common common, ObjectConverter objectConverter, MaterialService materialService,AIService aiService) {
