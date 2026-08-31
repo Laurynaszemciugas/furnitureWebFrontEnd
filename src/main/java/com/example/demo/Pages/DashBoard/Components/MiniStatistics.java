@@ -148,6 +148,7 @@ public class MiniStatistics {
                 commonComponents.spanCrafter(empty ? "No data": formattedVs ,"stat-description"));
 //                commonComponents.spanCrafter(description,"stat-description"));
         island.addClassName("island");
+        island.addClassName("animated-card");
 
         island.setPadding(true);
         island.setSpacing(false);
@@ -181,6 +182,7 @@ public class MiniStatistics {
                 commonComponents.doubleValueRow(commonComponents.spanCrafter(String.valueOf(noStockMaterial),"stat-value"), commonComponents.spanCrafter("No material stock","stat-unit")),
                 commonComponents.spanCrafter(description,"stat-description"));
         island.addClassName("stat-card");
+        island.addClassName("animated-card");
 
         island.setPadding(true);
         island.setSpacing(false);
@@ -234,6 +236,7 @@ public class MiniStatistics {
 
 
         island.addClassName("stat-card");
+        island.addClassName("animated-card");
 
         island.setPadding(true);
         island.setSpacing(false);
@@ -308,6 +311,7 @@ public class MiniStatistics {
 
 
         island.addClassName("stat-card");
+        island.addClassName("animated-card");
 
         island.setPadding(true);
         island.setSpacing(false);

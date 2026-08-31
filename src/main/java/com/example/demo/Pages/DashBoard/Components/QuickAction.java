@@ -31,6 +31,8 @@ public class QuickAction {
         mainLayout3.setWidth("200px");
         mainLayout3.setMaxWidth("600px");
 
+        mainLayout3.addClassName("smooth-panel");
+
         VerticalLayout ss = new VerticalLayout();
         ss.setSizeFull();
         ss.setAlignItems(FlexComponent.Alignment.CENTER);

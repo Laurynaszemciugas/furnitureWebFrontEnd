@@ -114,16 +114,22 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
         h.setWidthFull();
 
         h.getStyle().set("flex-wrap","wrap");
+        h.getStyle().set("overflow","hidden");
 
         //make an empty field
         Product sharedProductInstance = new Product();
         List<CommonImagesData> commonImagesData = new ArrayList<>();
 
         HorizontalLayout images = productEditImage.images(commonImagesData);
+
+
         Div holder = new Div(images,
                 productEditImage.uploadStuff(),
                 reviewCrafter.commentsHolder(sharedProductInstance.getComments()));
         VerticalLayout fields = productEditRightSideFields.rightSide(sharedProductInstance);
+        fields.addClassName("fromRightToLeft");
+
+        holder.addClassName("fromLeftToRight");
 
         h.add(holder,fields);
         h.expand(fields);

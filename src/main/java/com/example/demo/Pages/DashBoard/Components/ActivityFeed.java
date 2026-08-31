@@ -51,6 +51,7 @@ public class ActivityFeed {
         activityFeedHolder.addClassName("island");
         activityFeedHolder.setMaxWidth("500px");
         activityFeedHolder.setMaxHeight("600px");
+        activityFeedHolder.addClassName("smooth-panel");
 
 
         Button button = commonComponents.normalThemeButton("View All Logs", "Materials", ButtonVariant.LUMO_PRIMARY);

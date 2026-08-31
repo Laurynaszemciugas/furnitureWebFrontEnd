@@ -48,6 +48,7 @@ public class MaterialLowNoStock {
 
 
         VerticalLayout mainLayout = new VerticalLayout(commonComponents.spanCrafterWordNoHide("Material Low/No stock","stat-value"));
+        mainLayout.addClassName("smooth-panel");
         mainLayout.setWidth("600px");
         mainLayout.addClassName("island");
 

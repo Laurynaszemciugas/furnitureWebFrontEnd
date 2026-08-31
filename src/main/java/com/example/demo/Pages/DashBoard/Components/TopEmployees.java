@@ -57,6 +57,8 @@ public class TopEmployees {
         VerticalLayout mainLayout2 = new VerticalLayout(commonComponents.spanCrafterWordNoHide("Top employees","stat-value"));
         mainLayout2.setWidth("600px");
         mainLayout2.addClassName("island");
+        mainLayout2.addClassName("smooth-panel");
+
 
 
         // add data here from db
@@ -125,11 +127,13 @@ public class TopEmployees {
         HorizontalLayout h12 = new HorizontalLayout(image,e);
         h12.getStyle().set("position","relative");
         h12.addClassName("island");
+
         h12.setWidthFull();
 
         if(employeeName.equalsIgnoreCase(top)){
             h12.add(stockAlert);
         }
+
 
 
 

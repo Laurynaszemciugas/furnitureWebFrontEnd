@@ -46,6 +46,7 @@ public class GraphStatistics {
         graph.add(chart.ChartTest(list));
 
         graph.addClassName("island");
+        graph.addClassName("smooth-panel");
         graph.getStyle().set("flex-wrap","wrap");
 
 

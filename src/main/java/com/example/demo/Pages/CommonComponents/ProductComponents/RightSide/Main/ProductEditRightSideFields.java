@@ -254,6 +254,7 @@ public class ProductEditRightSideFields {
 
         rightSide.removeAll();
 
+
         manualStock.addClickListener(e->{
            if(!manualStock.getValue()){
                materialCost.setValue(value);
@@ -656,40 +657,6 @@ public class ProductEditRightSideFields {
     }
 
 
-
-
-    public void showNoImageError(Product product, int errorCount){
-        ConfirmDialog dialog = new ConfirmDialog();
-
-        dialog.setHeader("No images error");
-
-        VerticalLayout content = new VerticalLayout();
-        content.setSpacing(false);
-        content.setPadding(false);
-
-        Span line = new Span("• " + "No images are selected please add some images to your product");
-        line.getStyle().set("color", "red");
-        content.add(line);
-
-        dialog.setCancelable(true);   // gives "Cancel"
-        dialog.setConfirmText("Continue");
-        dialog.setCancelText("Go back");
-
-
-        dialog.addConfirmListener(event -> {
-
-
-                consumer.accept(product);
-                common.customNavigate("Products/1");
-        });
-
-        dialog.addCancelListener(event -> {
-        });
-
-        dialog.add(content);
-
-        dialog.open();
-    }
 
     public VerticalLayout basicInfo(){
 
