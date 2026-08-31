@@ -3,13 +3,7 @@ package com.example.demo.Pages.Reports.ReportsPages.CreatorPage;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
-import com.example.demo.ControllerModels.CommonDtos.CreateReport.Report;
-import com.example.demo.ControllerModels.CommonDtos.CreateReport.ReportItems;
-import com.example.demo.Enums.ReportCategory;
-import com.example.demo.Enums.Widget;
-import com.example.demo.Enums.Widths;
-import com.example.demo.MainLayout.MainLayout;
-import com.example.demo.Pages.Material.MaterialAddEdit.Components.ColorSelector;
+import com.example.demo.Common.ColorSelector;
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.CustomReportPageBuilder;
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.LeftSideReportCreate;
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.RightSideReportCreate;
@@ -17,13 +11,9 @@ import com.example.demo.Services.CustomReportService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Route(value = "editReport/:id")

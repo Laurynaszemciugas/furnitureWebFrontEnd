@@ -5,7 +5,7 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
 import com.example.demo.ControllerModels.CommonDtos.CreateReport.Report;
 import com.example.demo.MainLayout.MainLayout;
-import com.example.demo.Pages.Material.MaterialAddEdit.Components.ColorSelector;
+import com.example.demo.Common.ColorSelector;
 import com.example.demo.Pages.Reports.Common.CommonBriefPageExplanation;
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.CustomReportPageBuilder;
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.LeftSideReportCreate;

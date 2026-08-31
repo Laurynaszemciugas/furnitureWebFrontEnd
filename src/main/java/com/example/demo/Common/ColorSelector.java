@@ -1,9 +1,6 @@
-package com.example.demo.Pages.Material.MaterialAddEdit.Components;
+package com.example.demo.Common;
 
 import com.vaadin.flow.component.html.Input;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import lombok.Setter;
 
