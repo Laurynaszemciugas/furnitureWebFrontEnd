@@ -8,8 +8,11 @@ import com.example.demo.ControllerModels.Filter.ActionLog.ActionLogFilterHolder;
 import com.example.demo.Enums.ActionDesciptionEnum;
 import com.example.demo.Enums.ActionTrackerEnum;
 import com.example.demo.Enums.MaterialType;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -33,6 +36,7 @@ public class ActionLogFilters {
     Consumer<ActionDesciptionEnum> whatTypeOfActionConsumer;
     Consumer<LocalDate> fromConsumer;
     Consumer<LocalDate> toConsumer;
+    Consumer<String> clearConsumer;
 
     ActionLogFilterHolder filterData = new ActionLogFilterHolder();
 
@@ -42,7 +46,7 @@ public class ActionLogFilters {
         this.commonComponents = commonComponents;
         this.common = common;
 
-        this.currentFilterDisplay = new CurrentFilterDisplay(commonComponents,common);
+
 
     }
 
@@ -64,6 +68,7 @@ public class ActionLogFilters {
         v.add(currentFilterDisplay.getFilters());
 
         HorizontalLayout h = new HorizontalLayout();
+        h.setWidthFull();
 
 
 
@@ -107,14 +112,31 @@ public class ActionLogFilters {
             currentFilterDisplay.filterSetter(e.getValue(),LocalDate.of(1000,12,12),null,filterData,"dateTo",toConsumer);
         });
 
+        HorizontalLayout fields = new HorizontalLayout();
+        fields.setPadding(false);
+
+       fields.add(
+               searchActions,
+               whoMadeAction,
+               actionType,
+               from,
+               to
+       );
+
+        Button clear = new Button("Clear filters");
+        clear.setPrefixComponent(VaadinIcon.ERASER.create());
+
+        clear.addClickListener(e->{
+           clearConsumer.accept("ba");
+        });
 
         h.add(
-                searchActions,
-                whoMadeAction,
-                actionType,
-                from,
-                to
+                fields,
+                clear
         );
+        h.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        h.setAlignItems(FlexComponent.Alignment.BASELINE);
+
 
         v.add(h);
 

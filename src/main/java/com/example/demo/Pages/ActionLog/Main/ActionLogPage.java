@@ -2,11 +2,13 @@ package com.example.demo.Pages.ActionLog.Main;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.CurrentFilterDisplay;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.ActionLogs.ActionLogFeed;
 import com.example.demo.ControllerModels.Filter.ActionLog.ActionLogFilterHolder;
 import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
+import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.Enums.ActionDesciptionEnum;
 import com.example.demo.Enums.ActionTrackerEnum;
@@ -48,6 +50,8 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
     CommonComponents commonComponents;
     Common common;
 
+    CurrentFilterDisplay currentFilterDisplay;
+
 
     Paganation paganation;
 
@@ -74,6 +78,11 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
 
         this.actionLogGrid = new ActionLogGrid(commonComponents,common);
 
+        this.currentFilterDisplay = new CurrentFilterDisplay(commonComponents,common);
+
+
+        actionLogFilters.setCurrentFilterDisplay(currentFilterDisplay);
+
 
         gridHolder.setWidthFull();
         filterMemory.setWidthFull();
@@ -96,7 +105,11 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
 
         removeAll();
 
+        filterData = sessionCrafter.extractSession("actionLogsPageFilters",ActionLogFilterHolder.class) == null ? new ActionLogFilterHolder() :
+                sessionCrafter.extractSession("actionLogsPageFilters",ActionLogFilterHolder.class);
 
+        actionLogFilters.setFilterData(filterData);
+        currentFilterDisplay.preLoadFilters(ActionLogFilterHolder.class,"actionLogsPageFilters");
 
 
 
@@ -146,6 +159,24 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
             loadGridValues();
         });
 
+        currentFilterDisplay.setReloadController(e->{
+            setNewPage();
+            filterData = (ActionLogFilterHolder) e;
+            loadGridValues();
+        });
+
+        currentFilterDisplay.setReloadButtons(e->{
+            setNewPage();
+            reloadData();
+        });
+
+
+        actionLogFilters.setClearConsumer(e->{
+            setNewPage();
+            currentFilterDisplay.clearAllData();
+            filterData =  new ActionLogFilterHolder();
+            reloadData();
+        });
 
 
 
