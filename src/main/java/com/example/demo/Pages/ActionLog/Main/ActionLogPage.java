@@ -116,9 +116,46 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
 
 
 
+        actionLogFilters.setPromptConsumer(e->{
+            setNewPage();
+            filterData.setPromt(e);
+            loadGridValues();
+        });
+
+        actionLogFilters.setWhoMadeActionConsumer(e->{
+            setNewPage();
+            filterData.setWhoMadeTheAction(e);
+            loadGridValues();
+        });
+
+        actionLogFilters.setWhatTypeOfActionConsumer(e->{
+            setNewPage();
+            filterData.setActionType(e);
+            loadGridValues();
+        });
+
+        actionLogFilters.setFromConsumer(e->{
+            setNewPage();
+            filterData.setDateFrom(e);
+            loadGridValues();
+        });
+
+        actionLogFilters.setToConsumer(e->{
+            setNewPage();
+            filterData.setDateTo(e);
+            loadGridValues();
+        });
 
 
 
+
+
+
+        paganation.setOnPageChange(e->{
+            e = e-1;
+            filterData.setPage(e);
+            loadGridValues();
+        });
 
         return verticalLayout;
     }
