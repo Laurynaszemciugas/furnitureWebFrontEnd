@@ -54,7 +54,7 @@ public class ActivityFeed {
         activityFeedHolder.addClassName("smooth-panel");
 
 
-        Button button = commonComponents.normalThemeButton("View All Logs", "Materials", ButtonVariant.LUMO_PRIMARY);
+        Button button = commonComponents.normalThemeButton("View All Logs", "Actions", ButtonVariant.LUMO_PRIMARY);
         button.addClassName("accentButtons");
 
         HorizontalLayout buttonAtTheBottom = new HorizontalLayout(button);

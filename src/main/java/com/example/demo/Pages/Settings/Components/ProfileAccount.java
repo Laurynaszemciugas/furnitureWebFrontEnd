@@ -319,6 +319,7 @@ public class ProfileAccount {
         ComboBox<DateFormat> dateFormat = new ComboBox<>("Date format");
         dateFormat.setItems(DateFormat.values());
         dateFormat.setValue(dateFormatGot);
+        dateFormat.setItemLabelGenerator(DateFormat::getDisplayName);
 
         ComboBox<TimeZone> timeZone = new ComboBox<>("Time zone");
         timeZone.setItems(TimeZone.values());

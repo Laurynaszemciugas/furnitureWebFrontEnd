@@ -1,11 +1,13 @@
 package com.example.demo.Enums;
 
-public enum DateFormat {
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+public enum DateFormat {
 
     DD_MM_YYYY("dd/MM/yyyy"),
     DD_MM_YYYY_DASH("dd-MM-yyyy"),
-    YYYY_MM_DD("yyyy-MM-dd"),
+    YYYY_MM_DD("yyyy/MM/dd"),
     YYYY_MM_DD_DASH("yyyy-MM-dd"),
     MM_DD_YYYY("MM/dd/yyyy"),
 
@@ -25,5 +27,8 @@ public enum DateFormat {
         return pattern;
     }
 
-
+    public String getDisplayName() {
+        return LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern(pattern));
+    }
 }

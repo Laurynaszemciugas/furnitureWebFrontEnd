@@ -152,7 +152,7 @@ public class MainLayout extends AppLayout {
                 commonComponents.normalButtons("Materials","Materials",VaadinIcon.STOCK),
                 commonComponents.normalButtons("Employees","Employees",VaadinIcon.USERS),
                 commonComponents.normalButtons("Reports","Reports",VaadinIcon.CHART_LINE),
-                commonComponents.normalButtons("bob","Quick actions",VaadinIcon.MENU),
+                commonComponents.normalButtons("Actions","Action logs",VaadinIcon.RECORDS),
                 commonComponents.normalButtons("Settings","Settings",VaadinIcon.COG),
                 logOut);
 
@@ -216,6 +216,7 @@ public class MainLayout extends AppLayout {
                 commonComponents.smallIconButtons("Materials",VaadinIcon.USERS,"white"),
                 commonComponents.smallIconButtons("Employees",VaadinIcon.CHART_LINE,"white"),
                 commonComponents.smallIconButtons("Reports",VaadinIcon.MENU,"white"),
+                commonComponents.smallIconButtons("Actions",VaadinIcon.RECORDS,"white"),
                 commonComponents.smallIconButtons("Settings",VaadinIcon.COG,"white"),
                 logOut);
 

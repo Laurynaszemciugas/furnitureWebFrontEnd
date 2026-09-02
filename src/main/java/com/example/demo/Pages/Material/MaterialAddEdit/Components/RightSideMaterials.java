@@ -233,8 +233,13 @@ public class RightSideMaterials {
 
                 if(newImages !=null){
                     System.out.println("changing pictures");
-                    for(var s : newImages){
-                        s.setImageUrl(common.imageMaker(s.getImageData(),s.getImageType()));
+                    for(var s : newImages) {
+                        //skip internet one because it already provides all stuff needed for picture work
+                        if (s.getImageType().equals("Internet")) {
+                            continue;
+                        } else {
+                            s.setImageUrl(common.imageMaker(s.getImageData(), s.getImageType()));
+                        }
                     }
 
                     mat.setImages(objectConverter.convert(newImages, MaterialImageData.class));
