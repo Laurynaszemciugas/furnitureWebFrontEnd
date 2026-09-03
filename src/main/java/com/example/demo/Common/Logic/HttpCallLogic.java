@@ -46,6 +46,8 @@ public class HttpCallLogic {
     ) {
         String jwt = sessionCrafter.extractSession("JWT", String.class);
 
+
+
         return HttpCallWithJwt(
                 endpoint,
                 httpMethod,

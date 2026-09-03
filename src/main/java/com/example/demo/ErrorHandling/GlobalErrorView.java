@@ -1,6 +1,5 @@
 package com.example.demo.ErrorHandling;
 
-import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ErrorHandling.Exseptions.HttpCallException;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -16,8 +15,284 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.nio.channels.ClosedChannelException;
 
-public class GlobalErrorView  {
-//extends VerticalLayout implements HasErrorParameter<Exception>
+public class GlobalErrorView extends VerticalLayout
+        implements HasErrorParameter<Exception> {
+
+    public GlobalErrorView() {
+
+        setSizeFull();
+
+        setJustifyContentMode(JustifyContentMode.CENTER);
+        setAlignItems(Alignment.CENTER);
+    }
+
+    @Override
+    public int setErrorParameter(
+            BeforeEnterEvent event,
+            ErrorParameter<Exception> parameter
+    ) {
+
+        removeAll();
+
+        Throwable exception = parameter.getException();
+
+        /*
+         * ==========================================
+         * HTTP CALL EXCEPTION
+         * ==========================================
+         */
+
+        HttpCallException httpException =
+                findCause(exception, HttpCallException.class);
+
+        if (httpException != null) {
+
+            Integer code = httpException.getError().getStatus();
+
+            String message =
+                    httpException.getError().getMessage();
+
+            String instructions =
+                    httpException.getError().getInstructions();
+
+            add(createErrorPage(
+                    code,
+                    message,
+                    instructions,
+                    "Go to login"
+            ));
+
+            return code;
+        }
+
+        /*
+         * ==========================================
+         * BACKEND / CONNECTION ERROR
+         * ==========================================
+         */
+
+        ClosedChannelException closedChannel =
+                findCause(exception, ClosedChannelException.class);
+
+        if (closedChannel != null) {
+
+            add(createErrorPage(
+                    HttpServletResponse.SC_BAD_GATEWAY,
+                    "Server isn't responding",
+                    "The server is currently unavailable. Please try again later.",
+                    "Try again"
+            ));
+
+            return HttpServletResponse.SC_BAD_GATEWAY;
+        }
+
+        /*
+         * ==========================================
+         * DEFAULT / UNKNOWN ERROR
+         * ==========================================
+         */
+
+        add(createErrorPage(
+                HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                "Something went wrong",
+                "An unexpected error occurred. Please try again later.",
+                "Go back"
+        ));
+
+        return HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+    }
+
+
+    /*
+     * ==========================================
+     * FIND EXCEPTION IN CAUSE CHAIN
+     * ==========================================
+     */
+
+    private <T extends Throwable> T findCause(
+            Throwable throwable,
+            Class<T> wantedClass
+    ) {
+
+        while (throwable != null) {
+
+            if (wantedClass.isAssignableFrom(
+                    throwable.getClass()
+            )) {
+
+                return wantedClass.cast(throwable);
+            }
+
+            throwable = throwable.getCause();
+        }
+
+        return null;
+    }
+
+
+    /*
+     * ==========================================
+     * CREATE ERROR PAGE
+     * ==========================================
+     */
+
+    private VerticalLayout createErrorPage(
+            Integer errCode,
+            String message,
+            String instructions,
+            String buttonText
+    ) {
+
+        VerticalLayout card = createCard();
+
+        /*
+         * ERROR CODE
+         */
+
+        H1 code = new H1(
+                String.valueOf(errCode)
+        );
+
+        code.getStyle()
+                .set("margin", "0")
+                .set("font-size", "70px")
+                .set("color", "#2563eb");
+
+
+        /*
+         * ERROR TITLE
+         */
+
+        H2 title = new H2(message);
+
+        title.getStyle()
+                .set("margin", "0")
+                .set("color", "#111827");
+
+
+        /*
+         * ERROR DESCRIPTION
+         */
+
+        Paragraph text = new Paragraph(
+                instructions
+        );
+
+        text.getStyle()
+                .set("color", "#6b7280")
+                .set("margin", "0");
+
+
+        /*
+         * BUTTON
+         */
+
+        Button actionButton = new Button(
+                buttonText
+        );
+
+        actionButton.addThemeVariants(
+                ButtonVariant.PRIMARY
+        );
+
+
+        /*
+         * BUTTON ACTION
+         */
+
+        if ("Go to login".equals(buttonText)) {
+
+            actionButton.addClickListener(e ->
+                    UI.getCurrent().navigate("Login")
+            );
+
+        } else if ("Try again".equals(buttonText)) {
+
+            actionButton.addClickListener(e ->
+                    UI.getCurrent().getPage().reload()
+            );
+
+        } else {
+
+            actionButton.addClickListener(e ->
+                    UI.getCurrent()
+                            .getPage()
+                            .getHistory()
+                            .back()
+            );
+        }
+
+
+        /*
+         * ADD EVERYTHING
+         */
+
+        card.add(
+                code,
+                title,
+                text,
+                actionButton
+        );
+
+        return card;
+    }
+
+
+    /*
+     * ==========================================
+     * ERROR CARD
+     * ==========================================
+     */
+
+    private VerticalLayout createCard() {
+
+        VerticalLayout card =
+                new VerticalLayout();
+
+        card.setWidth("420px");
+
+        card.setPadding(false);
+
+        card.setSpacing(true);
+
+        card.getStyle()
+                .set("background", "white")
+                .set("border-radius", "22px")
+                .set(
+                        "box-shadow",
+                        "0 10px 30px rgba(0,0,0,0.10)"
+                )
+                .set("padding", "40px")
+                .set("text-align", "center")
+                .set("align-items", "center");
+
+        return card;
+    }
+}
+
+
+// old version
+
+//package com.example.demo.ErrorHandling;
+//
+//import com.example.demo.Common.Logic.SessionCrafter;
+//import com.example.demo.ErrorHandling.Exseptions.HttpCallException;
+//import com.vaadin.flow.component.UI;
+//import com.vaadin.flow.component.button.Button;
+//import com.vaadin.flow.component.button.ButtonVariant;
+//import com.vaadin.flow.component.html.H1;
+//import com.vaadin.flow.component.html.H2;
+//import com.vaadin.flow.component.html.Paragraph;
+//import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+//import com.vaadin.flow.router.BeforeEnterEvent;
+//import com.vaadin.flow.router.ErrorParameter;
+//import com.vaadin.flow.router.HasErrorParameter;
+//import jakarta.servlet.http.HttpServletResponse;
+//
+//import java.nio.channels.ClosedChannelException;
+//
+//public class GlobalErrorView extends VerticalLayout implements HasErrorParameter<Exception> {
+//
 //    SessionCrafter sessionCrafter;
 //
 //
@@ -154,6 +429,7 @@ public class GlobalErrorView  {
 //
 //        return card;
 //    }
-
-
-}
+//
+//
+//}
+//

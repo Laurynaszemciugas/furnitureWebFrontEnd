@@ -7,6 +7,7 @@ import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Orders.NewOrderFeedData;
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.DTOS.CustomReportFeed;
+import com.vaadin.flow.component.UI;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
@@ -53,8 +54,17 @@ public class CustomReportService {
     @SneakyThrows
     public Report getReportAccordingToId(Long id) {
 
-        return httpCallLogic.HttpCall("customReport/getReportAccordingToId", HttpMethod.GET,id, Report.class,true);
+        Object o = httpCallLogic.HttpCall(
+                "customReport/getReportAccordingToId",
+                HttpMethod.GET,
+                id,
+                Report.class,
+                true
+        );
 
+
+
+        return (Report) o;
     }
 
     @SneakyThrows

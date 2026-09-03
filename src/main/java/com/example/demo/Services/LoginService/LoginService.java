@@ -45,6 +45,7 @@ public class LoginService {
 
 
 
+
     }
 
     public void createSettings(){
@@ -67,8 +68,34 @@ public class LoginService {
 
     public void googleLogin(String sub) {
 
-        httpCallLogic.checkResponse(
-                httpCallLogic.HttpCall("auth/google", HttpMethod.POST, sub, ErrorResponse.class,false),null,success,true);
+
+
+
+
+
+               // httpCallLogic.HttpCall("auth/google", HttpMethod.POST, sub, ErrorResponse.class,false);
+
+
+        String jwt  = httpCallLogic.checkResponseNoGetValue(
+                httpCallLogic.HttpCall("auth/google", HttpMethod.POST, sub, ErrorResponse.class, false),sessionCrafter.extractSession("lastSeen",String.class));
+
+
+        System.out.println("jwt from serviceeeeeeeeeeeeeeeeeeeeeee");
+        System.out.println(jwt);
+
+        if(jwt != null){
+            sessionCrafter.createSession("JWT",jwt);
+        }
+        else{
+            sessionCrafter.createSession("JWT",null);
+        }
+
+        System.out.println("jwt from serviceeeeeeeeeeeeeeeeeeeeeee");
+        System.out.println(sessionCrafter.extractSession("JWT",String.class));
+
+
+
+
 
     }
 

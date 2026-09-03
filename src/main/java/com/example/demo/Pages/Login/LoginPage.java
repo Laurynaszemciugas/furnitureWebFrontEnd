@@ -78,6 +78,7 @@ public class LoginPage extends VerticalLayout {
 
 
                     loginService.googleLogin(googleToken);
+                    loginService.createSettings();
 
 
                 })

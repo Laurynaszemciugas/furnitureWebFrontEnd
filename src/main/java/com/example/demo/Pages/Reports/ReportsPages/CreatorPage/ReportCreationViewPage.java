@@ -11,6 +11,7 @@ import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.Custom
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.LeftSideReportCreate;
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.RightSideReportCreate;
 import com.example.demo.Services.CustomReportService;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -77,7 +78,9 @@ public class ReportCreationViewPage extends VerticalLayout implements BeforeEnte
 
         this.itemChoice = page;
 
-         report = customReportService.getReportAccordingToId((long) itemChoice);
+
+            report = customReportService.getReportAccordingToId((long) itemChoice);
+
 
 
         filterMemory.add(
