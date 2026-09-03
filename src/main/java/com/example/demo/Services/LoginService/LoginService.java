@@ -5,9 +5,13 @@ import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.CommonDtos.User;
 import com.example.demo.ControllerModels.CommonDtos.UserSettings;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
+import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+
+import java.util.function.Consumer;
 
 
 @Service
@@ -16,6 +20,9 @@ public class LoginService {
 
     HttpCallLogic httpCallLogic;
     SessionCrafter sessionCrafter;
+
+    Consumer<Boolean> success;
+
     public LoginService(HttpCallLogic httpCallLogic) {
         this.httpCallLogic = httpCallLogic;
         this.sessionCrafter = new SessionCrafter();
@@ -50,6 +57,18 @@ public class LoginService {
 
 
 
+
+    }
+
+
+
+
+
+
+    public void googleLogin(String sub) {
+
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("auth/google", HttpMethod.POST, sub, ErrorResponse.class,false),null,success,true);
 
     }
 

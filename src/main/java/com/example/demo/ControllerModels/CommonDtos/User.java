@@ -31,6 +31,8 @@ public class User {
 
     private String phoneNumber;
 
+    private String googleId;
+
     private DateFormat dateFormat;
     private TimeZone timeZone;
     private Language language;

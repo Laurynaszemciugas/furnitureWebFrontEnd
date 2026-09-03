@@ -6,13 +6,16 @@ import com.example.demo.ControllerModels.CommonDtos.User;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Services.LoginService.LoginService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.component.dependency.JsModule;
 
 
 @Route("Login")
+@JsModule("./google-signin.js")
 public class LoginPage extends VerticalLayout {
 
     CommonComponents commonComponents;
@@ -58,7 +61,37 @@ public class LoginPage extends VerticalLayout {
             loginService.createSettings();
         });
 
-        v.add(textField1,textField2,button);
+
+        Div googleButton = new Div();
+        googleButton.setId("googleButton");
+
+        googleButton.getElement()
+                .addEventListener("google-login", event -> {
+
+                    String googleToken = event
+                            .getEventData()
+                            .get("event.detail")
+                            .asText();;
+
+                    System.out.println("Google token received:");
+                    System.out.println(googleToken);
+
+
+                    loginService.googleLogin(googleToken);
+
+
+                })
+                .addEventData("event.detail");
+
+        getElement().executeJs(
+                "window.initGoogleButton($0, $1)",
+                googleButton.getElement(),
+                "216793106747-hku7duivmtotke55nje0jnqi9fu2lgmh.apps.googleusercontent.com"
+        );
+
+        v.add(textField1, textField2, button, googleButton);
+
+        v.add(textField1,textField2,button,googleButton, new Button("zaza"));
 
         return  v;
     }
