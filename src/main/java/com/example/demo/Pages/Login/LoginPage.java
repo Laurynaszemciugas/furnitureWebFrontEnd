@@ -57,8 +57,13 @@ public class LoginPage extends VerticalLayout {
             user.setPassword(textField2.getValue());
             System.out.println(user.getGmail());
             System.out.println(user.getPassword());
-            loginService.getJWTToken(user);
-            loginService.createSettings();
+            try {
+                loginService.getJWTToken(user);
+                loginService.createSettings();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+
         });
 
 
@@ -77,9 +82,12 @@ public class LoginPage extends VerticalLayout {
                     System.out.println(googleToken);
 
 
-                    loginService.googleLogin(googleToken);
-                    loginService.createSettings();
-
+                    try {
+                        loginService.googleLogin(googleToken);
+                        loginService.createSettings();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
 
                 })
                 .addEventData("event.detail");
