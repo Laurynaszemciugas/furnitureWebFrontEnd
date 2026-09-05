@@ -2,6 +2,7 @@ package com.example.demo.Pages.Login;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.CommonDtos.User;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Services.LoginService.LoginService;
@@ -22,10 +23,14 @@ public class LoginPage extends VerticalLayout {
     Common common;
     LoginService loginService;
 
+    SessionCrafter sessionCrafter;
+
     public LoginPage(CommonComponents commonComponents, Common common,LoginService loginService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.loginService = loginService;
+
+        this.sessionCrafter = new SessionCrafter();
 
         setSizeFull();
         setPadding(false);
@@ -84,7 +89,10 @@ public class LoginPage extends VerticalLayout {
 
                     try {
                         loginService.googleLogin(googleToken);
-                        loginService.createSettings();
+
+                        if(!sessionCrafter.extractSession("JWT",String.class).isEmpty()) {
+                            loginService.createSettings();
+                        }
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
