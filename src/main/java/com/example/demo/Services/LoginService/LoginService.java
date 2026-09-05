@@ -77,7 +77,7 @@ public class LoginService {
 
 
         String jwt  = httpCallLogic.checkResponseNoGetValue(
-                httpCallLogic.HttpCall("auth/google", HttpMethod.POST, sub, ErrorResponse.class, false),sessionCrafter.extractSession("lastSeen",String.class));
+                httpCallLogic.HttpCall("auth/google", HttpMethod.POST, sub, ErrorResponse.class, false),"DashBoard");
 
 
 
