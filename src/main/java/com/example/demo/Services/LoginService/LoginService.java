@@ -33,7 +33,7 @@ public class LoginService {
 
 
             String jwt  = httpCallLogic.checkResponseNoGetValue(
-                    httpCallLogic.HttpCall("auth/signin", HttpMethod.POST, user, ErrorResponse.class, false),sessionCrafter.extractSession("lastSeen",String.class));
+                    httpCallLogic.HttpCall("auth/signin", HttpMethod.POST, user, ErrorResponse.class, false),"DashBoard");
 
 
             if(jwt != null){

@@ -25,6 +25,8 @@ public class LoginPage extends VerticalLayout {
 
     SessionCrafter sessionCrafter;
 
+    String googleClientId = System.getenv("GOOGLE_LOG_IN_ID");
+
     public LoginPage(CommonComponents commonComponents, Common common,LoginService loginService) {
         this.commonComponents = commonComponents;
         this.common = common;
@@ -104,7 +106,7 @@ public class LoginPage extends VerticalLayout {
         getElement().executeJs(
                 "window.initGoogleButton($0, $1)",
                 googleButton.getElement(),
-                "216793106747-g66oc54mlg3mh38pehhp5d40606b5p8e.apps.googleusercontent.com"
+                googleClientId
         );
 
         v.add(textField1, textField2, button, googleButton);
