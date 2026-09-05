@@ -16,7 +16,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.function.Consumer;
 
 @Service
@@ -178,7 +177,8 @@ public class HttpCallLogic {
 
 
 
-    public <T> void checkResponse(ErrorResponse response, String navigateInCaseOfSuccess, Consumer<T> consumer, T consumerValueInCaseOfSuccess){
+    public <T> void checkResponse(ErrorResponse response, String navigateInCaseOfSuccess, Consumer<Boolean> consumer, Boolean consumerValueInCaseOfSuccess){
+
 
         common.customActionsForNotification(response.getMessage(),response.getWarning(),navigateInCaseOfSuccess,true);
 
@@ -190,6 +190,13 @@ public class HttpCallLogic {
         ){
             consumer.accept(consumerValueInCaseOfSuccess);
         }
+
+        if(response.getWarning() == Warnings.ERROR &&
+                navigateInCaseOfSuccess == null &&
+                consumer != null){
+
+        }
+        consumer.accept(false);
 
     }
 

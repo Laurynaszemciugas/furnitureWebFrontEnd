@@ -66,7 +66,8 @@ public class LoginPage extends VerticalLayout {
                 loginService.getJWTToken(user);
                 loginService.createSettings();
             } catch (Exception ex) {
-                throw new RuntimeException(ex);
+                System.out.println("something went wrong");
+                //throw new RuntimeException(ex);
             }
 
         });
@@ -103,7 +104,7 @@ public class LoginPage extends VerticalLayout {
         getElement().executeJs(
                 "window.initGoogleButton($0, $1)",
                 googleButton.getElement(),
-                "216793106747-hku7duivmtotke55nje0jnqi9fu2lgmh.apps.googleusercontent.com"
+                "216793106747-g66oc54mlg3mh38pehhp5d40606b5p8e.apps.googleusercontent.com"
         );
 
         v.add(textField1, textField2, button, googleButton);
