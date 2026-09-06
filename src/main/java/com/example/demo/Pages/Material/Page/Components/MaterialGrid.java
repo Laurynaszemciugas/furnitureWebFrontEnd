@@ -80,8 +80,10 @@ public class MaterialGrid {
         // ======================== Material pic and name =====================================
         grid.addComponentColumn(e->{
 
+
             HorizontalLayout h = new HorizontalLayout();
             h.setAlignItems(FlexComponent.Alignment.CENTER);
+            System.out.println(e.getImageUrl());
             Image image = commonComponents.imageCrafter(e.getImageUrl() == null ? "No_picture.png" : e.getImageUrl(),"90px","90px","10px");
             Span span = commonComponents.spanCrafter(e.getName() == null ? "Unknown" : e.getName(),"activityFeed-name");
             Span span2 = commonComponents.spanCrafter(e.getUnitPrice() == null ? "Unknown" :   "Unit price: "+ e.getUnitPrice() + "Eur","stat-title");

@@ -5,6 +5,7 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.CurrentFilterDisplay;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
+import com.example.demo.ControllerModels.CommonDtos.EmployeePage.EmployeeOrderProjection;
 import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Employee.Page.Components.EmployeeBriefExplanations;
@@ -12,6 +13,7 @@ import com.example.demo.Pages.Employee.Page.Components.EmployeeFilters;
 import com.example.demo.Pages.Employee.Page.Components.EmployeeGrid;
 import com.example.demo.Pages.Employee.Page.Components.EmployeeMiniStats;
 import com.example.demo.Services.EmployeeService.EmployeeService;
+import com.example.demo.Services.Orders.OrdersService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
@@ -25,15 +27,21 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Route(value = "EmployeesDashBoard", layout = MainLayout.class)
 public class EmployeePageDashboard extends VerticalLayout implements BeforeEnterObserver {
 
     CommonComponents commonComponents;
     Common common;
 
-    public EmployeePageDashboard(CommonComponents commonComponents, Common common, EmployeeService employeeService) {
+    OrdersService ordersService;
+
+    public EmployeePageDashboard(CommonComponents commonComponents, Common common, OrdersService ordersService) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.ordersService = ordersService;
 
 
 
@@ -218,11 +226,14 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
 
-        Grid<String> grid = new Grid<>(String.class,true);
+        List<EmployeeOrderProjection> list = ordersService.getEmployeeOrderProjection();
+
+        Grid<EmployeeOrderProjection> grid = new Grid<>(EmployeeOrderProjection.class,false);
+        grid.setItems(list);
         grid.setHeightFull();
         grid.setHeight("500px");
 
-        Span span = commonComponents.spanCrafter("4 available","stat-example");
+        Span span = commonComponents.spanCrafter( list.size()+ " available","stat-example");
         span.addClassNames("new-badge","status-pending");
 
 
@@ -240,6 +251,33 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         );
 
 
+        grid.addComponentColumn(e -> {
+
+            String images = (String) e.getImages();
+
+            List<String> imageList = images == null || images.isBlank()
+                    ? List.of()
+                    : Arrays.stream(images.split(","))
+                    .filter(s -> !s.isBlank())
+                    .toList();
+
+            HorizontalLayout hh = new HorizontalLayout();
+
+            for (String s : imageList) {
+                System.out.println(s.substring(0, Math.min(s.length(), 50)));
+
+                hh.add(commonComponents.imageCrafter(
+                        s,
+                        "100px",
+                        "100px",
+                        "5px"
+                ));
+            }
+
+            return hh;
+        });
+
+
         v.add(
                 h,
                 grid
@@ -249,6 +287,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         return v;
 
     }
+
 
     public VerticalLayout myActiveOrders(){
 

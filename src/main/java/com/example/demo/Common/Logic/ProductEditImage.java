@@ -335,7 +335,8 @@ public class ProductEditImage {
 
                }
 
-               System.out.println(s.getImageName() + " " + s.getImageLogic());
+
+               System.out.println(s.getImageName() + " " + s.getImageLogic() + " " + s.getImageUrl());
 
            }
 

@@ -235,7 +235,7 @@ public class RightSideMaterials {
                     System.out.println("changing pictures");
                     for(var s : newImages) {
                         //skip internet one because it already provides all stuff needed for picture work
-                        if (s.getImageType().equals("Internet")) {
+                        if (s.getImageType().equals("Internet") || s.getImageData() == null) {
                             continue;
                         } else {
                             s.setImageUrl(common.imageMaker(s.getImageData(), s.getImageType()));

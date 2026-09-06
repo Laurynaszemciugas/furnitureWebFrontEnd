@@ -111,7 +111,7 @@ public class LoginPage extends VerticalLayout {
 
         v.add(textField1, textField2, button, googleButton);
 
-        v.add(textField1,textField2,button,googleButton, new Button("zaza"));
+        v.add(textField1,textField2,button,googleButton);
 
         return  v;
     }

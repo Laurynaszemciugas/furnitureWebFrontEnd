@@ -16,7 +16,7 @@ public class ProductFinishSteps {
 
 
     private Long id = null;
-    private Long step = 0L;
+    private Long stepId = 0L;
     private String stepName = "None";
     private String stepDescription = "None";
     @JsonIgnore

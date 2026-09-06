@@ -6,6 +6,7 @@ import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
 import com.example.demo.ControllerModels.CommonDtos.Materials;
 import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.Pages.Login.LoginPage;
 import com.example.demo.Services.GmailVerificationService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -88,12 +89,10 @@ public class gmailVerification extends VerticalLayout implements BeforeEnterObse
 
         gmailVerificationService.setSuccess(e->{
             if(e){
-                System.out.println("success");
-                add("Success");
+                verticalLayout.add(successScreen());
             }
             else{
-                System.out.println("failed");
-                verticalLayout.add(successScreen());
+                verticalLayout.add(failedScreen());
             }
         });
 
@@ -114,8 +113,8 @@ public class gmailVerification extends VerticalLayout implements BeforeEnterObse
         failed.setAlignItems(Alignment.CENTER);
         failed.setWidth("350px");
 
-        Span first = commonComponents.spanCrafterWordNoHide("Failed","stat-value");
-        Span second = commonComponents.spanCrafterWordNoHide("Please try again later make sure you are using the gmails URL to verify your gmail","stat-description");
+        Span first = commonComponents.spanCrafterWordNoHide("Verification failed","stat-value");
+        Span second = commonComponents.spanCrafterWordNoHide("Please try again later make sure you are using the emails URL that was provided to verify your email","stat-description");
         Button button = new Button("Retry");
         button.addThemeVariants(ButtonVariant.PRIMARY);
 
@@ -123,10 +122,19 @@ public class gmailVerification extends VerticalLayout implements BeforeEnterObse
             UI.getCurrent().navigate("GmailVerification/"+itemChoice);
         });
 
+        Button backToLogin = new Button("Go to login");
+        backToLogin.addThemeVariants(ButtonVariant.PRIMARY);
+
+        backToLogin.addClickListener(e->{
+           UI.getCurrent().navigate(LoginPage.class);
+        });
+
+
         failed.add(
                 first,
                 second,
-                button
+                button,
+                backToLogin
         );
 
         return failed;
@@ -142,7 +150,7 @@ public class gmailVerification extends VerticalLayout implements BeforeEnterObse
         failed.setAlignItems(Alignment.CENTER);
         failed.setWidth("350px");
 
-        Span first = commonComponents.spanCrafterWordNoHide("Success","stat-value");
+        Span first = commonComponents.spanCrafterWordNoHide("Verification successful","stat-value");
         Span second = commonComponents.spanCrafterWordNoHide("Success you can now log into your account ","stat-description");
         Button button = new Button("Go to login");
         button.addThemeVariants(ButtonVariant.PRIMARY);

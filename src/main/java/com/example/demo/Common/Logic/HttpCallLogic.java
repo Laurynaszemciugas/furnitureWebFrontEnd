@@ -97,6 +97,7 @@ public class HttpCallLogic {
                     .header("Authorization", "Bearer " + jwt)
                     .header("Content-Type", "application/json")
                     .header("Accept", "application/json")
+                    .timeout(java.time.Duration.ofSeconds(30))
                     .method(httpMethod.name(), bodyPublisher)
                     .build();
 

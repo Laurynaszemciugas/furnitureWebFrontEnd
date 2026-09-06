@@ -5,6 +5,7 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.ControllerModels.Common.GraphDataDateValue;
 import com.example.demo.ControllerModels.Common.MiniStatHolder;
+import com.example.demo.ControllerModels.CommonDtos.EmployeePage.EmployeeOrderProjection;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.DashBoard.ActivityFeedModel;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMonthlyOrdersCompleted;
@@ -185,6 +186,15 @@ public class OrdersService {
     public List<ActivityFeedModel> getActionTracker() {
 
         return Arrays.stream(httpCallLogic.HttpCall("order/getActionTracker", HttpMethod.GET,null, ActivityFeedModel[].class,false)).toList();
+
+    }
+
+    // employee page
+
+    @SneakyThrows
+    public List<EmployeeOrderProjection> getEmployeeOrderProjection() {
+
+        return Arrays.stream(httpCallLogic.HttpCall("order/getEmployeeOrderProjection", HttpMethod.GET,null, EmployeeOrderProjection[].class,false)).toList();
 
     }
 

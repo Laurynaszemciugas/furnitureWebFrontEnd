@@ -499,7 +499,7 @@ public class ProductEditRightSideFields {
 
                 listStepsToPrepares.add(new ListStepsToPrepare(
                         s.getId(),
-                        s.getStep(),
+                        s.getStepId(),
                         materialAndDetails.specName(s.getStepName()),
                         materialAndDetails.specDescription(s.getStepDescription())));
 
@@ -611,7 +611,7 @@ public class ProductEditRightSideFields {
                 for(var s : listStepsToPrepares){
                     ProductFinishSteps steps = new ProductFinishSteps();
                     steps.setProduct(product);
-                    steps.setStep(s.getStep());
+                    steps.setStepId(s.getStep());
                     steps.setStepName(s.getStepName().getValue());
                     steps.setStepDescription(s.getStepDescription().getValue());
 
