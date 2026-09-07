@@ -1110,6 +1110,7 @@ vaadin-grid::part(scroller) {
 
 /* BUTTONS INSIDE GRID */
 
+/*
 vaadin-grid vaadin-button {
     border-radius: 12px;
     background: #f1f5f9;
@@ -1127,7 +1128,7 @@ vaadin-grid vaadin-button:hover {
     box-shadow: 0 10px 22px rgba(37, 99, 235, 0.12);
 }
 
-
+*/
 
 
 /* ============================================================

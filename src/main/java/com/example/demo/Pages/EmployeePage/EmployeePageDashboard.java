@@ -332,7 +332,6 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
             Button viewDetails = new Button("View details");
             Button acceptOrders = commonComponents.normalThemeButtonNoNavigate("Accept order", ButtonVariant.LUMO_PRIMARY);
 
-            acceptOrders.addThemeVariants(ButtonVariant.PRIMARY);
 
             buttonHolder.add(
                     viewDetails,
