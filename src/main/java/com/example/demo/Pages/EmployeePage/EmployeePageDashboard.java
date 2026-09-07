@@ -240,6 +240,9 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         grid.setHeightFull();
         grid.setHeight("500px");
 
+        grid.setWidthFull();
+        grid.setColumnReorderingAllowed(false);
+
         Span span = commonComponents.spanCrafter( list.size()+ " available","stat-example");
         span.addClassNames("new-badge","status-pending");
 
@@ -282,6 +285,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
                 imageViewer.popOver(imageList,imageList.get(0));
             });
             HorizontalLayout hh = new HorizontalLayout();
+            hh.setWidthFull();
             hh.setAlignItems(Alignment.CENTER);
 
 
@@ -297,7 +301,8 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
             second.add(
                     miniStats("Quantity",String.valueOf(e.getAmountOfItems())),
-                    miniStats("Due date",String.valueOf(e.getDueDate())),
+                    miniStats("Created",common.dateFormatterLocalDateTime(e.getCreated(),"dd MMM yyyy, HH:mm")),
+                    miniStats("Due date",common.dateFormatterLocalDateTime(e.getDueDate(),"dd MMM yyyy, HH:mm")),
                     miniStats("Materials",e.getOrderStatus() == OrderStatus.LACK_OF_SUPPLY ? "Not available" : "Available")
             );
 
@@ -305,13 +310,17 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
             allHolder.setSpacing(false);
             allHolder.add(first,second);
 
+
+
             hh.add(
                     image,
                     allHolder
             );
 
+            hh.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
             return hh;
-        });
+        }).setFlexGrow(1);
 
 
 
@@ -321,7 +330,8 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
             VerticalLayout buttonHolder = new VerticalLayout();
 
             Button viewDetails = new Button("View details");
-            Button acceptOrders = new Button("Accept order");
+            Button acceptOrders = commonComponents.normalThemeButtonNoNavigate("Accept order", ButtonVariant.LUMO_PRIMARY);
+
             acceptOrders.addThemeVariants(ButtonVariant.PRIMARY);
 
             buttonHolder.add(
@@ -329,10 +339,12 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
                     acceptOrders
             );
 
-
             return buttonHolder;
 
-        });
+        }).setFlexGrow(0).setWidth("180px");
+
+
+
 
 
         v.add(

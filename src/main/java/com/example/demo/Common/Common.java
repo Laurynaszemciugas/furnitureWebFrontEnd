@@ -66,6 +66,14 @@ public class Common {
         return formattedDate;
     }
 
+    public String dateFormatterLocalDateTime(LocalDateTime date, String yyyymmdd) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(yyyymmdd);
+        String formattedDate = date.format(formatter);
+
+        return formattedDate;
+    }
+
     public LocalDate currentMonthStart(){
         return dateCrafter(0,0,0,0,true);
     }
