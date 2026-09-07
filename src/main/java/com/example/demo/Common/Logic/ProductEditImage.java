@@ -51,7 +51,6 @@ public class ProductEditImage {
 
 
 
-
     // just a tripwire that says to controller hey i got updlaoded
     private Consumer<List<CommonImagesData>> listConsumer = list -> {};
     private Consumer<List<CommonImagesData>> mainChange = list -> {};

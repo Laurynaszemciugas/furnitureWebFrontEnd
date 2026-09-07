@@ -555,9 +555,14 @@ public class ProductEditRightSideFields {
                 System.out.println("changing pictures");
                 for(var s : newImages){
 
-                    if(!s.getImageType().equals("Internet")) {
+                    if (s.getImageType().equals("Internet") || s.getImageData() == null) {
+                        continue;
+                    } else {
                         s.setImageUrl(common.imageMaker(s.getImageData(), s.getImageType()));
                     }
+
+
+
 
                 }
 

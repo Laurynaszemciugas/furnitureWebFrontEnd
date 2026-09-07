@@ -3,10 +3,12 @@ package com.example.demo.Pages.EmployeePage;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.CurrentFilterDisplay;
+import com.example.demo.Common.Logic.ImageViewer;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.CommonDtos.EmployeePage.EmployeeOrderProjection;
 import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
+import com.example.demo.Enums.OrderStatus;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Employee.Page.Components.EmployeeBriefExplanations;
 import com.example.demo.Pages.Employee.Page.Components.EmployeeFilters;
@@ -15,8 +17,10 @@ import com.example.demo.Pages.Employee.Page.Components.EmployeeMiniStats;
 import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.example.demo.Services.Orders.OrdersService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -38,10 +42,13 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
     OrdersService ordersService;
 
-    public EmployeePageDashboard(CommonComponents commonComponents, Common common, OrdersService ordersService) {
+    ImageViewer imageViewer;
+
+    public EmployeePageDashboard(CommonComponents commonComponents, Common common, OrdersService ordersService,ImageViewer imageViewer) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.ordersService = ordersService;
+        this.imageViewer = imageViewer;
 
 
 
@@ -261,20 +268,70 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
                     .filter(s -> !s.isBlank())
                     .toList();
 
+
+            Image image = commonComponents.imageCrafter(
+                    imageList.get(0),
+                    "150px",
+                    "150px",
+                    "5px"
+            );
+
+
+
+            image.addClickListener(ee->{
+                imageViewer.popOver(imageList,imageList.get(0));
+            });
             HorizontalLayout hh = new HorizontalLayout();
+            hh.setAlignItems(Alignment.CENTER);
 
-            for (String s : imageList) {
-                System.out.println(s.substring(0, Math.min(s.length(), 50)));
 
-                hh.add(commonComponents.imageCrafter(
-                        s,
-                        "100px",
-                        "100px",
-                        "5px"
-                ));
-            }
+
+            HorizontalLayout first = new HorizontalLayout();
+
+            first.add(
+                    new VerticalLayout(commonComponents.spanCrafter("#" + e.getId(),"activityFeed-name"), commonComponents.spanCrafter("Some name","stat-example"))
+
+            );
+
+            HorizontalLayout second = new HorizontalLayout();
+
+            second.add(
+                    miniStats("Quantity",String.valueOf(e.getAmountOfItems())),
+                    miniStats("Due date",String.valueOf(e.getDueDate())),
+                    miniStats("Materials",e.getOrderStatus() == OrderStatus.LACK_OF_SUPPLY ? "Not available" : "Available")
+            );
+
+            VerticalLayout allHolder = new VerticalLayout();
+            allHolder.setSpacing(false);
+            allHolder.add(first,second);
+
+            hh.add(
+                    image,
+                    allHolder
+            );
 
             return hh;
+        });
+
+
+
+        grid.addComponentColumn(e->{
+
+
+            VerticalLayout buttonHolder = new VerticalLayout();
+
+            Button viewDetails = new Button("View details");
+            Button acceptOrders = new Button("Accept order");
+            acceptOrders.addThemeVariants(ButtonVariant.PRIMARY);
+
+            buttonHolder.add(
+                    viewDetails,
+                    acceptOrders
+            );
+
+
+            return buttonHolder;
+
         });
 
 
@@ -286,6 +343,19 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
         return v;
 
+    }
+
+
+    public VerticalLayout miniStats(String name, String value){
+
+        VerticalLayout v = new VerticalLayout();
+
+        v.add(
+                commonComponents.spanCrafter(name,"stat-description"),
+                commonComponents.spanCrafter(value,"stat-example")
+        );
+
+        return v;
     }
 
 
