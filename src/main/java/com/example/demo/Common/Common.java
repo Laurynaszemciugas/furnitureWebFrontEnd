@@ -372,6 +372,55 @@ public class Common {
 
     }
 
+    public void warningConfirmation(String actionName) {
+        ConfirmDialog dialog = new ConfirmDialog();
+
+        dialog.setHeader("Warning (Action that might effect your status)");
+
+        VerticalLayout content = new VerticalLayout();
+        content.setSpacing(false);
+        content.setPadding(false);
+
+        Span line = new Span(String.format("%s '%s' %s", "Please enter ", "CONFIRM", "to confirm an action"));
+        line.getStyle().set("color", "red");
+
+        Span lilWarning = commonComponents.spanCrafterWordNoHide("Action that you are trying to make [" + actionName + "]" + " this cannot be reverted" ,"stat-title");
+
+        TextField confirmName = new TextField("Enter Confirmation");
+        confirmName.setWidthFull();
+
+
+
+        content.add(line,
+                confirmName,
+                lilWarning
+        );
+
+
+        dialog.setCancelable(true);
+        dialog.setConfirmText("Remove");
+        dialog.setCancelText("Go back");
+
+
+        dialog.addConfirmListener(event -> {
+            if (confirmName.getValue().equals("CONFIRM")) {
+                booleanConsumer.accept(true);
+
+            } else {
+                commonComponents.showNotification("Verification failed ", 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.ERROR);
+                booleanConsumer.accept(false);
+            }
+        });
+
+        dialog.addCancelListener(event -> {
+        });
+
+        dialog.add(content);
+
+        dialog.open();
+
+    }
+
     public void actualDeleteConfirmation(String productName) {
         ConfirmDialog dialog = new ConfirmDialog();
 

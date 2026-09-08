@@ -7,6 +7,7 @@ import com.example.demo.Common.Logic.ImageViewer;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.CommonDtos.EmployeePage.EmployeeOrderProjection;
+import com.example.demo.ControllerModels.CommonDtos.WorkDay;
 import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.MainLayout.MainLayout;
@@ -16,6 +17,7 @@ import com.example.demo.Pages.Employee.Page.Components.EmployeeGrid;
 import com.example.demo.Pages.Employee.Page.Components.EmployeeMiniStats;
 import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.example.demo.Services.Orders.OrdersService;
+import com.example.demo.Services.WorkDoneService.WorkDoneService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
@@ -31,6 +33,9 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,11 +49,14 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
     ImageViewer imageViewer;
 
-    public EmployeePageDashboard(CommonComponents commonComponents, Common common, OrdersService ordersService,ImageViewer imageViewer) {
+    WorkDoneService workDoneService;
+
+    public EmployeePageDashboard(CommonComponents commonComponents, Common common, OrdersService ordersService,ImageViewer imageViewer,WorkDoneService workDoneService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.ordersService = ordersService;
         this.imageViewer = imageViewer;
+        this.workDoneService = workDoneService;
 
 
 
@@ -110,7 +118,6 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
         h.add(
                 workingStatus(),
-                todayOverview(),
                 todayOverview()
         );
 
@@ -122,6 +129,16 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
     public VerticalLayout workingStatus(){
+
+
+        WorkDay workDay = workDoneService.getWorkDayInfo();
+
+
+        Long minutes = Duration.between(workDay.getWorkDayCreated() == null ? LocalDateTime.now() : workDay.getWorkDayCreated(), LocalDateTime.now()).toMinutes();
+
+        Long hours = minutes == null ? 0 : minutes / 60;
+        Long minutess = minutes == null ? 0 : minutes % 60;
+
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
@@ -140,13 +157,50 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
         Button startEndWorkDay = new Button("Start work day");
+        startEndWorkDay.addThemeVariants(ButtonVariant.PRIMARY);
+
+        if(workDay.getEmployee() !=null){
+            startEndWorkDay.addThemeVariants(ButtonVariant.ERROR);
+            startEndWorkDay.setText("Stop work day");
+        }
+        else{
+            startEndWorkDay.addThemeVariants(ButtonVariant.PRIMARY);
+            startEndWorkDay.setText("Start work day");
+        }
+
+        startEndWorkDay.addClickListener(e->{
+
+            if(startEndWorkDay.getThemeNames().contains("error")){
+                common.warningConfirmation("Stop your work day at " + LocalDate.now() + " you have worked for " + String.format("%dh %dm",hours,minutess));
+            }
+            else{
+                workDoneService.addWorkDay();
+            }
+
+
+        });
+
+        common.setBooleanConsumer(e->{
+            if(e){
+                workDoneService.addWorkDay();
+            }
+        });
+
+
+
+
+
+        String started = common.dateFormatterLocalDateTime(workDay.getWorkDayCreated() == null ? LocalDateTime.now() : workDay.getWorkDayCreated(), "HH:mm");
+        if(workDay.getUser() == null){
+            started = "Not started yet";
+        }
 
         left.add(
                 commonComponents.spanCrafter("Work status","stat-example"),
-                commonComponents.spanCrafter("Working","activityFeed-name"),
-                commonComponents.spanCrafter("Started at 08:02","stat-description"),
+                commonComponents.spanCrafter(workDay.getWorkDayCreated() == null ? "Not working" : "Working" ,"activityFeed-name"),
+                commonComponents.spanCrafter("Started at " + started ,"stat-description"),
                 commonComponents.spanCrafter("You have been working for","stat-description"),
-                commonComponents.spanCrafter("6h 43m","activityFeed-name"),
+                commonComponents.spanCrafter(String.format("%dh %dm",hours,minutess),"activityFeed-name"),
                 startEndWorkDay
 
         );
@@ -155,22 +209,10 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         VerticalLayout right = new VerticalLayout();
         right.setPadding(false);
 
-        Div circle = new Div();
-        circle.setText("75");
-
-        circle.getStyle()
-                .set("width", "100px")
-                .set("height", "100px")
-                .set("border-radius", "50%")
-                .set("display", "flex")
-                .set("align-items", "center")
-                .set("justify-content", "center")
-                .set("font-size", "24px")
-                .set("font-weight", "bold");
 
 
         right.add(
-                createProgressCircle(25)
+                createProgressCircle(minutes)
         );
 
 
@@ -189,6 +231,14 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
     public VerticalLayout todayOverview(){
+
+        WorkDay workDay = workDoneService.getWorkDayInfo();
+
+        Long minutes = Duration.between(workDay.getWorkDayCreated() == null ? LocalDateTime.now() : workDay.getWorkDayCreated(), LocalDateTime.now()).toMinutes();
+
+        Long hours = minutes == null ? 0 : minutes / 60;
+        Long minutess = minutes == null ? 0 : minutes % 60;
+
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
         v.setAlignItems(Alignment.CENTER);
@@ -200,10 +250,15 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         HorizontalLayout h = new HorizontalLayout();
         h.setPadding(false);
 
+        String started = common.dateFormatterLocalDateTime(workDay.getWorkDayCreated() == null ? LocalDateTime.now() : workDay.getWorkDayCreated(), "HH:mm");
+        if(workDay.getUser() == null){
+            started = "0h 0m";
+        }
+
         h.add(
-                overviewIslands(VaadinIcon.CLOCK,"Started at","08:02"),
-                overviewIslands(VaadinIcon.CLOCK,"Working for","6h 43m"),
-                overviewIslands(VaadinIcon.BOOK,"Orders today","4")
+                overviewIslands(VaadinIcon.CLOCK,"Started at",started),
+                overviewIslands(VaadinIcon.CLOCK,"Working for",String.format("%dh %dm",hours,minutess)),
+                overviewIslands(VaadinIcon.BOOK,"Orders available",String.valueOf(ordersService.findHowManyItemsAreAvailable()))
 
         );
 
@@ -332,6 +387,9 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
             Button viewDetails = new Button("View details");
             Button acceptOrders = commonComponents.normalThemeButtonNoNavigate("Accept order", ButtonVariant.LUMO_PRIMARY);
 
+            if(e.getOrderStatus().equals(OrderStatus.LACK_OF_SUPPLY)){
+                acceptOrders.setEnabled(false);
+            }
 
             buttonHolder.add(
                     viewDetails,
@@ -466,12 +524,15 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
 
-    public Div createProgressCircle(int completed) {
+    public Div createProgressCircle(Long completed) {
 
-        completed = Math.max(0, Math.min(completed, 100));
+
+        double percentage = (double) completed / 480 * 100;
+
+
 
         Div circle = new Div();
-        circle.setText(completed + " / 100");
+        circle.setText(String.format("%.0f",percentage) + " / 100");
 
         circle.getStyle()
                 .set("width", "100px")
@@ -483,7 +544,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
                 .set("font-weight", "bold")
                 .set("background",
                         "conic-gradient(var(--lumo-primary-color) "
-                                + completed + "%, #e0e0e0 0)");
+                                + percentage + "%, #e0e0e0 0)");
 
         return circle;
     }
