@@ -198,6 +198,13 @@ public class OrdersService {
 
     }
 
+    @SneakyThrows
+    public Long findHowManyItemsAreAvailable() {
+
+        return httpCallLogic.HttpCall("order/findHowManyItemsAreAvailable", HttpMethod.GET,null, Long.class,false);
+
+    }
+
 
 
     }

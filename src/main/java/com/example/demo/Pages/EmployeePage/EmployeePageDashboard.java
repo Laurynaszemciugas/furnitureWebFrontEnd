@@ -243,7 +243,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         grid.setWidthFull();
         grid.setColumnReorderingAllowed(false);
 
-        Span span = commonComponents.spanCrafter( list.size()+ " available","stat-example");
+        Span span = commonComponents.spanCrafter( ordersService.findHowManyItemsAreAvailable()+ " available","stat-example");
         span.addClassNames("new-badge","status-pending");
 
 
