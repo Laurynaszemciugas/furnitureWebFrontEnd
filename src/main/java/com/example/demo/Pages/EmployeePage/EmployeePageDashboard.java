@@ -739,6 +739,8 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
                 icon.setTooltipText("Step is waiting to be started");
             }
 
+            // employee can be displayed here btw
+
             v.add(
                    commonComponents.doubleValueRow(icon,commonComponents.spanCrafter(String.format("%d. %s - %s",s.getStepId(),s.getStepName(), s.getStepDescription()),"stat-example"))
             );
