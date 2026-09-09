@@ -2,28 +2,25 @@ package com.example.demo.Pages.EmployeePage;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.Common.CurrentFilterDisplay;
 import com.example.demo.Common.Logic.ImageViewer;
-import com.example.demo.Common.Logic.SessionCrafter;
-import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.CommonDtos.EmployeePage.EmployeeOrderProjection;
+import com.example.demo.ControllerModels.CommonDtos.Orders;
+import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.ControllerModels.CommonDtos.WorkDay;
-import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
+import com.example.demo.Enums.ImageLogic;
 import com.example.demo.Enums.OrderStatus;
+import com.example.demo.Enums.ProductFinishStepStatus;
 import com.example.demo.MainLayout.MainLayout;
-import com.example.demo.Pages.Employee.Page.Components.EmployeeBriefExplanations;
-import com.example.demo.Pages.Employee.Page.Components.EmployeeFilters;
-import com.example.demo.Pages.Employee.Page.Components.EmployeeGrid;
-import com.example.demo.Pages.Employee.Page.Components.EmployeeMiniStats;
-import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.WorkDoneService.WorkDoneService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -36,6 +33,7 @@ import com.vaadin.flow.router.Route;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -358,7 +356,8 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
                     miniStats("Quantity",String.valueOf(e.getAmountOfItems())),
                     miniStats("Created",common.dateFormatterLocalDateTime(e.getCreated(),"dd MMM yyyy, HH:mm")),
                     miniStats("Due date",common.dateFormatterLocalDateTime(e.getDueDate(),"dd MMM yyyy, HH:mm")),
-                    miniStats("Materials",e.getOrderStatus() == OrderStatus.LACK_OF_SUPPLY ? "Not available" : "Available")
+                    miniStats("Materials",e.getOrderStatus() == OrderStatus.LACK_OF_SUPPLY ? "Not available" : "Available"),
+                    employeeOnTheProject(e.getEmployeeImages().toString(), e.getEmployeeImages().toString())
             );
 
             VerticalLayout allHolder = new VerticalLayout();
@@ -385,6 +384,23 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
             VerticalLayout buttonHolder = new VerticalLayout();
 
             Button viewDetails = new Button("View details");
+
+            viewDetails.addClickListener(ee->{
+                Orders orders = ordersService.getSelectedOrder(e.getId());
+
+                for(var s : orders.getProductsData()){
+
+                    System.out.println(s.getProduct().getProductName());
+                    for(var steps : s.getProduct().getSteps()){
+                        System.out.println(steps.getStepName());
+                    }
+                }
+
+                openDetailsOfTheOrder(orders);
+
+
+            });
+
             Button acceptOrders = commonComponents.normalThemeButtonNoNavigate("Accept order", ButtonVariant.LUMO_PRIMARY);
 
             if(e.getOrderStatus().equals(OrderStatus.LACK_OF_SUPPLY)){
@@ -414,6 +430,217 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
     }
 
+    public VerticalLayout employeeOnTheProject(String employeeImages, String employees){
+
+
+        // extract data from concat due to its working with , csv
+        List<String> employeeImagesList = employeeImages == null || employeeImages.isBlank()
+                ? List.of()
+                : Arrays.stream(employeeImages.split(","))
+                .filter(s -> !s.isBlank())
+                .distinct()
+                .toList();
+
+        List<String> employeesList = employees == null || employees.isBlank()
+                ? List.of()
+                : Arrays.stream(employees.split(","))
+                .filter(s -> !s.isBlank())
+                .distinct()
+                .toList();
+
+        VerticalLayout v = new VerticalLayout();
+
+        v.add(
+                commonComponents.spanCrafter("Employee working on this order","stat-description")
+        );
+
+        HorizontalLayout h = new HorizontalLayout();
+
+
+        for(var s : employeeImagesList){
+            h.add(
+                    commonComponents.imageCrafter(s,"50px","50px","50%")
+            );
+        }
+
+        v.add(
+                h
+        );
+
+
+        return v;
+
+
+    }
+
+    public void openDetailsOfTheOrder(Orders orders){
+
+        Dialog dialog = new Dialog();
+
+        dialog.getHeader().add(
+                commonComponents.spanCrafter("Order #" + orders.getId() + " products","activityFeed-name")
+        );
+
+        Button close = new Button("Close", e-> dialog.close());
+        close.addThemeVariants(ButtonVariant.PRIMARY);
+
+
+        VerticalLayout v = new VerticalLayout();
+
+
+
+
+        for(var s : orders.getProductsData()) {
+            v.add(detailCrafter(s.getProduct(),s.getAmountOfProduct()));
+        }
+
+        dialog.add(v);
+
+        dialog.open();
+
+    }
+
+    public VerticalLayout detailCrafter(Product product, Long amountToMake){
+
+        VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
+
+        v.add(
+                commonComponents.spanCrafter(String.format("%s x %d", product.getProductName(),amountToMake), "activityFeed-name")
+        );
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setPadding(false);
+
+        h.addClassName("animated-card");
+
+        h.setAlignItems(Alignment.CENTER);
+        h.setJustifyContentMode(JustifyContentMode.CENTER);
+
+        List<String> images = new ArrayList<>();
+
+        for(var s : product.getImages()) {
+
+            if (s.getImageLogic().equals(ImageLogic.Main)) {
+                images.add(s.getImageUrl());
+
+            }
+
+        }
+
+
+
+
+
+        Image image = commonComponents.imageCrafter(
+                images.get(0),
+                "150px",
+                "150px",
+                "5px"
+        );
+
+        image.addClickListener(ee->{
+            imageViewer.popOver(images,images.get(0));
+        });
+
+        Double stepsThatAreAvailable = 0.0;
+        Double totalSteps = Double.valueOf(product.getSteps().size());
+
+        Long stepsThatAreAvailableLong = 0L;
+        Long totalStepsLong = (long) product.getSteps().size();
+
+
+        for(var s : product.getSteps()){
+
+
+            if(s.getProductFinishStepStatus() == null){
+                continue;
+            }
+
+            if(s.getProductFinishStepStatus().equals(ProductFinishStepStatus.NOT_STARTED)){
+                stepsThatAreAvailable++;
+                stepsThatAreAvailableLong++;
+            }
+
+
+        }
+
+        Double percentage;
+
+        try {
+             percentage = Double.valueOf(Math.abs(totalSteps - stepsThatAreAvailable) / totalSteps);
+
+            String number = String.format("%.2f",percentage);
+
+
+            percentage = Double.valueOf(number);
+
+        } catch (Exception e) {
+            percentage = 1.0;
+        }
+
+        if(totalSteps == 0){
+            percentage = 1.0;
+        }
+
+
+
+
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.setWidth("200px");
+        progressBar.setHeight("10px");
+        progressBar.setVisible(true);
+        progressBar.setValue(percentage);
+
+        Span stepsSpan;
+
+        if(totalSteps == 0){
+            stepsSpan = commonComponents.spanCrafter("All steps completed","stat-example");
+        }
+        else{
+            System.out.println(stepsThatAreAvailableLong + " " + totalStepsLong);
+            stepsSpan = commonComponents.spanCrafter(String.format("%d / %d steps completed", totalStepsLong, Math.abs(stepsThatAreAvailableLong - totalStepsLong)),"stat-example");
+        }
+
+
+
+
+        VerticalLayout stepHolder = new VerticalLayout();
+        stepHolder.addClassName("island");
+        stepHolder.setWidthFull();
+        stepHolder.setVisible(false);
+        stepHolder.addClassName("smooth-panel");
+        stepHolder.add(
+                manufacturingSteps(images.get(0),product)
+        );
+
+
+        Button viewDetails = new Button("View details");
+        viewDetails.addClickListener(e->{
+           if(stepHolder.isVisible()){
+               stepHolder.setVisible(false);
+           }
+           else{
+               stepHolder.setVisible(true);
+           }
+        });
+
+        h.add(
+                image,
+                progressBar,
+                commonComponents.spanCrafter(progressBar.getValue()*100 + "%","stat-example"),
+                stepsSpan,
+                viewDetails
+                );
+
+        v.add(
+                h,
+                stepHolder
+        );
+
+        return v;
+    }
+
 
     public VerticalLayout miniStats(String name, String value){
 
@@ -426,6 +653,8 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
         return v;
     }
+
+
 
 
     public VerticalLayout myActiveOrders(){
@@ -466,6 +695,97 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         return v;
 
     }
+
+
+    public HorizontalLayout manufacturingSteps(String mainImageUrl, Product product){
+
+        VerticalLayout allHolder = new VerticalLayout();
+        allHolder.setWidthFull();
+        allHolder.setPadding(false);
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setWidthFull();
+
+
+
+        Image image = commonComponents.imageCrafter(
+                mainImageUrl,
+                "100px",
+                "100px",
+                "5px"
+        );
+
+        VerticalLayout v = new VerticalLayout();
+
+        v.add(
+                commonComponents.spanCrafter("Manufacturing steps","stat-example")
+        );
+
+
+        for(var s : product.getSteps()){
+
+            Icon icon = new Icon();
+
+            if(s.getProductFinishStepStatus().equals(ProductFinishStepStatus.FINISHED)){
+                icon = commonComponents.iconCrafter(VaadinIcon.CHECK,"15px","green");
+                icon.setTooltipText("Step is completed");
+            }
+            else if(s.getProductFinishStepStatus().equals(ProductFinishStepStatus.IN_PROGRESS)){
+                icon = commonComponents.iconCrafter(VaadinIcon.COG,"15px","blue");
+                icon.setTooltipText("Step is in progress");
+            }
+            else{
+                icon = commonComponents.iconCrafter(VaadinIcon.CLOCK,"15px","red");
+                icon.setTooltipText("Step is waiting to be started");
+            }
+
+            v.add(
+                   commonComponents.doubleValueRow(icon,commonComponents.spanCrafter(String.format("%d. %s - %s",s.getStepId(),s.getStepName(), s.getStepDescription()),"stat-example"))
+            );
+        }
+
+        if(product.getSteps().isEmpty()){
+            v.add(
+                    commonComponents.spanCrafter("No steps found for this order","stat-example")
+            );
+        }
+
+        VerticalLayout productMaterials = new VerticalLayout();
+
+        productMaterials.add(
+                commonComponents.spanCrafter("Materials used","stat-example")
+        );
+
+        for(var s : product.getMaterials()){
+
+            productMaterials.add(
+                    commonComponents.doubleValueRow(commonComponents.iconCrafter(VaadinIcon.CHECK,"15px","green"),commonComponents.spanCrafter(String.format("%s - %d units ",s.getMaterials().getMaterialName(),s.getAmountUsed()),"stat-example"))
+            );
+        }
+
+        if(product.getMaterials().isEmpty()){
+            productMaterials.add(
+                    commonComponents.spanCrafter("No materials found for this order","stat-example")
+            );
+        }
+
+
+
+
+
+
+        h.add(
+                image,
+                v,
+                commonComponents.spaceFiller(),
+                productMaterials
+        );
+
+
+        return h;
+    }
+
+
 
 
 

@@ -2,10 +2,7 @@ package com.example.demo.Common;
 
 import com.example.demo.ControllerModels.CommonDtos.ExtraDetails;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductFinishSteps;
-import com.example.demo.Enums.Category;
-import com.example.demo.Enums.MaterialGrainPatterns;
-import com.example.demo.Enums.MaterialTextures;
-import com.example.demo.Enums.MaterialType;
+import com.example.demo.Enums.*;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -29,7 +26,7 @@ public class ProductAiDto {
     private Long lowThreshold = 0L;
     private Category category = Category.ALL;
 
-    private List<ProductFinishSteps> productFinishStepsList = List.of(new ProductFinishSteps(null,0L,"auto_Fill","auto_Fill",null) );
+    private List<ProductFinishSteps> productFinishStepsList = List.of(new ProductFinishSteps(null,0L,"auto_Fill","auto_Fill",null, ProductFinishStepStatus.NOT_STARTED,null) );
 
     private List<ExtraDetails> extraDetails = List.of(new ExtraDetails(null,"auto_Fill","auto_Fill",null,null,null));
 

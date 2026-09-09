@@ -121,6 +121,10 @@ public class EmployeeAddEditComponents {
                 employee.setProfileImage(e);
         });
 
+        singlePhotoLogic.setByteConsumer(e->{
+            employee.setImageData(e);
+        });
+
 
         createOrder.addClickListener(e->{
 

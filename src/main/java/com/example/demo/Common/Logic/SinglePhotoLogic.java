@@ -28,6 +28,7 @@ public class SinglePhotoLogic {
     Common common;
 
     Consumer<String> newImage;
+    Consumer<byte[]> byteConsumer;
 
     public SinglePhotoLogic(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
@@ -46,10 +47,11 @@ public class SinglePhotoLogic {
         InMemoryUploadHandler inMemoryHandler = UploadHandler
                 .inMemory((metadata, data) -> {
                     String mimeType = metadata.contentType();
-
+                    byteConsumer.accept(data);
                     imageData = common.imageMaker(data,mimeType);
 
                 });
+
         Upload upload = new Upload(inMemoryHandler);
         upload.setMaxFiles(1);
         upload.setAcceptedFileTypes(".PNG");

@@ -31,6 +31,9 @@ public class Employee {
     private EmploymentType employmentType;
 
     private String profileImage;
+
+    private byte[] imageData;
+
     private EmployeeAcIn employeeAcIn;
     private EmployeeRole employeeCategory;
     private EmployeeDepartment employeeDepartment;
