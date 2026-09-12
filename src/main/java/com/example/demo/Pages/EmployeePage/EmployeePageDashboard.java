@@ -14,6 +14,7 @@ import com.example.demo.Enums.ProductFinishStepStatus;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.WorkDoneService.WorkDoneService;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -327,7 +328,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
             Image image = commonComponents.imageCrafter(
-                    imageList.get(0),
+                    "123",
                     "150px",
                     "150px",
                     "5px"
@@ -336,7 +337,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
             image.addClickListener(ee->{
-                imageViewer.popOver(imageList,imageList.get(0));
+                imageViewer.popOver(imageList,"33232");
             });
             HorizontalLayout hh = new HorizontalLayout();
             hh.setWidthFull();
@@ -397,7 +398,9 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
                     }
                 }
 
-                openDetailsOfTheOrder(orders);
+                //openDetailsOfTheOrder(orders);
+
+                UI.getCurrent().navigate("EmployeeAvailableOrder/" + orders.getId());
 
 
             });
@@ -474,196 +477,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
     }
 
-    public void openDetailsOfTheOrder(Orders orders){
 
-        Dialog dialog = new Dialog();
-
-        dialog.getHeader().add(
-                commonComponents.spanCrafter("Order #" + orders.getId() + " products","activityFeed-name")
-        );
-
-        Button close = new Button("Close", e-> dialog.close());
-        close.addThemeVariants(ButtonVariant.PRIMARY);
-
-
-        VerticalLayout v = new VerticalLayout();
-
-
-
-
-            for(var productData : orders.getProductsData()){
-
-                v.add(detailCrafter(productData.getProduct(),orders.getOrderSteps(), productData.getAmountOfProduct()));
-            }
-
-
-
-
-
-
-//        for(var s : orders.getProductsData()) {
-//            v.add(detailCrafter(s.getProduct(),s.getAmountOfProduct()));
-//        }
-
-        dialog.add(v);
-
-        dialog.open();
-
-    }
-
-    public VerticalLayout detailCrafter(Product product,List<OrderStepsToComplete> steps, Long amountToMake){
-
-        VerticalLayout v = new VerticalLayout();
-        v.addClassName("island");
-
-        v.add(
-                commonComponents.spanCrafter(String.format("%s x %d", product.getProductName(),amountToMake), "activityFeed-name")
-        );
-
-        HorizontalLayout h = new HorizontalLayout();
-        h.setPadding(false);
-
-        h.addClassName("animated-card");
-
-        h.setAlignItems(Alignment.CENTER);
-        h.setJustifyContentMode(JustifyContentMode.CENTER);
-
-        List<String> images = new ArrayList<>();
-
-        for(var s : product.getImages()) {
-
-            if (s.getImageLogic().equals(ImageLogic.Main)) {
-                images.add(s.getImageUrl());
-
-            }
-
-        }
-
-
-
-
-
-        Image image = commonComponents.imageCrafter(
-                images.get(0),
-                "150px",
-                "150px",
-                "5px"
-        );
-
-        image.addClickListener(ee->{
-            imageViewer.popOver(images,images.get(0));
-        });
-
-        Double stepsThatAreAvailable = 0.0;
-        Double totalSteps = Double.valueOf(product.getSteps().size());
-
-        Long stepsThatAreAvailableLong = 0L;
-        Long totalStepsLong = (long) product.getSteps().size();
-
-
-        for(var s : product.getSteps()){
-
-
-            if(s.getProductFinishStepStatus() == null){
-                continue;
-            }
-
-            if(s.getProductFinishStepStatus().equals(ProductFinishStepStatus.NOT_STARTED)){
-                stepsThatAreAvailable++;
-                stepsThatAreAvailableLong++;
-            }
-
-
-        }
-
-        Double percentage;
-
-        try {
-             percentage = Double.valueOf(Math.abs(totalSteps - stepsThatAreAvailable) / totalSteps);
-
-            String number = String.format("%.2f",percentage);
-
-
-            percentage = Double.valueOf(number);
-
-        } catch (Exception e) {
-            percentage = 1.0;
-        }
-
-        if(totalSteps == 0){
-            percentage = 1.0;
-        }
-
-
-
-
-        ProgressBar progressBar = new ProgressBar();
-        progressBar.setWidth("200px");
-        progressBar.setHeight("10px");
-        progressBar.setVisible(true);
-        progressBar.setValue(percentage);
-
-        Span stepsSpan;
-
-        if(totalSteps == 0){
-            stepsSpan = commonComponents.spanCrafter("All steps completed","stat-example");
-        }
-        else{
-            System.out.println(stepsThatAreAvailableLong + " " + totalStepsLong);
-            stepsSpan = commonComponents.spanCrafter(String.format("%d / %d steps completed", totalStepsLong, Math.abs(stepsThatAreAvailableLong - totalStepsLong)),"stat-example");
-        }
-
-
-
-
-        VerticalLayout stepHolder = new VerticalLayout();
-        stepHolder.addClassName("island");
-        stepHolder.setWidthFull();
-        stepHolder.setVisible(false);
-        stepHolder.addClassName("smooth-panel");
-        stepHolder.add(
-                manufacturingSteps(images.get(0),steps, product)
-        );
-
-
-        Button viewDetails = new Button("View details");
-        viewDetails.addClickListener(e->{
-           if(stepHolder.isVisible()){
-               stepHolder.setVisible(false);
-           }
-           else{
-               stepHolder.setVisible(true);
-           }
-        });
-
-        h.add(
-                image,
-                progressBar,
-                commonComponents.spanCrafter(progressBar.getValue()*100 + "%","stat-example"),
-                stepsSpan,
-                viewDetails
-                );
-
-        v.add(
-                h,
-                stepHolder
-        );
-
-        return v;
-    }
-
-
-    public VerticalLayout miniStats(String name, String value){
-
-        VerticalLayout v = new VerticalLayout();
-
-        v.add(
-                commonComponents.spanCrafter(name,"stat-description"),
-                commonComponents.spanCrafter(value,"stat-example")
-        );
-
-        return v;
-    }
 
 
 
@@ -708,95 +522,6 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
     }
 
 
-    public HorizontalLayout manufacturingSteps(String mainImageUrl, List<OrderStepsToComplete> steps, Product product){
-
-        VerticalLayout allHolder = new VerticalLayout();
-        allHolder.setWidthFull();
-        allHolder.setPadding(false);
-
-        HorizontalLayout h = new HorizontalLayout();
-        h.setWidthFull();
-
-
-
-        Image image = commonComponents.imageCrafter(
-                mainImageUrl,
-                "100px",
-                "100px",
-                "5px"
-        );
-
-        VerticalLayout v = new VerticalLayout();
-
-        v.add(
-                commonComponents.spanCrafter("Manufacturing steps","stat-example")
-        );
-
-
-        for(var s : steps){
-
-            Icon icon = new Icon();
-
-            if(s.getProductFinishStepStatus().equals(ProductFinishStepStatus.FINISHED)){
-                icon = commonComponents.iconCrafter(VaadinIcon.CHECK,"15px","green");
-                icon.setTooltipText("Step is completed");
-            }
-            else if(s.getProductFinishStepStatus().equals(ProductFinishStepStatus.IN_PROGRESS)){
-                icon = commonComponents.iconCrafter(VaadinIcon.COG,"15px","blue");
-                icon.setTooltipText("Step is in progress");
-            }
-            else{
-                icon = commonComponents.iconCrafter(VaadinIcon.CLOCK,"15px","red");
-                icon.setTooltipText("Step is waiting to be started");
-            }
-
-            // employee can be displayed here btw
-
-            v.add(
-                   commonComponents.doubleValueRow(icon,commonComponents.spanCrafter(String.format("%d. %s - %s",s.getProductFinishSteps().getStepId(),s.getProductFinishSteps().getStepName(), s.getProductFinishSteps().getStepDescription()),"stat-example"))
-            );
-        }
-
-        if(steps.isEmpty()){
-            v.add(
-                    commonComponents.spanCrafter("No steps found for this order","stat-example")
-            );
-        }
-
-        VerticalLayout productMaterials = new VerticalLayout();
-
-        productMaterials.add(
-                commonComponents.spanCrafter("Materials used","stat-example")
-        );
-
-        for(var s : product.getMaterials()){
-
-            productMaterials.add(
-                    commonComponents.doubleValueRow(commonComponents.iconCrafter(VaadinIcon.CHECK,"15px","green"),commonComponents.spanCrafter(String.format("%s - %d units ",s.getMaterials().getMaterialName(),s.getAmountUsed()),"stat-example"))
-            );
-        }
-
-        if(product.getMaterials().isEmpty()){
-            productMaterials.add(
-                    commonComponents.spanCrafter("No materials found for this order","stat-example")
-            );
-        }
-
-
-
-
-
-
-        h.add(
-                image,
-                v,
-                commonComponents.spaceFiller(),
-                productMaterials
-        );
-
-
-        return h;
-    }
 
 
 
@@ -839,7 +564,17 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
 
+    public VerticalLayout miniStats(String name, String value){
 
+        VerticalLayout v = new VerticalLayout();
+
+        v.add(
+                commonComponents.spanCrafter(name,"stat-description"),
+                commonComponents.spanCrafter(value,"stat-example")
+        );
+
+        return v;
+    }
 
 
 

@@ -486,7 +486,7 @@ public class ProductEditRightSideFields {
             for(var s : productEditDto.getMaterials()) {
 
                 System.out.println(s.getMaterials().getId());
-                MaterialInfo materialInfo = materialService.getMaterialInfoAccordingToId(s.getMaterials().getId());
+                MaterialInfo materialInfo = materialService.getMaterialInfoAccordingToId(s.getMaterials().getId(), productEditDto.getId());
                 materialInfoList.add(materialInfo);
                 sumPrice+= (s.getAmountUsed() * s.getUnitPrice());
 
@@ -646,7 +646,7 @@ public class ProductEditRightSideFields {
 
     public void loadNewData(){
         grids.setConsumer(e->{
-            MaterialInfo materials = materialService.getMaterialInfoAccordingToId(e);
+            MaterialInfo materials = materialService.getMaterialInfoAccordingToId(e,productEditDtos.getId());
 
             materials.setAmountTaken(1L);
 

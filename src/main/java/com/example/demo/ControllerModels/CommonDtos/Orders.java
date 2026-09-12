@@ -23,7 +23,7 @@ public class Orders {
     private Long id;
     private List<OrderProducts> productsData;
     private List<OrderEmployees> employees;
-    private List<OrderStepsToComplete> orderSteps;
+
     private User user;
     private User orderPlacedBy;
     private Double totalPrice;

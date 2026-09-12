@@ -18,6 +18,9 @@ public class OrderProducts {
     private Product product;
     private Long amountOfProduct;
     private Double cost;
+
+    private List<OrderStepsToComplete> orderSteps;
+
     private LocalDateTime created;
 
 }

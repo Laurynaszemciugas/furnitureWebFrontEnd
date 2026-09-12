@@ -138,9 +138,13 @@ public class MaterialService {
     }
 
     @SneakyThrows
-    public MaterialInfo getMaterialInfoAccordingToId(Long id) {
+    public MaterialInfo getMaterialInfoAccordingToId(Long id, Long productId) {
 
-        return httpCallLogic.HttpCall("material/getMaterialInfoAccordingToId", HttpMethod.GET,id, MaterialInfo.class,true);
+        if(productId == null){
+            productId = -99L;
+        }
+
+        return httpCallLogic.HttpCall("material/getMaterialInfoAccordingToId", HttpMethod.GET,String.format("%d/%d",id,productId), MaterialInfo.class,true);
 
     }
 

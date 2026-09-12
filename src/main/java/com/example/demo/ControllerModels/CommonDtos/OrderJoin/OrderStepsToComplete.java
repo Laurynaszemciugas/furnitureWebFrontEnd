@@ -19,7 +19,12 @@ public class OrderStepsToComplete {
 
     private Long id;
 
-    private ProductFinishSteps productFinishSteps;
+    // the steps refrence removed so user could save previous steps and add new ones ofcouse new ones will now be present in already created orders
+
+    private Long stepRealId = null;
+    private Long stepId = null;
+    private String stepName = null;
+    private String stepDescription = null;
 
     private Long stepsNeeded;
 
@@ -29,7 +34,7 @@ public class OrderStepsToComplete {
 
     private ProductFinishStepStatus productFinishStepStatus;
 
-    private Orders order;
+    private OrderProducts orderProducts;
 
 
 }
