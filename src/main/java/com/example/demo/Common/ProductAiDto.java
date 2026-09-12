@@ -26,7 +26,7 @@ public class ProductAiDto {
     private Long lowThreshold = 0L;
     private Category category = Category.ALL;
 
-    private List<ProductFinishSteps> productFinishStepsList = List.of(new ProductFinishSteps(null,0L,"auto_Fill","auto_Fill",null, ProductFinishStepStatus.NOT_STARTED,null) );
+    private List<ProductFinishSteps> productFinishStepsList = List.of(new ProductFinishSteps(null,0L,"auto_Fill","auto_Fill",null, ProductFinishStepStatus.NOT_STARTED,null,null,null) );
 
     private List<ExtraDetails> extraDetails = List.of(new ExtraDetails(null,"auto_Fill","auto_Fill",null,null,null));
 

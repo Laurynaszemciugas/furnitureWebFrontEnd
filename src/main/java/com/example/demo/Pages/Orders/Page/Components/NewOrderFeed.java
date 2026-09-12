@@ -25,10 +25,12 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Setter
 public class NewOrderFeed {
 
     CommonComponents commonComponents;
@@ -37,13 +39,17 @@ public class NewOrderFeed {
     SessionCrafter sessionCrafter;
     OrdersLeftSide ordersLeftSide;
 
-    Div newOrderHolder = new Div();
+    VerticalLayout newOrderHolder = new VerticalLayout();
 
     VerticalLayout rightSide = new VerticalLayout();
 
     HorizontalLayout v = new HorizontalLayout();
 
     boolean firstLoad = true;
+
+    Paganation paganation;
+
+    OrderFilterHolder newFilter = new OrderFilterHolder();
 
     public NewOrderFeed(CommonComponents commonComponents, Common common, OrdersService ordersService) {
         this.commonComponents = commonComponents;
@@ -59,7 +65,6 @@ public class NewOrderFeed {
 
     }
 
-    Paganation paganation;
 
 
     HorizontalLayout reviewLeftRightSide = new HorizontalLayout();
@@ -73,7 +78,11 @@ public class NewOrderFeed {
 
     public VerticalLayout newOrders(){
 
-
+        paganation.setOnPageChange(e->{
+            e = e-1;
+            newFilter.setPage(e);
+            reloadSS();
+        });
 
 
         VerticalLayout main = new VerticalLayout();
@@ -106,6 +115,9 @@ public class NewOrderFeed {
     }
 
     public void reloadSS(){
+
+
+
 
         v.removeAll();
 
@@ -625,10 +637,11 @@ public class NewOrderFeed {
         newOrderHolder.removeAll();
 
         String jwt = sessionCrafter.extractSession("JWT", String.class);
-        OrderFilterHolder newFilter = new OrderFilterHolder();
+
         newFilter.setOrderStatusChoice(OrderStatus.NEW);
-        newFilter.setPage(0);
-        newFilter.setPageCount(4);
+        newFilter.setPageCount(5);
+
+
 
         newOrderHolder.add(
                 ordersLeftSide.newOrderFeedHolder(ordersService.getNewOrderFeed(newFilter)),

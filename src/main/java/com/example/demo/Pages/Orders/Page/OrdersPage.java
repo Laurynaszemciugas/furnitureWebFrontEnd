@@ -77,7 +77,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
 
     CurrentFilterDisplay currentFilterDisplay;
 
-    Div feedHolder = new Div();
+    VerticalLayout feedHolder = new VerticalLayout();
 
 
 
@@ -120,6 +120,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         filterMemory.setWidthFull();
         feedHolder.setWidthFull();
         feedHolder.setWidthFull();
+
 
 
 
@@ -171,7 +172,11 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
             ordersService.saveEditedData(e);
         });
 
-
+        paganation.setOnPageChange(e->{
+            e = e-1;
+            filterData.setPage(e);
+            updateFeed();
+        });
 
         return verticalLayout;
     }
@@ -251,11 +256,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
             filterData = new OrderFilterHolder();
             addUIData();
         });
-        paganation.setOnPageChange(e->{
-            e = e-1;
-            filterData.setPage(e);
-            updateFeed();
-        });
+
 
         //needed
         currentFilterDisplay.setReloadController(e->{
@@ -305,8 +306,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         );
 
         leftSide.add(
-                feedHolder,
-                paganation.buttonHolder(Math.toIntExact(ordersService.getPageCount(filterData))));
+                feedHolder);
 
         VerticalLayout right = ordersRightSide.rightSideOrderInfo();
 
@@ -344,7 +344,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         String jwt = sessionCrafter.extractSession("JWT", String.class);
 
         feedHolder.removeAll();
-        feedHolder.add(commonComponents.shimmer(3));
+        feedHolder.add(commonComponents.shimmer(5));
 
 
 
@@ -358,7 +358,8 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
                 .thenAccept(e->{
                     ui.access(() -> {
                          feedHolder.removeAll();
-                         feedHolder.add(ordersLeftSide.orderFeedHolder(e));
+                         feedHolder.add(ordersLeftSide.orderFeedHolder(e),
+                                 paganation.buttonHolder(Math.toIntExact(ordersService.getPageCount(filterData))));
 
                     });
                 });

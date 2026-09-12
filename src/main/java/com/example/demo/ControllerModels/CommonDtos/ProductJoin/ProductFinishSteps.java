@@ -26,6 +26,10 @@ public class ProductFinishSteps {
 
     private User employee;
 
+    private Long stepsNeeded;
+
+    private Long stepsCompleted;
+
 
 
 

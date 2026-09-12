@@ -2,6 +2,7 @@ package com.example.demo.ControllerModels.CommonDtos;
 
 import com.example.demo.ControllerModels.CommonDtos.EmployeeJoin.OrderEmployees;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
+import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderStepsToComplete;
 import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.PayMethod;
@@ -22,6 +23,7 @@ public class Orders {
     private Long id;
     private List<OrderProducts> productsData;
     private List<OrderEmployees> employees;
+    private List<OrderStepsToComplete> orderSteps;
     private User user;
     private User orderPlacedBy;
     private Double totalPrice;

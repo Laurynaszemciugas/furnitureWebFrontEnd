@@ -4,6 +4,7 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ImageViewer;
 import com.example.demo.ControllerModels.CommonDtos.EmployeePage.EmployeeOrderProjection;
+import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderStepsToComplete;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.ControllerModels.CommonDtos.WorkDay;
@@ -490,9 +491,19 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
 
-        for(var s : orders.getProductsData()) {
-            v.add(detailCrafter(s.getProduct(),s.getAmountOfProduct()));
-        }
+            for(var productData : orders.getProductsData()){
+
+                v.add(detailCrafter(productData.getProduct(),orders.getOrderSteps(), productData.getAmountOfProduct()));
+            }
+
+
+
+
+
+
+//        for(var s : orders.getProductsData()) {
+//            v.add(detailCrafter(s.getProduct(),s.getAmountOfProduct()));
+//        }
 
         dialog.add(v);
 
@@ -500,7 +511,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
     }
 
-    public VerticalLayout detailCrafter(Product product, Long amountToMake){
+    public VerticalLayout detailCrafter(Product product,List<OrderStepsToComplete> steps, Long amountToMake){
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
@@ -611,7 +622,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         stepHolder.setVisible(false);
         stepHolder.addClassName("smooth-panel");
         stepHolder.add(
-                manufacturingSteps(images.get(0),product)
+                manufacturingSteps(images.get(0),steps, product)
         );
 
 
@@ -697,7 +708,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
     }
 
 
-    public HorizontalLayout manufacturingSteps(String mainImageUrl, Product product){
+    public HorizontalLayout manufacturingSteps(String mainImageUrl, List<OrderStepsToComplete> steps, Product product){
 
         VerticalLayout allHolder = new VerticalLayout();
         allHolder.setWidthFull();
@@ -722,7 +733,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         );
 
 
-        for(var s : product.getSteps()){
+        for(var s : steps){
 
             Icon icon = new Icon();
 
@@ -742,11 +753,11 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
             // employee can be displayed here btw
 
             v.add(
-                   commonComponents.doubleValueRow(icon,commonComponents.spanCrafter(String.format("%d. %s - %s",s.getStepId(),s.getStepName(), s.getStepDescription()),"stat-example"))
+                   commonComponents.doubleValueRow(icon,commonComponents.spanCrafter(String.format("%d. %s - %s",s.getProductFinishSteps().getStepId(),s.getProductFinishSteps().getStepName(), s.getProductFinishSteps().getStepDescription()),"stat-example"))
             );
         }
 
-        if(product.getSteps().isEmpty()){
+        if(steps.isEmpty()){
             v.add(
                     commonComponents.spanCrafter("No steps found for this order","stat-example")
             );
