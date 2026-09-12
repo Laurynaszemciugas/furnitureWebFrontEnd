@@ -4,33 +4,26 @@ package com.example.demo.Pages.EmployeePage;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ImageViewer;
-import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderStepsToComplete;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
-import com.example.demo.ControllerModels.CommonDtos.Product;
-import com.example.demo.Enums.ImageLogic;
-import com.example.demo.Enums.ProductFinishStepStatus;
+import com.example.demo.Enums.OrderStatus;
 import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.Pages.EmployeePage.Components.OrderMiniStat;
 import com.example.demo.Services.Orders.OrdersService;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.progressbar.ProgressBar;
+import com.vaadin.flow.component.shared.Tooltip;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 
 @Route(value = "EmployeeAvailableOrder/:id", layout = MainLayout.class)
 public class EmployeeAvailableOrderPage extends VerticalLayout implements BeforeEnterObserver {
@@ -40,6 +33,8 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
     Common common;
     OrdersService ordersService;
     ImageViewer imageViewer;
+
+    OrderMiniStat orderMiniStat;
 
     int orderId;
 
@@ -51,6 +46,7 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
         this.common = common;
         this.ordersService = ordersService;
         this.imageViewer = imageViewer;
+        this.orderMiniStat = new OrderMiniStat(commonComponents,common,ordersService);
 
 
 
@@ -101,7 +97,7 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
 
                 firstLayer(),
                 orderName(),
-                miniStat(),
+                orderMiniStat.miniStat(currentOrder),
 
                 test(currentOrder)
 
@@ -136,9 +132,22 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
         h.setPadding(false);
 
         Span status = new Span(currentOrder.getOrderStatus().getDisplayName());
+        status.getStyle().set("width", "fit-content");
+        status.addClassName("stock-badge");
+
+
+
+        switch (currentOrder.getOrderStatus()){
+            case Finished -> status.addClassName("stock-in");
+            case In_Progress -> status.addClassName("status-in-progress");
+            case CANCELLED -> status.addClassName("stock-out");
+            case Pending -> status.addClassName("status-pending");
+            default -> status.addClassName("status-none");
+
+        }
 
         h.add(
-                commonComponents.spanCrafter(String.format("Order # %d",currentOrder.getId()),"stat-value"),
+                commonComponents.spanCrafter(String.format("Order #%d",currentOrder.getId()),"stat-value"),
                 status
         );
 
@@ -151,204 +160,6 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
 
         return v;
     }
-
-    public HorizontalLayout miniStat(){
-
-        HorizontalLayout h = new HorizontalLayout();
-        h.addClassName("island");
-        h.setWidthFull();
-        h.setAlignItems(Alignment.CENTER);
-
-        h.getStyle().set("gap","20px");
-
-        Image image = new Image("No_picture.png","err");
-        image.setHeight("150px");
-        image.setWidth("150px");
-
-        Long totalQuantity = 0L;
-
-        for(var s : currentOrder.getProductsData()){
-            totalQuantity += s.getAmountOfProduct();
-        }
-
-        // get how important each order is
-
-        LocalDateTime today = LocalDateTime.now();
-        LocalDateTime dueDate = currentOrder.getEstimatedDueDate();
-
-        System.out.println(today);
-        System.out.println(dueDate);
-
-        long howManyDaysLeft = ChronoUnit.DAYS.between(today,dueDate);
-
-        Span priority = new Span();
-        priority.getStyle().set("width", "fit-content");
-        priority.addClassName("stock-badge");
-
-        if(howManyDaysLeft >= 15){
-            priority.setText("Low priority");
-            priority.addClassName("stock-in");
-        }
-        else if(howManyDaysLeft >= 5 && howManyDaysLeft <= 10){
-
-            priority.setText("medium priority");
-            priority.addClassName("stock-low");
-        }
-        else if(howManyDaysLeft >= 0 && howManyDaysLeft <= 4){
-            priority.setText("High priority");
-            priority.addClassName("stock-out");
-        }
-
-        else{
-            priority.setText(String.format("%s %d days","OVERDUE",Math.abs(howManyDaysLeft)));
-            priority.addClassName("stock-out");
-        }
-
-        // get how many steps are there
-
-        Long stepsTotal = 0L;
-        Long stepsCompleted = 0L;
-
-
-        for(var s : currentOrder.getProductsData()){
-            for(var stepsList : s.getOrderSteps()){
-                stepsTotal += stepsList.getStepsNeeded();
-                stepsCompleted += stepsList.getStepsCompleted();
-            }
-        }
-
-        System.out.println(stepsTotal);
-        System.out.println(stepsCompleted = stepsCompleted +1);
-
-        Div orderNamePriority = new Div();
-        orderNamePriority.setMaxWidth("150px");
-        orderNamePriority.getStyle()
-                .set("display", "grid")
-                .set("gap", "10px");
-        orderNamePriority.add(
-                commonComponents.spanCrafterWordNoHide("Dining funiture ssssssssssssssset","stat-example"),commonComponents.spanCrafter(String.format("%d products in this order",totalQuantity),"stat-description"),priority
-        );
-
-        h.add(
-                image,
-                orderNamePriority,
-                createProgressCircle(stepsCompleted,stepsTotal),
-                miniStatHolder(),
-                verticallyMiniStats(VaadinIcon.TRASH,"1253","Test"),
-                verticallyMiniStats(VaadinIcon.TRASH,"1253","Test"),
-                verticallyMiniStats(VaadinIcon.TRASH,"1253","Test"),
-                verticallyMiniStats(VaadinIcon.TRASH,"1253","Test")
-        );
-
-
-
-        return h;
-    }
-
-    public Div miniStatHolder() {
-        Div h = new Div();
-
-        LocalDateTime today = LocalDateTime.now();
-        LocalDateTime dueDate = currentOrder.getEstimatedDueDate();
-
-        System.out.println(today);
-        System.out.println(dueDate);
-
-        long howManyDaysLeft = ChronoUnit.DAYS.between(today,dueDate);
-
-        Long totalQuantity = 0L;
-
-        for(var s : currentOrder.getProductsData()){
-            totalQuantity += s.getAmountOfProduct();
-        }
-
-        h.getStyle()
-                .set("padding","20px")
-                .set("display", "grid")
-                .set("grid-template-columns", "1fr 1fr 1fr")
-                .set("gap", "15px");
-
-        h.add(
-                miniStatCrafter(VaadinIcon.CALENDAR, "Created", common.dateFormatterLocalDateTime(currentOrder.getCreated(),"yyyy-MM-dd")),
-                miniStatCrafter(VaadinIcon.CALENDAR, "Due date", common.dateFormatterLocalDateTime(currentOrder.getEstimatedDueDate(),"yyyy-MM-dd")),
-                miniStatCrafter(VaadinIcon.CLOCK, "Time remaining", howManyDaysLeft + " Days"),
-                miniStatCrafter(VaadinIcon.CUBE, "Total products", totalQuantity),
-                miniStatCrafter(VaadinIcon.USER, "Costumer", currentOrder.getOrderCreatedByName()),
-                miniStatCrafter(VaadinIcon.MAILBOX, "Costumer", currentOrder.getOrderCreatedByGmail())
-        );
-
-        return h;
-    }
-
-
-    public HorizontalLayout miniStatCrafter(
-            VaadinIcon icon,
-            String name,
-            Object value
-    ) {
-        HorizontalLayout h = new HorizontalLayout();
-        h.setAlignItems(Alignment.CENTER);
-
-        Div div = new Div();
-
-        div.add(
-                commonComponents.spanCrafterWordNoHide(name, "stat-description"),
-                commonComponents.spanCrafterWordNoHide(
-                        value.toString(),
-                        "stat-example"
-                )
-        );
-
-        h.add(
-                commonComponents.iconCrafter(icon, "25px", "grey"),
-                div
-        );
-
-        return h;
-    }
-
-
-
-
-    public Div verticallyMiniStats(VaadinIcon icon,
-                                              Object value,
-                                              String name){
-
-        Div v = new Div();
-
-        v.getStyle()
-                .set("display", "grid")
-                .set("place-items", "center");
-
-        VerticalLayout vv = new VerticalLayout();
-        vv.setPadding(false);
-        vv.setWidth("50px");
-        vv.setHeight("50px");
-        vv.getStyle().set("border-radius","50%");
-        vv.getStyle().set("background-color","Red");
-
-        vv.setAlignItems(Alignment.CENTER);
-        vv.setJustifyContentMode(JustifyContentMode.CENTER);
-
-        vv.add(
-                commonComponents.iconCrafter(icon,"25px","blue")
-        );
-
-        v.add(
-
-                vv,
-                commonComponents.spanCrafter(value.toString(),"stat-value"),
-                commonComponents.spanCrafter(name,"stat-description")
-        );
-
-
-        return v;
-
-    }
-
-
-
-
 
     public VerticalLayout test(Orders orders){
         VerticalLayout v = new VerticalLayout();
@@ -369,40 +180,6 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
 
 
         return v;
-    }
-
-    public Div createProgressCircle(Long completed, Long total) {
-
-
-        double percentage = (double) completed / total * 100;
-
-
-        Div holder = new Div();
-        holder.getStyle()
-                .set("display", "grid")
-                .set("justify-content", "center") // horizontal
-                .set("align-items", "center");    // vertical
-
-        Div circle = new Div();
-        circle.setText(String.format("%.0f ",percentage) + "%");
-
-        circle.getStyle()
-                .set("width", "100px")
-                .set("height", "100px")
-                .set("border-radius", "50%")
-                .set("display", "flex")
-                .set("align-items", "center")
-                .set("justify-content", "center")
-                .set("font-weight", "bold")
-                .set("background",
-                        "conic-gradient(var(--lumo-primary-color) "
-                                + percentage + "%, #e0e0e0 0)");
-
-        holder.add(
-                circle,
-                commonComponents.spanCrafter("Overall progress","stat-example"));
-
-        return holder;
     }
 
 
