@@ -902,6 +902,47 @@ transition:
     animation: removeLeftSideAnimation 0.7s cubic-bezier(.2, .8, .2, 1) both;
 }
 
+.addtop {
+    overflow: hidden;
+    animation: addTopBottom 0.7s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.removetop {
+    overflow: hidden;
+    pointer-events: none;
+    animation: removeTopBottom 0.7s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+@keyframes addTopBottom {
+    from {
+        max-height: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        opacity: 0;
+    }
+    to {
+        max-height: 1000px; /* Adjust this to safely cover your expected content height */
+        opacity: 1;
+    }
+}
+
+@keyframes removeTopBottom {
+    from {
+        max-height: 1000px;
+        opacity: 1;
+    }
+    to {
+        max-height: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        opacity: 0;
+    }
+}
+
 @keyframes addLeftSideAnimation {
     from {
         width: 0;
@@ -941,6 +982,8 @@ transition:
         border-width: 0;
     }
 }
+
+
 
 
 

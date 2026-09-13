@@ -4,7 +4,11 @@ package com.example.demo.Pages.EmployeePage;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ImageViewer;
+import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
+import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderStepsToComplete;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
+import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
+import com.example.demo.Enums.ImageLogic;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.EmployeePage.Components.OrderMiniStat;
@@ -17,6 +21,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.component.shared.Tooltip;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -24,6 +29,7 @@ import com.vaadin.flow.router.Route;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Route(value = "EmployeeAvailableOrder/:id", layout = MainLayout.class)
 public class EmployeeAvailableOrderPage extends VerticalLayout implements BeforeEnterObserver {
@@ -163,25 +169,229 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
 
     public VerticalLayout test(Orders orders){
         VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
 
-        for(var products : orders.getProductsData()){
-            v.add(
-                    new Span(products.getProduct().getProductName())
-            );
+        HorizontalLayout firstLayer = new HorizontalLayout();
+        firstLayer.setWidthFull();
+        firstLayer.setAlignItems(Alignment.CENTER);
+        firstLayer.setJustifyContentMode(JustifyContentMode.BETWEEN);
 
-            for(var steps : products.getOrderSteps()){
-                v.add(
-                        new Span(steps.getStepDescription())
-                );
-            }
+        Span productsAvailable = new Span(String.format("%d Products",currentOrder.getProductsData().size()));
+        productsAvailable.addClassName("stock-badge");
+        productsAvailable.addClassName("status-pending");
 
-        }
+        firstLayer.add(
+                commonComponents.spanCrafter("Product in this order","activityFeed-name"),
+                productsAvailable
+        );
+
+        v.add(
+            firstLayer,
+                productPreviewHolder(orders.getProductsData())
+        );
+
+
 
 
 
         return v;
     }
 
+    public VerticalLayout productPreviewHolder(List<OrderProducts> productsData){
+
+        VerticalLayout v = new VerticalLayout();
+
+        for(var product : productsData){
+
+            String mainImageUrl = "";
+
+            Long totalSteps = 0L;
+            Long totalStepsCompleted = 0L;
+
+            for(var images : product.getProduct().getImages()){
+                if(images.getImageLogic().equals(ImageLogic.Main)){
+                    mainImageUrl = images.getImageUrl();
+                }
+            }
+
+            for(var steps : product.getOrderSteps()){
+
+                totalSteps += steps.getStepsNeeded();
+                totalStepsCompleted += steps.getStepsCompleted();
+
+            }
+
+            v.add(productPreview(mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
+        }
+
+        return v;
+
+    }
+
+
+    public VerticalLayout productPreview(String mainImage, String productName, String productSKU, Long howMany, Long totalSteps,Long totalStepsCompleted, List<OrderStepsToComplete> stepsList, List<ProductMaterials> productMaterials){
+
+
+        HorizontalLayout stepsMaterialsHolder = new HorizontalLayout();
+        stepsMaterialsHolder.addClassName("island");
+        stepsMaterialsHolder.setWidthFull();
+        stepsMaterialsHolder.setVisible(false);
+        stepsMaterialsHolder.addClassName("removetop");
+
+        // REM
+        VerticalLayout stepsRequired = new VerticalLayout();
+        stepsRequired.add(
+                commonComponents.spanCrafter("Manufacturing steps","activityFeed-name")
+        );
+
+        VerticalLayout materialRequired = new VerticalLayout();
+        materialRequired.add(
+                commonComponents.spanCrafter("Materials used","activityFeed-name")
+        );
+
+        for(var steps : stepsList){
+            HorizontalLayout stepHolder = new HorizontalLayout();
+
+            Span stepDesc = commonComponents.spanCrafterWordNoHide(steps.getStepDescription(),"stat-example");
+            stepDesc.setWidth("300px");
+
+            stepHolder.add(
+                    commonComponents.iconCrafter(VaadinIcon.CHECK,"25","green"),
+                   commonComponents.spanCrafter(steps.getStepId().toString(),"stat-example"),
+                    stepDesc,
+                    commonComponents.spanCrafter(String.format("%d/%d",steps.getStepsCompleted(),steps.getStepsNeeded()),"stat-example")
+            );
+            stepsRequired.add(
+                    stepHolder
+            );
+        }
+
+        for(var productMat : productMaterials){
+
+            HorizontalLayout material = new HorizontalLayout();
+
+            material.add(
+                    commonComponents.spanCrafter(String.format("%s %d",productMat.getMaterials().getMaterialName(),productMat.getAmountUsed()),"stat-example")
+
+            );
+
+            materialRequired.add(
+                    material
+            );
+
+        }
+
+
+
+        stepsMaterialsHolder.add(
+                stepsRequired,
+                materialRequired
+        );
+
+
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setAlignItems(Alignment.CENTER);
+        h.setWidthFull();
+        h.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        h.addClassName("layout-flex");
+
+        Image image = commonComponents.imageCrafter(mainImage,"100px","100px","5px");
+
+        VerticalLayout nameSku = new VerticalLayout();
+        nameSku.setMaxWidth("150px");
+
+        Span productNameSpan =  commonComponents.spanCrafterWordNoHide(productName,"stat-example");
+        Tooltip.forComponent(productNameSpan)
+                .withText(productName);
+
+        Span productSKUSpan = commonComponents.spanCrafterWordNoHide(productSKU,"stat-description");
+        Tooltip.forComponent(productSKUSpan)
+                .withText(productSKU);
+
+        nameSku.add(
+                productNameSpan,
+                productSKUSpan
+        );
+
+        Span pcs = new Span(String.format("%d %s",howMany,"pcs"));
+        pcs.getStyle().set("width", "fit-content");
+        pcs.addClassNames("stock-badge","status-pending");
+
+
+        // progress bar
+
+        double percentage = Double.valueOf(totalStepsCompleted) / Double.valueOf(totalSteps);
+        System.out.println(percentage);
+
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.setHeight("10px");
+        progressBar.setWidth("300px");
+
+        progressBar.setValue(percentage);
+
+        HorizontalLayout allHolder = new HorizontalLayout();
+        allHolder.setAlignItems(Alignment.CENTER);
+
+        allHolder.setWidth("800px");
+        allHolder.setPadding(false);
+        allHolder.addClassName("layout-flex");
+
+        allHolder.add(
+                image,
+                nameSku,
+                pcs,
+                progressBar,
+                commonComponents.spanCrafter(String.format("%.0f %s",percentage*100,"%"),"stat-example"),
+                commonComponents.spanCrafter(String.format("%d/%d",totalStepsCompleted,totalSteps),"stat-example")
+        );
+
+        Button viewDetails = new Button("View details");
+        viewDetails.setSuffixComponent(commonComponents.iconCrafter(VaadinIcon.ANGLE_DOWN,"25","blue"));
+        viewDetails.addClickListener(e -> {
+            if(!stepsMaterialsHolder.isVisible()){
+                stepsMaterialsHolder.setVisible(true);
+                stepsMaterialsHolder.removeClassName("removetop");
+                stepsMaterialsHolder.addClassName("addtop");
+
+            }
+
+            else{
+
+                if(stepsMaterialsHolder.hasClassName("addtop")){
+                    stepsMaterialsHolder.removeClassName("addtop");
+                    stepsMaterialsHolder.addClassName("removetop");
+                }
+                else{
+                    stepsMaterialsHolder.removeClassName("removetop");
+                    stepsMaterialsHolder.addClassName("addtop");
+                }
+
+
+            }
+
+
+        });
+
+        h.add(
+                allHolder,
+                viewDetails
+
+        );
+
+        VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
+
+
+        v.add(
+                h,
+                stepsMaterialsHolder
+        );
+
+
+
+        return v;
+    }
 
 
 }
