@@ -163,7 +163,7 @@ public class OrderMiniStat {
                 .set("display", "grid")
                 .set("gap", "10px");
         orderNamePriority.add(
-                commonComponents.spanCrafterWordNoHide("Dining funiture ssssssssssssssset","stat-example"),commonComponents.spanCrafter(String.format("%d products in this order",totalQuantity),"stat-description"),priority
+                commonComponents.spanCrafterWordNoHide("Dining funiture ssssssssssssssset","stat-example"),commonComponents.spanCrafter(String.format("%d unique products",totalQuantity),"stat-description"),priority
         );
 
 

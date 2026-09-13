@@ -1046,6 +1046,54 @@ transition:
 
 /* ALL VAADIN GRIDS */
 
+
+
+/* Invisible grid — headers only */
+.invisible-grid {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+/* Hide all rows */
+.invisible-grid vaadin-grid-cell-content {
+    background: transparent;
+}
+
+.invisible-grid vaadin-grid-row:not([part~="header-row"]) {
+    display: none;
+}
+
+/* Hide header background and borders */
+.invisible-grid vaadin-grid-cell[part~="header-cell"] {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+/* Header text */
+.invisible-grid vaadin-grid-cell[part~="header-cell"] vaadin-grid-cell-content {
+    color: var(--lumo-body-text-color);
+    font-weight: 600;
+    padding: 0;
+}
+
+/* Remove grid borders */
+.invisible-grid::part(header-cell),
+.invisible-grid::part(body-cell) {
+    border: none;
+}
+
+
+
+
+
+
+
+
+
+
+
 vaadin-grid {
     width: 100%;
     border: 1px solid rgba(148, 163, 184, 0.22);
