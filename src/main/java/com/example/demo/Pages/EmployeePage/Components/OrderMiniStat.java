@@ -86,7 +86,7 @@ public class OrderMiniStat {
         Long totalQuantity = 0L;
 
         for(var s : currentOrder.getProductsData()){
-            totalQuantity += s.getAmountOfProduct();
+            totalQuantity++;
         }
 
         // get how important each order is
@@ -177,7 +177,7 @@ public class OrderMiniStat {
                 orderNamePriority,
                 createProgressCircle(stepsCompleted,stepsTotal),
                 miniStatHolder(),
-                verticallyMiniStats(VaadinIcon.CHECK_CIRCLE_O,String.format("%s/%s",totalCompletedProducts,totalProducts),"Products completed"),
+                verticallyMiniStats(VaadinIcon.CHECK_CIRCLE_O,String.format("%s/%s",totalCompletedProducts,totalProducts),"Fully completed products"),
                 verticallyMiniStats(VaadinIcon.LIST,String.format("%s/%s",stepsCompleted,stepsTotal),"Steps completed"),
                 verticallyMiniStats(VaadinIcon.TRASH,"1253","Test")
         );

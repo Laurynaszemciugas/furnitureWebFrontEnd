@@ -17,6 +17,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -60,7 +61,7 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
         setPadding(false);
         setSpacing(false);
         setSizeFull();
-        setAlignItems(FlexComponent.Alignment.CENTER);
+        setAlignItems(Alignment.CENTER);
 
 
 
@@ -270,7 +271,19 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
 
             HorizontalLayout material = new HorizontalLayout();
 
+            Icon icon = null;
+            
+            if(productMat.getAmountUsed() > productMat.getMaterials().getInStock()){
+                icon = commonComponents.iconCrafter(VaadinIcon.CLOSE,"25px","Red");
+                icon.setTooltipText("Material is not available");
+            }
+            else{
+                icon = commonComponents.iconCrafter(VaadinIcon.CHECK,"25px","green");
+                icon.setTooltipText("Material is available");
+            }
+
             material.add(
+                    icon,
                     commonComponents.spanCrafter(String.format("%s %d",productMat.getMaterials().getMaterialName(),productMat.getAmountUsed()),"stat-example")
 
             );
