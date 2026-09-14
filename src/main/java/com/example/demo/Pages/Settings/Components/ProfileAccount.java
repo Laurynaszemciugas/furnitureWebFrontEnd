@@ -122,6 +122,12 @@ public class ProfileAccount {
 
         Div div = new Div();
 
+        singlePhotoLogic.setNewImage(e->{
+        });
+
+        singlePhotoLogic.setByteConsumer(e->{
+        });
+
         singlePhotoLogic.setImageData(profileInformation.getImageUrl());
 
         div.add(
@@ -160,6 +166,7 @@ public class ProfileAccount {
             user.setPhoneNumber(phoneNumber.getValue());
             user.setBio(bio.getValue());
             user.setImageUrl(singlePhotoLogic.getImageData());
+            user.setImageData(singlePhotoLogic.getBytes());
 
             userService.saveProfileInfo(user);
 

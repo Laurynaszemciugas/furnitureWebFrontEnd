@@ -9,6 +9,7 @@ import com.example.demo.ControllerModels.User.AccountOverview;
 import com.example.demo.ControllerModels.User.Appearance;
 import com.example.demo.ControllerModels.User.PersonalPrefrences;
 import com.example.demo.ControllerModels.User.ProfileInformation;
+import lombok.Setter;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @Service
+@Setter
 public class UserService {
 
 

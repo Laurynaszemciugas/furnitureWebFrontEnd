@@ -232,30 +232,40 @@ public class ApperanceTab {
         if(color.equals(currentColor)){
             icon.setVisible(true);
         }
+        userService.setSuccess(ee->{
 
+        });
         v.addClickListener(e->{
 
-             UserSettings userSettings = sessionCrafter.extractSession("settings", UserSettings.class);
-             userSettings.setAccent(color);
+
+            UserSettings userSettings = sessionCrafter.extractSession("settings", UserSettings.class);
+            userSettings.setAccent(color);
             sessionCrafter.createSession("settings", userSettings);
 
             userService.saveAccent(color);
 
-            UI.getCurrent().getElement().setAttribute("accent", color.toLowerCase());
+            UI ui = sessionCrafter.extractSession("UI", UI.class);
 
+            ui.getElement().setAttribute("accent", color.toLowerCase());
 
             for(var s : colorMemory ){
                 s.setVisible(false);
             }
+
 
             for(var s : colorMemory){
                 if(s.equals(icon)){
                     icon.setVisible(true);
                 }
             }
+
         });
 
         colorMemory.add(icon);
+
+
+
+
 
         return v;
 

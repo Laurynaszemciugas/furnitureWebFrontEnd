@@ -46,6 +46,7 @@ public class User {
 
     private String fullName;
     private String imageUrl;
+    private byte[] imageData;
 
     private UserSettings userSettingsList;
 

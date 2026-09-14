@@ -23,6 +23,7 @@ public class SinglePhotoLogic {
 
 
     String imageData = "No_picture.png";
+    byte[] bytes = null;
 
     CommonComponents commonComponents;
     Common common;
@@ -48,6 +49,7 @@ public class SinglePhotoLogic {
                 .inMemory((metadata, data) -> {
                     String mimeType = metadata.contentType();
                     byteConsumer.accept(data);
+                    bytes = data;
                     imageData = common.imageMaker(data,mimeType);
 
                 });

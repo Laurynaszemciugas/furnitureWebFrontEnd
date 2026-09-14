@@ -332,7 +332,7 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
                 productSKUSpan
         );
 
-        Span pcs = new Span(String.format("%d %s",howMany,"pcs"));
+        Span pcs = new Span(String.format("%d %s",howMany,"Pcs"));
         pcs.getStyle().set("width", "fit-content");
         pcs.addClassNames("stock-badge","status-pending");
 
@@ -516,7 +516,6 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
 
             HorizontalLayout h = new HorizontalLayout();
             h.setPadding(false);
-            h.setSpacing(false);
             h.setAlignItems(Alignment.CENTER);
             h.add(
                     image,emp
@@ -540,7 +539,7 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
     public void materialGrid(List<ProductMaterials> productMaterials, String currentProductName){
 
         Dialog dialog = new Dialog();
-        dialog.setWidth("800px");
+        dialog.setWidth("1000px");
 
         dialog.getHeader().add(
                 commonComponents.spanCrafter(String.format("%s %s",currentProductName,"materials"),"activityFeed-name")
@@ -588,8 +587,92 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
 
 
             return h;
-        }).setHeader("Material").setWidth("400px");
+        }).setHeader("Material").setAutoWidth(true);
 
+        grid.addComponentColumn(e->{
+
+
+
+            Span needed = commonComponents.spanCrafter(String.format("%d %s",e.getAmountUsed(),"units"),"stat-example");
+
+
+            return needed;
+        }).setHeader("Required amount").setAutoWidth(true);
+
+
+        grid.addComponentColumn(e->{
+
+            Span stockTitle = commonComponents.spanCrafter(e.getMaterials().getStock().getDisplayName(),"stat-example");
+            stockTitle.getStyle().set("width", "fit-content");
+            stockTitle.addClassName("stock-badge");
+
+
+
+            switch (e.getMaterials().getStock()){
+                case In_Stock -> stockTitle.addClassName("stock-in");
+                case No_Stock -> stockTitle.addClassName("stock-out");
+                case Low_Stock -> stockTitle.addClassName("stock-low");
+            }
+
+            return stockTitle;
+
+
+        }).setHeader("Materials status").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+
+
+            VerticalLayout verticalLayout = new VerticalLayout();
+
+
+
+
+            Span stock = commonComponents.spanCrafter(String.format("In stock %d %s",e.getMaterials().getInStock(),"units"),"stat-example");
+            Span minThreshold = commonComponents.spanCrafter(String.format("%s %d","min threshold",e.getMaterials().getMinThresHold()),"stat-example");
+
+            verticalLayout.add(
+                    stock,
+                    minThreshold
+            );
+
+
+
+
+
+
+            return verticalLayout;
+        }).setHeader("Material stock").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            Span possible = commonComponents.spanCrafter("","stat-example");
+            possible.getStyle().set("width", "fit-content");
+            possible.addClassName("stock-badge");
+
+
+            boolean enough = true;
+
+            if(e.getAmountUsed() > e.getMaterials().getInStock()){
+                enough = false;
+            }
+
+
+                if(enough) {
+                    possible.addClassName("stock-in");
+                    possible.setText("Available");
+                }
+                else{
+                    possible.addClassName("stock-out");
+                    possible.setText("Not available");
+                }
+
+
+
+            return possible;
+
+
+        }).setHeader("Materials status").setAutoWidth(true);
 
 
         v.add(
