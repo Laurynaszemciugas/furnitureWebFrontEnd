@@ -4,10 +4,12 @@ import com.example.demo.Enums.EmployeeAcIn;
 import com.example.demo.Enums.EmployeeRole;
 import com.example.demo.Enums.EmployeeDepartment;
 import com.example.demo.Enums.EmploymentType;
+import com.example.demo.Services.EmployeeService.EmployeeActiveOrders;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -39,6 +41,8 @@ public class Employee {
     private EmployeeDepartment employeeDepartment;
     private User user;
     private LocalDateTime created;
+
+    private List<EmployeeActiveOrders> employeeActiveOrders;
 
 
 }

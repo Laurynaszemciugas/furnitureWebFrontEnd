@@ -20,6 +20,7 @@ import com.example.demo.Enums.Warnings;
 import com.example.demo.Pages.Reports.Common.ReportMiniStatHolder;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.RecentOrdersReportPage;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.TopCustomerDto;
+import com.example.demo.Services.EmployeeService.EmployeeActiveOrders;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
@@ -205,7 +206,23 @@ public class OrdersService {
 
     }
 
+    @SneakyThrows
+    public void acceptOrderEmployee(Long orderId){
 
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("order/acceptOrderEmployee", HttpMethod.GET,orderId, ErrorResponse.class,true), null,success,true);
 
     }
+
+
+    @SneakyThrows
+    public List<EmployeeActiveOrders> findEmployeeActiveOrders() {
+
+        return Arrays.stream(httpCallLogic.HttpCall("order/findEmployeeActiveOrders", HttpMethod.GET,null, EmployeeActiveOrders[].class,false)).toList();
+
+    }
+
+
+
+}
 

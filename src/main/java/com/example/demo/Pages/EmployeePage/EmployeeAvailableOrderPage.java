@@ -245,59 +245,7 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
 
 
 
-        stepsRequired.add(
-                commonComponents.spanCrafter("Manufacturing steps","activityFeed-name")
 
-        );
-
-        VerticalLayout materialRequired = new VerticalLayout();
-        materialRequired.add(
-                commonComponents.spanCrafter("Materials used","activityFeed-name")
-        );
-
-        for(var steps : stepsList){
-            HorizontalLayout stepHolder = new HorizontalLayout();
-
-            Span stepDesc = commonComponents.spanCrafterWordNoHide(steps.getStepDescription(),"stat-example");
-            stepDesc.setWidth("300px");
-
-            stepHolder.add(
-                    commonComponents.iconCrafter(VaadinIcon.CHECK,"25","green"),
-                   commonComponents.spanCrafter(steps.getStepId().toString(),"stat-example"),
-                    stepDesc,
-                    commonComponents.spanCrafter(String.format("%d/%d",steps.getStepsCompleted(),steps.getStepsNeeded()),"stat-example")
-            );
-            stepsRequired.add(
-                    stepHolder
-            );
-        }
-
-        for(var productMat : productMaterials){
-
-            HorizontalLayout material = new HorizontalLayout();
-
-            Icon icon = null;
-            
-            if(productMat.getAmountUsed() > productMat.getMaterials().getInStock()){
-                icon = commonComponents.iconCrafter(VaadinIcon.CLOSE,"25px","Red");
-                icon.setTooltipText("Material is not available");
-            }
-            else{
-                icon = commonComponents.iconCrafter(VaadinIcon.CHECK,"25px","green");
-                icon.setTooltipText("Material is available");
-            }
-
-            material.add(
-                    icon,
-                    commonComponents.spanCrafter(String.format("%s %d",productMat.getMaterials().getMaterialName(),productMat.getAmountUsed()),"stat-example")
-
-            );
-
-            materialRequired.add(
-                    material
-            );
-
-        }
 
 
 

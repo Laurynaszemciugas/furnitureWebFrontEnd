@@ -12,6 +12,7 @@ import com.example.demo.Enums.ImageLogic;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.ProductFinishStepStatus;
 import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.Services.EmployeeService.EmployeeActiveOrders;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.WorkDoneService.WorkDoneService;
 import com.vaadin.flow.component.UI;
@@ -328,7 +329,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
             Image image = commonComponents.imageCrafter(
-                    "123",
+                    imageList.isEmpty() ? "No_picture.png":imageList.get(0),
                     "150px",
                     "150px",
                     "5px"
@@ -406,6 +407,10 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
             });
 
             Button acceptOrders = commonComponents.normalThemeButtonNoNavigate("Accept order", ButtonVariant.LUMO_PRIMARY);
+
+            acceptOrders.addClickListener(ee->{
+                ordersService.acceptOrderEmployee(e.getId());
+            });
 
             if(e.getOrderStatus().equals(OrderStatus.LACK_OF_SUPPLY)){
                 acceptOrders.setEnabled(false);
@@ -489,7 +494,13 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         v.addClassName("island");
         v.addClassName("layout-flex");
 
-        Grid<String> grid = new Grid<>(String.class,true);
+        List<EmployeeActiveOrders> employeeActiveOrders = ordersService.findEmployeeActiveOrders();
+
+
+
+        Grid<EmployeeActiveOrders> grid = new Grid<>(EmployeeActiveOrders.class,true);
+        grid.setItems(employeeActiveOrders);
+
         grid.setHeightFull();
         grid.setHeight("250px");
 
