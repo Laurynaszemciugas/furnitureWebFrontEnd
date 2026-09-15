@@ -1,139 +1,46 @@
-package com.example.demo.Pages.EmployeePage;
-
+package com.example.demo.Pages.EmployeePage.PreviewPage.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.Common.Logic.ImageViewer;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderStepsToComplete;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
 import com.example.demo.Enums.ImageLogic;
-import com.example.demo.MainLayout.MainLayout;
-import com.example.demo.Pages.EmployeePage.Components.OrderMiniStat;
-import com.example.demo.Services.Orders.OrdersService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.component.shared.Tooltip;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
-import com.vaadin.flow.router.Route;
 
 import java.util.List;
 
-@Route(value = "EmployeeAvailableOrder/:id", layout = MainLayout.class)
-public class EmployeeAvailableOrderPage extends VerticalLayout implements BeforeEnterObserver {
-
+public class ProductInTheOrderComp {
 
     CommonComponents commonComponents;
     Common common;
-    OrdersService ordersService;
-    ImageViewer imageViewer;
 
-    OrderMiniStat orderMiniStat;
-
-    int orderId;
-
-
-    Orders currentOrder = new Orders();
-
-    public EmployeeAvailableOrderPage(CommonComponents commonComponents, Common common,OrdersService ordersService,ImageViewer imageViewer) {
+    public ProductInTheOrderComp(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
-        this.ordersService = ordersService;
-        this.imageViewer = imageViewer;
-        this.orderMiniStat = new OrderMiniStat(commonComponents,common,ordersService);
-
-
-
-
-        setPadding(false);
-        setSpacing(false);
-        setSizeFull();
-        setAlignItems(Alignment.CENTER);
-
-
-
-
-        addClassName("animation-page");
-
     }
 
 
-
-    @Override
-    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-
-        removeAll();
-
-        int id = Integer.parseInt(beforeEnterEvent.getRouteParameters().get("id").orElse(null));
-
-        this.orderId = id;
-
-        currentOrder = ordersService.getSelectedOrder(Long.valueOf(id));
-
-
-
-
-
-        add(mainLayout());
-
-    }
-
-    public VerticalLayout mainLayout() {
-
-        VerticalLayout verticalLayout = new VerticalLayout();
-
-
-        verticalLayout.setMaxWidth("1650px");
-        verticalLayout.getStyle().set("margin-top", "5px");
-
-
-        verticalLayout.add(
-
-                firstLayer(),
-                orderName(),
-                orderMiniStat.miniStat(currentOrder),
-
-                test(currentOrder)
-
-        );
-
-        return verticalLayout;
-    }
-
-    public HorizontalLayout firstLayer(){
-        HorizontalLayout h = new HorizontalLayout();
-        h.setWidthFull();
-        h.setAlignItems(Alignment.CENTER);
-
-        Button back = new Button("Back to orders");
-        back.setPrefixComponent(commonComponents.iconCrafter(VaadinIcon.ANGLE_LEFT,"25px","blue"));
-
-        h.add(
-                back
-        );
-
-        return h;
-    }
-
-    public VerticalLayout orderName(){
+    public VerticalLayout orderName(Orders currentOrder){
         VerticalLayout v = new VerticalLayout();
         v.setWidthFull();
         v.setSpacing(false);
 
         HorizontalLayout h = new HorizontalLayout();
         h.setWidthFull();
-        h.setAlignItems(Alignment.CENTER);
+        h.setAlignItems(FlexComponent.Alignment.CENTER);
         h.setPadding(false);
 
         Span status = new Span(currentOrder.getOrderStatus().getDisplayName());
@@ -166,14 +73,14 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
         return v;
     }
 
-    public VerticalLayout test(Orders orders){
+    public VerticalLayout productsInOrder(Orders currentOrder){
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
 
         HorizontalLayout firstLayer = new HorizontalLayout();
         firstLayer.setWidthFull();
-        firstLayer.setAlignItems(Alignment.CENTER);
-        firstLayer.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        firstLayer.setAlignItems(FlexComponent.Alignment.CENTER);
+        firstLayer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
         Span productsAvailable = new Span(String.format("%d Unique Products",currentOrder.getProductsData().size()));
         productsAvailable.addClassName("stock-badge");
@@ -185,8 +92,8 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
         );
 
         v.add(
-            firstLayer,
-                productPreviewHolder(orders.getProductsData())
+                firstLayer,
+                productPreviewHolder(currentOrder.getProductsData())
         );
 
 
@@ -228,11 +135,10 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
     }
 
 
-    public VerticalLayout productPreview(String mainImage, String productName, String productSKU, Long howMany, Long totalSteps,Long totalStepsCompleted, List<OrderStepsToComplete> stepsList, List<ProductMaterials> productMaterials){
+    public VerticalLayout productPreview(String mainImage, String productName, String productSKU, Long howMany, Long totalSteps, Long totalStepsCompleted, List<OrderStepsToComplete> stepsList, List<ProductMaterials> productMaterials){
 
 
         HorizontalLayout stepsMaterialsHolder = new HorizontalLayout();
-        stepsMaterialsHolder.addClassName("island");
         stepsMaterialsHolder.setWidthFull();
         stepsMaterialsHolder.setVisible(false);
         stepsMaterialsHolder.addClassName("removetop");
@@ -241,7 +147,7 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
         // REM
         HorizontalLayout stepsRequired = new HorizontalLayout();
         stepsRequired.setWidthFull();
-        stepsRequired.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        stepsRequired.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
 
 
@@ -257,9 +163,9 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
 
 
         HorizontalLayout h = new HorizontalLayout();
-        h.setAlignItems(Alignment.CENTER);
+        h.setAlignItems(FlexComponent.Alignment.CENTER);
         h.setWidthFull();
-        h.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        h.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         h.addClassName("layout-flex");
 
         Image image = commonComponents.imageCrafter(mainImage,"100px","100px","5px");
@@ -297,7 +203,7 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
         progressBar.setValue(percentage);
 
         HorizontalLayout allHolder = new HorizontalLayout();
-        allHolder.setAlignItems(Alignment.CENTER);
+        allHolder.setAlignItems(FlexComponent.Alignment.CENTER);
 
         allHolder.setWidth("800px");
         allHolder.setPadding(false);
@@ -366,7 +272,7 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
 
         HorizontalLayout firstLayer = new HorizontalLayout();
         firstLayer.setWidthFull();
-        firstLayer.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        firstLayer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         firstLayer.add(
                 commonComponents.spanCrafter("Manufacturing steps","activityFeed-name"),
                 showMaterials
@@ -431,7 +337,7 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
 
             HorizontalLayout h = new HorizontalLayout();
             h.setPadding(false);
-            h.setAlignItems(Alignment.CENTER);
+            h.setAlignItems(FlexComponent.Alignment.CENTER);
 
             Long totalSteps = e.getStepsNeeded();
             Long totalCompletedSteps = e.getStepsCompleted();
@@ -464,7 +370,7 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
 
             HorizontalLayout h = new HorizontalLayout();
             h.setPadding(false);
-            h.setAlignItems(Alignment.CENTER);
+            h.setAlignItems(FlexComponent.Alignment.CENTER);
             h.add(
                     image,emp
             );
@@ -512,7 +418,7 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
 
 
             HorizontalLayout h = new HorizontalLayout();
-            h.setAlignItems(Alignment.CENTER);
+            h.setAlignItems(FlexComponent.Alignment.CENTER);
             h.setPadding(false);
 
             String mainImage = null;
@@ -606,14 +512,14 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
             }
 
 
-                if(enough) {
-                    possible.addClassName("stock-in");
-                    possible.setText("Available");
-                }
-                else{
-                    possible.addClassName("stock-out");
-                    possible.setText("Not available");
-                }
+            if(enough) {
+                possible.addClassName("stock-in");
+                possible.setText("Available");
+            }
+            else{
+                possible.addClassName("stock-out");
+                possible.setText("Not available");
+            }
 
 
 
@@ -634,6 +540,7 @@ public class EmployeeAvailableOrderPage extends VerticalLayout implements Before
         dialog.open();
 
     }
+
 
 
 }

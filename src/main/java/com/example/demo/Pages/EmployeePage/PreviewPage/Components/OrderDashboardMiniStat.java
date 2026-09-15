@@ -1,4 +1,4 @@
-package com.example.demo.Pages.EmployeePage.Components;
+package com.example.demo.Pages.EmployeePage.PreviewPage.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -22,7 +22,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderMiniStat {
+public class OrderDashboardMiniStat {
 
     CommonComponents commonComponents;
     Common common;
@@ -32,7 +32,7 @@ public class OrderMiniStat {
 
     Orders currentOrder;
 
-    public OrderMiniStat(CommonComponents commonComponents, Common common, OrdersService ordersService) {
+    public OrderDashboardMiniStat(CommonComponents commonComponents, Common common, OrdersService ordersService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.ordersService = ordersService;

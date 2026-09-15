@@ -1,4 +1,4 @@
-package com.example.demo.Pages.EmployeePage;
+package com.example.demo.Pages.EmployeePage.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -7,12 +7,10 @@ import com.example.demo.ControllerModels.CommonDtos.EmployeePage.EmployeeOrderPr
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderStepsToComplete;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
-import com.example.demo.ControllerModels.CommonDtos.Product;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
 import com.example.demo.ControllerModels.CommonDtos.WorkDay;
 import com.example.demo.Enums.ImageLogic;
 import com.example.demo.Enums.OrderStatus;
-import com.example.demo.Enums.ProductFinishStepStatus;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Services.EmployeeService.EmployeeActiveOrders;
 import com.example.demo.Services.Orders.OrdersService;
@@ -20,12 +18,10 @@ import com.example.demo.Services.WorkDoneService.WorkDoneService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -39,7 +35,6 @@ import com.vaadin.flow.router.Route;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -99,7 +94,6 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
     public VerticalLayout mainLayout() {
 
         VerticalLayout verticalLayout = new VerticalLayout();
-        verticalLayout.addClassName("island");
 
         verticalLayout.setMaxWidth("1650px");
         verticalLayout.getStyle().set("margin-top", "5px");
@@ -200,7 +194,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         }
 
         left.add(
-                commonComponents.spanCrafter("Work status","stat-example"),
+                commonComponents.spanCrafter("Work status","activityFeed-name"),
                 commonComponents.spanCrafter(workDay.getWorkDayCreated() == null ? "Not working" : "Working" ,"activityFeed-name"),
                 commonComponents.spanCrafter("Started at " + started ,"stat-description"),
                 commonComponents.spanCrafter("You have been working for","stat-description"),
@@ -271,7 +265,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         hh.setJustifyContentMode(JustifyContentMode.START);
         hh.setPadding(false);
         hh.add(
-                commonComponents.spanCrafter("Today overview","stat-example")
+                commonComponents.spanCrafter("Work overview","activityFeed-name")
         );
 
         v.add(
@@ -297,7 +291,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         Grid<EmployeeOrderProjection> grid = new Grid<>(EmployeeOrderProjection.class,false);
         grid.setItems(list);
         grid.setHeightFull();
-        grid.setHeight("500px");
+        grid.setHeight("513px");
 
         grid.setWidthFull();
         grid.setColumnReorderingAllowed(false);
@@ -404,7 +398,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
                 //openDetailsOfTheOrder(orders);
 
-                UI.getCurrent().navigate("EmployeeAvailableOrder/" + orders.getId());
+                UI.getCurrent().navigate("OrderPreview/" + orders.getId());
 
 
             });
@@ -577,7 +571,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
             }
 
-            v.add(productPreview(mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
+            v.add(activeOrdersPreview(mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
         }
 
         return v;
@@ -585,7 +579,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
     }
 
 
-    public VerticalLayout productPreview(String mainImage, String productName, String productSKU, Long howMany, Long totalSteps,Long totalStepsCompleted, List<OrderStepsToComplete> stepsList, List<ProductMaterials> productMaterials){
+    public VerticalLayout activeOrdersPreview(String mainImage, String productName, String productSKU, Long howMany, Long totalSteps,Long totalStepsCompleted, List<OrderStepsToComplete> stepsList, List<ProductMaterials> productMaterials){
 
 
 
@@ -657,8 +651,8 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
                 commonComponents.spanCrafter(String.format("%d/%d",totalStepsCompleted,totalSteps),"stat-example")
         );
 
-        Button viewDetails = new Button("View details");
-        viewDetails.setSuffixComponent(commonComponents.iconCrafter(VaadinIcon.ANGLE_DOWN,"25","blue"));
+        Button viewDetails = new Button("Continue work");
+        viewDetails.addThemeVariants(ButtonVariant.PRIMARY);
 
 
         h.add(
