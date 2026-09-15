@@ -22,12 +22,12 @@ import com.vaadin.flow.component.shared.Tooltip;
 
 import java.util.List;
 
-public class ProductInTheOrderComp {
+public class ProductInTheOrderUI {
 
     CommonComponents commonComponents;
     Common common;
 
-    public ProductInTheOrderComp(CommonComponents commonComponents, Common common) {
+    public ProductInTheOrderUI(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
     }
@@ -73,6 +73,10 @@ public class ProductInTheOrderComp {
         return v;
     }
 
+
+
+
+
     public VerticalLayout productsInOrder(Orders currentOrder){
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
@@ -102,6 +106,11 @@ public class ProductInTheOrderComp {
 
         return v;
     }
+
+
+
+
+
 
     public VerticalLayout productPreviewHolder(List<OrderProducts> productsData){
 
@@ -133,6 +142,10 @@ public class ProductInTheOrderComp {
         return v;
 
     }
+
+
+
+
 
 
     public VerticalLayout productPreview(String mainImage, String productName, String productSKU, Long howMany, Long totalSteps, Long totalStepsCompleted, List<OrderStepsToComplete> stepsList, List<ProductMaterials> productMaterials){

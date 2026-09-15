@@ -222,6 +222,30 @@ public class OrdersService {
 
     }
 
+    @SneakyThrows
+    public void acceptStep(Long id){
+
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("order/acceptStep", HttpMethod.GET,id, ErrorResponse.class,true), null,success,true);
+
+    }
+
+    @SneakyThrows
+    public void completeStep(Long id){
+
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("order/completeStep", HttpMethod.GET,id, ErrorResponse.class,true), null,success,true);
+
+    }
+
+    @SneakyThrows
+    public void updateStep(Long id, Long newAmount){
+
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("order/updateStep", HttpMethod.GET,String.format("%d/%d",id,newAmount), ErrorResponse.class,true), null,success,true);
+
+    }
+
 
 
 }

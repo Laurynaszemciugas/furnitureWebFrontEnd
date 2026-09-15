@@ -16,8 +16,8 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
-@Route(value = "OrderPreview/:id", layout = MainLayout.class)
-public class OrderPreviewPage extends VerticalLayout implements BeforeEnterObserver {
+@Route(value = "OrderActive/:id", layout = MainLayout.class)
+public class OrderActivePage extends VerticalLayout implements BeforeEnterObserver {
 
 
     CommonComponents commonComponents;
@@ -40,7 +40,10 @@ public class OrderPreviewPage extends VerticalLayout implements BeforeEnterObser
     ProductInTheOrderUI productInTheOrderComp;
 
 
-    public OrderPreviewPage(CommonComponents commonComponents, Common common, OrdersService ordersService, ImageViewer imageViewer) {
+    ActiveOrderUI activeOrderUI;
+
+
+    public OrderActivePage(CommonComponents commonComponents, Common common, OrdersService ordersService, ImageViewer imageViewer) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.ordersService = ordersService;
@@ -50,6 +53,8 @@ public class OrderPreviewPage extends VerticalLayout implements BeforeEnterObser
         this.pageDesc = new PageDesc(commonComponents,common);
         this.productInTheOrderComp = new ProductInTheOrderUI(commonComponents,common);
 
+
+        this.activeOrderUI = new ActiveOrderUI(commonComponents,common,ordersService);
 
 
         setPadding(false);
@@ -97,10 +102,10 @@ public class OrderPreviewPage extends VerticalLayout implements BeforeEnterObser
         verticalLayout.add(
 
                 pageDesc.orderPreviewDesc(),
-                productInTheOrderComp.orderName(currentOrder),
+                activeOrderUI.orderName(currentOrder),
                 orderMiniStat.miniStat(currentOrder),
 
-                productInTheOrderComp.productsInOrder(currentOrder)
+                activeOrderUI.activeOrders(currentOrder)
 
         );
 

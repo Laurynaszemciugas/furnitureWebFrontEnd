@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -35,6 +37,8 @@ public class OrderStepsToComplete {
     private ProductFinishStepStatus productFinishStepStatus;
 
     private OrderProducts orderProducts;
+
+    private LocalDateTime created;
 
 
 }
