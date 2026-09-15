@@ -4,9 +4,11 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ImageViewer;
 import com.example.demo.ControllerModels.CommonDtos.EmployeePage.EmployeeOrderProjection;
+import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderStepsToComplete;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.Product;
+import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
 import com.example.demo.ControllerModels.CommonDtos.WorkDay;
 import com.example.demo.Enums.ImageLogic;
 import com.example.demo.Enums.OrderStatus;
@@ -29,6 +31,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.progressbar.ProgressBar;
+import com.vaadin.flow.component.shared.Tooltip;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
@@ -487,6 +490,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
 
+
     public VerticalLayout myActiveOrders(){
 
         VerticalLayout v = new VerticalLayout();
@@ -499,6 +503,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
         Grid<EmployeeActiveOrders> grid = new Grid<>(EmployeeActiveOrders.class,true);
+        grid.addClassName("invisible-grid");
         grid.setItems(employeeActiveOrders);
 
         grid.setHeightFull();
@@ -522,10 +527,22 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         );
 
 
+
+
+
+
+
         v.add(
-                h,
-                grid
+                h
+
         );
+
+        for(var ss : employeeActiveOrders){
+                v.add(
+                        productPreviewHolder(ss.getOrder().getProductsData())
+
+                );
+        }
 
 
         return v;
@@ -535,7 +552,133 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
 
+    public VerticalLayout productPreviewHolder(List<OrderProducts> productsData){
 
+        VerticalLayout v = new VerticalLayout();
+        v.setPadding(false);
+
+        for(var product : productsData){
+
+            String mainImageUrl = "";
+
+            Long totalSteps = 0L;
+            Long totalStepsCompleted = 0L;
+
+            for(var images : product.getProduct().getImages()){
+                if(images.getImageLogic().equals(ImageLogic.Main)){
+                    mainImageUrl = images.getImageUrl();
+                }
+            }
+
+            for(var steps : product.getOrderSteps()){
+
+                totalSteps += steps.getStepsNeeded();
+                totalStepsCompleted += steps.getStepsCompleted();
+
+            }
+
+            v.add(productPreview(mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
+        }
+
+        return v;
+
+    }
+
+
+    public VerticalLayout productPreview(String mainImage, String productName, String productSKU, Long howMany, Long totalSteps,Long totalStepsCompleted, List<OrderStepsToComplete> stepsList, List<ProductMaterials> productMaterials){
+
+
+
+
+        // REM
+        HorizontalLayout stepsRequired = new HorizontalLayout();
+        stepsRequired.setWidthFull();
+        stepsRequired.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+
+
+
+
+
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setAlignItems(Alignment.CENTER);
+        h.setWidthFull();
+        h.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        h.addClassName("layout-flex");
+
+        Image image = commonComponents.imageCrafter(mainImage,"100px","100px","5px");
+
+        VerticalLayout nameSku = new VerticalLayout();
+        nameSku.setMaxWidth("150px");
+
+        Span productNameSpan =  commonComponents.spanCrafterWordNoHide(productName,"stat-example");
+        Tooltip.forComponent(productNameSpan)
+                .withText(productName);
+
+        Span productSKUSpan = commonComponents.spanCrafterWordNoHide(productSKU,"stat-description");
+        Tooltip.forComponent(productSKUSpan)
+                .withText(productSKU);
+
+        nameSku.add(
+                productNameSpan,
+                productSKUSpan
+        );
+
+        Span pcs = new Span(String.format("%d %s",howMany,"Pcs"));
+        pcs.getStyle().set("width", "fit-content");
+        pcs.addClassNames("stock-badge","status-pending");
+
+
+        // progress bar
+
+        double percentage = Double.valueOf(totalStepsCompleted) / Double.valueOf(totalSteps);
+        System.out.println(percentage);
+
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.setHeight("10px");
+        progressBar.setWidth("300px");
+
+        progressBar.setValue(percentage);
+
+        HorizontalLayout allHolder = new HorizontalLayout();
+        allHolder.setAlignItems(Alignment.CENTER);
+
+        allHolder.setWidth("800px");
+        allHolder.setPadding(false);
+        allHolder.addClassName("layout-flex");
+
+        allHolder.add(
+                image,
+                nameSku,
+                pcs,
+                progressBar,
+                commonComponents.spanCrafter(String.format("%.0f %s",percentage*100,"%"),"stat-example"),
+                commonComponents.spanCrafter(String.format("%d/%d",totalStepsCompleted,totalSteps),"stat-example")
+        );
+
+        Button viewDetails = new Button("View details");
+        viewDetails.setSuffixComponent(commonComponents.iconCrafter(VaadinIcon.ANGLE_DOWN,"25","blue"));
+
+
+        h.add(
+                allHolder,
+                viewDetails
+
+        );
+
+        VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
+
+
+        v.add(
+                h
+        );
+
+
+
+        return v;
+    }
 
 
 
