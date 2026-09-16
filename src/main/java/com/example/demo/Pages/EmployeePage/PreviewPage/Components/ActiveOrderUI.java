@@ -16,6 +16,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -284,8 +285,15 @@ public class ActiveOrderUI {
 
         // progress bar
 
-        double percentage = Double.valueOf(totalStepsCompleted) / Double.valueOf(totalSteps);
-        System.out.println(percentage);
+
+        double percentage = 1;
+
+        if(totalSteps != 0) {
+            percentage = Double.valueOf(totalStepsCompleted) / Double.valueOf(totalSteps);
+
+        }
+
+
 
         ProgressBar progressBar = new ProgressBar();
         progressBar.setHeight("10px");
@@ -317,7 +325,7 @@ public class ActiveOrderUI {
         );
 
         VerticalLayout v = new VerticalLayout();
-
+        v.getStyle().set("padding","5px");
 
         v.add(
 
@@ -367,20 +375,24 @@ public class ActiveOrderUI {
     public VerticalLayout stepHolder(List<OrderStepsToComplete> stepsList, String sku){
 
         VerticalLayout v = new VerticalLayout();
-        v.setPadding(false);
 
 
 
-
-        for(var s : stepsList){
-
-
+        if(!stepsList.isEmpty()) {
+            for (var s : stepsList) {
 
 
-            v.add(stepCrafter(s.getId(),s.getStepId(),s.getStepName(), s.getStepDescription(), s.getStepsNeeded(), s.getProductFinishStepStatus(), s.getEmployee(), s.getCreated(), s.getStepsCompleted(),sku));
+                v.add(stepCrafter(s.getId(), s.getStepId(), s.getStepName(), s.getStepDescription(), s.getStepsNeeded(), s.getProductFinishStepStatus(), s.getEmployee(), s.getCreated(), s.getStepsCompleted(), sku));
 
 
+            }
+        } else {
+            v.add(
+                    commonComponents.noDataFoundImproved("No manufactoring steps are found for this product",null,null)
+            );
         }
+
+
 
         ordersService.setSuccess(e->{
 
@@ -405,6 +417,7 @@ public class ActiveOrderUI {
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island-hover");
+
 
         if(status.equals(ProductFinishStepStatus.NOT_STARTED)){
             v.getStyle().set("cursor", "default");
@@ -447,7 +460,7 @@ public class ActiveOrderUI {
 
         v.addClickListener(e->{
 
-            if(!status.equals(ProductFinishStepStatus.NOT_STARTED)) {
+            if(!status.equals(ProductFinishStepStatus.NOT_STARTED) && !status.equals(ProductFinishStepStatus.FINISHED)) {
                 if (competedItemsUI.isVisible()) {
                     competedItemsUI.setVisible(false);
                 } else {
@@ -520,7 +533,7 @@ public class ActiveOrderUI {
 
 
 
-        Span startedDate = commonComponents.spanCrafter(create == null ? "Not started" : create.toString(),"stat-example");
+        Span startedDate = commonComponents.spanCrafter(create == null ? "Not started" : common.dateFormatter(create),"stat-example");
 
         if(status.equals(ProductFinishStepStatus.FINISHED)){
             finishStep.setVisible(false);
@@ -588,6 +601,7 @@ public class ActiveOrderUI {
 
 
 
+
         return v;
 
     }
@@ -612,10 +626,12 @@ public class ActiveOrderUI {
 
 
 
-
+        Icon icon = commonComponents.iconCrafter(VaadinIcon.ANGLE_RIGHT,"25","blue");
+        icon.getStyle().set("position","absolute").set("right","0px").set("bottom","40%");
 
 
         HorizontalLayout h = new HorizontalLayout();
+        h.getStyle().set("position","relative");
         h.setAlignItems(FlexComponent.Alignment.CENTER);
         h.setWidthFull();
         h.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
@@ -646,8 +662,12 @@ public class ActiveOrderUI {
 
         // progress bar
 
-        double percentage = Double.valueOf(totalStepsCompleted) / Double.valueOf(totalSteps);
-        System.out.println(percentage);
+        double percentage = 1;
+
+        if(totalSteps != 0) {
+            percentage = Double.valueOf(totalStepsCompleted) / Double.valueOf(totalSteps);
+
+        }
 
         ProgressBar progressBar = new ProgressBar();
         progressBar.setHeight("10px");
@@ -658,9 +678,11 @@ public class ActiveOrderUI {
         HorizontalLayout allHolder = new HorizontalLayout();
         allHolder.setAlignItems(FlexComponent.Alignment.CENTER);
 
-        allHolder.setWidth("800px");
+        allHolder.setWidthFull();
         allHolder.setPadding(false);
         allHolder.addClassName("layout-flex");
+
+
 
         allHolder.add(
                 image,
@@ -668,14 +690,14 @@ public class ActiveOrderUI {
                 pcs,
                 progressBar,
                 commonComponents.spanCrafter(String.format("%.0f %s",percentage*100,"%"),"stat-example"),
-                commonComponents.spanCrafter(String.format("%d/%d",totalStepsCompleted,totalSteps),"stat-example")
+                commonComponents.spanCrafter(totalSteps == 0 ? String.format("%s %s",productSKU,"has now manufacturing steps") : String.format("%d/%d",totalStepsCompleted,totalSteps),"stat-example")
         );
 
 
 
         h.add(
                 allHolder,
-                commonComponents.iconCrafter(VaadinIcon.ANGLE_DOWN,"25","blue")
+                icon
         );
 
         VerticalLayout v = new VerticalLayout();
@@ -684,8 +706,7 @@ public class ActiveOrderUI {
 
 
         v.add(
-                h,
-                stepsMaterialsHolder
+                h
         );
 
 

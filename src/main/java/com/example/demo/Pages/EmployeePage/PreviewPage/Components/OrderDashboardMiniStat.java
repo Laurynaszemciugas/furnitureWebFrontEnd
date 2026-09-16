@@ -3,6 +3,7 @@ package com.example.demo.Pages.EmployeePage.PreviewPage.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ImageViewer;
+import com.example.demo.ControllerModels.CommonDtos.EmployeeJoin.OrderEmployees;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.Enums.ImageLogic;
 import com.example.demo.Services.Orders.OrdersService;
@@ -45,6 +46,8 @@ public class OrderDashboardMiniStat {
     public HorizontalLayout miniStat(Orders orders){
 
         currentOrder = orders;
+
+
 
         HorizontalLayout h = new HorizontalLayout();
         h.addClassName("layout-flex");
@@ -94,8 +97,6 @@ public class OrderDashboardMiniStat {
         LocalDateTime today = LocalDateTime.now();
         LocalDateTime dueDate = currentOrder.getEstimatedDueDate();
 
-        System.out.println(today);
-        System.out.println(dueDate);
 
         long howManyDaysLeft = ChronoUnit.DAYS.between(today,dueDate);
 
@@ -118,7 +119,7 @@ public class OrderDashboardMiniStat {
         }
 
         else{
-            priority.setText(String.format("%s %d days","OVERDUE",Math.abs(howManyDaysLeft)));
+            priority.setText(String.format("%s","OVERDUE"));
             priority.addClassName("stock-out");
         }
 
@@ -127,30 +128,54 @@ public class OrderDashboardMiniStat {
         Long stepsTotal = 0L;
         Long stepsCompleted = 0L;
 
+        Long test = 0L;
         Long sumOfCompletedSteps = 0L;
 
         Long totalProducts = 0L;
-        Long totalCompletedProducts = 0L;
 
         for(var s : currentOrder.getProductsData()){
+            List<Long> numbers = new ArrayList<>();
+            totalProducts += s.getAmountOfProduct();
 
-            totalProducts++;
 
-            sumOfCompletedSteps = 0L;
+            System.out.println(s.getProduct().getProductName() + " SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+
+
+
+
+
+
+
 
             for(var stepsList : s.getOrderSteps()){
+
+
+
                 stepsTotal += stepsList.getStepsNeeded();
                 stepsCompleted += stepsList.getStepsCompleted();
 
                 if(stepsList.getStepsCompleted().equals(stepsList.getStepsNeeded())){
-                    sumOfCompletedSteps++;
+
                 }
 
+
+                numbers.add(
+                    stepsList.getStepsCompleted()
+                );
+
+
+
+
+
             }
 
-            if(sumOfCompletedSteps.equals(stepsTotal)){
-                totalCompletedProducts++;
-            }
+
+
+            Long minNum =numbers.stream().min(Long::compare).orElse(totalProducts);
+            sumOfCompletedSteps += minNum;
+
+
+
 
         }
 
@@ -177,11 +202,41 @@ public class OrderDashboardMiniStat {
                 orderNamePriority,
                 createProgressCircle(stepsCompleted,stepsTotal),
                 miniStatHolder(),
-                verticallyMiniStats(VaadinIcon.CHECK_CIRCLE_O,String.format("%s/%s",totalCompletedProducts,stepsTotal),"Fully completed products"),
+                verticallyMiniStats(VaadinIcon.CHECK_CIRCLE_O,String.format("%s/%s",sumOfCompletedSteps,totalProducts),"Fully completed products"),
                 verticallyMiniStats(VaadinIcon.LIST,String.format("%s/%s",stepsCompleted,stepsTotal),"Steps completed"),
-                verticallyMiniStats(VaadinIcon.TRASH,"1253","Test")
+                activeEmployee(currentOrder.getEmployees())
         );
 
+
+
+        return h;
+    }
+
+    public HorizontalLayout activeEmployee(List<OrderEmployees> orderEmployees){
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.addClassName("layout-flex");
+        h.setWidth("150px");
+
+        for(var s : orderEmployees){
+
+            VerticalLayout employeeImageName = new VerticalLayout();
+            employeeImageName.setWidth("60px");
+            employeeImageName.setPadding(false);
+            employeeImageName.setSpacing(false);
+            employeeImageName.setAlignItems(FlexComponent.Alignment.CENTER);
+
+
+                    employeeImageName.add(
+                            commonComponents.imageCrafter(s.getEmployee().getProfileImage(),"50px","50px","50%"),
+                            commonComponents.spanCrafter(s.getEmployee().getFullName(),"stat-description")
+
+                    );
+
+            h.add(
+                    employeeImageName
+            );
+        }
 
 
         return h;
@@ -194,26 +249,38 @@ public class OrderDashboardMiniStat {
         LocalDateTime today = LocalDateTime.now();
         LocalDateTime dueDate = currentOrder.getEstimatedDueDate();
 
-        System.out.println(today);
-        System.out.println(dueDate);
 
 
         String daysMarker = "Err";
 
         Long timeReference = 0L;
 
-        if(ChronoUnit.DAYS.between(today,dueDate) != 0){
-            daysMarker = Math.abs(ChronoUnit.HOURS.between(today,dueDate)) + " Days";
-            timeReference = ChronoUnit.DAYS.between(today,dueDate);
+
+        Long minutes = ChronoUnit.MINUTES.between(today,dueDate);
+
+        minutes = Math.abs(minutes);
+
+        if(minutes >= 0 && minutes <= 59){
+            daysMarker = Math.abs(ChronoUnit.MINUTES.between(today,dueDate)) + " Minutes";
+            timeReference = ChronoUnit.MINUTES.between(today,dueDate);
         }
-        else if (ChronoUnit.HOURS.between(today,dueDate) != 0){
+
+        else if(minutes >= 60 &&  minutes <= 1440){
             daysMarker = Math.abs(ChronoUnit.HOURS.between(today,dueDate)) + " Hours";
             timeReference = ChronoUnit.HOURS.between(today,dueDate);
         }
+
         else{
-            daysMarker = Math.abs(ChronoUnit.HOURS.between(today,dueDate)) + " Minutes";
-            timeReference = ChronoUnit.MINUTES.between(today,dueDate);
+            daysMarker = Math.abs(ChronoUnit.DAYS.between(today,dueDate)) + " Days";
+            timeReference = ChronoUnit.DAYS.between(today,dueDate);
         }
+
+
+
+
+
+
+
 
         if(timeReference <= 0){
 
@@ -243,12 +310,12 @@ public class OrderDashboardMiniStat {
                 .set("gap", "15px");
 
         h.add(
-                miniStatCrafter(VaadinIcon.CALENDAR, "Created", common.dateFormatterLocalDateTime(currentOrder.getCreated(),"yyyy-MM-dd")),
+                miniStatCrafter(VaadinIcon.CALENDAR, "Created date", common.dateFormatterLocalDateTime(currentOrder.getCreated(),"yyyy-MM-dd")),
                 miniStatCrafter(VaadinIcon.CALENDAR, "Due date", common.dateFormatterLocalDateTime(currentOrder.getEstimatedDueDate(),"yyyy-MM-dd MM:ss")),
                 miniStatCrafter(VaadinIcon.CLOCK, "Time remaining", daysMarker),
                 miniStatCrafter(VaadinIcon.CUBE, "Total products", totalQuantity),
-                miniStatCrafter(VaadinIcon.USER, "Costumer", currentOrder.getOrderCreatedByName()),
-                miniStatCrafter(VaadinIcon.MAILBOX, "Costumer", currentOrder.getOrderCreatedByGmail())
+                miniStatCrafter(VaadinIcon.USER, "Costumer full name", currentOrder.getOrderCreatedByName()),
+                miniStatCrafter(VaadinIcon.MAILBOX, "Costumer gmail", currentOrder.getOrderCreatedByGmail())
         );
 
         return h;
@@ -336,7 +403,13 @@ public class OrderDashboardMiniStat {
     public Div createProgressCircle(Long completed, Long total) {
 
 
-        double percentage = (double) completed / total * 100;
+        double percentage = 100;
+
+        if(total != 0) {
+            percentage = (double) completed / total * 100;
+
+        }
+
 
 
         Div holder = new Div();
