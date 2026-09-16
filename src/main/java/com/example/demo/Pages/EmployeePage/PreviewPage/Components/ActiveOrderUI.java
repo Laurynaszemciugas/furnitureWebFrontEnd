@@ -38,6 +38,7 @@ public class ActiveOrderUI {
     OrdersService ordersService;
 
     Consumer<Boolean> reload;
+    Consumer<Boolean> reloadOutSide;
 
 
     Long currentOrderId = 0L;
@@ -53,6 +54,10 @@ public class ActiveOrderUI {
 
     public void setReload(Consumer<Boolean> reload) {
         this.reload = reload;
+    }
+
+    public void setReloadOutSide(Consumer<Boolean> reloadOutSide) {
+        this.reloadOutSide = reloadOutSide;
     }
 
     public VerticalLayout orderName(Orders currentOrder){
@@ -84,7 +89,7 @@ public class ActiveOrderUI {
         }
 
         h.add(
-                commonComponents.spanCrafter(String.format("Order #%d",currentOrder.getId()),"stat-value"),
+                commonComponents.spanCrafter(String.format("Active Order #%d",currentOrder.getId()),"stat-value"),
                 status
         );
 
@@ -137,6 +142,8 @@ public class ActiveOrderUI {
 
 
         VerticalLayout v = new VerticalLayout();
+        v.setPadding(false);
+        v.setSpacing(false);
 
         for(var product : productsData){
 
@@ -166,6 +173,7 @@ public class ActiveOrderUI {
         setReload(e->{
 
 
+            System.out.println("reload in side");
 
 
             for (var dialog : dialogMemory.values()) {
@@ -396,7 +404,7 @@ public class ActiveOrderUI {
 
 
         VerticalLayout v = new VerticalLayout();
-        v.addClassName("island");
+        v.addClassName("island-hover");
 
         if(status.equals(ProductFinishStepStatus.NOT_STARTED)){
             v.getStyle().set("cursor", "default");
@@ -420,6 +428,7 @@ public class ActiveOrderUI {
             ordersService.updateStep(id, Long.valueOf(e.getValue()));
 
             reload.accept(true);
+            reloadOutSide.accept(true);
 
             dialogMemory.get(productSKU).close();
             dialogMemory.get(productSKU).open();
@@ -486,17 +495,31 @@ public class ActiveOrderUI {
         statusDisplay.getStyle().set("width", "fit-content");
         statusDisplay.addClassName("stock-badge");
 
-
+        Span startedPerson = new Span();
 
         switch (status){
-            case FINISHED -> statusDisplay.addClassName("stock-in");
-            case IN_PROGRESS -> statusDisplay.addClassName("status-in-progress");
-            case NOT_STARTED -> statusDisplay.addClassName("status-none");
+            case FINISHED -> {
+                startedPerson = commonComponents.spanCrafter(emp == null ? "Started by No one" : "Completed by " + emp.getFullName(),"stat-example");
+                statusDisplay.addClassName("stock-in");
+            }
+
+
+
+            case IN_PROGRESS -> {
+                statusDisplay.addClassName("status-in-progress");
+                startedPerson = commonComponents.spanCrafter(emp == null ? "Started by No one" : "Started by " + emp.getFullName(),"stat-example");
+            }
+            case NOT_STARTED -> {
+                statusDisplay.addClassName("status-none");
+            }
 
 
         }
 
-        Span startedPerson = commonComponents.spanCrafter(emp == null ? "Started by No one" : "Completed by" + emp.getFullName(),"stat-example");
+
+
+
+
         Span startedDate = commonComponents.spanCrafter(create == null ? "Not started" : create.toString(),"stat-example");
 
         if(status.equals(ProductFinishStepStatus.FINISHED)){
@@ -656,7 +679,8 @@ public class ActiveOrderUI {
         );
 
         VerticalLayout v = new VerticalLayout();
-        v.addClassName("island");
+        v.addClassName("island-hover");
+        v.getStyle().set("cursor","pointer");
 
 
         v.add(

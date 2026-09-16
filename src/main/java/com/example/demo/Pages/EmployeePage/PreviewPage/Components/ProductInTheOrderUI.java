@@ -59,7 +59,7 @@ public class ProductInTheOrderUI {
         }
 
         h.add(
-                commonComponents.spanCrafter(String.format("Order #%d",currentOrder.getId()),"stat-value"),
+                commonComponents.spanCrafter(String.format("Preview Order #%d",currentOrder.getId()),"stat-value"),
                 status
         );
 

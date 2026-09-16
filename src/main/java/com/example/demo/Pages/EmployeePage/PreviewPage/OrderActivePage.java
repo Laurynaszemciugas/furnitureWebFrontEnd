@@ -99,15 +99,59 @@ public class OrderActivePage extends VerticalLayout implements BeforeEnterObserv
         verticalLayout.getStyle().set("margin-top", "5px");
 
 
+        VerticalLayout one = new VerticalLayout();
+        one.setPadding(false);
+
+        one.add(
+                pageDesc.orderPreviewDesc(),
+                activeOrderUI.orderName(currentOrder)
+        );
+
+        VerticalLayout two = new VerticalLayout();
+        two.setPadding(false);
+
+        two.add(
+                orderMiniStat.miniStat(currentOrder)
+        );
+
+        VerticalLayout three = new VerticalLayout();
+        three.setPadding(false);
+
+        three.add(
+                activeOrderUI.activeOrders(currentOrder)
+        );
+
+
         verticalLayout.add(
 
-                pageDesc.orderPreviewDesc(),
-                activeOrderUI.orderName(currentOrder),
-                orderMiniStat.miniStat(currentOrder),
+                one,
+                two,
+                three
 
-                activeOrderUI.activeOrders(currentOrder)
+
 
         );
+
+
+
+
+
+        activeOrderUI.setReloadOutSide(e->{
+
+
+            two.removeAll();
+
+
+            Orders newOrder = ordersService.getSelectedOrder(Long.valueOf(orderId));
+
+            two.add(
+
+
+                    orderMiniStat.miniStat(newOrder)
+
+
+            );
+        });
 
         return verticalLayout;
     }

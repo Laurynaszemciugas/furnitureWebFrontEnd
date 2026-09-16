@@ -177,7 +177,7 @@ public class OrderDashboardMiniStat {
                 orderNamePriority,
                 createProgressCircle(stepsCompleted,stepsTotal),
                 miniStatHolder(),
-                verticallyMiniStats(VaadinIcon.CHECK_CIRCLE_O,String.format("%s/%s",totalCompletedProducts,totalProducts),"Fully completed products"),
+                verticallyMiniStats(VaadinIcon.CHECK_CIRCLE_O,String.format("%s/%s",totalCompletedProducts,stepsTotal),"Fully completed products"),
                 verticallyMiniStats(VaadinIcon.LIST,String.format("%s/%s",stepsCompleted,stepsTotal),"Steps completed"),
                 verticallyMiniStats(VaadinIcon.TRASH,"1253","Test")
         );

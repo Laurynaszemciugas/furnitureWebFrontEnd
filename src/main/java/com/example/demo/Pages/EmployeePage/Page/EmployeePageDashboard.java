@@ -533,7 +533,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
         for(var ss : employeeActiveOrders){
                 v.add(
-                        productPreviewHolder(ss.getOrder().getProductsData())
+                        productPreviewHolder(ss.getOrder().getId(),ss.getOrder().getProductsData())
 
                 );
         }
@@ -546,7 +546,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
 
-    public VerticalLayout productPreviewHolder(List<OrderProducts> productsData){
+    public VerticalLayout productPreviewHolder(Long id,List<OrderProducts> productsData){
 
         VerticalLayout v = new VerticalLayout();
         v.setPadding(false);
@@ -571,7 +571,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
             }
 
-            v.add(activeOrdersPreview(mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
+            v.add(activeOrdersPreview(id,mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
         }
 
         return v;
@@ -579,7 +579,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
     }
 
 
-    public VerticalLayout activeOrdersPreview(String mainImage, String productName, String productSKU, Long howMany, Long totalSteps,Long totalStepsCompleted, List<OrderStepsToComplete> stepsList, List<ProductMaterials> productMaterials){
+    public VerticalLayout activeOrdersPreview(Long id,String mainImage, String productName, String productSKU, Long howMany, Long totalSteps,Long totalStepsCompleted, List<OrderStepsToComplete> stepsList, List<ProductMaterials> productMaterials){
 
 
 
@@ -653,6 +653,9 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
         Button viewDetails = new Button("Continue work");
         viewDetails.addThemeVariants(ButtonVariant.PRIMARY);
+        viewDetails.addClickListener(e->{
+           UI.getCurrent().navigate("OrderActive/" + id );
+        });
 
 
         h.add(
