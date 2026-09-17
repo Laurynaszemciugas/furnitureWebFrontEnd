@@ -503,7 +503,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         grid.setHeightFull();
         grid.setHeight("250px");
 
-        Span span = commonComponents.spanCrafter("4 available","stat-example");
+        Span span = commonComponents.spanCrafter(ordersService.findHowManyItemsAreActive()+ " available","stat-example");
         span.addClassNames("new-badge","status-in-progress");
 
 
@@ -626,8 +626,12 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
         // progress bar
 
-        double percentage = Double.valueOf(totalStepsCompleted) / Double.valueOf(totalSteps);
-        System.out.println(percentage);
+        double percentage = 1;
+
+        if(totalSteps != 0) {
+            percentage = Double.valueOf(totalStepsCompleted) / Double.valueOf(totalSteps);
+
+        }
 
         ProgressBar progressBar = new ProgressBar();
         progressBar.setHeight("10px");

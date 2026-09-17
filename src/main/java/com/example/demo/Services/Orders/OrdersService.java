@@ -200,6 +200,13 @@ public class OrdersService {
     }
 
     @SneakyThrows
+    public Long findHowManyItemsAreActive() {
+
+        return httpCallLogic.HttpCall("order/findHowManyItemsAreActive", HttpMethod.GET,null, Long.class,false);
+
+    }
+
+    @SneakyThrows
     public Long findHowManyItemsAreAvailable() {
 
         return httpCallLogic.HttpCall("order/findHowManyItemsAreAvailable", HttpMethod.GET,null, Long.class,false);
@@ -210,7 +217,7 @@ public class OrdersService {
     public void acceptOrderEmployee(Long orderId){
 
         httpCallLogic.checkResponse(
-                httpCallLogic.HttpCall("order/acceptOrderEmployee", HttpMethod.GET,orderId, ErrorResponse.class,true), null,success,true);
+                httpCallLogic.HttpCall("order/acceptOrderEmployee", HttpMethod.GET,orderId, ErrorResponse.class,true), "EmployeesDashBoard",success,true);
 
     }
 

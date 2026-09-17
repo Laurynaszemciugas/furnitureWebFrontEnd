@@ -139,10 +139,21 @@ public class OrderActivePage extends VerticalLayout implements BeforeEnterObserv
         activeOrderUI.setReloadOutSide(e->{
 
 
+            Orders newOrder = ordersService.getSelectedOrder(Long.valueOf(orderId));
+
+            one.removeAll();
+
+            one.add(
+                    pageDesc.orderPreviewDesc(),
+                    activeOrderUI.orderName(newOrder)
+            );
+
+
+
             two.removeAll();
 
 
-            Orders newOrder = ordersService.getSelectedOrder(Long.valueOf(orderId));
+
 
             two.add(
 

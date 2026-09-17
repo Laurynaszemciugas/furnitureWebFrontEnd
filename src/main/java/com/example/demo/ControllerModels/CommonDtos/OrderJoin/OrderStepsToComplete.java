@@ -1,6 +1,7 @@
 package com.example.demo.ControllerModels.CommonDtos.OrderJoin;
 
 
+import com.example.demo.ControllerModels.CommonDtos.OrderStepsJoin.OrderStepCompletionLogs;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductFinishSteps;
 import com.example.demo.ControllerModels.CommonDtos.User;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -37,6 +39,8 @@ public class OrderStepsToComplete {
     private ProductFinishStepStatus productFinishStepStatus;
 
     private OrderProducts orderProducts;
+
+    private List<OrderStepCompletionLogs> orderStepCompletionLogs;
 
     private LocalDateTime created;
 

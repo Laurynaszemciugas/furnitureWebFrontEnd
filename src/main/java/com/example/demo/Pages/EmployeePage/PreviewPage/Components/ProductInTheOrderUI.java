@@ -206,8 +206,12 @@ public class ProductInTheOrderUI {
 
         // progress bar
 
-        double percentage = Double.valueOf(totalStepsCompleted) / Double.valueOf(totalSteps);
-        System.out.println(percentage);
+        double percentage = 1;
+
+        if(totalSteps != 0) {
+            percentage = Double.valueOf(totalStepsCompleted) / Double.valueOf(totalSteps);
+
+        }
 
         ProgressBar progressBar = new ProgressBar();
         progressBar.setHeight("10px");
@@ -359,6 +363,8 @@ public class ProductInTheOrderUI {
 
             double percentage = Double.valueOf(totalCompletedSteps) / Double.valueOf(totalSteps);
 
+
+
             ProgressBar progressBar = new ProgressBar();
             progressBar.setHeight("10px");
             progressBar.setWidth("300px");
@@ -393,9 +399,19 @@ public class ProductInTheOrderUI {
 
 
 
-        v.add(
-                grid
-        );
+
+        if(stepsList.isEmpty()){
+            v.add(
+                    commonComponents.noDataFoundImproved("No manufacturing steps were found",null,null)
+            );
+        }
+        else{
+            v.add(
+                    grid
+            );
+        }
+
+
 
 
 
@@ -553,6 +569,8 @@ public class ProductInTheOrderUI {
         dialog.open();
 
     }
+
+
 
 
 

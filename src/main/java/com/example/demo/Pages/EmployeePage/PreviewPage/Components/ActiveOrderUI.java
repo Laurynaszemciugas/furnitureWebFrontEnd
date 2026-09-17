@@ -4,6 +4,7 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderStepsToComplete;
+import com.example.demo.ControllerModels.CommonDtos.OrderStepsJoin.OrderStepCompletionLogs;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
 import com.example.demo.ControllerModels.CommonDtos.User;
@@ -14,10 +15,13 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -332,8 +336,7 @@ public class ActiveOrderUI {
                 expandSteps( mainImage,  productName,  productSKU,  howMany,  totalSteps,  totalStepsCompleted, stepsList, productMaterials)
         );
 
-        Dialog dialog = new Dialog();
-        dialog.setWidth("1000px");
+
 
 
 
@@ -345,6 +348,15 @@ public class ActiveOrderUI {
                 h,
                 commonComponents.spanCrafter("Manufacturing steps","activityFeed-name"),
                 stepHolder(stepsList,productSKU)
+        );
+
+        Dialog dialog = new Dialog();
+        dialog.setWidth("1000px");
+
+        Button closeDialog = new Button("Close", e->dialog.close());
+
+        dialog.getFooter().add(
+                closeDialog
         );
 
         dialog.add(stepHolderCompleted);
@@ -382,13 +394,13 @@ public class ActiveOrderUI {
             for (var s : stepsList) {
 
 
-                v.add(stepCrafter(s.getId(), s.getStepId(), s.getStepName(), s.getStepDescription(), s.getStepsNeeded(), s.getProductFinishStepStatus(), s.getEmployee(), s.getCreated(), s.getStepsCompleted(), sku));
+                v.add(stepCrafter(s.getOrderStepCompletionLogs(),s.getId(), s.getStepId(), s.getStepName(), s.getStepDescription(), s.getStepsNeeded(), s.getProductFinishStepStatus(), s.getEmployee(), s.getCreated(), s.getStepsCompleted(), sku));
 
 
             }
         } else {
             v.add(
-                    commonComponents.noDataFoundImproved("No manufactoring steps are found for this product",null,null)
+                    commonComponents.noDataFoundImproved("No manufacturing steps are found for this product",null,null)
             );
         }
 
@@ -408,24 +420,58 @@ public class ActiveOrderUI {
     }
 
 
-    public VerticalLayout stepCrafter(Long id,Long stepId, String stepName, String stepDesc, Long totalSteps, ProductFinishStepStatus status, User emp, LocalDateTime create, Long totalStepsCompleted,String productSKU){
+    public VerticalLayout stepCrafter(List<OrderStepCompletionLogs> logs, Long id, Long stepId, String stepName, String stepDesc, Long totalSteps, ProductFinishStepStatus status, User emp, LocalDateTime create, Long totalStepsCompleted, String productSKU){
+
+        Dialog logDialog = logsDialogCrafter(logs,stepName);
+
+
+        VerticalLayout v = new VerticalLayout();
+        v.getStyle().set("position","relative");
+
+
+        Button openLogs = new Button("Logs", e-> logDialog.open());
+        openLogs.getStyle().set("position","absolute").set("top","0px").set("right","10px");
+
+        Button expand = new Button(commonComponents.iconCrafter(VaadinIcon.ANGLE_DOWN,"25px","BLUE"));
+        expand.getStyle().set("position","absolute").set("bottom","0px").set("right","10px");
+
+        v.add(
+                expand,
+                openLogs
+        );
+
 
 
         VerticalLayout competedItemsUI = new VerticalLayout();
         competedItemsUI.setVisible(false);
 
 
-        VerticalLayout v = new VerticalLayout();
-        v.addClassName("island-hover");
+
+        expand.addClickListener(e->{
+
+            if(!status.equals(ProductFinishStepStatus.NOT_STARTED) && !status.equals(ProductFinishStepStatus.FINISHED)) {
+                if (competedItemsUI.isVisible()) {
+                    competedItemsUI.setVisible(false);
+                    expand.setIcon(commonComponents.iconCrafter(VaadinIcon.ANGLE_DOWN,"25px","BLUE"));
+                } else {
+                    competedItemsUI.setVisible(true);
+                    expand.setIcon(commonComponents.iconCrafter(VaadinIcon.ANGLE_UP,"25px","BLUE"));
+                }
+            }
 
 
-        if(status.equals(ProductFinishStepStatus.NOT_STARTED)){
+
+        });
+
+
+        if(status.equals(ProductFinishStepStatus.NOT_STARTED) || status.equals(ProductFinishStepStatus.FINISHED)){
             v.getStyle().set("cursor", "default");
-            Tooltip.forComponent(competedItemsUI)
-                    .withText("Click to access the quantity change ability");
+            expand.setVisible(false);
+            v.addClassName("island");
         }
         else{
             v.getStyle().set("cursor", "pointer");
+            v.addClassName("island-hover");
 
         }
 
@@ -436,9 +482,17 @@ public class ActiveOrderUI {
         integerField.setMin(0);
         integerField.setStepButtonsVisible(true);
 
-        integerField.addValueChangeListener(e->{
 
-            ordersService.updateStep(id, Long.valueOf(e.getValue()));
+        Button updateProgress = new Button("Update progress");
+        updateProgress.addClickListener(e->{
+            Long numberOfCompleted = Long.valueOf(integerField.getValue());
+
+            if(numberOfCompleted > totalStepsCompleted){
+                numberOfCompleted = totalSteps;
+                commonComponents.showNotification("Too much taken the number was set to the max which is " + totalSteps, 3000, Notification.Position.BOTTOM_CENTER,NotificationVariant.WARNING);
+            }
+
+            ordersService.updateStep(id, numberOfCompleted);
 
             reload.accept(true);
             reloadOutSide.accept(true);
@@ -449,7 +503,7 @@ public class ActiveOrderUI {
         });
 
 
-        HorizontalLayout compltedFieldHolder = new HorizontalLayout(integerField, commonComponents.spanCrafter(String.format("/%d",totalSteps),"stat-description"));
+        HorizontalLayout compltedFieldHolder = new HorizontalLayout(integerField, commonComponents.spanCrafter(String.format("/%d",totalSteps),"stat-description") ,updateProgress);
 
         compltedFieldHolder.setAlignItems(FlexComponent.Alignment.CENTER);
 
@@ -457,17 +511,6 @@ public class ActiveOrderUI {
                 commonComponents.doubleValueRow(commonComponents.spanCrafter("Update progress","stat-example"),commonComponents.spanCrafter("(Completed quantity)","stat-description")),
                 compltedFieldHolder
         );
-
-        v.addClickListener(e->{
-
-            if(!status.equals(ProductFinishStepStatus.NOT_STARTED) && !status.equals(ProductFinishStepStatus.FINISHED)) {
-                if (competedItemsUI.isVisible()) {
-                    competedItemsUI.setVisible(false);
-                } else {
-                    competedItemsUI.setVisible(true);
-                }
-            }
-        });
 
 
         HorizontalLayout h = new HorizontalLayout();
@@ -485,8 +528,7 @@ public class ActiveOrderUI {
 
             ordersService.completeStep(id);
             reload.accept(true);
-
-
+            reloadOutSide.accept(true);
             dialogMemory.get(productSKU).close();
             dialogMemory.get(productSKU).open();
 
@@ -515,9 +557,6 @@ public class ActiveOrderUI {
                 startedPerson = commonComponents.spanCrafter(emp == null ? "Started by No one" : "Completed by " + emp.getFullName(),"stat-example");
                 statusDisplay.addClassName("stock-in");
             }
-
-
-
             case IN_PROGRESS -> {
                 statusDisplay.addClassName("status-in-progress");
                 startedPerson = commonComponents.spanCrafter(emp == null ? "Started by No one" : "Started by " + emp.getFullName(),"stat-example");
@@ -529,10 +568,6 @@ public class ActiveOrderUI {
 
         }
 
-
-
-
-
         Span startedDate = commonComponents.spanCrafter(create == null ? "Not started" : common.dateFormatter(create),"stat-example");
 
         if(status.equals(ProductFinishStepStatus.FINISHED)){
@@ -543,6 +578,14 @@ public class ActiveOrderUI {
         }
         else if (status.equals(ProductFinishStepStatus.IN_PROGRESS)){
             finishStep.setVisible(true);
+
+            if(totalSteps.equals(totalStepsCompleted)){
+                finishStep.setEnabled(true);
+            }
+            else{
+                finishStep.setEnabled(false);
+            }
+
             startStep.setVisible(false);
             startedPerson.setVisible(true);
             startedDate.setVisible(true);
@@ -716,6 +759,71 @@ public class ActiveOrderUI {
     }
 
 
+    public Dialog logsDialogCrafter(List<OrderStepCompletionLogs> logs, String stepName){
+        Dialog dialog = new Dialog();
+        dialog.setWidth("800px");
+
+        Button closeDialog = new Button("Close",e->dialog.close());
+
+        dialog.getFooter().add(
+                closeDialog
+        );
+
+        dialog.getHeader().add(
+                commonComponents.spanCrafter(stepName,"activityFeed-name")
+        );
+
+        Grid<OrderStepCompletionLogs> gridLogs = new Grid<>(OrderStepCompletionLogs.class,false);
+        gridLogs.setItems(logs);
+
+
+        gridLogs.addComponentColumn(e->{
+
+            return commonComponents.spanCrafterWordNoHide(e.getThingThatWasDone(),"stat-example");
+
+        }).setWidth("200px").setHeader("What was done");
+
+
+
+        gridLogs.addComponentColumn(e->{
+
+            VerticalLayout v = new VerticalLayout();
+            v.setAlignItems(FlexComponent.Alignment.CENTER);
+
+            Image image = commonComponents.imageCrafter(e.getEmployee().getImageUrl() == null ? "No_picture.png" : e.getEmployee().getImageUrl(),"50px","50px","50%");
+
+            v.add(
+                    image,
+                    commonComponents.spanCrafterWordNoHide(e.getEmployee().getFullName(),"stat-description")
+            );
+
+            return v;
+
+        }).setAutoWidth(true).setHeader("Who made the action");
+
+
+        gridLogs.addComponentColumn(e->{
+
+            return commonComponents.spanCrafterWordNoHide(common.dateFormatter(e.getCreated()),"stat-example");
+
+        }).setWidth("200px").setHeader("When it was done");
+
+
+        if(logs.isEmpty()){
+            dialog.add(
+                    commonComponents.noDataFoundImproved("No logs were found for " + stepName,null,null)
+            );
+        }
+        else {
+            dialog.add(
+                    gridLogs
+            );
+
+        }
+
+
+        return dialog;
+    }
 
 
 
