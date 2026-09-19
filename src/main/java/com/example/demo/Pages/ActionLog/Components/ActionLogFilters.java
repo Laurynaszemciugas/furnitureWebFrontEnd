@@ -76,8 +76,8 @@ public class ActionLogFilters {
         TextField searchActions = new TextField("Search actions");
 
         searchActions.addValueChangeListener(e->{
-
-            promptConsumer.accept(e.getValue());
+            String value = e.getValue().isBlank() ? "ALL" : e.getValue();
+            promptConsumer.accept(value);
 
         });
 

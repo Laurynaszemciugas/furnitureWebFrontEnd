@@ -66,11 +66,11 @@ public class AvailableOrderFilter {
 
 
 
-        TextField searchActions = new TextField("Search actions");
+        TextField searchActions = new TextField("Search orders");
 
         searchActions.addValueChangeListener(e->{
-
-            promptConsumer.accept(e.getValue());
+            String value = e.getValue().isBlank() ? "ALL" : e.getValue();
+            promptConsumer.accept(value);
 
         });
 

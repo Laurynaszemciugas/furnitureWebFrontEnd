@@ -103,7 +103,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         verticalLayout.add(
                 employeeDashboardExplanations.briefExplanation("Dashboard"),
                 dataAndWorkingHours(),
-                displayAvailableOrders.availableOrders(ordersService.getEmployeeOrderProjection()),
+                displayAvailableOrders.availableOrders(ordersService.getEmployeeOrderProjection(),true),
                 displayActiveOrders.myActiveOrders(ordersService.findEmployeeActiveOrders()));
 
         return verticalLayout;

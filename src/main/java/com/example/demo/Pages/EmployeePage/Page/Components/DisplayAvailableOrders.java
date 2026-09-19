@@ -39,10 +39,11 @@ public class DisplayAvailableOrders {
     }
 
 
-    public VerticalLayout availableOrders(List<EmployeeOrderProjection> list){
+    public VerticalLayout availableOrders(List<EmployeeOrderProjection> list, boolean includeExtra){
 
         VerticalLayout v = new VerticalLayout();
-        v.addClassName("island");
+
+
 
 
 
@@ -54,22 +55,51 @@ public class DisplayAvailableOrders {
         grid.setWidthFull();
         grid.setColumnReorderingAllowed(false);
 
-        Span span = commonComponents.spanCrafter( ordersService.findHowManyItemsAreAvailable()+ " available","stat-example");
-        span.addClassNames("new-badge","status-pending");
+        if(list == null || list.isEmpty()){
+            grid.setVisible(false);
+            v.add(
+                    commonComponents.noDataFound()
+            );
+        }
+        else{
+            grid.setVisible(true);
+        }
 
-
-        Button viewAll = new Button("View all");
-        viewAll.setSuffixComponent(VaadinIcon.ANGLE_RIGHT.create());
 
         HorizontalLayout h = new HorizontalLayout();
-        h.setWidthFull();
-        h.setPadding(false);
-        h.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-        h.add(
-                commonComponents.doubleValueRow(commonComponents.spanCrafter("Available orders","activityFeed-name"),span),
-                commonComponents.spaceFiller(),
-                viewAll
-        );
+        if(includeExtra) {
+
+            v.addClassName("island");
+
+
+            Span span = commonComponents.spanCrafter(ordersService.findHowManyItemsAreAvailable() + " available", "stat-example");
+            span.addClassNames("new-badge", "status-pending");
+
+            Button viewAll = new Button("View all");
+            viewAll.setSuffixComponent(VaadinIcon.ANGLE_RIGHT.create());
+
+
+            h.setWidthFull();
+            h.setPadding(false);
+            h.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+            h.add(
+                    commonComponents.doubleValueRow(commonComponents.spanCrafter("Available orders", "activityFeed-name"), span),
+                    commonComponents.spaceFiller(),
+                    viewAll
+            );
+        }
+
+        else{
+            h.add(
+                    commonComponents.spanCrafter("Available orders", "activityFeed-name")
+
+            );
+
+            grid.setHeight("1000px");
+        }
+
+
+
 
 
         grid.addComponentColumn(e -> {
@@ -93,7 +123,7 @@ public class DisplayAvailableOrders {
 
 
             image.addClickListener(ee->{
-                imageViewer.popOver(imageList,"33232");
+                imageViewer.popOver(imageList,imageList.get(0));
             });
             HorizontalLayout hh = new HorizontalLayout();
             hh.setWidthFull();
@@ -149,7 +179,7 @@ public class DisplayAvailableOrders {
             hh.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
             return hh;
-        }).setFlexGrow(1);
+        }).setFlexGrow(1).setHeader("Products info");
 
 
 
@@ -195,7 +225,7 @@ public class DisplayAvailableOrders {
 
             return buttonHolder;
 
-        }).setFlexGrow(0).setWidth("180px");
+        }).setFlexGrow(0).setWidth("180px").setHeader("Actions");
 
 
 

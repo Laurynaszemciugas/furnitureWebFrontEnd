@@ -258,7 +258,7 @@ public class AvailableOrderPage extends VerticalLayout implements BeforeEnterObs
         v.setWidthFull();
 
         v.add(
-                displayAvailableOrders.availableOrders(filterStuff),
+                displayAvailableOrders.availableOrders(filterStuff,false),
                 paganation.buttonHolder(Math.toIntExact(ordersService.getAmountOfPagesOnAvailableOrders(filterData)))
 
         );
