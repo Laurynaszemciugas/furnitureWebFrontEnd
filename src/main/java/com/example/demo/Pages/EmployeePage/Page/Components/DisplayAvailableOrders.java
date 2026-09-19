@@ -39,12 +39,12 @@ public class DisplayAvailableOrders {
     }
 
 
-    public VerticalLayout availableOrders(){
+    public VerticalLayout availableOrders(List<EmployeeOrderProjection> list){
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
 
-        List<EmployeeOrderProjection> list = ordersService.getEmployeeOrderProjection();
+
 
         Grid<EmployeeOrderProjection> grid = new Grid<>(EmployeeOrderProjection.class,false);
         grid.setItems(list);

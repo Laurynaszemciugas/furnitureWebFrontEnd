@@ -1,15 +1,13 @@
-package com.example.demo.Pages.EmployeePage.Page.Components;
+package com.example.demo.Common.Logic.PageStuff;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 @CssImport("./MainCSS.css")
-public class EmployeeDashboardExplanations {
+public class DefaultPageExplanation {
 
 
     CommonComponents commonComponents;
@@ -18,12 +16,12 @@ public class EmployeeDashboardExplanations {
     boolean firstLoad = true;
 
 
-    public EmployeeDashboardExplanations(CommonComponents commonComponents, Common common) {
+    public DefaultPageExplanation(CommonComponents commonComponents, Common common) {
         this.commonComponents = commonComponents;
         this.common = common;
     }
 
-    public HorizontalLayout briefExplanation(){
+    public HorizontalLayout briefExplanation(String pageName){
 
         HorizontalLayout v = new HorizontalLayout();
 
@@ -41,7 +39,7 @@ public class EmployeeDashboardExplanations {
 
 
         v.add(
-                commonComponents.biefPageExplanation("Materials"));
+                commonComponents.biefPageExplanation(pageName));
 
 
         return v;

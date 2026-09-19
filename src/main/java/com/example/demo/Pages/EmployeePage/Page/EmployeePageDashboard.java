@@ -3,35 +3,20 @@ package com.example.demo.Pages.EmployeePage.Page;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ImageViewer;
-import com.example.demo.ControllerModels.CommonDtos.EmployeePage.EmployeeOrderProjection;
-import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
-import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderStepsToComplete;
-import com.example.demo.ControllerModels.CommonDtos.Orders;
-import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
 import com.example.demo.ControllerModels.CommonDtos.WorkDay;
-import com.example.demo.Enums.ImageLogic;
-import com.example.demo.Enums.OrderStatus;
-import com.example.demo.Enums.Priority;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.EmployeePage.Page.Components.DisplayActiveOrders;
 import com.example.demo.Pages.EmployeePage.Page.Components.DisplayAvailableOrders;
-import com.example.demo.Pages.EmployeePage.Page.Components.EmployeeDashboardExplanations;
-import com.example.demo.Services.EmployeeService.EmployeeActiveOrders;
+import com.example.demo.Common.Logic.PageStuff.DefaultPageExplanation;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.WorkDoneService.WorkDoneService;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.progressbar.ProgressBar;
-import com.vaadin.flow.component.shared.Tooltip;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
@@ -39,8 +24,6 @@ import com.vaadin.flow.router.Route;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 
 @Route(value = "EmployeesDashBoard", layout = MainLayout.class)
 public class EmployeePageDashboard extends VerticalLayout implements BeforeEnterObserver {
@@ -60,7 +43,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
     DisplayAvailableOrders displayAvailableOrders;
 
-    EmployeeDashboardExplanations employeeDashboardExplanations;
+    DefaultPageExplanation employeeDashboardExplanations;
 
     public EmployeePageDashboard(CommonComponents commonComponents, Common common, OrdersService ordersService,ImageViewer imageViewer,WorkDoneService workDoneService) {
         this.commonComponents = commonComponents;
@@ -73,7 +56,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
         this.displayAvailableOrders = new DisplayAvailableOrders(commonComponents,common,ordersService,imageViewer);
 
-        this.employeeDashboardExplanations = new EmployeeDashboardExplanations(commonComponents,common);
+        this.employeeDashboardExplanations = new DefaultPageExplanation(commonComponents,common);
 
 
 
@@ -118,10 +101,10 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
         verticalLayout.add(
-                employeeDashboardExplanations.briefExplanation(),
+                employeeDashboardExplanations.briefExplanation("Dashboard"),
                 dataAndWorkingHours(),
-                displayAvailableOrders.availableOrders(),
-                displayActiveOrders.myActiveOrders());
+                displayAvailableOrders.availableOrders(ordersService.getEmployeeOrderProjection()),
+                displayActiveOrders.myActiveOrders(ordersService.findEmployeeActiveOrders()));
 
         return verticalLayout;
     }

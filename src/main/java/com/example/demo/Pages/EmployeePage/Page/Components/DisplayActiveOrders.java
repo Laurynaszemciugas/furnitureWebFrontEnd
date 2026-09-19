@@ -37,14 +37,12 @@ public class DisplayActiveOrders {
         this.ordersService = ordersService;
     }
 
-    public VerticalLayout myActiveOrders(){
+    public VerticalLayout myActiveOrders(List<EmployeeActiveOrders> employeeActiveOrders){
 
         VerticalLayout v = new VerticalLayout();
         v.setWidthFull();
         v.addClassName("island");
         v.addClassName("layout-flex");
-
-        List<EmployeeActiveOrders> employeeActiveOrders = ordersService.findEmployeeActiveOrders();
 
 
 

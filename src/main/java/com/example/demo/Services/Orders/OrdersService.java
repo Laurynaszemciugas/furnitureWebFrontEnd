@@ -10,6 +10,7 @@ import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.DashBoard.ActivityFeedModel;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMonthlyOrdersCompleted;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
+import com.example.demo.ControllerModels.Filter.EmployeeAvailableOrderFilter.EmployeeAvailableOrderFilter;
 import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
 import com.example.demo.ControllerModels.OrderAdd.ConsumerData;
 import com.example.demo.ControllerModels.Orders.NewOrderFeedData;
@@ -196,6 +197,23 @@ public class OrdersService {
     public List<EmployeeOrderProjection> getEmployeeOrderProjection() {
 
         return Arrays.stream(httpCallLogic.HttpCall("order/getEmployeeOrderProjection", HttpMethod.GET,null, EmployeeOrderProjection[].class,false)).toList();
+
+    }
+
+
+    // available employee dashboard
+
+    @SneakyThrows
+    public List<EmployeeOrderProjection> findEmployeeActiveOrdersNonLimited(EmployeeAvailableOrderFilter filter, String jwt) {
+
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("order/findEmployeeActiveOrdersNonLimited", HttpMethod.POST,filter, EmployeeOrderProjection[].class,false,jwt)).toList();
+
+    }
+
+    @SneakyThrows
+    public Long getAmountOfPagesOnAvailableOrders(EmployeeAvailableOrderFilter filter) {
+
+        return httpCallLogic.HttpCall("order/getAmountOfPagesOnAvailableOrders", HttpMethod.POST,filter, Long.class,false);
 
     }
 

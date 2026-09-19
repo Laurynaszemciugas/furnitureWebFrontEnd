@@ -1,30 +1,26 @@
-package com.example.demo.Pages.ActionLog.Main;
+package com.example.demo.Pages.EmployeePage.AvailableOrderPage;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.CurrentFilterDisplay;
+import com.example.demo.Common.Logic.ImageViewer;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.ActionLogs.ActionLogFeed;
+import com.example.demo.ControllerModels.CommonDtos.EmployeePage.EmployeeOrderProjection;
 import com.example.demo.ControllerModels.Filter.ActionLog.ActionLogFilterHolder;
-import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
-import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
-import com.example.demo.ControllerModels.Material.MaterialBriefDto;
-import com.example.demo.Enums.ActionDesciptionEnum;
-import com.example.demo.Enums.ActionTrackerEnum;
-import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.ControllerModels.Filter.EmployeeAvailableOrderFilter.EmployeeAvailableOrderFilter;
 import com.example.demo.Pages.ActionLog.Components.ActionLogFilters;
 import com.example.demo.Pages.ActionLog.Components.ActionLogGrid;
 import com.example.demo.Pages.ActionLog.Components.ActionLogsBriefExplanation;
+import com.example.demo.Pages.EmployeePage.AvailableOrderPage.Components.AvailableOrderFilter;
+import com.example.demo.Pages.EmployeePage.Page.Components.DisplayAvailableOrders;
 import com.example.demo.Services.ActionTrackerService.ActionService;
+import com.example.demo.Services.Orders.OrdersService;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
@@ -32,8 +28,11 @@ import com.vaadin.flow.router.Route;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-@Route(value = "Actions", layout = MainLayout.class)
-public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver {
+@Route(value = "AvailableOrderPage")
+public class AvailableOrderPage extends VerticalLayout implements BeforeEnterObserver {
+
+
+
 
 
     // main layout
@@ -41,9 +40,9 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
     VerticalLayout filterMemory = new VerticalLayout();
     Div gridHolder = new Div();
 
-    ActionLogFilterHolder filterData = new ActionLogFilterHolder();
+    EmployeeAvailableOrderFilter filterData = new EmployeeAvailableOrderFilter();
 
-    ActionService actionService;
+    OrdersService ordersService;
 
     SessionCrafter sessionCrafter;
 
@@ -57,29 +56,36 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
 
     ActionLogsBriefExplanation actionLogsBriefExplanation;
 
+    AvailableOrderFilter availableOrderFilter;
 
-    ActionLogFilters actionLogFilters;
-    ActionLogGrid actionLogGrid;
+    DisplayAvailableOrders displayAvailableOrders;
 
-    public ActionLogPage(CommonComponents commonComponents, Common common, ActionService actionService) {
+    ImageViewer imageViewer;
+
+
+    public AvailableOrderPage(CommonComponents commonComponents, Common common, OrdersService ordersService,ImageViewer imageViewer) {
         this.commonComponents = commonComponents;
         this.common = common;
 
         this.actionLogsBriefExplanation = new ActionLogsBriefExplanation(commonComponents,common);
         this.paganation = new Paganation();
 
+        this.availableOrderFilter = new AvailableOrderFilter(commonComponents,common);
+
         this.sessionCrafter = new SessionCrafter();
 
-        this.actionService = actionService;
+        this.ordersService = ordersService;
 
-        this.actionLogFilters = new ActionLogFilters(commonComponents,common);
+       this.imageViewer = imageViewer;
 
-        this.actionLogGrid = new ActionLogGrid(commonComponents,common);
 
         this.currentFilterDisplay = new CurrentFilterDisplay(commonComponents,common);
 
+        this.displayAvailableOrders = new DisplayAvailableOrders(commonComponents,common,ordersService,imageViewer);
 
-        actionLogFilters.setCurrentFilterDisplay(currentFilterDisplay);
+
+        availableOrderFilter.setCurrentFilterDisplay(currentFilterDisplay);
+
 
 
         gridHolder.setWidthFull();
@@ -89,7 +95,7 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
         setPadding(false);
         setSpacing(false);
         setSizeFull();
-        setAlignItems(Alignment.CENTER);
+        setAlignItems(FlexComponent.Alignment.CENTER);
 
 
         addClassName("animation-page");
@@ -103,11 +109,11 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
 
         removeAll();
 
-        filterData = sessionCrafter.extractSession("actionLogsPageFilters",ActionLogFilterHolder.class) == null ? new ActionLogFilterHolder() :
-                sessionCrafter.extractSession("actionLogsPageFilters",ActionLogFilterHolder.class);
+        filterData = sessionCrafter.extractSession("availableOrderEmp",EmployeeAvailableOrderFilter.class) == null ? new EmployeeAvailableOrderFilter() :
+                sessionCrafter.extractSession("availableOrderEmp",EmployeeAvailableOrderFilter.class);
 
-        actionLogFilters.setFilterData(filterData);
-        currentFilterDisplay.preLoadFilters(ActionLogFilterHolder.class,"actionLogsPageFilters");
+        availableOrderFilter.setFilterData(filterData);
+        currentFilterDisplay.preLoadFilters(EmployeeAvailableOrderFilter.class,"availableOrderEmp");
 
 
 
@@ -127,39 +133,35 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
 
 
 
-        actionLogFilters.setPromptConsumer(e->{
+        availableOrderFilter.setPromptConsumer(e->{
             setNewPage();
             filterData.setPromt(e);
             loadGridValues();
         });
 
-        actionLogFilters.setWhoMadeActionConsumer(e->{
+        availableOrderFilter.setOrderStatusConsumer(e->{
             setNewPage();
-            filterData.setWhoMadeTheAction(e);
+            filterData.setOrderStatus(e);
             loadGridValues();
         });
 
-        actionLogFilters.setWhatTypeOfActionConsumer(e->{
+        availableOrderFilter.setPrioritynConsumer(e->{
             setNewPage();
-            filterData.setActionType(e);
+            filterData.setPriority(e);
             loadGridValues();
         });
 
-        actionLogFilters.setFromConsumer(e->{
+        availableOrderFilter.setSortOrderConsumer(e->{
             setNewPage();
-            filterData.setDateFrom(e);
+            filterData.setSortOrder(e);
             loadGridValues();
         });
 
-        actionLogFilters.setToConsumer(e->{
-            setNewPage();
-            filterData.setDateTo(e);
-            loadGridValues();
-        });
+
 
         currentFilterDisplay.setReloadController(e->{
             setNewPage();
-            filterData = (ActionLogFilterHolder) e;
+            filterData = (EmployeeAvailableOrderFilter) e;
             loadGridValues();
         });
 
@@ -169,10 +171,10 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
         });
 
 
-        actionLogFilters.setClearConsumer(e->{
+        availableOrderFilter.setClearConsumer(e->{
             setNewPage();
             currentFilterDisplay.clearAllData();
-            filterData =  new ActionLogFilterHolder();
+            filterData =  new EmployeeAvailableOrderFilter();
             reloadData();
         });
 
@@ -201,7 +203,7 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
         filterMemory.removeAll();
         filterMemory.add(
                 actionLogsBriefExplanation.briefExplanation(),
-                actionLogFilters.filters()
+                availableOrderFilter.filters()
 
         );
 
@@ -232,7 +234,7 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
         CompletableFuture
                 .supplyAsync(()->{
 
-                    List<ActionLogFeed> items = actionService.getActionLogFeed(filterData,jwt);
+                    List<EmployeeOrderProjection> items = ordersService.findEmployeeActiveOrdersNonLimited(filterData,jwt);
                     common.timer(250);
                     return items;
                 })
@@ -244,20 +246,20 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
                 });
 
 
-        sessionCrafter.createSession("actionLogsPageFilters",filterData);
+        sessionCrafter.createSession("availableOrderEmp",filterData);
 
         paganation.updateUIFromExternal(filterData.getPage()+1);
 
     }
 
-    public VerticalLayout gridFilterHolder(List<ActionLogFeed> filterStuff){
+    public VerticalLayout gridFilterHolder(List<EmployeeOrderProjection> filterStuff){
         VerticalLayout v = new VerticalLayout();
         v.setPadding(false);
         v.setWidthFull();
 
         v.add(
-                actionLogGrid.gridHolder(filterStuff),
-                paganation.buttonHolder(Math.toIntExact(actionService.getAmountOfPages(filterData)))
+                displayAvailableOrders.availableOrders(filterStuff),
+                paganation.buttonHolder(Math.toIntExact(ordersService.getAmountOfPagesOnAvailableOrders(filterData)))
 
         );
 
@@ -272,6 +274,8 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
         filterData.setPage(0);
         paganation.updateUIFromExternal(1);
     }
+
+
 
 
 }
