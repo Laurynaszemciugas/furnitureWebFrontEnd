@@ -9,6 +9,7 @@ import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
 import com.example.demo.ControllerModels.CommonDtos.User;
 import com.example.demo.Enums.ImageLogic;
+import com.example.demo.Enums.Priority;
 import com.example.demo.Enums.ProductFinishStepStatus;
 import com.example.demo.Services.Orders.OrdersService;
 import com.vaadin.flow.component.Component;
@@ -144,7 +145,7 @@ public class ActiveOrderUI {
 
     public VerticalLayout activeOrderHolder(List<OrderProducts> productsData){
 
-
+        Orders oldOrder = ordersService.getSelectedOrder(currentOrderId);
 
         VerticalLayout v = new VerticalLayout();
         v.setPadding(false);
@@ -172,7 +173,7 @@ public class ActiveOrderUI {
 
             }
 
-            v.add(activeOrderPreview(mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
+            v.add(activeOrderPreview(oldOrder.getPriority(),mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
         }
 
         setReload(e->{
@@ -213,7 +214,7 @@ public class ActiveOrderUI {
 
                 }
 
-                v.add(activeOrderPreview(mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
+                v.add(activeOrderPreview(order.getPriority(),mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
 
 
 
@@ -234,7 +235,7 @@ public class ActiveOrderUI {
 
 
 
-    public VerticalLayout activeOrderPreview(String mainImage, String productName, String productSKU, Long howMany, Long totalSteps, Long totalStepsCompleted, List<OrderStepsToComplete> stepsList, List<ProductMaterials> productMaterials){
+    public VerticalLayout activeOrderPreview(Priority priority, String mainImage, String productName, String productSKU, Long howMany, Long totalSteps, Long totalStepsCompleted, List<OrderStepsToComplete> stepsList, List<ProductMaterials> productMaterials){
 
 
 
@@ -305,6 +306,10 @@ public class ActiveOrderUI {
 
         progressBar.setValue(percentage);
 
+
+
+
+
         HorizontalLayout allHolder = new HorizontalLayout();
         allHolder.setAlignItems(FlexComponent.Alignment.CENTER);
 
@@ -353,7 +358,9 @@ public class ActiveOrderUI {
         Dialog dialog = new Dialog();
         dialog.setWidth("1000px");
 
+
         Button closeDialog = new Button("Close", e->dialog.close());
+
 
         dialog.getFooter().add(
                 closeDialog
@@ -733,7 +740,7 @@ public class ActiveOrderUI {
                 pcs,
                 progressBar,
                 commonComponents.spanCrafter(String.format("%.0f %s",percentage*100,"%"),"stat-example"),
-                commonComponents.spanCrafter(totalSteps == 0 ? String.format("%s %s",productSKU,"has now manufacturing steps") : String.format("%d/%d",totalStepsCompleted,totalSteps),"stat-example")
+                commonComponents.spanCrafter(totalSteps == 0 ? String.format("%s %s",productSKU,"has no manufacturing steps") : String.format("%d/%d",totalStepsCompleted,totalSteps),"stat-example")
         );
 
 

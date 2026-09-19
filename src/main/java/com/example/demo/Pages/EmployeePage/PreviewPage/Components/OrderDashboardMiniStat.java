@@ -94,33 +94,19 @@ public class OrderDashboardMiniStat {
 
         // get how important each order is
 
-        LocalDateTime today = LocalDateTime.now();
-        LocalDateTime dueDate = currentOrder.getEstimatedDueDate();
 
-
-        long howManyDaysLeft = ChronoUnit.DAYS.between(today,dueDate);
-
-        Span priority = new Span();
+        Span priority = new Span(currentOrder.getPriority().getDisplayName());
         priority.getStyle().set("width", "fit-content");
         priority.addClassName("stock-badge");
 
-        if(howManyDaysLeft >= 15){
-            priority.setText("Low priority");
-            priority.addClassName("stock-in");
-        }
-        else if(howManyDaysLeft >= 5 && howManyDaysLeft <= 10){
+        switch (currentOrder.getPriority()){
 
-            priority.setText("medium priority");
-            priority.addClassName("stock-low");
-        }
-        else if(howManyDaysLeft >= 0 && howManyDaysLeft <= 4){
-            priority.setText("High priority");
-            priority.addClassName("stock-out");
-        }
+            case OVERDUE -> priority.addClassName("status-cancelled");
+            case LOW_PRIORITY -> priority.addClassName("status-finished");
+            case MEDIUM_PRIORITY -> priority.addClassName("status-in-progress");
+            default -> priority.addClassName("status-none");
 
-        else{
-            priority.setText(String.format("%s","OVERDUE"));
-            priority.addClassName("stock-out");
+
         }
 
         // get how many steps are there
@@ -315,9 +301,8 @@ public class OrderDashboardMiniStat {
                 miniStatCrafter(VaadinIcon.CLOCK, "Time remaining", daysMarker),
                 miniStatCrafter(VaadinIcon.CUBE, "Total products", totalQuantity),
                 miniStatCrafter(VaadinIcon.USER, "Costumer full name", currentOrder.getOrderCreatedByName()),
-                miniStatCrafter(VaadinIcon.MAILBOX, "Costumer gmail", currentOrder.getOrderCreatedByGmail())
+                miniStatCrafter(VaadinIcon.MAILBOX, "Estimated Finish time",currentOrder.getEstimatedFinishTimeMinutes() == null ? "Unknown" : currentOrder.getEstimatedFinishTimeMinutes().toString())
         );
-
         return h;
     }
 

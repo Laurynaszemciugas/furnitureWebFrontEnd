@@ -3,10 +3,7 @@ package com.example.demo.ControllerModels.CommonDtos;
 import com.example.demo.ControllerModels.CommonDtos.EmployeeJoin.OrderEmployees;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderStepsToComplete;
-import com.example.demo.Enums.ActiveInactive;
-import com.example.demo.Enums.OrderStatus;
-import com.example.demo.Enums.PayMethod;
-import com.example.demo.Enums.PayStatus;
+import com.example.demo.Enums.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -36,8 +33,11 @@ public class Orders {
     private PayStatus payStatus;
     private PayMethod payMethod;
     private String billingAddress;
+    private Priority priority;
     private LocalDateTime created;
     private LocalDate createdDate;
+    private LocalDateTime Finished;
+    private Long estimatedFinishTimeMinutes;
     private ActiveInactive activeInactive;
     private String orderCreatedByName; // fallback if user doesnt have an account
     private String orderCreatedByGmail; // fallback if user doesnt have an account

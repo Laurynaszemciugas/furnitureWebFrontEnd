@@ -11,7 +11,11 @@ import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials
 import com.example.demo.ControllerModels.CommonDtos.WorkDay;
 import com.example.demo.Enums.ImageLogic;
 import com.example.demo.Enums.OrderStatus;
+import com.example.demo.Enums.Priority;
 import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.Pages.EmployeePage.Page.Components.DisplayActiveOrders;
+import com.example.demo.Pages.EmployeePage.Page.Components.DisplayAvailableOrders;
+import com.example.demo.Pages.EmployeePage.Page.Components.EmployeeDashboardExplanations;
 import com.example.demo.Services.EmployeeService.EmployeeActiveOrders;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.WorkDoneService.WorkDoneService;
@@ -50,12 +54,26 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
     WorkDoneService workDoneService;
 
+    // thigs to make page happen
+
+    DisplayActiveOrders displayActiveOrders;
+
+    DisplayAvailableOrders displayAvailableOrders;
+
+    EmployeeDashboardExplanations employeeDashboardExplanations;
+
     public EmployeePageDashboard(CommonComponents commonComponents, Common common, OrdersService ordersService,ImageViewer imageViewer,WorkDoneService workDoneService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.ordersService = ordersService;
         this.imageViewer = imageViewer;
         this.workDoneService = workDoneService;
+
+        this.displayActiveOrders = new DisplayActiveOrders(commonComponents,common,ordersService);
+
+        this.displayAvailableOrders = new DisplayAvailableOrders(commonComponents,common,ordersService,imageViewer);
+
+        this.employeeDashboardExplanations = new EmployeeDashboardExplanations(commonComponents,common);
 
 
 
@@ -100,9 +118,10 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
         verticalLayout.add(
+                employeeDashboardExplanations.briefExplanation(),
                 dataAndWorkingHours(),
-                availableOrders(),
-                myActiveOrders());
+                displayAvailableOrders.availableOrders(),
+                displayActiveOrders.myActiveOrders());
 
         return verticalLayout;
     }
@@ -281,405 +300,15 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
 
-    public VerticalLayout availableOrders(){
 
-        VerticalLayout v = new VerticalLayout();
-        v.addClassName("island");
 
-        List<EmployeeOrderProjection> list = ordersService.getEmployeeOrderProjection();
 
-        Grid<EmployeeOrderProjection> grid = new Grid<>(EmployeeOrderProjection.class,false);
-        grid.setItems(list);
-        grid.setHeightFull();
-        grid.setHeight("513px");
 
-        grid.setWidthFull();
-        grid.setColumnReorderingAllowed(false);
 
-        Span span = commonComponents.spanCrafter( ordersService.findHowManyItemsAreAvailable()+ " available","stat-example");
-        span.addClassNames("new-badge","status-pending");
 
 
-        Button viewAll = new Button("View all");
-        viewAll.setSuffixComponent(VaadinIcon.ANGLE_RIGHT.create());
 
-        HorizontalLayout h = new HorizontalLayout();
-        h.setWidthFull();
-        h.setPadding(false);
-        h.setJustifyContentMode(JustifyContentMode.END);
-        h.add(
-                commonComponents.doubleValueRow(commonComponents.spanCrafter("Available orders","activityFeed-name"),span),
-                commonComponents.spaceFiller(),
-                viewAll
-        );
 
-
-        grid.addComponentColumn(e -> {
-
-            String images = (String) e.getImages();
-
-            List<String> imageList = images == null || images.isBlank()
-                    ? List.of()
-                    : Arrays.stream(images.split(","))
-                    .filter(s -> !s.isBlank())
-                    .toList();
-
-
-            Image image = commonComponents.imageCrafter(
-                    imageList.isEmpty() ? "No_picture.png":imageList.get(0),
-                    "150px",
-                    "150px",
-                    "5px"
-            );
-
-
-
-            image.addClickListener(ee->{
-                imageViewer.popOver(imageList,"33232");
-            });
-            HorizontalLayout hh = new HorizontalLayout();
-            hh.setWidthFull();
-            hh.setAlignItems(Alignment.CENTER);
-
-
-
-            HorizontalLayout first = new HorizontalLayout();
-
-            first.add(
-                    new VerticalLayout(commonComponents.spanCrafter("#" + e.getId(),"activityFeed-name"), commonComponents.spanCrafter("Some name","stat-example"))
-
-            );
-
-            HorizontalLayout second = new HorizontalLayout();
-
-            second.add(
-                    miniStats("Quantity",String.valueOf(e.getAmountOfItems())),
-                    miniStats("Created",common.dateFormatterLocalDateTime(e.getCreated(),"dd MMM yyyy, HH:mm")),
-                    miniStats("Due date",common.dateFormatterLocalDateTime(e.getDueDate(),"dd MMM yyyy, HH:mm")),
-                    miniStats("Materials",e.getOrderStatus() == OrderStatus.LACK_OF_SUPPLY ? "Not available" : "Available"),
-                    employeeOnTheProject(e.getEmployeeImages().toString(), e.getEmployeeImages().toString())
-            );
-
-            VerticalLayout allHolder = new VerticalLayout();
-            allHolder.setSpacing(false);
-            allHolder.add(first,second);
-
-
-
-            hh.add(
-                    image,
-                    allHolder
-            );
-
-            hh.setJustifyContentMode(JustifyContentMode.BETWEEN);
-
-            return hh;
-        }).setFlexGrow(1);
-
-
-
-        grid.addComponentColumn(e->{
-
-
-            VerticalLayout buttonHolder = new VerticalLayout();
-
-            Button viewDetails = new Button("View details");
-
-            viewDetails.addClickListener(ee->{
-                Orders orders = ordersService.getSelectedOrder(e.getId());
-
-                for(var s : orders.getProductsData()){
-
-                    System.out.println(s.getProduct().getProductName());
-                    for(var steps : s.getProduct().getSteps()){
-                        System.out.println(steps.getStepName());
-                    }
-                }
-
-                //openDetailsOfTheOrder(orders);
-
-                UI.getCurrent().navigate("OrderPreview/" + orders.getId());
-
-
-            });
-
-            Button acceptOrders = commonComponents.normalThemeButtonNoNavigate("Accept order", ButtonVariant.LUMO_PRIMARY);
-
-            acceptOrders.addClickListener(ee->{
-                ordersService.acceptOrderEmployee(e.getId());
-            });
-
-            if(e.getOrderStatus().equals(OrderStatus.LACK_OF_SUPPLY)){
-                acceptOrders.setEnabled(false);
-            }
-
-            buttonHolder.add(
-                    viewDetails,
-                    acceptOrders
-            );
-
-            return buttonHolder;
-
-        }).setFlexGrow(0).setWidth("180px");
-
-
-
-
-
-        v.add(
-                h,
-                grid
-        );
-
-
-        return v;
-
-    }
-
-    public VerticalLayout employeeOnTheProject(String employeeImages, String employees){
-
-
-        // extract data from concat due to its working with , csv
-        List<String> employeeImagesList = employeeImages == null || employeeImages.isBlank()
-                ? List.of()
-                : Arrays.stream(employeeImages.split(","))
-                .filter(s -> !s.isBlank())
-                .distinct()
-                .toList();
-
-        List<String> employeesList = employees == null || employees.isBlank()
-                ? List.of()
-                : Arrays.stream(employees.split(","))
-                .filter(s -> !s.isBlank())
-                .distinct()
-                .toList();
-
-        VerticalLayout v = new VerticalLayout();
-
-        v.add(
-                commonComponents.spanCrafter("Employee working on this order","stat-description")
-        );
-
-        HorizontalLayout h = new HorizontalLayout();
-
-
-        for(var s : employeeImagesList){
-            h.add(
-                    commonComponents.imageCrafter(s,"50px","50px","50%")
-            );
-        }
-
-        v.add(
-                h
-        );
-
-
-        return v;
-
-
-    }
-
-
-
-
-
-
-
-    public VerticalLayout myActiveOrders(){
-
-        VerticalLayout v = new VerticalLayout();
-        v.setWidthFull();
-        v.addClassName("island");
-        v.addClassName("layout-flex");
-
-        List<EmployeeActiveOrders> employeeActiveOrders = ordersService.findEmployeeActiveOrders();
-
-
-
-        Grid<EmployeeActiveOrders> grid = new Grid<>(EmployeeActiveOrders.class,true);
-        grid.addClassName("invisible-grid");
-        grid.setItems(employeeActiveOrders);
-
-        grid.setHeightFull();
-        grid.setHeight("250px");
-
-        Span span = commonComponents.spanCrafter(ordersService.findHowManyItemsAreActive()+ " available","stat-example");
-        span.addClassNames("new-badge","status-in-progress");
-
-
-        Button viewAll = new Button("View all");
-        viewAll.setSuffixComponent(VaadinIcon.ANGLE_RIGHT.create());
-
-        HorizontalLayout h = new HorizontalLayout();
-        h.setWidthFull();
-        h.setPadding(false);
-        h.setJustifyContentMode(JustifyContentMode.END);
-        h.add(
-                commonComponents.doubleValueRow(commonComponents.spanCrafter("My active orders","activityFeed-name"),span),
-                commonComponents.spaceFiller(),
-                viewAll
-        );
-
-
-
-
-
-
-
-        v.add(
-                h
-
-        );
-
-        for(var ss : employeeActiveOrders){
-                v.add(
-                        productPreviewHolder(ss.getOrder().getId(),ss.getOrder().getProductsData())
-
-                );
-        }
-
-
-        return v;
-
-    }
-
-
-
-
-    public VerticalLayout productPreviewHolder(Long id,List<OrderProducts> productsData){
-
-        VerticalLayout v = new VerticalLayout();
-        v.setPadding(false);
-
-        for(var product : productsData){
-
-            String mainImageUrl = "";
-
-            Long totalSteps = 0L;
-            Long totalStepsCompleted = 0L;
-
-            for(var images : product.getProduct().getImages()){
-                if(images.getImageLogic().equals(ImageLogic.Main)){
-                    mainImageUrl = images.getImageUrl();
-                }
-            }
-
-            for(var steps : product.getOrderSteps()){
-
-                totalSteps += steps.getStepsNeeded();
-                totalStepsCompleted += steps.getStepsCompleted();
-
-            }
-
-            v.add(activeOrdersPreview(id,mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
-        }
-
-        return v;
-
-    }
-
-
-    public VerticalLayout activeOrdersPreview(Long id,String mainImage, String productName, String productSKU, Long howMany, Long totalSteps,Long totalStepsCompleted, List<OrderStepsToComplete> stepsList, List<ProductMaterials> productMaterials){
-
-
-
-
-        // REM
-        HorizontalLayout stepsRequired = new HorizontalLayout();
-        stepsRequired.setWidthFull();
-        stepsRequired.setJustifyContentMode(JustifyContentMode.BETWEEN);
-
-
-
-
-
-
-
-        HorizontalLayout h = new HorizontalLayout();
-        h.setAlignItems(Alignment.CENTER);
-        h.setWidthFull();
-        h.setJustifyContentMode(JustifyContentMode.BETWEEN);
-        h.addClassName("layout-flex");
-
-        Image image = commonComponents.imageCrafter(mainImage,"100px","100px","5px");
-
-        VerticalLayout nameSku = new VerticalLayout();
-        nameSku.setMaxWidth("150px");
-
-        Span productNameSpan =  commonComponents.spanCrafterWordNoHide(productName,"stat-example");
-        Tooltip.forComponent(productNameSpan)
-                .withText(productName);
-
-        Span productSKUSpan = commonComponents.spanCrafterWordNoHide(productSKU,"stat-description");
-        Tooltip.forComponent(productSKUSpan)
-                .withText(productSKU);
-
-        nameSku.add(
-                productNameSpan,
-                productSKUSpan
-        );
-
-        Span pcs = new Span(String.format("%d %s",howMany,"Pcs"));
-        pcs.getStyle().set("width", "fit-content");
-        pcs.addClassNames("stock-badge","status-pending");
-
-
-        // progress bar
-
-        double percentage = 1;
-
-        if(totalSteps != 0) {
-            percentage = Double.valueOf(totalStepsCompleted) / Double.valueOf(totalSteps);
-
-        }
-
-        ProgressBar progressBar = new ProgressBar();
-        progressBar.setHeight("10px");
-        progressBar.setWidth("300px");
-
-        progressBar.setValue(percentage);
-
-        HorizontalLayout allHolder = new HorizontalLayout();
-        allHolder.setAlignItems(Alignment.CENTER);
-
-        allHolder.setWidth("800px");
-        allHolder.setPadding(false);
-        allHolder.addClassName("layout-flex");
-
-        allHolder.add(
-                image,
-                nameSku,
-                pcs,
-                progressBar,
-                commonComponents.spanCrafter(String.format("%.0f %s",percentage*100,"%"),"stat-example"),
-                commonComponents.spanCrafter(String.format("%d/%d",totalStepsCompleted,totalSteps),"stat-example")
-        );
-
-        Button viewDetails = new Button("Continue work");
-        viewDetails.addThemeVariants(ButtonVariant.PRIMARY);
-        viewDetails.addClickListener(e->{
-           UI.getCurrent().navigate("OrderActive/" + id );
-        });
-
-
-        h.add(
-                allHolder,
-                viewDetails
-
-        );
-
-        VerticalLayout v = new VerticalLayout();
-        v.addClassName("island");
-
-
-        v.add(
-                h
-        );
-
-
-
-        return v;
-    }
 
 
 
@@ -719,17 +348,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
 
-    public VerticalLayout miniStats(String name, String value){
 
-        VerticalLayout v = new VerticalLayout();
-
-        v.add(
-                commonComponents.spanCrafter(name,"stat-description"),
-                commonComponents.spanCrafter(value,"stat-example")
-        );
-
-        return v;
-    }
 
 
 
