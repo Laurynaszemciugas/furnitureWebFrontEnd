@@ -43,7 +43,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
     DisplayAvailableOrders displayAvailableOrders;
 
-    DefaultPageExplanation employeeDashboardExplanations;
+    DefaultPageExplanation defaultPageExplanation;
 
     public EmployeePageDashboard(CommonComponents commonComponents, Common common, OrdersService ordersService,ImageViewer imageViewer,WorkDoneService workDoneService) {
         this.commonComponents = commonComponents;
@@ -56,7 +56,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
         this.displayAvailableOrders = new DisplayAvailableOrders(commonComponents,common,ordersService,imageViewer);
 
-        this.employeeDashboardExplanations = new DefaultPageExplanation(commonComponents,common);
+        this.defaultPageExplanation = new DefaultPageExplanation(commonComponents,common);
 
 
 
@@ -101,7 +101,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
         verticalLayout.add(
-                employeeDashboardExplanations.briefExplanation("Dashboard"),
+                defaultPageExplanation.briefExplanation("Dashboard"),
                 dataAndWorkingHours(),
                 displayAvailableOrders.availableOrders(ordersService.getEmployeeOrderProjection(),true),
                 displayActiveOrders.myActiveOrders(ordersService.findEmployeeActiveOrders()));

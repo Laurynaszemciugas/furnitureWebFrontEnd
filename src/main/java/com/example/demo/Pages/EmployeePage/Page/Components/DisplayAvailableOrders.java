@@ -42,6 +42,7 @@ public class DisplayAvailableOrders {
     public VerticalLayout availableOrders(List<EmployeeOrderProjection> list, boolean includeExtra){
 
         VerticalLayout v = new VerticalLayout();
+        v.setPadding(false);
 
 
 
@@ -50,10 +51,11 @@ public class DisplayAvailableOrders {
         Grid<EmployeeOrderProjection> grid = new Grid<>(EmployeeOrderProjection.class,false);
         grid.setItems(list);
         grid.setHeightFull();
-        grid.setHeight("513px");
+        grid.setAllRowsVisible(true);
 
         grid.setWidthFull();
-        grid.setColumnReorderingAllowed(false);
+
+        HorizontalLayout h = new HorizontalLayout();
 
         if(list == null || list.isEmpty()){
             grid.setVisible(false);
@@ -62,11 +64,17 @@ public class DisplayAvailableOrders {
             );
         }
         else{
+            h.add(
+                    commonComponents.spanCrafter("Orders", "stat-value")
+
+            );
+
             grid.setVisible(true);
         }
 
 
-        HorizontalLayout h = new HorizontalLayout();
+
+
         if(includeExtra) {
 
             v.addClassName("island");
@@ -87,15 +95,6 @@ public class DisplayAvailableOrders {
                     commonComponents.spaceFiller(),
                     viewAll
             );
-        }
-
-        else{
-            h.add(
-                    commonComponents.spanCrafter("Available orders", "activityFeed-name")
-
-            );
-
-            grid.setHeight("1000px");
         }
 
 

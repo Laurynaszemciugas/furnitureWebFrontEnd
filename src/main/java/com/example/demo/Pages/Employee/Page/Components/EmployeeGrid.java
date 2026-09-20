@@ -43,7 +43,7 @@ public class EmployeeGrid {
 
 
         Grid<EmployeeBriefDto> grid = new Grid<>(EmployeeBriefDto.class,false);
-        grid.setHeight("700px");
+        grid.setAllRowsVisible(true);
         grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
         grid.setItems(materiaData);
 

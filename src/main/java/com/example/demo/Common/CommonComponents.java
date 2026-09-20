@@ -19,6 +19,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,12 +27,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 @Service
+@Setter
 public class CommonComponents {
 
 
     SessionCrafter sessionCrafter;
+
+    Consumer<Integer> pageSelectorConsumer;
 
     public CommonComponents() {
         this.sessionCrafter = new SessionCrafter();
@@ -457,6 +462,34 @@ public class CommonComponents {
 
         return h;
     }
+
+    public HorizontalLayout paganationExpander(Integer preset){
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.getStyle().set("position","absolute").set("bottom","0px").set("right","10px");
+
+        h.setPadding(false);
+
+
+        ComboBox<Integer> pageSize = new ComboBox<>();
+        pageSize.setWidth("100px");
+        pageSize.setItems(5,10,20,30);
+
+        pageSize.setValue(preset);
+
+        pageSize.addValueChangeListener(e->{
+           pageSelectorConsumer.accept(e.getValue());
+        });
+
+        h.add(pageSize);
+
+
+
+
+        return h;
+    }
+
+
 
 
 

@@ -159,6 +159,13 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
             filterData.setPage(e);
             loadGridValues();
         });
+
+        commonComponents.setPageSelectorConsumer(e->{
+            setNewPage();
+            filterData.setPageCount(e);
+            loadGridValues();
+        });
+
         //needed
         currentFilterDisplay.setReloadController(e->{
             setNewPage();
@@ -219,11 +226,13 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
 
     public VerticalLayout gridFilterHolder(List<EmployeeBriefDto> items){
         VerticalLayout v = new VerticalLayout();
+        v.getStyle().set("position","relative");
         v.setPadding(false);
         v.setWidthFull();
 
         v.add(
                 employeeGrid.gridHolder(items),
+                commonComponents.paganationExpander(filterData.getPageCount()),
                 paganation.buttonHolder(Math.toIntExact(employeeService.getPageCount(filterData)))
 
         );

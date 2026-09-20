@@ -4,18 +4,14 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.CurrentFilterDisplay;
 import com.example.demo.Common.Logic.ImageViewer;
+import com.example.demo.Common.Logic.PageStuff.DefaultPageExplanation;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
-import com.example.demo.ControllerModels.ActionLogs.ActionLogFeed;
 import com.example.demo.ControllerModels.CommonDtos.EmployeePage.EmployeeOrderProjection;
-import com.example.demo.ControllerModels.Filter.ActionLog.ActionLogFilterHolder;
 import com.example.demo.ControllerModels.Filter.EmployeeAvailableOrderFilter.EmployeeAvailableOrderFilter;
-import com.example.demo.Pages.ActionLog.Components.ActionLogFilters;
-import com.example.demo.Pages.ActionLog.Components.ActionLogGrid;
 import com.example.demo.Pages.ActionLog.Components.ActionLogsBriefExplanation;
 import com.example.demo.Pages.EmployeePage.AvailableOrderPage.Components.AvailableOrderFilter;
 import com.example.demo.Pages.EmployeePage.Page.Components.DisplayAvailableOrders;
-import com.example.demo.Services.ActionTrackerService.ActionService;
 import com.example.demo.Services.Orders.OrdersService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
@@ -62,6 +58,7 @@ public class AvailableOrderPage extends VerticalLayout implements BeforeEnterObs
 
     ImageViewer imageViewer;
 
+    DefaultPageExplanation defaultPageExplanation;
 
     public AvailableOrderPage(CommonComponents commonComponents, Common common, OrdersService ordersService,ImageViewer imageViewer) {
         this.commonComponents = commonComponents;
@@ -82,6 +79,8 @@ public class AvailableOrderPage extends VerticalLayout implements BeforeEnterObs
         this.currentFilterDisplay = new CurrentFilterDisplay(commonComponents,common);
 
         this.displayAvailableOrders = new DisplayAvailableOrders(commonComponents,common,ordersService,imageViewer);
+
+        this.defaultPageExplanation = new DefaultPageExplanation(commonComponents,common);
 
 
         availableOrderFilter.setCurrentFilterDisplay(currentFilterDisplay);
@@ -158,6 +157,13 @@ public class AvailableOrderPage extends VerticalLayout implements BeforeEnterObs
         });
 
 
+        commonComponents.setPageSelectorConsumer(e->{
+            setNewPage();
+            filterData.setPageCount(e);
+            loadGridValues();
+        });
+
+
 
         currentFilterDisplay.setReloadController(e->{
             setNewPage();
@@ -202,7 +208,7 @@ public class AvailableOrderPage extends VerticalLayout implements BeforeEnterObs
 
         filterMemory.removeAll();
         filterMemory.add(
-                actionLogsBriefExplanation.briefExplanation(),
+                defaultPageExplanation.briefExplanation("Available orders"),
                 availableOrderFilter.filters()
 
         );
@@ -254,11 +260,13 @@ public class AvailableOrderPage extends VerticalLayout implements BeforeEnterObs
 
     public VerticalLayout gridFilterHolder(List<EmployeeOrderProjection> filterStuff){
         VerticalLayout v = new VerticalLayout();
+        v.getStyle().set("position","relative");
         v.setPadding(false);
         v.setWidthFull();
 
         v.add(
                 displayAvailableOrders.availableOrders(filterStuff,false),
+                commonComponents.paganationExpander(filterData.getPageCount()),
                 paganation.buttonHolder(Math.toIntExact(ordersService.getAmountOfPagesOnAvailableOrders(filterData)))
 
         );

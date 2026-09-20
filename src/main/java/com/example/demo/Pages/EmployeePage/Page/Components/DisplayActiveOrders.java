@@ -2,7 +2,6 @@ package com.example.demo.Pages.EmployeePage.Page.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderStepsToComplete;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
 import com.example.demo.Enums.ImageLogic;
@@ -51,7 +50,7 @@ public class DisplayActiveOrders {
         span.addClassNames("new-badge","status-in-progress");
 
 
-        Button viewAll = new Button("View all");
+        Button viewAll = new Button("View all", e-> common.customNavigate("AvailableOrderPage"));
         viewAll.setSuffixComponent(VaadinIcon.ANGLE_RIGHT.create());
 
         HorizontalLayout h = new HorizontalLayout();
@@ -67,6 +66,7 @@ public class DisplayActiveOrders {
 
         Grid<EmployeeActiveOrders> grid = new Grid<>(EmployeeActiveOrders.class,false);
         grid.setItems(employeeActiveOrders);
+        grid.setAllRowsVisible(true);
 
         grid.addComponentColumn(e->{
 
