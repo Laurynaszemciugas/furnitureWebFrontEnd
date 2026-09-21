@@ -1,5 +1,6 @@
 package com.example.demo.ControllerModels.CommonDtos;
 
+import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderStepsToComplete;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,8 @@ public class WorkDone {
     private LocalDateTime started;
 
 
-    private LocalDateTime ended;
+
+    private OrderStepsToComplete orderStepsToComplete;
 
     private Orders order;
 

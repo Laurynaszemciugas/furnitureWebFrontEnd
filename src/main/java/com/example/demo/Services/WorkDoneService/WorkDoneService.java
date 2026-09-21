@@ -2,11 +2,14 @@ package com.example.demo.Services.WorkDoneService;
 
 import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.ControllerModels.CommonDtos.WorkDay;
+import com.example.demo.ControllerModels.CommonDtos.WorkDone;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.User.ProfileInformation;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
 @Service
@@ -32,6 +35,13 @@ public class WorkDoneService {
     public WorkDay getWorkDayInfo() {
 
         return httpCallLogic.HttpCall("WorkDay/getWorkDayInfo", HttpMethod.GET, null, WorkDay.class,false);
+
+    }
+
+
+    public List<WorkDone> allInfoAboutSpecificWorkDay() {
+
+        return Arrays.stream(httpCallLogic.HttpCall("WorkDay/allInfoAboutSpecificWorkDay", HttpMethod.GET, null, WorkDone[].class,false)).toList();
 
     }
 

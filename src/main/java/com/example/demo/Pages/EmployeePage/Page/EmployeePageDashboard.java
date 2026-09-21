@@ -3,7 +3,9 @@ package com.example.demo.Pages.EmployeePage.Page;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ImageViewer;
+import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderStepsToComplete;
 import com.example.demo.ControllerModels.CommonDtos.WorkDay;
+import com.example.demo.ControllerModels.CommonDtos.WorkDone;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.EmployeePage.Page.Components.DisplayActiveOrders;
 import com.example.demo.Pages.EmployeePage.Page.Components.DisplayAvailableOrders;
@@ -24,6 +26,7 @@ import com.vaadin.flow.router.Route;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Route(value = "EmployeesDashBoard", layout = MainLayout.class)
 public class EmployeePageDashboard extends VerticalLayout implements BeforeEnterObserver {
@@ -234,11 +237,6 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
         WorkDay workDay = workDoneService.getWorkDayInfo();
 
-//        System.out.println("ggggggggggggggggggggggggggggggggggggggggggggg");
-//        for(var s : workDay.getWorkDone()){
-//            System.out.println(s.getWhatWasDone());
-//        }
-
         Long minutes = Duration.between(workDay.getWorkDayCreated() == null ? LocalDateTime.now() : workDay.getWorkDayCreated(), LocalDateTime.now()).toMinutes();
 
         Long hours = minutes == null ? 0 : minutes / 60;
@@ -286,6 +284,74 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         return  v;
     }
 
+
+    public VerticalLayout todayWorkSummary(){
+
+        List<WorkDone> workDay = workDoneService.allInfoAboutSpecificWorkDay();
+
+
+
+
+
+        VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
+
+        v.setHeight("300px");
+        v.getStyle().set("flex", "1 1 252px");
+        v.getStyle().set("max-width", "820px");
+        v.getStyle().set("min-width", "252px");
+
+        v.add(
+                commonComponents.spanCrafter("Today's work done","activityFeed-name")
+
+        );
+
+        if(!workDay.isEmpty()) {
+
+            for (var s : workDay) {
+                v.add(
+                        workDoneIslands(s.getWhatWasDone(), s.getOrder().getId(), s.getOrderStepsToComplete())
+                );
+            }
+        }
+        else{
+
+        }
+
+
+
+
+        return  v;
+    }
+
+
+
+
+    public HorizontalLayout workDoneIslands(String whatWasDone, Long orderId, OrderStepsToComplete orderStepsToComplete){
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setWidthFull();
+        h.addClassName("island");
+
+        Div v = new Div();
+        v.setWidth("200px");
+        v.add(
+                commonComponents.spanCrafter(whatWasDone,"stat-example"),
+                commonComponents.spanCrafter(String.format("#%d",orderId),"stat-description")
+        );
+
+        h.add(v);
+
+        if(orderStepsToComplete!=null){
+            h.add(
+                    commonComponents.spanCrafter(orderStepsToComplete.getStepName(),"stat-example")
+            );
+        }
+
+
+        return h;
+
+    }
 
 
 
