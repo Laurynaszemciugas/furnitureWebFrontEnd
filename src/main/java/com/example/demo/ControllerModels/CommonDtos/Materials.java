@@ -20,6 +20,7 @@ public class Materials {
     private Long id;
     private String materialName;
     private Long inStock;
+    private Long reserved;
     private Long minThresHold;
     private Stock stock;
     private ActiveInactive enabled;

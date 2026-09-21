@@ -3,6 +3,7 @@ package com.example.demo.ControllerModels.CommonDtos;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,6 +24,8 @@ public class WorkDay {
     private LocalDateTime workDayEnd;
 
     private Long workedForMinutes;
+
+    private List<WorkDone> workDone;
 
     private User user;
 

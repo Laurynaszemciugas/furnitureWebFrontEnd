@@ -234,6 +234,11 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
         WorkDay workDay = workDoneService.getWorkDayInfo();
 
+//        System.out.println("ggggggggggggggggggggggggggggggggggggggggggggg");
+//        for(var s : workDay.getWorkDone()){
+//            System.out.println(s.getWhatWasDone());
+//        }
+
         Long minutes = Duration.between(workDay.getWorkDayCreated() == null ? LocalDateTime.now() : workDay.getWorkDayCreated(), LocalDateTime.now()).toMinutes();
 
         Long hours = minutes == null ? 0 : minutes / 60;
