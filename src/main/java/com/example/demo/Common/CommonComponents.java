@@ -7,10 +7,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Hr;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -210,6 +207,30 @@ public class CommonComponents {
         button.setIcon(iconCrafter(icon,"40px",color));
         return button;
 
+    }
+
+    public Button smallIconButtonsNoNavigateCustomSize(
+            VaadinIcon icon,
+            String color,
+            String customSize
+    ) {
+        Button button = new Button(iconCrafter(icon, customSize, customSize));
+
+        button.getStyle()
+                .set("padding", "2px")
+                .set("min-width", "20px")
+                .set("width", "20px")
+                .set("height", "20px");
+
+
+
+        button.addThemeVariants(
+                ButtonVariant.LUMO_ICON,
+                ButtonVariant.LUMO_TERTIARY,
+                ButtonVariant.LUMO_SMALL
+        );
+
+        return button;
     }
 
     public HorizontalLayout biefPageExplanation(String title){
