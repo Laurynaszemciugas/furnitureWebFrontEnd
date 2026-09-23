@@ -8,6 +8,7 @@ public enum OrderStatus {
     CANCELLED("Cancelled"),
     NEW("New"),
     LACK_OF_SUPPLY("Lack of supply"),
+    AWAITING_CONFIRMATION("Awaiting confirmation"),
     ALL("All");
 
     private String displayName;

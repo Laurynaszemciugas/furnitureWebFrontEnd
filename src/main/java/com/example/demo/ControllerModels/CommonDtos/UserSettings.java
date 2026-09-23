@@ -3,6 +3,7 @@ package com.example.demo.ControllerModels.CommonDtos;
 
 import com.example.demo.Enums.DateFormat;
 import com.example.demo.Enums.Language;
+import com.example.demo.Enums.OrderProcessing;
 import com.example.demo.Enums.TimeZone;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,6 +32,8 @@ public class UserSettings {
     private String accent;
 
     private String sidebarSize;
+
+    private OrderProcessing orderProcessing;
 
     private User user;
 
