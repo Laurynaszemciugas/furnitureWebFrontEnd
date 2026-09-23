@@ -78,11 +78,7 @@ public class NewOrderFeed {
 
     public VerticalLayout newOrders(){
 
-        paganation.setOnPageChange(e->{
-            e = e-1;
-            newFilter.setPage(e);
-            reloadSS();
-        });
+
 
 
         VerticalLayout main = new VerticalLayout();
@@ -279,6 +275,14 @@ public class NewOrderFeed {
     public VerticalLayout newOrderRightSide(){
 
 
+
+        paganation.setOnPageChange(e->{
+            System.out.println("paganatinon ========================");
+            e = e-1;
+            newFilter.setPage(e);
+            reloadSS();
+            reloadData();
+        });
 
 
         Span titleOfTePreview = commonComponents.spanCrafter("","activityFeed-name");
@@ -645,7 +649,7 @@ public class NewOrderFeed {
 
         newOrderHolder.add(
                 ordersLeftSide.newOrderFeedHolder(ordersService.getNewOrderFeed(newFilter)),
-                paganation.buttonHolder(Math.toIntExact(ordersService.getPageCount(newFilter)))
+                paganation.buttonHolder(Math.toIntExact(ordersService.getNewOrderPages()))
         );
 
     }

@@ -68,6 +68,12 @@ public class OrdersService {
                 return httpCallLogic.HttpCall("order/getAmountOfPages", HttpMethod.POST,orderFilterHolder, Long.class,false);
     }
 
+
+    @SneakyThrows
+    public Long getNewOrderPages(){
+        return httpCallLogic.HttpCall("order/getNewOrderPages", HttpMethod.GET,null, Long.class,false);
+    }
+
     @SneakyThrows
     public void saveNewOrder(Orders orders) {
 

@@ -27,6 +27,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.popover.Popover;
 import com.vaadin.flow.component.popover.PopoverPosition;
 import com.vaadin.flow.component.popover.PopoverVariant;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.dom.Style;
 import lombok.Setter;
 
@@ -51,6 +53,8 @@ public class MaterialGrid {
     Consumer<String> changeDeliveryDate;
     Consumer<String> viewMaterialMovement;
 
+    Long addOrRemove = 0L;
+    Long newValue = 0L;
 
 
     public MaterialGrid(CommonComponents commonComponents, Common common,MaterialService materialService,View view,Scraper scraper) {
@@ -301,6 +305,9 @@ public class MaterialGrid {
 
             bothSides.expand(leftSide);
 
+
+            // new stuff
+
             HorizontalLayout imageText = new HorizontalLayout();
 
             imageText.add(
@@ -332,13 +339,28 @@ public class MaterialGrid {
             );
 
 
+            HorizontalLayout updateStockMaterial = quickActionCrafter(VaadinIcon.CUBE,"Update stock","Add or remove material stock","Update");
+            updateStockMaterial.addClickListener(bt->{
+                updateStock(e);
+            });
+
+            HorizontalLayout changeDeliveryDate = quickActionCrafter(VaadinIcon.CALENDAR,"Change delivery date","set a new estimated delivery date","Set date");
+            changeDeliveryDate.addClickListener(bt->{
+
+            });
+
+            HorizontalLayout viewStockHistory = quickActionCrafter(VaadinIcon.CLOCK,"View stock history","See all stock changes and movement","View");
+            viewStockHistory.addClickListener(bt->{
+
+            });
+
+
             VerticalLayout quickActions = new VerticalLayout();
             quickActions.setPadding(false);
             quickActions.add(
-                    commonComponents.spanCrafter("Quick actions","activityFeed-name"),
-                    quickActionCrafter(VaadinIcon.CUBE,"Update stock","Add or remove material stock","Update",updateStock),
-                    quickActionCrafter(VaadinIcon.CALENDAR,"Change delivery date","set a new estimated delivery date","Set date",changeDeliveryDate),
-                    quickActionCrafter(VaadinIcon.CLOCK,"View stock history","See all stock changes and movement","View",viewMaterialMovement)
+                    updateStockMaterial,
+                    changeDeliveryDate,
+                    viewStockHistory
             );
 
             leftSide.add(
@@ -416,8 +438,17 @@ public class MaterialGrid {
 
 
 
+            setUpdateStock(updateStock->{
+
+                updateStock(e);
+
+            });
+
+
             return openDialog;
         }).setHeader("Actions").setAutoWidth(true).setKey("Actions");
+
+
 
 
         vv.add(
@@ -425,6 +456,246 @@ public class MaterialGrid {
         );
 
         return vv;
+    }
+
+
+
+    public void updateStock(MaterialBriefDto e){
+
+        Dialog dialog = new Dialog();
+        dialog.setWidth("500px");
+
+        VerticalLayout main = new VerticalLayout();
+        main.setPadding(false);
+
+        main.getStyle().setGap("20px");
+
+        Button close = new Button("Close", ee-> dialog.close());
+        Button updateStock = new Button("Update Stock");
+
+
+
+
+        dialog.getFooter().add(close,updateStock);
+
+        VerticalLayout firstLayer = new VerticalLayout();
+        firstLayer.setPadding(false);
+        firstLayer.setSpacing(false);
+        firstLayer.add(
+                commonComponents.spanCrafter("Update stock","activityFeed-name"),
+                commonComponents.spanCrafter("Adjust the stock level for this material","stat-description")
+        );
+
+
+        HorizontalLayout imageText = new HorizontalLayout();
+
+        imageText.add(
+                commonComponents.imageCrafter(e.getImageUrl(),"80px","80px","10px")
+
+        );
+
+        Span stock = commonComponents.spanCrafter(e.getStock() == null ? "Unknown" : String.valueOf(e.getStock().getDisplayName()),"activityFeed-name");
+        stock.addClassName("stock-badge");
+        stock.getStyle().set("width", "fit-content");
+
+        switch (e.getStock()) {
+            case In_Stock -> stock.addClassName("stock-in");
+            case No_Stock -> stock.addClassName("stock-out");
+            case Low_Stock -> stock.addClassName("stock-low");
+        }
+
+        VerticalLayout textHolder = new VerticalLayout();
+        textHolder.setPadding(false);
+        textHolder.getStyle().setGap("10px");
+        textHolder.add(
+                commonComponents.spanCrafter(e.getName(),"stat-example"),
+                commonComponents.spanCrafter(String.format("%s ● %s",e.getMaterialType().getDisplayName(),e.getMaterialTexture().getDisplayName()),"stat-description"),
+                stock
+        );
+
+        imageText.add(
+                textHolder
+        );
+
+
+        // stock
+
+        VerticalLayout currentStockHolder = new VerticalLayout();
+        currentStockHolder.setPadding(false);
+        currentStockHolder.setSpacing(false);
+
+        HorizontalLayout currentStockDisplay = new HorizontalLayout();
+        currentStockDisplay.setWidthFull();
+        currentStockDisplay.addClassName("island");
+
+        Span stockSpan = commonComponents.spanCrafter(String.format("%d %s",e.getAmountLeft(),e.getUnit()),"stat-example");
+        currentStockDisplay.add(
+                stockSpan
+        );
+
+        currentStockHolder.add(
+                commonComponents.spanCrafter("Current stock","stat-example"),
+                currentStockDisplay
+        );
+
+        // action
+
+        VerticalLayout actionHolder = new VerticalLayout();
+        actionHolder.setPadding(false);
+        actionHolder.setSpacing(false);
+
+        HorizontalLayout actionDisplay = new HorizontalLayout();
+        actionDisplay.setWidthFull();
+
+
+
+        Button addStock = new Button("Add stock", commonComponents.iconCrafter(VaadinIcon.PLUS,"20px","royalblue"));
+
+
+
+        Button removeStock = new Button("Remove stock", commonComponents.iconCrafter(VaadinIcon.MINUS,"20px","royalblue"));
+
+
+
+        actionDisplay.add(
+                addStock,
+                removeStock
+        );
+
+        actionDisplay.expand(addStock,removeStock);
+
+
+        actionHolder.add(
+                commonComponents.spanCrafter("Actions","stat-example"),
+                actionDisplay
+        );
+
+        // add the amount
+
+        IntegerField addAmount = new IntegerField("Amount");
+        addAmount.setValue(0);
+        addAmount.setStepButtonsVisible(true);
+        addAmount.setStep(1);
+        addAmount.setMin(0);
+        addAmount.setWidthFull();
+        addAmount.setSuffixComponent(new Span(e.getUnit()));
+        addAmount.setValueChangeMode(ValueChangeMode.EAGER);
+
+        // new stock after update
+
+        VerticalLayout newStockAfterUpdateHolder = new VerticalLayout();
+        newStockAfterUpdateHolder.setPadding(false);
+        newStockAfterUpdateHolder.setSpacing(false);
+
+        HorizontalLayout newStockAfterUpdateDisplay = new HorizontalLayout();
+        newStockAfterUpdateDisplay.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        newStockAfterUpdateDisplay.setWidthFull();
+        newStockAfterUpdateDisplay.addClassName("island");
+
+        removeStock.addClickListener(ee->{
+            addOrRemove = -1L;
+
+            Integer value = addAmount.getValue();
+
+            addAmount.setValue(value + 1);
+            addAmount.setValue(value);
+        });
+        addStock.addClickListener(ee->{
+            addOrRemove = 1L;
+
+            Integer value = addAmount.getValue();
+
+            addAmount.setValue(value + 1);
+            addAmount.setValue(value);
+        });
+
+        addAmount.addValueChangeListener(ee->{
+
+            newStockAfterUpdateHolder.removeAll();
+            newStockAfterUpdateDisplay.removeAll();
+
+            if(addAmount.getValue() == null){
+                newStockAfterUpdateHolder.removeAll();
+                newStockAfterUpdateDisplay.removeAll();
+                return;
+            }
+
+
+            VerticalLayout newStock = new VerticalLayout();
+            newStock.setPadding(false);
+            newStock.setSpacing(false);
+
+            Icon icon;
+
+            String operator = "";
+
+            if(addOrRemove > 0){
+                icon = commonComponents.iconCrafter(VaadinIcon.ARROW_UP,"25px","Green");
+                operator = "+";
+            }
+            else{
+                icon = commonComponents.iconCrafter(VaadinIcon.ARROW_DOWN,"25px","Red");
+                operator = "-";
+            }
+
+             newValue = e.getAmountLeft() + (addAmount.getValue()) * addOrRemove;
+
+            newStock.add(
+                    commonComponents.spanCrafter(String.format("%d %s",e.getAmountLeft() + (addAmount.getValue()),e.getUnit()),"activityFeed-name"),
+                    commonComponents.spanCrafter(String.format("%d %s %d %s %d",e.getAmountLeft(),operator,addAmount.getValue(),"=",newValue,e.getUnit()) ,"stat-description")
+
+            );
+
+
+
+
+
+
+            newStockAfterUpdateDisplay.add(
+                    icon,
+                    newStock
+            );
+
+
+            newStockAfterUpdateHolder.add(
+                    commonComponents.spanCrafter("New stock (after update)","stat-example"),
+                    newStockAfterUpdateDisplay
+            );
+        });
+
+
+
+
+
+
+
+        main.add(
+                firstLayer,
+                imageText,
+                currentStockHolder,
+                actionHolder,
+                addAmount,
+                newStockAfterUpdateHolder
+        );
+
+
+        dialog.add(
+                main
+
+        );
+
+
+        updateStock.addClickListener(ew->{
+            if(newValue < 0){
+                System.out.println("No");
+            }
+            else {
+                System.out.println(newValue);
+            }
+        });
+
+        dialog.open();
+
     }
 
 
@@ -535,7 +806,7 @@ public class MaterialGrid {
 
 
 
-    public HorizontalLayout quickActionCrafter(VaadinIcon icon, String name, String desc, String buttonName, Consumer<String> actionEvent){
+    public HorizontalLayout quickActionCrafter(VaadinIcon icon, String name, String desc, String buttonName){
         HorizontalLayout h = new HorizontalLayout();
         h.setAlignItems(FlexComponent.Alignment.CENTER);
         h.setWidthFull();
@@ -555,9 +826,6 @@ public class MaterialGrid {
 
         Button universalButton = new Button(buttonName);
 
-        universalButton.addClickListener(e->{
-           actionEvent.accept("yoo");
-        });
 
         h.add(
                 iconHolder,
