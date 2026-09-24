@@ -54,6 +54,14 @@ public class MaterialService {
 
     }
 
+    @SneakyThrows
+    public void updateMaterialStock(Long materialId, Long newStock) {
+
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("quickMaterialActions/updateMaterialStock", HttpMethod.GET,String.format("%d/%d",materialId,newStock), ErrorResponse.class,true),"Materials",success,true);
+
+    }
+
 
     @SneakyThrows
     public MiniStatHolder getMiniStats(LocalDate fromDate, LocalDate toDate) {

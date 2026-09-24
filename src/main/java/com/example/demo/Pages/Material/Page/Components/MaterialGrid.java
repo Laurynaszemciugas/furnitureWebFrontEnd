@@ -9,6 +9,7 @@ import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.Stock;
 import com.example.demo.Services.Material.MaterialService;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
@@ -49,12 +50,14 @@ public class MaterialGrid {
     Scraper scraper;
 
 
-    Consumer<String> updateStock;
-    Consumer<String> changeDeliveryDate;
-    Consumer<String> viewMaterialMovement;
 
-    Long addOrRemove = 0L;
+    Long addOrRemove = 1L;
     Long newValue = 0L;
+
+    // realoding works like thos there is dialogmemory which stores every dialog main dialog created it can be 30 at max and min of 5 if updated inside the main page the http will update the page that will cause this page to keep the memory but remake the grid than openthedialog will store the id which
+    // dialog needs to be open it opens it
+    Map<Long,Dialog> dialogMemory = new HashMap<>();
+    Long openTheDialog = 0L;
 
 
     public MaterialGrid(CommonComponents commonComponents, Common common,MaterialService materialService,View view,Scraper scraper) {
@@ -68,6 +71,13 @@ public class MaterialGrid {
     }
 
     public VerticalLayout gridHolder(List<MaterialBriefDto> materiaData){
+
+
+        for (var dialog : dialogMemory.values()) {
+            dialog.close();
+        }
+
+        dialogMemory.clear();
 
         VerticalLayout vv = new VerticalLayout();
         vv.addClassName("smooth-panel");
@@ -273,8 +283,12 @@ public class MaterialGrid {
 
 
 
+
             Dialog dialog = new Dialog();
             dialog.setWidth("1000px");
+
+
+
 
 
             Button openDialog = new Button("Ff",ee-> dialog.open());
@@ -339,17 +353,17 @@ public class MaterialGrid {
             );
 
 
-            HorizontalLayout updateStockMaterial = quickActionCrafter(VaadinIcon.CUBE,"Update stock","Add or remove material stock","Update");
+            HorizontalLayout updateStockMaterial = quickActionCrafter(VaadinIcon.CUBE,"Update stock","Add or remove material stock");
             updateStockMaterial.addClickListener(bt->{
                 updateStock(e);
             });
 
-            HorizontalLayout changeDeliveryDate = quickActionCrafter(VaadinIcon.CALENDAR,"Change delivery date","set a new estimated delivery date","Set date");
+            HorizontalLayout changeDeliveryDate = quickActionCrafter(VaadinIcon.CALENDAR,"Change delivery date","set a new estimated delivery date");
             changeDeliveryDate.addClickListener(bt->{
 
             });
 
-            HorizontalLayout viewStockHistory = quickActionCrafter(VaadinIcon.CLOCK,"View stock history","See all stock changes and movement","View");
+            HorizontalLayout viewStockHistory = quickActionCrafter(VaadinIcon.CLOCK,"View stock history","See all stock changes and movement");
             viewStockHistory.addClickListener(bt->{
 
             });
@@ -358,6 +372,7 @@ public class MaterialGrid {
             VerticalLayout quickActions = new VerticalLayout();
             quickActions.setPadding(false);
             quickActions.add(
+                    commonComponents.spanCrafter("Quick Actions","activityFeed-name"),
                     updateStockMaterial,
                     changeDeliveryDate,
                     viewStockHistory
@@ -409,6 +424,12 @@ public class MaterialGrid {
             if(e.getActiveInactive().equals(ActiveInactive.INACTIVE)){
                 deleteMaterial.setEnabled(false);
                 deleteMaterial.addClassName("island-disabled");
+                updateStockMaterial.addClassName("island-disabled");
+                updateStockMaterial.setEnabled(false);
+                changeDeliveryDate.addClassName("island-disabled");
+                changeDeliveryDate.setEnabled(false);
+
+
             }
 
 
@@ -437,12 +458,15 @@ public class MaterialGrid {
             );
 
 
+            dialogMemory.put(e.getId(),dialog);
 
-            setUpdateStock(updateStock->{
 
-                updateStock(e);
+            if(openTheDialog.equals(e.getId())){
+                dialogMemory.get(e.getId()).open();
+            }
 
-            });
+
+
 
 
             return openDialog;
@@ -471,7 +495,8 @@ public class MaterialGrid {
         main.getStyle().setGap("20px");
 
         Button close = new Button("Close", ee-> dialog.close());
-        Button updateStock = new Button("Update Stock");
+        Button updateStock = new Button("Update stock");
+        updateStock.addThemeVariants(ButtonVariant.PRIMARY);
 
 
 
@@ -548,13 +573,15 @@ public class MaterialGrid {
         actionDisplay.setWidthFull();
 
 
-
         Button addStock = new Button("Add stock", commonComponents.iconCrafter(VaadinIcon.PLUS,"20px","royalblue"));
+        addStock.addClassNames("transparent-button","active");
 
 
 
         Button removeStock = new Button("Remove stock", commonComponents.iconCrafter(VaadinIcon.MINUS,"20px","royalblue"));
+        removeStock.addClassName("transparent-button");
 
+        List<Button> buttons = List.of(addStock,removeStock);
 
 
         actionDisplay.add(
@@ -599,6 +626,13 @@ public class MaterialGrid {
 
             addAmount.setValue(value + 1);
             addAmount.setValue(value);
+
+
+            for (var s : buttons){
+                s.removeClassName("active");
+            }
+            removeStock.addClassName("active");
+
         });
         addStock.addClickListener(ee->{
             addOrRemove = 1L;
@@ -607,6 +641,12 @@ public class MaterialGrid {
 
             addAmount.setValue(value + 1);
             addAmount.setValue(value);
+
+            for (var s : buttons){
+                s.removeClassName("active");
+            }
+            addStock.addClassName("active");
+
         });
 
         addAmount.addValueChangeListener(ee->{
@@ -641,7 +681,7 @@ public class MaterialGrid {
              newValue = e.getAmountLeft() + (addAmount.getValue()) * addOrRemove;
 
             newStock.add(
-                    commonComponents.spanCrafter(String.format("%d %s",e.getAmountLeft() + (addAmount.getValue()),e.getUnit()),"activityFeed-name"),
+                    commonComponents.spanCrafter(String.format("%d %s",newValue,e.getUnit()),"activityFeed-name"),
                     commonComponents.spanCrafter(String.format("%d %s %d %s %d",e.getAmountLeft(),operator,addAmount.getValue(),"=",newValue,e.getUnit()) ,"stat-description")
 
             );
@@ -686,11 +726,24 @@ public class MaterialGrid {
 
 
         updateStock.addClickListener(ew->{
-            if(newValue < 0){
+            if(newValue < 0 || newValue == 0){
                 System.out.println("No");
             }
             else {
-                System.out.println(newValue);
+
+                Long value = addAmount.getValue() * addOrRemove;
+
+                materialService.updateMaterialStock(e.getId(),value);
+                dialog.close();
+
+                openTheDialog = e.getId();
+
+                Dialog dialog1 = dialogMemory.get(e.getId());
+                dialog1.add(
+                        common.loadingOverlay("Reloading data", UI.getCurrent())
+                );
+
+
             }
         });
 
@@ -806,12 +859,21 @@ public class MaterialGrid {
 
 
 
-    public HorizontalLayout quickActionCrafter(VaadinIcon icon, String name, String desc, String buttonName){
+    public HorizontalLayout quickActionCrafter(VaadinIcon icon, String name, String desc){
         HorizontalLayout h = new HorizontalLayout();
         h.setAlignItems(FlexComponent.Alignment.CENTER);
         h.setWidthFull();
-        h.addClassName("island");
+        h.addClassName("island-hover");
         h.addClassName("layout-flex");
+        h.getStyle().set("position","relative");
+
+        Icon pressIndicator = commonComponents.iconCrafter(VaadinIcon.ANGLE_RIGHT,"25px","grey");
+        pressIndicator.getStyle().set("position","absolute").set("right","10px").set("top","40%");
+
+        h.add(
+                pressIndicator
+        );
+
 
         VerticalLayout iconHolder = new VerticalLayout();
         iconHolder.setHeight("60px");
@@ -824,15 +886,13 @@ public class MaterialGrid {
         iconHolder.getStyle().set("background-color","rgba(59, 130, 246, 0.18)");
         iconHolder.add(commonComponents.iconCrafter(icon,"30px","Royalblue"));
 
-        Button universalButton = new Button(buttonName);
 
 
         h.add(
                 iconHolder,
                 new Div(commonComponents.spanCrafter(name,"stat-example"),
                         commonComponents.spanCrafter(desc,"stat-description")),
-                commonComponents.spaceFiller(),
-                universalButton
+                commonComponents.spaceFiller()
         );
 
 
