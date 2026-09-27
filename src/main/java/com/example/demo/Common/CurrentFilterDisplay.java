@@ -59,6 +59,9 @@ public class CurrentFilterDisplay {
     }
 
 
+    // =================================================================
+    //   Add filters into the map list
+    // =================================================================
     public <T> void addFilter(String filterName, T filterValue, String referenceName, T filterData, T nullValue){
 
         if(filterValue == null){
@@ -103,6 +106,9 @@ public class CurrentFilterDisplay {
 
     }
 
+    // =================================================================
+    //   Checks the map list if there is no null values
+    // =================================================================
     public <T> void checkIfValueIsNullValue(String filterName, T nullValue, T filterData){
 
         System.out.println("checked");
@@ -132,6 +138,9 @@ public class CurrentFilterDisplay {
         }
     }
 
+    // =================================================================
+    //   Creates the layout of the filter and adds delete option and requests refresh if X is pressed
+    // =================================================================
     public <T,S> HorizontalLayout filterExisting(String filterName,FilterMeta filterMeta,S filterData){
 
         boolean forbidden = false;
@@ -217,6 +226,10 @@ public class CurrentFilterDisplay {
 
     }
 
+
+    // =================================================================
+    //   Provides a filter layout for the page
+    // =================================================================
     public VerticalLayout getFilters(){
 
 
@@ -230,6 +243,9 @@ public class CurrentFilterDisplay {
 
 
 
+    // =================================================================
+    //   Set saved filter data to the components it happens once when page is loaded or reloaded
+    // =================================================================
     @SneakyThrows
     public <S, T> void setComponentValue(
             String referenceName,
@@ -269,6 +285,9 @@ public class CurrentFilterDisplay {
 //    }
 
 
+    // =================================================================
+    //   This is used when button combobox datepicker whatever is pressed it replaces old value with new if value is null it removes it its only for filter showing
+    // =================================================================
     @SneakyThrows
     public <T,S> void filterSetter(T getValue, T ifNull, Object otherNull, S filterDTO, String referenceName, Consumer<T> consumer){
 
@@ -313,7 +332,9 @@ public class CurrentFilterDisplay {
     }
 
 
-
+    // =================================================================
+    //   preload data give it the saved filters from the session and build the filter display the saved values to the inputs go by setcomponentvalue
+    // =================================================================
     @SneakyThrows
     public <T> void preLoadFilters(Class<T> tClass, String sessionName){
 
@@ -347,7 +368,6 @@ public class CurrentFilterDisplay {
         }
 
     }
-
 
 
 
