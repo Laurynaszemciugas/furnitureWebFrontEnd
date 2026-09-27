@@ -512,6 +512,25 @@ public class CommonComponents {
 
 
 
+    public VerticalLayout itemInsideTheBox(VaadinIcon icon, String color, String backgroundColor){
+
+        VerticalLayout iconHolder = new VerticalLayout();
+        iconHolder.setHeight("60px");
+        iconHolder.setWidth("70px");
+        iconHolder.getStyle().setBorderRadius("20px");
+        iconHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        iconHolder.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        iconHolder.getStyle().set("background-color",backgroundColor);
+        iconHolder.add(iconCrafter(icon,"30px",color));
+
+
+        return iconHolder;
+
+    }
+
+
+
 
 
 }

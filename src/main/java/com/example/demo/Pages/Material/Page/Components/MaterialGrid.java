@@ -8,12 +8,14 @@ import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.Stock;
+import com.example.demo.Pages.DashBoard.Components.QuickAction;
 import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -33,7 +35,9 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.dom.Style;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -60,6 +64,9 @@ public class MaterialGrid {
     Long openTheDialog = 0L;
 
 
+    LocalDate currentDeliveryDate = null;
+
+
     public MaterialGrid(CommonComponents commonComponents, Common common,MaterialService materialService,View view,Scraper scraper) {
         this.commonComponents = commonComponents;
         this.common = common;
@@ -69,6 +76,69 @@ public class MaterialGrid {
         this.scraper = scraper;
 
     }
+
+
+    public Button testForGridRemoval(Grid grid, String... columnsList ){
+
+
+        List<String> columns = List.of(columnsList);
+
+        Button target = new Button("Test");
+
+        Popover popover = new Popover();
+        popover.setModal(true);
+        popover.setBackdropVisible(true);
+        popover.setPosition(PopoverPosition.BOTTOM_END);
+        popover.setTarget(target);
+
+
+        VerticalLayout v = new VerticalLayout();
+
+        Button showAll = new Button("Show all");
+        Button reset = new Button("Reset");
+
+
+        CheckboxGroup<String> group = new CheckboxGroup<>();
+        group.setItems(columns);
+        group.addThemeVariants(CheckboxGroupVariant.LUMO_VERTICAL);
+
+        Set<String> defaultColumns = Set.of("Material", "Type", "Description",
+                "Status");
+        group.setValue(defaultColumns);
+
+
+        group.addValueChangeListener((e) -> {
+
+
+            for(var s : columns){
+                grid.getColumnByKey(s).setVisible(e.getValue().contains(s));
+            }
+
+
+        });
+
+        reset.addClickListener(e->{
+            group.setValue(defaultColumns);
+        });
+
+        showAll.addClickListener(e->{
+            group.setValue(new HashSet<>(columns));
+        });
+
+        v.add(
+                group,
+                reset,
+                showAll
+        );
+
+        popover.add(
+                v
+        );
+
+
+        return target;
+    }
+
 
     public VerticalLayout gridHolder(List<MaterialBriefDto> materiaData){
 
@@ -360,7 +430,7 @@ public class MaterialGrid {
 
             HorizontalLayout changeDeliveryDate = quickActionCrafter(VaadinIcon.CALENDAR,"Change delivery date","set a new estimated delivery date");
             changeDeliveryDate.addClickListener(bt->{
-
+                changeDeliveryDate();
             });
 
             HorizontalLayout viewStockHistory = quickActionCrafter(VaadinIcon.CLOCK,"View stock history","See all stock changes and movement");
@@ -751,68 +821,156 @@ public class MaterialGrid {
 
     }
 
+    public void changeDeliveryDate(){
 
-    public Button testForGridRemoval(Grid grid, String... columnsList ){
+        Dialog dialog = new Dialog();
+        dialog.setWidth("350px");
+
+        VerticalLayout main = new VerticalLayout();
+        main.setPadding(false);
 
 
-        List<String> columns = List.of(columnsList);
+        DatePicker datePicker = new DatePicker("Select custom date");
+        datePicker.setValue(LocalDate.now());
+        datePicker.setWidthFull();
+        currentDeliveryDate = datePicker.getValue();
 
-        Button target = new Button("Test");
-
-        Popover popover = new Popover();
-        popover.setModal(true);
-        popover.setBackdropVisible(true);
-        popover.setPosition(PopoverPosition.BOTTOM_END);
-        popover.setTarget(target);
+        Span currentDeliveryDateSpan = commonComponents.spanCrafterWordNoHide(currentDeliveryDate.toString(),"stat-description");
+        Span inDays = commonComponents.spanCrafterWordNoHide(String.format("in %d days", ChronoUnit.DAYS.between(currentDeliveryDate,LocalDate.now())),"stat-description");
 
 
         VerticalLayout v = new VerticalLayout();
-
-        Button showAll = new Button("Show all");
-        Button reset = new Button("Reset");
-
-
-        CheckboxGroup<String> group = new CheckboxGroup<>();
-        group.setItems(columns);
-        group.addThemeVariants(CheckboxGroupVariant.LUMO_VERTICAL);
-
-        Set<String> defaultColumns = Set.of("Material", "Type", "Description",
-                "Status");
-        group.setValue(defaultColumns);
-
-
-        group.addValueChangeListener((e) -> {
-
-
-            for(var s : columns){
-                grid.getColumnByKey(s).setVisible(e.getValue().contains(s));
-            }
-
-
-        });
-
-        reset.addClickListener(e->{
-           group.setValue(defaultColumns);
-        });
-
-        showAll.addClickListener(e->{
-           group.setValue(new HashSet<>(columns));
-        });
-
+        v.setSpacing(false);
         v.add(
-                group,
-                reset,
-                showAll
+                commonComponents.spanCrafterWordNoHide("Current delivery date","stat-example"),
+                currentDeliveryDateSpan,
+                inDays
         );
 
-        popover.add(
+        HorizontalLayout currentlyDate = new HorizontalLayout();
+        currentlyDate.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        currentlyDate.setAlignItems(FlexComponent.Alignment.CENTER);
+        currentlyDate.addClassName("island");
+        currentlyDate.setWidthFull();
+
+
+        currentlyDate.add(
+                commonComponents.itemInsideTheBox(VaadinIcon.TRUCK,"RoyalBlue","rgba(59, 130, 246, 0.18)"),
                 v
         );
 
 
-        return target;
+
+
+
+
+
+
+        Span threeDate = commonComponents.spanCrafter(currentDeliveryDate.plusDays(3).toString(), "stat-description");
+        Span sevenDate = commonComponents.spanCrafter(currentDeliveryDate.plusDays(7).toString(), "stat-description");
+        Span fourteenDate = commonComponents.spanCrafter(currentDeliveryDate.plusDays(14).toString(), "stat-description");
+        Span thirtyDate = commonComponents.spanCrafter(currentDeliveryDate.plusDays(30).toString(), "stat-description");
+
+
+        datePicker.addValueChangeListener(e -> {
+
+            currentDeliveryDate = e.getValue();
+
+            threeDate.setText(currentDeliveryDate.plusDays(3).toString());
+            sevenDate.setText(currentDeliveryDate.plusDays(7).toString());
+            fourteenDate.setText(currentDeliveryDate.plusDays(14).toString());
+            thirtyDate.setText(currentDeliveryDate.plusDays(30).toString());
+            currentDeliveryDateSpan.setText(e.getValue().toString());
+            inDays.setText(String.format("in %d days", ChronoUnit.DAYS.between(LocalDate.now(),currentDeliveryDate)));
+        });
+
+
+
+
+
+        Button threeButton = new Button(buttonOverlay(3L,threeDate));
+        threeButton.addClickListener(e->{
+           LocalDate date = datePicker.getValue();
+            date = date.plusDays(3);
+
+           datePicker.setValue(date);
+        });
+        threeButton.setWidthFull();
+
+        Button sevenButton = new Button(buttonOverlay(7L,sevenDate));
+        sevenButton.setWidthFull();
+        sevenButton.addClickListener(e->{
+            LocalDate date = datePicker.getValue();
+            date = date.plusDays(7);
+            datePicker.setValue(date);
+        });
+
+        Button fourtheenButton = new Button(buttonOverlay(14L,fourteenDate));
+        fourtheenButton.setWidthFull();
+        fourtheenButton.addClickListener(e->{
+            LocalDate date = datePicker.getValue();
+            date = date.plusDays(14);
+            datePicker.setValue(date);
+        });
+
+        Button thirtyButton = new Button(buttonOverlay(30L,thirtyDate));
+        thirtyButton.setWidthFull();
+        thirtyButton.addClickListener(e->{
+            LocalDate date = datePicker.getValue();
+            date = date.plusDays(30);
+            datePicker.setValue(date);
+        });
+
+
+
+        VerticalLayout quickActions = new VerticalLayout();
+        quickActions.setPadding(false);
+        quickActions.add(
+                commonComponents.spanCrafter("Quick options","stat-example"),
+                threeButton,
+                sevenButton,
+                fourtheenButton,
+                thirtyButton
+
+        );
+
+
+
+
+
+
+
+
+
+
+        main.add(
+                currentlyDate,
+                quickActions,
+                datePicker
+        );
+
+        dialog.add(
+                main
+        );
+
+
+        dialog.open();
     }
 
+
+    public HorizontalLayout buttonOverlay(Long days,Span span){
+        HorizontalLayout leftSide = new HorizontalLayout();
+        leftSide.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        leftSide.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        leftSide.add(
+                commonComponents.iconCrafter(VaadinIcon.PLUS,"25px","Royalblue"),
+                commonComponents.spanCrafter( days + " days","stat-example"),
+                span
+        );
+
+        return leftSide;
+    }
 
 
     public VerticalLayout specsOfTheMaterial(MaterialBriefDto mat){
@@ -875,21 +1033,10 @@ public class MaterialGrid {
         );
 
 
-        VerticalLayout iconHolder = new VerticalLayout();
-        iconHolder.setHeight("60px");
-        iconHolder.setWidth("70px");
-        iconHolder.getStyle().setBorderRadius("20px");
-        iconHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        iconHolder.setAlignItems(FlexComponent.Alignment.CENTER);
-
-
-        iconHolder.getStyle().set("background-color","rgba(59, 130, 246, 0.18)");
-        iconHolder.add(commonComponents.iconCrafter(icon,"30px","Royalblue"));
-
 
 
         h.add(
-                iconHolder,
+                commonComponents.itemInsideTheBox(icon,"RoyalBlue","rgba(59, 130, 246, 0.18)"),
                 new Div(commonComponents.spanCrafter(name,"stat-example"),
                         commonComponents.spanCrafter(desc,"stat-description")),
                 commonComponents.spaceFiller()
@@ -924,23 +1071,8 @@ public class MaterialGrid {
         }
 
 
-
-        VerticalLayout iconHolder = new VerticalLayout();
-        iconHolder.setHeight("60px");
-        iconHolder.setWidth("70px");
-        iconHolder.getStyle().setBorderRadius("20px");
-        iconHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        iconHolder.setAlignItems(FlexComponent.Alignment.CENTER);
-
-
-        iconHolder.getStyle().set("background-color",backgroundColor);
-        iconHolder.add(commonComponents.iconCrafter(icon,"30px",allColor));
-
-
-
-
         h.add(
-                iconHolder,
+                commonComponents.itemInsideTheBox(icon,allColor,backgroundColor),
                 new Div(commonComponents.spanCrafter(name,"stat-example"),
                         commonComponents.spanCrafterWordNoHide(desc,"stat-description")),
                 pressIndicator
@@ -951,103 +1083,7 @@ public class MaterialGrid {
         return h;
     }
 
+
+
+
 }
-//Button target = new Button(commonComponents.iconCrafter(VaadinIcon.ELLIPSIS_DOTS_V,"30px","Blue"));
-//            target.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
-//            target.setAriaLabel("Material actions");
-//
-//
-//Popover popover = new Popover();
-//            popover.setTarget(target);
-//            popover.setWidth("250px");
-//            popover.setModal(true);
-//            popover.addThemeVariants(PopoverVariant.ARROW);
-//
-//
-//Span title = new Span("Material actions");
-//            title.getStyle()
-//                    .set("font-weight", "600")
-//                    .set("font-size", "var(--lumo-font-size-m)");
-//
-//Span materialName = new Span(e.getName());
-//            materialName.getStyle()
-//                    .set("font-size", "var(--lumo-font-size-s)")
-//                    .set("color", "var(--lumo-secondary-text-color)")
-//                    .set("margin-top", "2px");
-//
-//VerticalLayout header = new VerticalLayout(
-//        title,
-//        materialName
-//);
-//
-//            header.setSpacing(false);
-//
-//
-//HorizontalLayout h = new HorizontalLayout();
-//Button edit = commonComponents.buttonThemeAndIconNoNavigate("Edit material", ButtonVariant.LUMO_TERTIARY, VaadinIcon.PENCIL,"BLUE");
-//            edit.setWidthFull();
-//            edit.getStyle().set("justify-content", "flex-start");
-//
-//
-//            h.add(
-//        target
-//
-//        );
-//
-//            edit.addClickListener(editValue->{
-//
-//        common.customNavigate("MaterialEdit/" +e.getId());
-//        });
-//
-//
-//Button delete = commonComponents.buttonThemeAndIconNoNavigate("Delete material", ButtonVariant.LUMO_TERTIARY, VaadinIcon.TRASH,"Red");
-//            delete.setWidthFull();
-//            delete.getStyle().set("justify-content", "flex-start");
-//
-//
-//
-//            if(e.getActiveInactive().equals(ActiveInactive.INACTIVE)){
-//        delete.setVisible(false);
-//            }
-//
-//                    delete.addClickListener(deleteValue->{
-//        common.deleteConfirmation(e.getName());
-//        common.setBooleanConsumer(canDelete->{
-//        if(canDelete){
-//        materialService.removeProduct(e.getId());
-//        }
-//        });
-//        });
-//
-//Button checkInternet = commonComponents.buttonThemeAndIconNoNavigate("Search online", ButtonVariant.LUMO_TERTIARY, VaadinIcon.GLOBE_WIRE,"BLUE");
-//            checkInternet.setWidthFull();
-//            checkInternet.getStyle().set("justify-content", "flex-start");
-//
-//            checkInternet.addClickListener(ew->{
-//        view.layout(e.getName());
-//        });
-//
-//
-//VerticalLayout v = new VerticalLayout();
-//            v.add(
-//        commonComponents.spanCrafter("Material actions","stat-example"),
-//                    commonComponents.spanCrafter(e.getName(),"stat-description")
-//        );
-//        v.getStyle().setGap("0px");
-//
-//VerticalLayout actions = new VerticalLayout(
-//        edit,
-//        delete,
-//        checkInternet
-//);
-//
-//            actions.setSpacing(false);
-//            actions.setWidthFull();
-//
-//            popover.add(
-//        header,
-//        actions
-//        );
-//
-//
-//            return  h;
