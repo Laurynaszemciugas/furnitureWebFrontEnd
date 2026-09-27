@@ -530,6 +530,22 @@ public class CommonComponents {
     }
 
 
+    public VerticalLayout descriptionCrafter(String mainName, String desc){
+
+        VerticalLayout firstLayer = new VerticalLayout();
+        firstLayer.setPadding(false);
+        firstLayer.setSpacing(false);
+        firstLayer.add(
+                spanCrafter(mainName,"activityFeed-name"),
+                spanCrafter(desc,"stat-description")
+        );
+
+
+        return firstLayer;
+
+    }
+
+
 
 
 

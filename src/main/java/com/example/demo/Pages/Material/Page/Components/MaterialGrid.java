@@ -430,7 +430,7 @@ public class MaterialGrid {
 
             HorizontalLayout changeDeliveryDate = quickActionCrafter(VaadinIcon.CALENDAR,"Change delivery date","set a new estimated delivery date");
             changeDeliveryDate.addClickListener(bt->{
-                changeDeliveryDate();
+                changeDeliveryDate(e);
             });
 
             HorizontalLayout viewStockHistory = quickActionCrafter(VaadinIcon.CLOCK,"View stock history","See all stock changes and movement");
@@ -572,15 +572,6 @@ public class MaterialGrid {
 
 
         dialog.getFooter().add(close,updateStock);
-
-        VerticalLayout firstLayer = new VerticalLayout();
-        firstLayer.setPadding(false);
-        firstLayer.setSpacing(false);
-        firstLayer.add(
-                commonComponents.spanCrafter("Update stock","activityFeed-name"),
-                commonComponents.spanCrafter("Adjust the stock level for this material","stat-description")
-        );
-
 
         HorizontalLayout imageText = new HorizontalLayout();
 
@@ -780,7 +771,7 @@ public class MaterialGrid {
 
 
         main.add(
-                firstLayer,
+                commonComponents.descriptionCrafter("Update stock","Adjust the stock level for this material"),
                 imageText,
                 currentStockHolder,
                 actionHolder,
@@ -821,10 +812,28 @@ public class MaterialGrid {
 
     }
 
-    public void changeDeliveryDate(){
+    public void changeDeliveryDate(MaterialBriefDto eee){
 
         Dialog dialog = new Dialog();
         dialog.setWidth("350px");
+
+
+        Button close = new Button("Close");
+        Button update = new Button("Set new date");
+        update.addThemeVariants(ButtonVariant.PRIMARY);
+
+        close.addClickListener(ee->{
+            dialog.close();
+        });
+
+        update.addClickListener(ee->{
+
+        });
+
+        dialog.getFooter().add(
+                close,
+                update
+        );
 
         VerticalLayout main = new VerticalLayout();
         main.setPadding(false);
@@ -944,6 +953,7 @@ public class MaterialGrid {
 
 
         main.add(
+                commonComponents.descriptionCrafter("Change delivery date","set a new estimated delivery date for this material"),
                 currentlyDate,
                 quickActions,
                 datePicker

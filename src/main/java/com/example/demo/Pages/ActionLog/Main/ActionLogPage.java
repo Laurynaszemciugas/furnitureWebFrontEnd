@@ -106,7 +106,7 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
         filterData = sessionCrafter.extractSession("actionLogsPageFilters",ActionLogFilterHolder.class) == null ? new ActionLogFilterHolder() :
                 sessionCrafter.extractSession("actionLogsPageFilters",ActionLogFilterHolder.class);
 
-        actionLogFilters.setFilterData(filterData);
+        //actionLogFilters.setFilterData(filterData);
         currentFilterDisplay.preLoadFilters(ActionLogFilterHolder.class,"actionLogsPageFilters");
 
 
@@ -201,7 +201,7 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
         filterMemory.removeAll();
         filterMemory.add(
                 actionLogsBriefExplanation.briefExplanation(),
-                actionLogFilters.filters()
+                actionLogFilters.filters(filterData)
 
         );
 

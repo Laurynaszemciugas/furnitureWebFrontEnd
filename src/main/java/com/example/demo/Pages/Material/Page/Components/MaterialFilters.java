@@ -63,7 +63,11 @@ public class MaterialFilters {
         this.currentFilterDisplay = currentFilterDisplay;
     }
 
-    public VerticalLayout filters(){
+    public VerticalLayout filters(MaterialFilterHolder filterSaved){
+
+
+        filterData = filterSaved;
+
         VerticalLayout v = new VerticalLayout();
 
         if(firstLoad){
@@ -262,7 +266,7 @@ public class MaterialFilters {
         activeInactiveComboBox.setItemLabelGenerator(ActiveInactive::getGetDisplayNames);
         currentFilterDisplay.setComponentValue("activeInactive",filterData,activeInactiveComboBox);
         activeInactiveComboBox.addValueChangeListener(e->{
-            currentFilterDisplay.filterSetter(e.getValue(),ActiveInactive.ALL,null,filterData,"activeInactive",activeInactiveConsumer);
+            currentFilterDisplay.filterSetter(e.getValue(),ActiveInactive.ACTIVE,null,filterData,"activeInactive",activeInactiveConsumer);
         });
 
 

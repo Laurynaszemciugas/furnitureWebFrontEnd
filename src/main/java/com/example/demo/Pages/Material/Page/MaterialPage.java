@@ -222,7 +222,7 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
                 materialMiniStats.miniStatHolder(
                         materialService.getMiniStats(common.dateCrafter(0,0,0,0,true),
                                 common.dateCrafter(0,1,1,0,true))),
-                materialFilters.filters()
+                materialFilters.filters(filterData)
 
         );
 

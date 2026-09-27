@@ -50,9 +50,10 @@ public class ActionLogFilters {
 
     }
 
-    public VerticalLayout filters(){
+    public VerticalLayout filters(ActionLogFilterHolder filterSaved){
 
 
+        filterData = filterSaved;
 
         VerticalLayout v = new VerticalLayout();
         v.setPadding(false);
@@ -128,6 +129,7 @@ public class ActionLogFilters {
 
         clear.addClickListener(e->{
            clearConsumer.accept("ba");
+            currentFilterDisplay.clearAllData();
         });
 
         h.add(
