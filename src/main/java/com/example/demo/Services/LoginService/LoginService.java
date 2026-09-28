@@ -6,6 +6,8 @@ import com.example.demo.ControllerModels.CommonDtos.User;
 import com.example.demo.ControllerModels.CommonDtos.UserSettings;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
+import com.example.demo.Pages.Orders.Page.OrdersPage;
+import com.vaadin.flow.component.UI;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
@@ -33,7 +35,7 @@ public class LoginService {
 
 
             String jwt  = httpCallLogic.checkResponseNoGetValue(
-                    httpCallLogic.HttpCall("auth/signin", HttpMethod.POST, user, ErrorResponse.class, false),"DashBoard");
+                    httpCallLogic.HttpCall("auth/signin", HttpMethod.POST, user, ErrorResponse.class, false),null);
 
 
             if(jwt != null){
@@ -55,6 +57,24 @@ public class LoginService {
 
         sessionCrafter.createSession("settings",userSettings);
 
+
+        if(userSettings != null){
+
+
+            switch (userSettings.getPageStart()){
+                case ORDERS -> UI.getCurrent().navigate("Orders");
+                case REPORTS -> UI.getCurrent().navigate("Reports");
+                case PRODUCTS -> UI.getCurrent().navigate("Products/1");
+                case SETTINGS -> UI.getCurrent().navigate("Settings");
+                case DASHBOARD -> UI.getCurrent().navigate("DashBoard");
+                case EMPLOYEES -> UI.getCurrent().navigate("Employees");
+                case MATERIALS -> UI.getCurrent().navigate("Materials");
+                case ACTION_LOGS -> UI.getCurrent().navigate("Actions");
+                case null -> UI.getCurrent().navigate("DashBoard");
+
+            }
+
+        }
 
 
 

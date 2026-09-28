@@ -325,6 +325,10 @@ public class CurrentFilterDisplay {
 
     }
 
+
+    // =================================================================
+    //   Simple clear all filter view and make it invisible
+    // =================================================================
     public void clearAllData(){
         map.clear();
         h.removeAll();

@@ -4,7 +4,9 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.InternetScraper.Scraper;
 import com.example.demo.Common.Logic.InternetScraper.View;
+import com.example.demo.ControllerModels.Filter.Material.MaterialViewOnProductUsageFilter;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
+import com.example.demo.DTOS.RelatedProducts;
 import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.Stock;
@@ -318,6 +320,9 @@ public class MaterialGrid {
             Span span4 = commonComponents.spanCrafter(e.getMinThresh() == null ? "Unknown" : "Reserved: " + e.getReserved(),"stat-title");
 
 
+            if(e.getReserved() == null){
+                span4.setVisible(false);
+            }
 
 
 
@@ -474,7 +479,7 @@ public class MaterialGrid {
             viewRelatedProducts.setWidthFull();
 
             viewRelatedProducts.addClickListener(ee->{
-
+                connectedProducts(e);
             });
 
 
@@ -552,6 +557,28 @@ public class MaterialGrid {
         return vv;
     }
 
+
+
+    public void connectedProducts(MaterialBriefDto e){
+
+        Dialog dialog = new Dialog();
+
+        MaterialViewOnProductUsageFilter filterData = new MaterialViewOnProductUsageFilter();
+        filterData.setId(e.getId());
+
+        List<RelatedProducts> relatedProducts = materialService.getRelatedProductsAccordingToMaterial(filterData);
+
+        for(var s : relatedProducts) {
+            dialog.add(
+               new Span( s.getProductName())
+            );
+
+        }
+
+
+        dialog.open();
+
+    }
 
 
     public void updateStock(MaterialBriefDto e){
@@ -799,10 +826,7 @@ public class MaterialGrid {
 
                 openTheDialog = e.getId();
 
-                Dialog dialog1 = dialogMemory.get(e.getId());
-                dialog1.add(
-                        common.loadingOverlay("Reloading data", UI.getCurrent())
-                );
+                reloadDisplay();
 
 
             }
@@ -827,7 +851,10 @@ public class MaterialGrid {
         });
 
         update.addClickListener(ee->{
-
+            materialService.updateMaterialDeliveryDate(eee.getId(),currentDeliveryDate);
+            dialog.close();
+            openTheDialog = eee.getId();
+            reloadDisplay();
         });
 
         dialog.getFooter().add(
@@ -840,12 +867,12 @@ public class MaterialGrid {
 
 
         DatePicker datePicker = new DatePicker("Select custom date");
-        datePicker.setValue(LocalDate.now());
+        datePicker.setValue(eee.getDeliveryDate());
         datePicker.setWidthFull();
         currentDeliveryDate = datePicker.getValue();
 
         Span currentDeliveryDateSpan = commonComponents.spanCrafterWordNoHide(currentDeliveryDate.toString(),"stat-description");
-        Span inDays = commonComponents.spanCrafterWordNoHide(String.format("in %d days", ChronoUnit.DAYS.between(currentDeliveryDate,LocalDate.now())),"stat-description");
+        Span inDays = commonComponents.spanCrafterWordNoHide(String.format("in %s days", ChronoUnit.DAYS.between(LocalDate.now(),currentDeliveryDate) < 0 ? "Date cannot be before today" :ChronoUnit.DAYS.between(LocalDate.now(),currentDeliveryDate) ),"stat-description");
 
 
         VerticalLayout v = new VerticalLayout();
@@ -1094,6 +1121,12 @@ public class MaterialGrid {
     }
 
 
+    public void reloadDisplay(){
+        Dialog dialog1 = dialogMemory.get(openTheDialog);
+        dialog1.add(
+                common.loadingOverlay("Reloading data", UI.getCurrent())
+        );
+    }
 
 
 }

@@ -320,6 +320,8 @@ public class ProfileAccount {
                 ? personalPrefrences.getLanguage()
                 : Language.EN;
 
+        PageStart pageStartGot = personalPrefrences.getPageStart() !=null ? personalPrefrences.getPageStart() : PageStart.DASHBOARD;
+
         boolean activeNotificationGot = personalPrefrences.isActiveNotification();
 
 
@@ -339,13 +341,19 @@ public class ProfileAccount {
         Checkbox notificationsToGmail = new Checkbox("Receive notification to gmail");
         notificationsToGmail.setValue(activeNotificationGot);
 
+        ComboBox<PageStart> pageStart = new ComboBox<>("On login enter");
+        pageStart.setItems(PageStart.values());
+        pageStart.setValue(pageStartGot);
+
         FormLayout formLayout = new FormLayout();
 
         formLayout.add(
                 dateFormat,
                 timeZone,
                 language,
+                pageStart,
                 notificationsToGmail
+
         );
 
         Button button = new Button("Save changes");
@@ -371,6 +379,7 @@ public class ProfileAccount {
             userSettings.setDateFormat(dateFormat.getValue());
             userSettings.setReceiveGmail(notificationsToGmail.getValue());
             userSettings.setTimeZone(timeZone.getValue());
+            userSettings.setPageStart(pageStart.getValue());
 
             user.setUserSettingsList(userSettings);
 

@@ -9,12 +9,14 @@ import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialStock;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialUsageInfo;
 import com.example.demo.ControllerModels.DashBoard.MaterialLowNo;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
+import com.example.demo.ControllerModels.Filter.Material.MaterialViewOnProductUsageFilter;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
 import com.example.demo.ControllerModels.Material.MaterialInfo;
 import com.example.demo.ControllerModels.Orders.OrderReportPieChart;
 import com.example.demo.ControllerModels.StockMovement.StockMovementGrid;
 import com.example.demo.DTOS.ComboBoxMaterial;
+import com.example.demo.DTOS.RelatedProducts;
 import com.example.demo.Pages.Reports.Common.ReportMiniStatHolder;
 import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.DTO.MaterialLowStockGrid;
 import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.DTO.MaterialReportPieChart;
@@ -59,6 +61,26 @@ public class MaterialService {
 
         httpCallLogic.checkResponse(
                 httpCallLogic.HttpCall("quickMaterialActions/updateMaterialStock", HttpMethod.GET,String.format("%d/%d",materialId,newStock), ErrorResponse.class,true),"Materials",success,true);
+
+    }
+
+    @SneakyThrows
+    public void updateMaterialDeliveryDate(Long materialId, LocalDate newDelivery) {
+
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("quickMaterialActions/updateMaterialDeliveryDate", HttpMethod.GET,String.format("%d/%s",materialId,newDelivery), ErrorResponse.class,true),"Materials",success,true);
+
+    }
+
+
+    // ======================================================
+    // related prodcuts for the material main page quick action product view
+    //==========================================================
+    @SneakyThrows
+
+    public List<RelatedProducts> getRelatedProductsAccordingToMaterial(MaterialViewOnProductUsageFilter filterData) {
+
+        return Arrays.stream(httpCallLogic.HttpCall("material/getRelatedProductsAccordingToMaterial", HttpMethod.POST,filterData, RelatedProducts[].class,false)).toList();
 
     }
 

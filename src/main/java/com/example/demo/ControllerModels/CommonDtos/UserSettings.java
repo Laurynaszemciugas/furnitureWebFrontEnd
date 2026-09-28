@@ -1,10 +1,7 @@
 package com.example.demo.ControllerModels.CommonDtos;
 
 
-import com.example.demo.Enums.DateFormat;
-import com.example.demo.Enums.Language;
-import com.example.demo.Enums.OrderProcessing;
-import com.example.demo.Enums.TimeZone;
+import com.example.demo.Enums.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +31,8 @@ public class UserSettings {
     private String sidebarSize;
 
     private OrderProcessing orderProcessing;
+
+    private PageStart pageStart;
 
     private User user;
 

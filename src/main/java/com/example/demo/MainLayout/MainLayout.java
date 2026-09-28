@@ -5,6 +5,7 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.CommonDtos.UserSettings;
 import com.example.demo.Pages.Settings.Components.ApperanceTab;
+import com.example.demo.Services.LoginService.LoginService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -26,6 +27,8 @@ public class MainLayout extends AppLayout {
     CommonComponents commonComponents;
     Common common;
 
+    LoginService loginService;
+
 
     private VerticalLayout drawerSmall = new VerticalLayout();
     private VerticalLayout drawerLarge = new VerticalLayout();
@@ -36,9 +39,10 @@ public class MainLayout extends AppLayout {
 
 
 
-    public MainLayout(CommonComponents commonComponents, Common common) {
+    public MainLayout(CommonComponents commonComponents, Common common,LoginService loginService) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.loginService = loginService;
 
 
         this.sessionCrafter = new SessionCrafter();
@@ -66,20 +70,26 @@ public class MainLayout extends AppLayout {
 
     public void loadSettings(){
 
-        System.out.println("settings loading");
 
-        UserSettings userSettings = sessionCrafter.extractSession("settings", UserSettings.class);
 
-        System.out.println(userSettings.getSidebarSize());
-        System.out.println(userSettings.getAccent());
+        try {
+            UserSettings userSettings = sessionCrafter.extractSession("settings", UserSettings.class);
 
-        UI ui = sessionCrafter.extractSession("UI", UI.class);
 
-        ui.getElement().setAttribute("accent", userSettings.getAccent().toLowerCase());
+            System.out.println(userSettings.getSidebarSize());
+            System.out.println(userSettings.getAccent());
 
-        changeSidebar(userSettings.getSidebarSize());
+            UI ui = sessionCrafter.extractSession("UI", UI.class);
 
-        // also later make dark light theme
+            ui.getElement().setAttribute("accent", userSettings.getAccent().toLowerCase());
+
+            changeSidebar(userSettings.getSidebarSize());
+
+            // also later make dark light theme
+
+        } catch (Exception e) {
+            common.customNavigate("Login");
+        }
 
     }
 
