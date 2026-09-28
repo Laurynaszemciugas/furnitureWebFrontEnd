@@ -4,10 +4,12 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.InternetScraper.Scraper;
 import com.example.demo.Common.Logic.InternetScraper.View;
+import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.Filter.Material.MaterialViewOnProductUsageFilter;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
 import com.example.demo.DTOS.RelatedProducts;
 import com.example.demo.Enums.ActiveInactive;
+import com.example.demo.Enums.Category;
 import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.Stock;
 import com.example.demo.Pages.DashBoard.Components.QuickAction;
@@ -17,6 +19,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -33,6 +36,7 @@ import com.vaadin.flow.component.popover.Popover;
 import com.vaadin.flow.component.popover.PopoverPosition;
 import com.vaadin.flow.component.popover.PopoverVariant;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.dom.Style;
 import lombok.Setter;
@@ -69,6 +73,9 @@ public class MaterialGrid {
     LocalDate currentDeliveryDate = null;
 
 
+    Paganation paganation;
+    MaterialViewOnProductUsageFilter filterData = new MaterialViewOnProductUsageFilter();
+
     public MaterialGrid(CommonComponents commonComponents, Common common,MaterialService materialService,View view,Scraper scraper) {
         this.commonComponents = commonComponents;
         this.common = common;
@@ -76,6 +83,8 @@ public class MaterialGrid {
 
         this.view = view;
         this.scraper = scraper;
+
+        this.paganation = new Paganation();
 
     }
 
@@ -366,7 +375,12 @@ public class MaterialGrid {
 
 
 
-            Button openDialog = new Button("Ff",ee-> dialog.open());
+            Button openDialog = new Button("Actions");
+
+            openDialog.addClickListener(ee->{
+               dialog.open();
+                openTheDialog = e.getId();
+            });
 
             Button closeDialog = new Button("Close", close-> dialog.close());
             dialog.getFooter().add(closeDialog);
@@ -562,22 +576,195 @@ public class MaterialGrid {
     public void connectedProducts(MaterialBriefDto e){
 
         Dialog dialog = new Dialog();
+        dialog.setWidth("700px");
+        Button close = new Button("Back",ee-> dialog.close());
+        dialog.getFooter().add(close);
+
+        TextField prompt = new TextField("Search products");
+        prompt.getStyle().set("flex", "1 1 252px");
+        prompt.getStyle().set("max-width", "500px");
+        prompt.getStyle().set("min-width", "252px");
+
+        ComboBox<Category> category = new ComboBox<>("Category");
+        category.setItems(Category.values());
+        category.setItemLabelGenerator(Category::getDisplayName);
+        category.getStyle().set("flex", "1 1 252px");
+        category.getStyle().set("max-width", "200px");
+        category.getStyle().set("min-width", "252px");
+
+        HorizontalLayout filters = new HorizontalLayout();
+        filters.setWidthFull();
+        filters.add(
+                prompt,
+                category
+        );
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setWidthFull();
+        h.addClassName("layout-flex");
+
+        VerticalLayout main = new VerticalLayout();
+        main.setPadding(false);
+
+
+        prompt.addValueChangeListener(ee->{
+
+            h.removeAll();
+            main.removeAll();
+
+            filterData.setId(e.getId());
+            filterData.setPrompt(ee.getValue());
+            List<RelatedProducts> relatedProducts = materialService.getRelatedProductsAccordingToMaterial(filterData);
+            Long size = materialService.getRelatedProductsPages(filterData);
+
+            for(var s : relatedProducts) {
+                h.add(
+                        productCrafter(dialog,s.getId(),s.getImageUrl(),s.getProductName(),s.getProductCategory(),s.getAmountUsed())
+                );
+
+            }
+
+            main.add(
+                    commonComponents.descriptionCrafter("Related products","Products that use this material"),
+                    filters,
+                    h,
+                    paganation.buttonHolder(Math.toIntExact(size))
+            );
+
+
+        });
+
+
+        category.addValueChangeListener(ee->{
+
+            h.removeAll();
+            main.removeAll();
+
+            filterData.setId(e.getId());
+            filterData.setProductCategory(ee.getValue());
+            List<RelatedProducts> relatedProducts = materialService.getRelatedProductsAccordingToMaterial(filterData);
+            Long size = materialService.getRelatedProductsPages(filterData);
+
+            for(var s : relatedProducts) {
+                h.add(
+                        productCrafter(dialog,s.getId(),s.getImageUrl(),s.getProductName(),s.getProductCategory(),s.getAmountUsed())
+                );
+
+            }
+
+            main.add(
+                    commonComponents.descriptionCrafter("Related products","Products that use this material"),
+                    filters,
+                    h,
+                    paganation.buttonHolder(Math.toIntExact(size))
+            );
+
+
+        });
+
+
+        paganation.setOnPageChange(ee->{
+            h.removeAll();
+            main.removeAll();
+
+
+            filterData.setId(e.getId());
+            filterData.setPage(ee = ee - 1);
+            List<RelatedProducts> relatedProducts = materialService.getRelatedProductsAccordingToMaterial(filterData);
+            Long size = materialService.getRelatedProductsPages(filterData);
+
+            for(var s : relatedProducts) {
+                h.add(
+                        productCrafter(dialog,s.getId(),s.getImageUrl(),s.getProductName(),s.getProductCategory(),s.getAmountUsed())
+                );
+
+            }
+
+            main.add(
+                    commonComponents.descriptionCrafter("Related products","Products that use this material"),
+                    filters,
+                    h,
+                    paganation.buttonHolder(Math.toIntExact(size))
+            );
+        });
+
 
         MaterialViewOnProductUsageFilter filterData = new MaterialViewOnProductUsageFilter();
         filterData.setId(e.getId());
 
         List<RelatedProducts> relatedProducts = materialService.getRelatedProductsAccordingToMaterial(filterData);
+        Long size = materialService.getRelatedProductsPages(filterData);
+
+
+
 
         for(var s : relatedProducts) {
-            dialog.add(
-               new Span( s.getProductName())
+            h.add(
+               productCrafter(dialog,s.getId(),s.getImageUrl(),s.getProductName(),s.getProductCategory(),s.getAmountUsed())
             );
 
         }
 
 
+        main.add(
+                commonComponents.descriptionCrafter("Related products","Products that use this material"),
+                filters,
+                h,
+                paganation.buttonHolder(Math.toIntExact(size))
+        );
+
+        dialog.add(
+
+                main
+        );
+
+
         dialog.open();
 
+    }
+
+    public HorizontalLayout productCrafter(Dialog dialog,Long id,String url, String productName, Category category, Long amount){
+
+
+        Icon icon = commonComponents.iconCrafter(VaadinIcon.ANGLE_RIGHT,"25px","Grey");
+        icon.getStyle().set("position","absolute").set("right","10px").set("top","40%");
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.addClassName("island-hover");
+        h.getStyle().set("position","relative");
+
+        h.addClickListener(e->{
+           common.customNavigate("ProductsEdit/" + id);
+            dialog.close();
+           dialogMemory.get(openTheDialog).close();
+
+
+        });
+
+        h.getStyle().set("flex", "1 1 252px");
+        h.getStyle().set("max-width", "700px");
+        h.getStyle().set("min-width", "252px");
+
+        Image image = commonComponents.imageCrafter(url == null ? "No_picture.png" : url,"90px","90px","10px");
+
+        VerticalLayout v = new VerticalLayout();
+        v.setSpacing(false);
+        v.add(
+                commonComponents.spanCrafterWordNoHide(productName,"stat-example"),
+                commonComponents.spanCrafterWordNoHide(category.getDisplayName(),"stat-description"),
+                commonComponents.spanCrafterWordNoHide(String.format("%s %d","Amount used per unit",amount),"stat-description")
+
+        );
+
+
+        h.add(
+                icon,
+                image,
+                v
+        );
+
+
+        return h;
     }
 
 

@@ -84,6 +84,16 @@ public class MaterialService {
 
     }
 
+    @SneakyThrows
+
+    public Long getRelatedProductsPages(MaterialViewOnProductUsageFilter filterData) {
+
+        return httpCallLogic.HttpCall("material/getRelatedProductsPages", HttpMethod.POST,filterData, Long.class,false);
+
+    }
+
+
+
 
     @SneakyThrows
     public MiniStatHolder getMiniStats(LocalDate fromDate, LocalDate toDate) {
