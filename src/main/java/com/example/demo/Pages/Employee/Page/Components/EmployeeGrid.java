@@ -7,6 +7,7 @@ import com.example.demo.Enums.EmployeeAcIn;
 import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Image;
@@ -273,9 +274,12 @@ public class EmployeeGrid {
                });
             });
 
+            Button open = new Button("Actions", ew-> mainDialog(e));
+
             h.add(
                     delete,
-                    edit
+                    edit,
+                    open
 
             );
 
@@ -285,6 +289,53 @@ public class EmployeeGrid {
 
 
         return vv;
+    }
+
+
+    public void mainDialog(EmployeeBriefDto e){
+        Dialog dialog = new Dialog();
+
+        dialog.setWidth("1000px");
+
+        Image image = commonComponents.imageCrafter(e.getProfileImage() == null ? "No_picture.png" : e.getProfileImage(),"100px","100px","50%");
+
+        Span activity = commonComponents.spanCrafter(e.getEmployeeAcIn().getDisplayName(),"activityFeed-name");
+        activity.addClassName("stock-badge");
+        activity.getStyle().set("width", "fit-content");
+
+        switch (e.getEmployeeAcIn()) {
+            case ACTIVE -> activity.addClassName("stock-in");
+            case INACTIVE -> activity.addClassName("stock-out");
+        }
+
+
+        HorizontalLayout topHolder = new HorizontalLayout();
+        topHolder.setAlignItems(FlexComponent.Alignment.CENTER);
+        VerticalLayout extraData = new VerticalLayout();
+        extraData.setSpacing(false);
+
+        extraData.add(
+                commonComponents.spanCrafterWordNoHide(e.getFullName(),"stat-example"),
+                activity,
+                commonComponents.spanCrafterWordNoHide(e.getEmployeeCategory().getDisplayName() ,"stat-description"),
+                commonComponents.spanCrafterWordNoHide(String.format("Employed since %s",common.dateFormatter(e.getCreated())),"stat-description")
+        );
+
+        topHolder.add(
+                image,
+                extraData
+        );
+
+
+
+        dialog.add(
+                topHolder
+        );
+
+
+
+
+        dialog.open();
     }
 
 }

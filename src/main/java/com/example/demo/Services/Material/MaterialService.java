@@ -84,6 +84,18 @@ public class MaterialService {
 
     }
 
+
+    // ======================================================
+    // related prodcuts for the material main page quick action product view
+    //==========================================================
+    @SneakyThrows
+
+    public List<StockMovementGrid> getAllStockMovement(Long id) {
+
+        return Arrays.stream(httpCallLogic.HttpCall("stockMovement/getAllStockMovement", HttpMethod.GET,id, StockMovementGrid[].class,true)).toList();
+
+    }
+
     @SneakyThrows
 
     public Long getRelatedProductsPages(MaterialViewOnProductUsageFilter filterData) {

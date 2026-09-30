@@ -7,6 +7,7 @@ import com.example.demo.Common.Logic.InternetScraper.View;
 import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.Filter.Material.MaterialViewOnProductUsageFilter;
 import com.example.demo.ControllerModels.Material.MaterialBriefDto;
+import com.example.demo.ControllerModels.StockMovement.StockMovementGrid;
 import com.example.demo.DTOS.RelatedProducts;
 import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.Category;
@@ -454,7 +455,7 @@ public class MaterialGrid {
 
             HorizontalLayout viewStockHistory = quickActionCrafter(VaadinIcon.CLOCK,"View stock history","See all stock changes and movement");
             viewStockHistory.addClickListener(bt->{
-
+                viewStockHistory(e);
             });
 
 
@@ -571,6 +572,100 @@ public class MaterialGrid {
         return vv;
     }
 
+
+    public void viewStockHistory(MaterialBriefDto e){
+
+        List<StockMovementGrid> stockMovementGrids = materialService.getAllStockMovement(e.getId());
+
+        Grid<StockMovementGrid> grid = new Grid(StockMovementGrid.class,false);
+
+        grid.addComponentColumn(ee->{
+
+            return commonComponents.spanCrafter(ee.getBalance().toString(),"stat-example");
+
+        }).setAutoWidth(true).setHeader("Balance");
+
+        grid.addComponentColumn(ee->{
+
+            Span stock = commonComponents.spanCrafter(ee.getType().getDisplayName(),"activityFeed-name");
+            stock.addClassName("stock-badge");
+            stock.getStyle().set("width", "fit-content");
+
+            switch (ee.getType()) {
+                case IN -> stock.addClassName("stock-in");
+                case OUT -> stock.addClassName("stock-out");
+            }
+            return stock;
+
+        }).setAutoWidth(true).setHeader("Stock");
+
+        grid.addComponentColumn(ee->{
+
+            return commonComponents.spanCrafter(ee.getQty().toString(),"stat-example");
+
+        }).setAutoWidth(true).setHeader("Taken/Added");
+
+
+        grid.addComponentColumn(ee->{
+
+            return commonComponents.spanCrafter(common.dateFormatter(ee.getCreated()),"stat-example");
+
+        }).setAutoWidth(true).setHeader("Created");
+
+
+
+        grid.setItems(stockMovementGrids);
+
+        Dialog dialog = new Dialog();
+        dialog.setWidth("700px");
+        Button close = new Button("Back",ee-> dialog.close());
+        dialog.getFooter().add(close);
+
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setWidthFull();
+        h.addClassName("layout-flex");
+
+        VerticalLayout main = new VerticalLayout();
+        main.setPadding(false);
+
+
+
+
+
+
+
+
+        if(!stockMovementGrids.isEmpty()) {
+
+            h.add(
+                    grid
+            );
+
+        }
+        else{
+            h.add(
+                    commonComponents.noDataFound()
+            );
+        }
+
+
+        main.add(
+                commonComponents.descriptionCrafter("Stock history of " + e.getName(),"All material movement history"),
+                h
+        );
+
+
+
+        dialog.add(
+
+                main
+        );
+
+
+        dialog.open();
+
+    }
 
 
     public void connectedProducts(MaterialBriefDto e){
@@ -697,21 +792,32 @@ public class MaterialGrid {
 
 
 
+        if(!relatedProducts.isEmpty()) {
+            for (var s : relatedProducts) {
+                h.add(
+                        productCrafter(dialog, s.getId(), s.getImageUrl(), s.getProductName(), s.getProductCategory(), s.getAmountUsed())
+                );
 
-        for(var s : relatedProducts) {
+            }
+
+        }
+        else{
             h.add(
-               productCrafter(dialog,s.getId(),s.getImageUrl(),s.getProductName(),s.getProductCategory(),s.getAmountUsed())
+                    commonComponents.noDataFound()
             );
-
         }
 
 
         main.add(
                 commonComponents.descriptionCrafter("Related products","Products that use this material"),
                 filters,
-                h,
-                paganation.buttonHolder(Math.toIntExact(size))
+                h
         );
+
+        if(!relatedProducts.isEmpty()) {
+            paganation.buttonHolder(Math.toIntExact(size));
+
+        }
 
         dialog.add(
 
