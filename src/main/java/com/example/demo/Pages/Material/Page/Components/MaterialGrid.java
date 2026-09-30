@@ -453,10 +453,6 @@ public class MaterialGrid {
                 changeDeliveryDate(e);
             });
 
-            HorizontalLayout viewStockHistory = quickActionCrafter(VaadinIcon.CLOCK,"View stock history","See all stock changes and movement");
-            viewStockHistory.addClickListener(bt->{
-                viewStockHistory(e);
-            });
 
 
             VerticalLayout quickActions = new VerticalLayout();
@@ -464,8 +460,7 @@ public class MaterialGrid {
             quickActions.add(
                     commonComponents.spanCrafter("Quick Actions","activityFeed-name"),
                     updateStockMaterial,
-                    changeDeliveryDate,
-                    viewStockHistory
+                    changeDeliveryDate
             );
 
             leftSide.add(
@@ -496,6 +491,13 @@ public class MaterialGrid {
             viewRelatedProducts.addClickListener(ee->{
                 connectedProducts(e);
             });
+
+
+            HorizontalLayout viewStockHistory = quickActionCrafter(VaadinIcon.CLOCK,"View stock history","See all stock changes and movement");
+            viewStockHistory.addClickListener(bt->{
+                viewStockHistory(e);
+            });
+
 
 
             HorizontalLayout deleteMaterial = actions(VaadinIcon.TRASH,"Delete material","Remove from the system 'If possible'","RED");
@@ -533,6 +535,7 @@ public class MaterialGrid {
                     editMaterial,
                     searchOnline,
                     viewRelatedProducts,
+                    viewStockHistory,
                     deleteMaterial
 
             );
@@ -815,7 +818,7 @@ public class MaterialGrid {
         );
 
         if(!relatedProducts.isEmpty()) {
-            paganation.buttonHolder(Math.toIntExact(size));
+            main.add(paganation.buttonHolder(Math.toIntExact(size)));
 
         }
 
@@ -1113,9 +1116,9 @@ public class MaterialGrid {
             else {
 
                 Long value = addAmount.getValue() * addOrRemove;
-
-                materialService.updateMaterialStock(e.getId(),value);
                 dialog.close();
+                materialService.updateMaterialStock(e.getId(),value);
+
 
                 openTheDialog = e.getId();
 
@@ -1144,8 +1147,8 @@ public class MaterialGrid {
         });
 
         update.addClickListener(ee->{
-            materialService.updateMaterialDeliveryDate(eee.getId(),currentDeliveryDate);
             dialog.close();
+            materialService.updateMaterialDeliveryDate(eee.getId(),currentDeliveryDate);
             openTheDialog = eee.getId();
             reloadDisplay();
         });

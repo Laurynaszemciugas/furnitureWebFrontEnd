@@ -10,14 +10,18 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EmployeeGrid {
 
@@ -25,6 +29,10 @@ public class EmployeeGrid {
     Common common;
 
     EmployeeService employeeService;
+
+
+    Map<Long,Dialog> dialogMemory = new HashMap<>();
+    Long openTheDialog = 0L;
 
 
     public EmployeeGrid(CommonComponents commonComponents, Common common, EmployeeService employeeService) {
@@ -248,6 +256,42 @@ public class EmployeeGrid {
         // ======================== Material actions =====================================
         grid.addComponentColumn(e->{
 
+            for (var dialog : dialogMemory.values()) {
+                dialog.close();
+            }
+
+            Dialog dialog = new Dialog();
+            dialog.setWidth("1000px");
+
+            dialogMemory.put(e.getId(),dialog);
+
+            Button close = new Button("Close", ee-> dialog.close());
+
+            dialog.getFooter().add(close);
+
+            HorizontalLayout bothSides = new HorizontalLayout();
+            bothSides.addClassName("layout-flex");
+            bothSides.setWidthFull();
+
+
+            VerticalLayout leftSide = new VerticalLayout();
+            leftSide.setWidth("400px");
+
+            VerticalLayout rightSide = new VerticalLayout();
+            rightSide.setWidth("400px");
+
+
+
+
+
+            bothSides.add(
+                    leftSide,
+                    rightSide
+            );
+
+            bothSides.expand(leftSide);
+
+
 
             HorizontalLayout h = new HorizontalLayout();
             Button edit = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.PENCIL,"Blue");
@@ -274,7 +318,12 @@ public class EmployeeGrid {
                });
             });
 
-            Button open = new Button("Actions", ew-> mainDialog(e));
+            Button open = new Button("Actions");
+
+            open.addClickListener(ew->{
+                dialog.open();
+                openTheDialog = e.getId();
+            });
 
             h.add(
                     delete,
@@ -282,6 +331,104 @@ public class EmployeeGrid {
                     open
 
             );
+
+
+
+            HorizontalLayout editEmployee = actions(VaadinIcon.PENCIL,"Edit employee","Modify employee details","BLUE");
+            editEmployee.setWidthFull();
+
+            editEmployee.addClickListener(ee->{
+                dialogMemory.get(e.getId()).close();
+                common.customNavigate("EmployeesEdit/" + e.getId());
+            });
+
+            HorizontalLayout viewWorkHours = actions(VaadinIcon.CLOCK,"View work hours","View mini statistics of employee hours","BLUE");
+            viewWorkHours.setWidthFull();
+
+            HorizontalLayout viewAssignedOrders = actions(VaadinIcon.NOTEBOOK,"View assigned orders","See orders this employee worked on","BLUE");
+            viewAssignedOrders.setWidthFull();
+
+            HorizontalLayout viewPerformance = actions(VaadinIcon.CHART,"View performance","Work statistics and productivity","BLUE");
+            viewPerformance.setWidthFull();
+
+
+
+
+            HorizontalLayout deleteEmployee = actions(VaadinIcon.TRASH,"Delete employee","Remove from system","RED");
+            deleteEmployee.setWidthFull();
+
+            if(e.getEmployeeAcIn().equals(EmployeeAcIn.INACTIVE)){
+                deleteEmployee.setEnabled(false);
+                deleteEmployee.addClassName("island-disabled");
+            }
+
+            deleteEmployee.addClickListener(ew ->{
+                common.deleteConfirmation(e.getFullName());
+                common.setBooleanConsumer(canDelete->{
+                    if(canDelete){
+                        employeeService.deleteEmployee(e.getId());
+                    }
+                });
+            });
+
+
+
+
+
+
+            VerticalLayout actions = new VerticalLayout();
+            actions.setPadding(false);
+
+            actions.add(
+                    commonComponents.spanCrafter("Actions","activityFeed-name"),
+                    editEmployee,
+                    viewWorkHours,
+                    viewAssignedOrders,
+                    viewPerformance,
+                    deleteEmployee
+
+                    );
+
+
+            VerticalLayout quickActions = new VerticalLayout();
+            quickActions.setPadding(false);
+
+            HorizontalLayout toggleActiveStatus = actions(VaadinIcon.POWER_OFF,"Toggle active status","Active or deactivate employee","BLUE");
+            toggleActiveStatus.setWidthFull();
+
+            HorizontalLayout changeRoleOrDepartment = actions(VaadinIcon.CHART,"Change role or department","Update employee position","BLUE");
+            changeRoleOrDepartment.setWidthFull();
+
+
+            quickActions.add(
+                    commonComponents.spanCrafter("Quick actions","activityFeed-name"),
+                    toggleActiveStatus,
+                    changeRoleOrDepartment
+
+
+
+            );
+
+
+
+            leftSide.add(
+                    leftSideEmp(e),
+                    expandedData(e),
+                    quickActions
+            );
+
+            rightSide.add(
+                    actions
+            );
+
+            dialog.add(
+                    bothSides
+            );
+
+
+
+
+
 
 
             return  h;
@@ -292,10 +439,12 @@ public class EmployeeGrid {
     }
 
 
-    public void mainDialog(EmployeeBriefDto e){
-        Dialog dialog = new Dialog();
+    public VerticalLayout leftSideEmp(EmployeeBriefDto e){
 
-        dialog.setWidth("1000px");
+
+
+        VerticalLayout main = new VerticalLayout();
+        main.setPadding(false);
 
         Image image = commonComponents.imageCrafter(e.getProfileImage() == null ? "No_picture.png" : e.getProfileImage(),"100px","100px","50%");
 
@@ -310,6 +459,7 @@ public class EmployeeGrid {
 
 
         HorizontalLayout topHolder = new HorizontalLayout();
+        topHolder.setWidthFull();
         topHolder.setAlignItems(FlexComponent.Alignment.CENTER);
         VerticalLayout extraData = new VerticalLayout();
         extraData.setSpacing(false);
@@ -327,15 +477,89 @@ public class EmployeeGrid {
         );
 
 
+        main.add(topHolder);
 
-        dialog.add(
-                topHolder
+
+        return  main;
+
+
+    }
+
+
+    public VerticalLayout expandedData(EmployeeBriefDto e){
+        VerticalLayout v = new VerticalLayout();
+        v.setPadding(false);
+        v.setWidthFull();
+
+        v.addClassName("island");
+
+        v.add(
+                specCrafter("Full name", e.getFullName()),
+                specCrafter("Email address",e.getGmail()),
+                specCrafter("Phone number","+254854"),
+                specCrafter("Date of birth",common.dateFormatter(e.getCreated())),
+                specCrafter("Address","+254854")
         );
 
 
 
+        return v;
+    }
 
-        dialog.open();
+
+
+
+    public HorizontalLayout specCrafter( String name, String value){
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setWidthFull();
+
+        h.add(
+                commonComponents.spanCrafter(name,"stat-example"),
+                commonComponents.spaceFiller(),
+                commonComponents.spanCrafter(value,"stat-example")
+        );
+
+
+        return h;
+
+    }
+
+
+    public HorizontalLayout actions(VaadinIcon icon, String name, String desc, String color){
+        HorizontalLayout h = new HorizontalLayout();
+        h.setAlignItems(FlexComponent.Alignment.CENTER);
+        h.setWidthFull();
+        h.addClassName("island-hover");
+
+        h.getStyle().set("position","relative");
+
+        Icon pressIndicator = commonComponents.iconCrafter(VaadinIcon.ANGLE_RIGHT,"25px","grey");
+        pressIndicator.getStyle().set("position","absolute").set("right","10px").set("top","40%");
+
+        String backgroundColor = "";
+        String allColor = "";
+
+        if(color.equals("BLUE")){
+            backgroundColor = "rgba(59, 130, 246, 0.18)";
+            allColor = "RoyalBlue";
+        }
+        if(color.equals("RED")){
+            backgroundColor = "rgba(239, 68, 68, 0.18)";
+            allColor = "Red";
+        }
+
+
+        h.add(
+                commonComponents.itemInsideTheBox(icon,allColor,backgroundColor),
+                new Div(commonComponents.spanCrafter(name,"stat-example"),
+                        commonComponents.spanCrafterWordNoHide(desc,"stat-description")),
+                pressIndicator
+        );
+
+
+
+        return h;
     }
 
 }
