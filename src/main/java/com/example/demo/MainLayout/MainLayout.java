@@ -89,6 +89,8 @@ public class MainLayout extends AppLayout {
 
         } catch (Exception e) {
             common.customNavigate("Login");
+            UI.getCurrent().refreshCurrentRoute(true);
+
         }
 
     }

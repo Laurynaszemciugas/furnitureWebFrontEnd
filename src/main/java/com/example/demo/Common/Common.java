@@ -572,4 +572,23 @@ public class Common {
         return overlay;
     }
 
+
+    public String convertMinutesToTimeLong(Object value) {
+        long totalMinutes = Long.parseLong(value.toString());
+
+        long hours = totalMinutes / 60;
+        long minutes = totalMinutes % 60;
+
+        return hours + "h " + minutes + "m";
+    }
+
+    public String convertMinutesToTimeDouble(Double value) {
+        double totalMinutes = value;
+
+        long hours = (long) (totalMinutes / 60);
+        long minutes = (long) totalMinutes % 60;
+
+        return hours + "h " + minutes + "m";
+    }
+
 }

@@ -5,9 +5,11 @@ import com.example.demo.ControllerModels.CommonDtos.WorkDay;
 import com.example.demo.ControllerModels.CommonDtos.WorkDone;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.User.ProfileInformation;
+import com.example.demo.DTOS.WorkDay.WorkDayMiniStats;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -44,6 +46,25 @@ public class WorkDoneService {
         return Arrays.stream(httpCallLogic.HttpCall("WorkDay/allInfoAboutSpecificWorkDay", HttpMethod.GET, null, WorkDone[].class,false)).toList();
 
     }
+
+    public WorkDayMiniStats getQuickActionWorkHoursMiniStats(Long id) {
+
+        return httpCallLogic.HttpCall("WorkDone/getQuickActionWorkHoursMiniStats", HttpMethod.GET, id, WorkDayMiniStats.class,true);
+
+    }
+
+    public List<WorkDay> allInfoAccordingToEmployee(Long id, LocalDate from, LocalDate to, int page) {
+
+        return Arrays.stream(httpCallLogic.HttpCall("WorkDone/allInfoAccordingToEmployee", HttpMethod.GET, String.format("%d/%s/%s/%d",id,from,to,page), WorkDay[].class,true)).toList();
+
+    }
+
+    public Long getTotalPagesInQuickActions(Long id, LocalDate from, LocalDate to) {
+
+        return httpCallLogic.HttpCall("WorkDone/getTotalPagesInQuickActions", HttpMethod.GET,String.format("%d/%s/%s",id,from,to), Long.class,true);
+
+    }
+
 
 
 

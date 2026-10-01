@@ -2,13 +2,19 @@ package com.example.demo.Pages.Employee.Page.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Paganation;
+import com.example.demo.ControllerModels.CommonDtos.WorkDay;
+import com.example.demo.ControllerModels.CommonDtos.WorkDone;
 import com.example.demo.ControllerModels.Employee.EmployeeBriefDto;
+import com.example.demo.DTOS.WorkDay.WorkDayMiniStats;
 import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.EmployeeAcIn;
 import com.example.demo.Services.EmployeeService.EmployeeService;
+import com.example.demo.Services.WorkDoneService.WorkDoneService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -21,6 +27,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,16 +38,29 @@ public class EmployeeGrid {
     Common common;
 
     EmployeeService employeeService;
-
+    WorkDoneService workDoneService;
 
     Map<Long,Dialog> dialogMemory = new HashMap<>();
     Long openTheDialog = 0L;
 
+    VerticalLayout workHoursHolder = new VerticalLayout();
 
-    public EmployeeGrid(CommonComponents commonComponents, Common common, EmployeeService employeeService) {
+    Paganation paganation;
+
+    int page = 0;
+
+    public EmployeeGrid(CommonComponents commonComponents, Common common, EmployeeService employeeService,WorkDoneService workDoneService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.employeeService = employeeService;
+        this.workDoneService = workDoneService;
+
+        this.paganation = new Paganation();
+
+
+        workHoursHolder.setWidthFull();
+        workHoursHolder.setPadding(false);
+
     }
 
     public VerticalLayout gridHolder(List<EmployeeBriefDto> materiaData){
@@ -347,6 +367,10 @@ public class EmployeeGrid {
             HorizontalLayout viewWorkHours = actions(VaadinIcon.CLOCK,"View work hours","View mini statistics of employee hours","BLUE");
             viewWorkHours.setWidthFull();
 
+            viewWorkHours.addClickListener(ew->{
+                viewWorkHours(e);
+            });
+
             HorizontalLayout viewAssignedOrders = actions(VaadinIcon.NOTEBOOK,"View assigned orders","See orders this employee worked on","BLUE");
             viewAssignedOrders.setWidthFull();
 
@@ -441,6 +465,192 @@ public class EmployeeGrid {
 
         return vv;
     }
+
+
+    public void viewWorkHours(EmployeeBriefDto e){
+
+        Dialog dialog =new Dialog();
+        dialog.setWidth("1000px");
+
+         VerticalLayout v = new VerticalLayout();
+
+        HorizontalLayout miniStatHolder = new HorizontalLayout();
+        miniStatHolder.addClassName("layout-flex");
+        miniStatHolder.setWidthFull();
+
+        WorkDayMiniStats workDayMiniStats = workDoneService.getQuickActionWorkHoursMiniStats(e.getId());
+
+        miniStatHolder.add(
+                commonComponents.miniStatOfQuick(VaadinIcon.CLOCK,"Total hours",common.convertMinutesToTimeLong(workDayMiniStats.getTotalMinutes()),""),
+                commonComponents.miniStatOfQuick(VaadinIcon.CALENDAR,"Work days",workDayMiniStats.getWorkDay(),""),
+                commonComponents.miniStatOfQuick(VaadinIcon.WORKPLACE,"Total tasks",workDayMiniStats.getTotalWorkDone(),""),
+                commonComponents.miniStatOfQuick(VaadinIcon.CLOCK,"Avg time",common.convertMinutesToTimeDouble(workDayMiniStats.getAverageDay()),"Expected 8h")
+
+        );
+
+
+        HorizontalLayout filters = new HorizontalLayout();
+        filters.setAlignItems(FlexComponent.Alignment.BASELINE);
+        filters.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        filters.setWidthFull();
+
+        DatePicker fromDate = new DatePicker("From");
+        fromDate.setValue(LocalDate.now());
+
+        DatePicker toDate = new DatePicker("To");
+        toDate.setValue(LocalDate.now().plusMonths(1));
+
+        Button check = new Button("Look for data");
+
+        check.addClickListener(ew->{
+
+            loadData(e.getId(),fromDate.getValue(),toDate.getValue());
+            setNewPage();
+
+
+        });
+
+        paganation.setOnPageChange(ew->{
+            page = ew - 1;
+            loadData(e.getId(),fromDate.getValue(),toDate.getValue());
+        });
+
+
+        loadData(e.getId(),fromDate.getValue(),toDate.getValue());
+
+        filters.add(
+                fromDate,toDate,check
+        );
+
+
+
+
+
+
+
+        v.add(
+                commonComponents.descriptionCrafter("Work hours","View worked hours and time logs for " + e.getFullName()),
+                miniStatHolder,
+                filters,
+                workHoursHolder
+        );
+
+
+        dialog.add(
+                v
+        );
+
+
+
+        dialog.open();
+
+    }
+
+
+    public void loadData(Long id, LocalDate from, LocalDate to){
+
+        workHoursHolder.removeAll();
+
+        List<WorkDay> workDones = workDoneService.allInfoAccordingToEmployee(id, from, to,page);
+        Grid<WorkDay> grid = new Grid<>(WorkDay.class,false);
+
+        grid.addComponentColumn(e->{
+
+            return commonComponents.spanCrafter(common.dateFormatter(e.getWorkDayCreated()), "stat-example");
+
+        }).setHeader("WorkDay started").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            return commonComponents.spanCrafter(common.convertMinutesToTimeLong(e.getWorkedForMinutes()), "stat-example");
+
+        }).setHeader("Time worked").setAutoWidth(true);
+
+        grid.addComponentColumn(e->{
+
+            return commonComponents.spanCrafter(common.dateFormatter(e.getWorkDayEnd()), "stat-example");
+
+        }).setHeader("Work date ended").setAutoWidth(true);
+
+
+        grid.addComponentColumn(e->{
+
+            Dialog dialog = new Dialog();
+            dialog.setWidth("600px");
+
+
+            Button button = new Button("See work done");
+            button.addThemeVariants(ButtonVariant.PRIMARY);
+
+
+
+            Grid<WorkDone> grid1 = new Grid<>(WorkDone.class,false);
+            grid1.setItems(e.getWorkDone());
+            grid1.addComponentColumn(ew->{
+
+                return commonComponents.spanCrafter(common.dateFormatter(ew.getStarted()),"stat-example");
+
+            }).setAutoWidth(true).setHeader("Started");
+
+            grid1.addComponentColumn(ew->{
+
+                return commonComponents.spanCrafter(common.dateFormatter(ew.getStarted()),"stat-example");
+
+            }).setAutoWidth(true).setHeader("Started");
+
+            grid1.addComponentColumn(ew->{
+
+                return commonComponents.spanCrafterWordNoHide(ew.getWhatWasDone(),"stat-example");
+
+            }).setWidth("200px").setHeader("What was done");
+
+
+            grid1.addComponentColumn(ew->{
+
+                return commonComponents.spanCrafterWordNoHide("#" + ew.getOrder().getId(),"stat-example");
+
+            }).setAutoWidth(true).setHeader("Order");
+
+
+
+
+            button.addClickListener(ew->{
+                dialog.add(
+                        grid1
+                );
+                dialog.open();
+            });
+
+
+
+
+            return button;
+
+        }).setHeader("Expand work done").setAutoWidth(true);
+
+
+
+
+
+
+
+
+
+
+
+
+        grid.setItems(workDones);
+
+        workHoursHolder.add(
+                grid,
+                paganation.buttonHolder(Math.toIntExact(workDoneService.getTotalPagesInQuickActions(id, from, to)))
+        );
+
+    }
+
+
+
+
 
 
     // Emp img name small info
@@ -625,5 +835,12 @@ public class EmployeeGrid {
                 common.loadingOverlay("Reloading data", UI.getCurrent())
         );
     }
+
+
+    public void setNewPage(){
+        page = 0;
+        paganation.updateUIFromExternal(1);
+    }
+
 
 }

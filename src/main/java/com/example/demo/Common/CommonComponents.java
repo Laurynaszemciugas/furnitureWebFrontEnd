@@ -546,6 +546,33 @@ public class CommonComponents {
     }
 
 
+    public HorizontalLayout miniStatOfQuick(VaadinIcon icon,String name, Object value, String lilDesc){
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setAlignItems(FlexComponent.Alignment.CENTER);
+        h.addClassName("island");
+
+        h.getStyle().set("flex", "1 1 202px");
+        h.getStyle().set("max-width", "500px");
+        h.getStyle().set("min-width", "202px");
+
+        VerticalLayout v = new VerticalLayout();
+        v.setSpacing(false);
+
+        v.add(
+                spanCrafterWordNoHide(name,"stat-description"),
+                spanCrafterWordNoHide(value.toString(),"stat-example"),
+                spanCrafterWordNoHide(lilDesc,"stat-description")
+        );
+
+        h.add(
+                itemInsideTheBox(icon,"Blue","rgba(59, 130, 246, 0.18)"),
+                v
+        );
+
+
+        return h;
+    }
 
 
 
