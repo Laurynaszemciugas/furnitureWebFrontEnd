@@ -3,8 +3,10 @@ package com.example.demo.Pages.Employee.Page.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.ControllerModels.Employee.EmployeeBriefDto;
+import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.EmployeeAcIn;
 import com.example.demo.Services.EmployeeService.EmployeeService;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -393,7 +395,7 @@ public class EmployeeGrid {
             VerticalLayout quickActions = new VerticalLayout();
             quickActions.setPadding(false);
 
-            HorizontalLayout toggleActiveStatus = actions(VaadinIcon.POWER_OFF,"Toggle active status","Active or deactivate employee","BLUE");
+            HorizontalLayout toggleActiveStatus = toggleBetween(e.getId(),VaadinIcon.POWER_OFF,"Toggle active status","Active or deactivate employee",e.getEmployeeAcIn());
             toggleActiveStatus.setWidthFull();
 
             HorizontalLayout changeRoleOrDepartment = actions(VaadinIcon.CHART,"Change role or department","Update employee position","BLUE");
@@ -427,7 +429,9 @@ public class EmployeeGrid {
 
 
 
-
+            if(openTheDialog.equals(e.getId())){
+                dialogMemory.get(e.getId()).open();
+            }
 
 
 
@@ -439,6 +443,7 @@ public class EmployeeGrid {
     }
 
 
+    // Emp img name small info
     public VerticalLayout leftSideEmp(EmployeeBriefDto e){
 
 
@@ -485,7 +490,7 @@ public class EmployeeGrid {
 
     }
 
-
+    // expanded info island
     public VerticalLayout expandedData(EmployeeBriefDto e){
         VerticalLayout v = new VerticalLayout();
         v.setPadding(false);
@@ -506,9 +511,7 @@ public class EmployeeGrid {
         return v;
     }
 
-
-
-
+    // expanded info step crafter
     public HorizontalLayout specCrafter( String name, String value){
 
         HorizontalLayout h = new HorizontalLayout();
@@ -525,7 +528,7 @@ public class EmployeeGrid {
 
     }
 
-
+    // just actions buttons
     public HorizontalLayout actions(VaadinIcon icon, String name, String desc, String color){
         HorizontalLayout h = new HorizontalLayout();
         h.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -560,6 +563,67 @@ public class EmployeeGrid {
 
 
         return h;
+    }
+
+    // Toggle between Active and Inactive quick action
+    public HorizontalLayout toggleBetween(Long id,VaadinIcon icon, String name, String desc, EmployeeAcIn activeInactive){
+        HorizontalLayout h = new HorizontalLayout();
+        h.setAlignItems(FlexComponent.Alignment.CENTER);
+        h.setWidthFull();
+        h.addClassName("island-hover");
+
+        h.getStyle().set("position","relative");
+
+        Icon pressIndicator = commonComponents.iconCrafter(VaadinIcon.ANGLE_RIGHT,"25px","grey");
+        pressIndicator.getStyle().set("position","absolute").set("right","10px").set("top","40%");
+
+        String backgroundColor = "";
+        String allColor = "";
+
+        if(activeInactive.equals(EmployeeAcIn.ACTIVE)){
+            backgroundColor = "rgba(34, 197, 94, 0.18)";
+            allColor = "Green";
+        }
+        if(activeInactive.equals(EmployeeAcIn.INACTIVE)){
+            backgroundColor = "rgba(239, 68, 68, 0.18)";
+            allColor = "Red";
+        }
+
+
+        h.addClickListener(e->{
+
+            EmployeeAcIn thing;
+
+            if(activeInactive.equals(EmployeeAcIn.ACTIVE)){
+                thing = EmployeeAcIn.INACTIVE;
+            }
+            else {
+                thing = EmployeeAcIn.ACTIVE;
+            }
+
+           employeeService.updateEmployeeActiveStatus(id,thing);
+            reloadDisplay();
+        });
+
+
+        h.add(
+                commonComponents.itemInsideTheBox(icon,allColor,backgroundColor),
+                new Div(commonComponents.spanCrafter(name,"stat-example"),
+                        commonComponents.spanCrafterWordNoHide(desc,"stat-description")),
+                pressIndicator
+        );
+
+
+
+        return h;
+    }
+
+
+    public void reloadDisplay(){
+        Dialog dialog1 = dialogMemory.get(openTheDialog);
+        dialog1.add(
+                common.loadingOverlay("Reloading data", UI.getCurrent())
+        );
     }
 
 }

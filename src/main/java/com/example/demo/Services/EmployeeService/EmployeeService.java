@@ -12,6 +12,7 @@ import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
 import com.example.demo.DTOS.ComboBoxEmployees;
 import com.example.demo.DTOS.ComboBoxMaterial;
+import com.example.demo.Enums.EmployeeAcIn;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
@@ -60,6 +61,13 @@ public class EmployeeService {
     public void saveNewEmployee(Employee employee) {
         httpCallLogic.checkResponse(
                 httpCallLogic.HttpCall("employee/saveNewEmployee", HttpMethod.POST, employee, ErrorResponse.class,false),"Employees",success,true);
+    }
+
+    // quick actions
+    @SneakyThrows
+    public void updateEmployeeActiveStatus(Long employeeId, EmployeeAcIn employeeAcIn) {
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("employeeQuickActions/updateEmployeeActiveStatus", HttpMethod.GET, String.format("%d/%s",employeeId,employeeAcIn), ErrorResponse.class,true),"Employees",success,true);
     }
 
     @SneakyThrows
