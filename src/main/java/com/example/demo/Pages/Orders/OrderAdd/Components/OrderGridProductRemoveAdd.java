@@ -67,14 +67,14 @@ public class OrderGridProductRemoveAdd {
         }).setAutoWidth(true).setHeader("Product");
 
 
-        orderItems.addComponentColumn(e->{
-
-
-
-            Span productCategory = commonComponents.spanCrafterWordNoHide(e.getCategory() == null ? "None" : e.getCategory().toString(),"stat-title");
-
-            return  productCategory;
-        }).setAutoWidth(true).setHeader("Category");
+//        orderItems.addComponentColumn(e->{
+//
+//
+//
+//            Span productCategory = commonComponents.spanCrafterWordNoHide(e.getCategory() == null ? "None" : e.getCategory().toString(),"stat-title");
+//
+//            return  productCategory;
+//        }).setAutoWidth(true).setHeader("Category");
 
         orderItems.addComponentColumn(e->{
 

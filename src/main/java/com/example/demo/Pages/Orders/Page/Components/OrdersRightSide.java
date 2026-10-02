@@ -129,6 +129,7 @@ public class OrdersRightSide {
         status.getStyle().set("position","absolute").set("top","20px").set("left","20px");
 
         HorizontalLayout secondLayer = new HorizontalLayout();
+        secondLayer.addClassName("island");
         secondLayer.setPadding(false);
         secondLayer.setWidthFull();
         secondLayer.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);

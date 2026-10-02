@@ -10,6 +10,7 @@ import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.DashBoard.ActivityFeedModel;
 import com.example.demo.ControllerModels.DashBoard.DashBoardMonthlyOrdersCompleted;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
+import com.example.demo.ControllerModels.Filter.EmployeeActiveOrderFilter.EmployeeActiveOrderFilter;
 import com.example.demo.ControllerModels.Filter.EmployeeAvailableOrderFilter.EmployeeAvailableOrderFilter;
 import com.example.demo.ControllerModels.Filter.Order.OrderFilterHolder;
 import com.example.demo.ControllerModels.OrderAdd.ConsumerData;
@@ -250,11 +251,21 @@ public class OrdersService {
 
 
     @SneakyThrows
-    public List<EmployeeActiveOrders> findEmployeeActiveOrders() {
+    public List<EmployeeActiveOrders> findEmployeeActiveOrders(EmployeeActiveOrderFilter filter) {
 
-        return Arrays.stream(httpCallLogic.HttpCall("order/findEmployeeActiveOrders", HttpMethod.GET,null, EmployeeActiveOrders[].class,false)).toList();
+        return Arrays.stream(httpCallLogic.HttpCall("order/findEmployeeActiveOrders", HttpMethod.POST,filter, EmployeeActiveOrders[].class,false)).toList();
 
     }
+
+    @SneakyThrows
+    public Long findEmployeeActiveOrdersPages(EmployeeActiveOrderFilter filter) {
+
+        return httpCallLogic.HttpCall("order/findEmployeeActiveOrdersPages", HttpMethod.POST,filter, Long.class,false);
+
+    }
+
+
+
 
     @SneakyThrows
     public void acceptStep(Long id){

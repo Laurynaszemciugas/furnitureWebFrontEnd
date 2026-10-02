@@ -72,6 +72,8 @@ public class EmployeeAddEditComponents {
 
     boolean dataExists = false;
 
+    int firstLoad = 0;
+
     private final Binder<Void> binder = new Binder<>();
 
 // main layout
@@ -97,7 +99,15 @@ public class EmployeeAddEditComponents {
         HorizontalLayout h = new HorizontalLayout();
         h.setWidthFull();
         h.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        h.addClassName("smooth-panel");
+
+
+        if(firstLoad < 4){
+            h.addClassName("smooth-panel");
+            firstLoad++;
+        }
+        else{
+            h.removeClassName("smooth-panel");
+        }
 
         HorizontalLayout buttonHolder = new HorizontalLayout();
 
@@ -224,7 +234,14 @@ public class EmployeeAddEditComponents {
         v.getStyle().set("position","relative");
 
 
-        v.addClassName("animated-card");
+
+        if(firstLoad < 4){
+            v.addClassName("animated-card");
+            firstLoad++;
+        }
+        else{
+            v.removeClassName("animated-card");
+        }
 
 
         VerticalLayout h1 = new VerticalLayout();
@@ -294,7 +311,13 @@ public class EmployeeAddEditComponents {
         v.setWidthFull();
         v.addClassName("island");
 
-        v.addClassName("animated-card");
+        if(firstLoad < 4){
+            v.addClassName("animated-card");
+            firstLoad++;
+        }
+        else{
+            v.removeClassName("animated-card");
+        }
 
         FormLayout formLayout = new FormLayout();
 
@@ -332,7 +355,14 @@ public class EmployeeAddEditComponents {
         v.setWidthFull();
         v.addClassName("island");
 
-        v.addClassName("animated-card");
+
+        if(firstLoad < 4){
+            v.addClassName("animated-card");
+            firstLoad++;
+        }
+        else{
+            v.removeClassName("animated-card");
+        }
 
         FormLayout formLayout = new FormLayout();
 

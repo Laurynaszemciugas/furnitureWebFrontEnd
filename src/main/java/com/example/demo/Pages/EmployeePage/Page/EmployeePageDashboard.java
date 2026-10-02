@@ -6,6 +6,7 @@ import com.example.demo.Common.Logic.ImageViewer;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderStepsToComplete;
 import com.example.demo.ControllerModels.CommonDtos.WorkDay;
 import com.example.demo.ControllerModels.CommonDtos.WorkDone;
+import com.example.demo.ControllerModels.Filter.EmployeeActiveOrderFilter.EmployeeActiveOrderFilter;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.EmployeePage.Page.Components.DisplayActiveOrders;
 import com.example.demo.Pages.EmployeePage.Page.Components.DisplayAvailableOrders;
@@ -103,11 +104,12 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         verticalLayout.getStyle().set("margin-top", "5px");
 
 
+
         verticalLayout.add(
                 defaultPageExplanation.briefExplanation("Dashboard"),
                 dataAndWorkingHours(),
                 displayAvailableOrders.availableOrders(ordersService.getEmployeeOrderProjection(),true),
-                displayActiveOrders.myActiveOrders(ordersService.findEmployeeActiveOrders()));
+                displayActiveOrders.myActiveOrders(ordersService.findEmployeeActiveOrders(new EmployeeActiveOrderFilter())));
 
         return verticalLayout;
     }

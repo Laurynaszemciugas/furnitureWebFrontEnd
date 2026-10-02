@@ -5,6 +5,7 @@ public enum ActionTrackerEnum {
 
     SYSTEM("System"),
     USER("User"),
+    ADMIN("Admin"),
     EMPLOYEE("Employee"),
     CLIENT("Client"),
     MANAGER("Manager"),

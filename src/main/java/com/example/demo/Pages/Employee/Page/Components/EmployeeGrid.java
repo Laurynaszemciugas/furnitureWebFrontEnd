@@ -6,14 +6,21 @@ import com.example.demo.Common.Paganation;
 import com.example.demo.ControllerModels.CommonDtos.WorkDay;
 import com.example.demo.ControllerModels.CommonDtos.WorkDone;
 import com.example.demo.ControllerModels.Employee.EmployeeBriefDto;
+import com.example.demo.ControllerModels.Filter.EmployeeActiveOrderFilter.EmployeeActiveOrderFilter;
 import com.example.demo.DTOS.WorkDay.WorkDayMiniStats;
 import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.EmployeeAcIn;
+import com.example.demo.Enums.ImageLogic;
+import com.example.demo.Enums.OrderStatus;
+import com.example.demo.Pages.EmployeePage.Page.Components.DisplayActiveOrders;
+import com.example.demo.Services.EmployeeService.EmployeeActiveOrders;
 import com.example.demo.Services.EmployeeService.EmployeeService;
+import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.WorkDoneService.WorkDoneService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -26,8 +33,10 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,27 +48,40 @@ public class EmployeeGrid {
 
     EmployeeService employeeService;
     WorkDoneService workDoneService;
+    OrdersService ordersService;
+
+    DisplayActiveOrders displayActiveOrders;
 
     Map<Long,Dialog> dialogMemory = new HashMap<>();
     Long openTheDialog = 0L;
 
+    List<Dialog> allDialogs = new ArrayList<>();
+
     VerticalLayout workHoursHolder = new VerticalLayout();
+
+    VerticalLayout viewAssignedOrdersHolder = new VerticalLayout();
+    EmployeeActiveOrderFilter filterData = new EmployeeActiveOrderFilter();
 
     Paganation paganation;
 
     int page = 0;
 
-    public EmployeeGrid(CommonComponents commonComponents, Common common, EmployeeService employeeService,WorkDoneService workDoneService) {
+    public EmployeeGrid(CommonComponents commonComponents, Common common, EmployeeService employeeService,WorkDoneService workDoneService,OrdersService ordersService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.employeeService = employeeService;
         this.workDoneService = workDoneService;
 
-        this.paganation = new Paganation();
+        this.ordersService = ordersService;
 
+        this.paganation = new Paganation();
+        this.displayActiveOrders = new DisplayActiveOrders(commonComponents,common,ordersService);
 
         workHoursHolder.setWidthFull();
         workHoursHolder.setPadding(false);
+
+        viewAssignedOrdersHolder.setWidthFull();
+        viewAssignedOrdersHolder.setPadding(false);
 
     }
 
@@ -77,6 +99,7 @@ public class EmployeeGrid {
         grid.setAllRowsVisible(true);
         grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
         grid.setItems(materiaData);
+        grid.setAllRowsVisible(true);
 
 
         vv.add(grid);
@@ -285,11 +308,17 @@ public class EmployeeGrid {
             Dialog dialog = new Dialog();
             dialog.setWidth("1000px");
 
+            allDialogs.add(dialog);
             dialogMemory.put(e.getId(),dialog);
 
             Button close = new Button("Close", ee-> dialog.close());
 
             dialog.getFooter().add(close);
+
+
+            vv.addDetachListener(ew -> {
+                closeAllDialogs();
+            });
 
             HorizontalLayout bothSides = new HorizontalLayout();
             bothSides.addClassName("layout-flex");
@@ -316,29 +345,6 @@ public class EmployeeGrid {
 
 
             HorizontalLayout h = new HorizontalLayout();
-            Button edit = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.PENCIL,"Blue");
-
-
-            edit.addClickListener(editValue->{
-
-                common.customNavigate("EmployeesEdit/" + e.getId());
-            });
-
-
-            Button delete = commonComponents.buttonThemeAndIconNoNavigate("", ButtonVariant.LUMO_ICON, VaadinIcon.TRASH,"Red");
-
-            if(e.getEmployeeAcIn().equals(EmployeeAcIn.INACTIVE)){
-                delete.setVisible(false);
-            }
-
-            delete.addClickListener(deleteValue->{
-                common.deleteConfirmation(e.getFullName());
-               common.setBooleanConsumer(canDelete->{
-                   if(canDelete){
-                       employeeService.deleteEmployee(e.getId());
-                   }
-               });
-            });
 
             Button open = new Button("Actions");
 
@@ -348,8 +354,6 @@ public class EmployeeGrid {
             });
 
             h.add(
-                    delete,
-                    edit,
                     open
 
             );
@@ -374,8 +378,12 @@ public class EmployeeGrid {
             HorizontalLayout viewAssignedOrders = actions(VaadinIcon.NOTEBOOK,"View assigned orders","See orders this employee worked on","BLUE");
             viewAssignedOrders.setWidthFull();
 
-            HorizontalLayout viewPerformance = actions(VaadinIcon.CHART,"View performance","Work statistics and productivity","BLUE");
-            viewPerformance.setWidthFull();
+            viewAssignedOrders.addClickListener(ew->{
+                viewAssignedOrders(e);
+            });
+
+//            HorizontalLayout viewPerformance = actions(VaadinIcon.CHART,"View performance","Work statistics and productivity","BLUE");
+//            viewPerformance.setWidthFull();
 
 
 
@@ -410,7 +418,6 @@ public class EmployeeGrid {
                     editEmployee,
                     viewWorkHours,
                     viewAssignedOrders,
-                    viewPerformance,
                     deleteEmployee
 
                     );
@@ -422,14 +429,13 @@ public class EmployeeGrid {
             HorizontalLayout toggleActiveStatus = toggleBetween(e.getId(),VaadinIcon.POWER_OFF,"Toggle active status","Active or deactivate employee",e.getEmployeeAcIn());
             toggleActiveStatus.setWidthFull();
 
-            HorizontalLayout changeRoleOrDepartment = actions(VaadinIcon.CHART,"Change role or department","Update employee position","BLUE");
-            changeRoleOrDepartment.setWidthFull();
+//            HorizontalLayout changeRoleOrDepartment = actions(VaadinIcon.CHART,"Change role or department","Update employee position","BLUE");
+//            changeRoleOrDepartment.setWidthFull();
 
 
             quickActions.add(
                     commonComponents.spanCrafter("Quick actions","activityFeed-name"),
-                    toggleActiveStatus,
-                    changeRoleOrDepartment
+                    toggleActiveStatus
 
 
 
@@ -467,10 +473,148 @@ public class EmployeeGrid {
     }
 
 
+    public void viewAssignedOrders(EmployeeBriefDto e){
+
+        Dialog dialog = new Dialog();
+        allDialogs.add(dialog);
+        dialog.setWidth("1300px");
+
+
+
+        Button close = new Button("Close", ew-> dialog.close());
+        dialog.getFooter().add(close);
+
+
+
+        VerticalLayout main = new VerticalLayout();
+
+        HorizontalLayout filters = new HorizontalLayout();
+        filters.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        filters.setWidthFull();
+
+        TextField prompt = new TextField("Search");
+        prompt.addValueChangeListener(ew->{
+            filterData.setPromt(ew.getValue());
+            loadViewAssignedOrders();
+
+        });
+
+        ComboBox<OrderStatus> orderStatus = new ComboBox<>("Status");
+        orderStatus.setItems(OrderStatus.values());
+        orderStatus.setItemLabelGenerator(OrderStatus::getDisplayName);
+
+        orderStatus.addValueChangeListener(ew->{
+            filterData.setOrderStatus(ew.getValue());
+            loadViewAssignedOrders();
+        });
+
+
+        filters.add(
+                prompt,
+                orderStatus
+        );
+
+
+        main.add(
+                commonComponents.descriptionCrafter("Assigned orders",String.format("Order that %s is currently or has worked on",e.getFullName())),
+                filters,
+                viewAssignedOrdersHolder
+        );
+
+        filterData.setEmpId(e.getId());
+        loadViewAssignedOrders();
+
+
+        paganation.setOnPageChange(ew->{
+            filterData.setPage(ew = ew -1);
+            loadViewAssignedOrders();
+        });
+
+
+        dialog.add(
+                main
+        );
+
+
+        dialog.open();
+
+    }
+
+    public void loadViewAssignedOrders(){
+
+        viewAssignedOrdersHolder.removeAll();
+
+        List<EmployeeActiveOrders> workDones = ordersService.findEmployeeActiveOrders(filterData);
+        Long pages = ordersService.findEmployeeActiveOrdersPages(filterData);
+        Grid<EmployeeActiveOrders> grid = new Grid<>(EmployeeActiveOrders.class,false);
+        grid.setItems(workDones);
+        grid.setAllRowsVisible(true);
+
+        grid.addComponentColumn(e->{
+
+
+            VerticalLayout va = new VerticalLayout();
+            va.setPadding(false);
+
+            for(var product : e.getOrder().getProductsData()){
+
+                String mainImageUrl = "";
+
+                Long totalSteps = 0L;
+                Long totalStepsCompleted = 0L;
+
+                for(var images : product.getProduct().getImages()){
+                    if(images.getImageLogic().equals(ImageLogic.Main)){
+                        mainImageUrl = images.getImageUrl();
+                    }
+                }
+
+                for(var steps : product.getOrderSteps()){
+
+                    totalSteps += steps.getStepsNeeded();
+                    totalStepsCompleted += steps.getStepsCompleted();
+
+                }
+
+                va.add(displayActiveOrders.activeOrdersPreview(e.getOrder().getPriority(), e.getOrder().getId(),mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
+            }
+
+            return va;
+
+
+        }).setFlexGrow(1);
+
+
+        if(!workDones.isEmpty()) {
+            viewAssignedOrdersHolder.removeAll();
+            viewAssignedOrdersHolder.add(
+                    grid,
+                    paganation.buttonHolder(Math.toIntExact(pages))
+
+            );
+        }
+        else{
+            viewAssignedOrdersHolder.removeAll();
+            viewAssignedOrdersHolder.add(
+                    commonComponents.noDataFoundImproved("No ",null,null)
+            );
+        }
+
+
+    }
+
+
+    // viewWork hours and reload data
     public void viewWorkHours(EmployeeBriefDto e){
 
         Dialog dialog =new Dialog();
+        allDialogs.add(dialog);
         dialog.setWidth("1000px");
+
+        Button close = new Button("Close", ew-> dialog.close());
+        dialog.getFooter().add(
+                close
+        );
 
          VerticalLayout v = new VerticalLayout();
 
@@ -545,14 +689,15 @@ public class EmployeeGrid {
         dialog.open();
 
     }
-
-
     public void loadData(Long id, LocalDate from, LocalDate to){
 
         workHoursHolder.removeAll();
 
         List<WorkDay> workDones = workDoneService.allInfoAccordingToEmployee(id, from, to,page);
         Grid<WorkDay> grid = new Grid<>(WorkDay.class,false);
+        grid.setItems(workDones);
+        grid.setAllRowsVisible(true);
+
 
         grid.addComponentColumn(e->{
 
@@ -562,13 +707,24 @@ public class EmployeeGrid {
 
         grid.addComponentColumn(e->{
 
-            return commonComponents.spanCrafter(common.convertMinutesToTimeLong(e.getWorkedForMinutes()), "stat-example");
+            VerticalLayout v = new VerticalLayout();
+            v.setPadding(false);
+
+            if(e.getWorkedForMinutes() == null){
+                v.add(commonComponents.spanCrafter("Work day in progress" , "stat-example"));
+
+            }
+            else{
+                  v.add(commonComponents.spanCrafter(common.convertMinutesToTimeLong(e.getWorkedForMinutes()), "stat-example"));
+
+            }
+            return v;
 
         }).setHeader("Time worked").setAutoWidth(true);
 
         grid.addComponentColumn(e->{
 
-            return commonComponents.spanCrafter(common.dateFormatter(e.getWorkDayEnd()), "stat-example");
+            return commonComponents.spanCrafter(e.getWorkDayEnd() == null ? "Unknown" : common.dateFormatter(e.getWorkDayEnd()), "stat-example");
 
         }).setHeader("Work date ended").setAutoWidth(true);
 
@@ -576,8 +732,13 @@ public class EmployeeGrid {
         grid.addComponentColumn(e->{
 
             Dialog dialog = new Dialog();
+            allDialogs.add(dialog);
             dialog.setWidth("600px");
 
+            Button close = new Button("Close", ew-> dialog.close());
+            dialog.getFooter().add(
+                    close
+            );
 
             Button button = new Button("See work done");
             button.addThemeVariants(ButtonVariant.PRIMARY);
@@ -616,6 +777,7 @@ public class EmployeeGrid {
 
             button.addClickListener(ew->{
                 dialog.add(
+                        commonComponents.spanCrafter(String.format("Count of work done - %d",e.getWorkDone().size()),"stat-example"),
                         grid1
                 );
                 dialog.open();
@@ -626,7 +788,7 @@ public class EmployeeGrid {
 
             return button;
 
-        }).setHeader("Expand work done").setAutoWidth(true);
+        }).setHeader("Actions").setAutoWidth(true);
 
 
 
@@ -639,12 +801,20 @@ public class EmployeeGrid {
 
 
 
-        grid.setItems(workDones);
 
-        workHoursHolder.add(
-                grid,
-                paganation.buttonHolder(Math.toIntExact(workDoneService.getTotalPagesInQuickActions(id, from, to)))
-        );
+        if(!workDones.isEmpty()) {
+            workHoursHolder.removeAll();
+            workHoursHolder.add(
+                    grid,
+                    paganation.buttonHolder(Math.toIntExact(workDoneService.getTotalPagesInQuickActions(id, from, to)))
+            );
+        }
+        else{
+            workHoursHolder.removeAll();
+            workHoursHolder.add(
+                    commonComponents.noDataFoundImproved(String.format("No data was found in the range of %s - %s",from,to),null,null)
+            );
+        }
 
     }
 
@@ -842,5 +1012,15 @@ public class EmployeeGrid {
         paganation.updateUIFromExternal(1);
     }
 
+    public void closeAllDialogs() {
+
+        allDialogs.forEach(dialog -> {
+            if (dialog.isOpened()) {
+                dialog.close();
+            }
+        });
+
+        allDialogs.clear();
+    }
 
 }

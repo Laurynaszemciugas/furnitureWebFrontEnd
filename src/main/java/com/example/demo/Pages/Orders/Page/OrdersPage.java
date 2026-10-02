@@ -372,53 +372,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
     }
 
 
-//    public void updateUIData(){
-//
-//        verticalLayout.removeAll();
-//
-//        HorizontalLayout sidesHolder = new HorizontalLayout();
-//        sidesHolder.setWidthFull();
-//        sidesHolder.addClassName("layout-flex");
-//
-//
-//        VerticalLayout leftSide = new VerticalLayout();
-//        leftSide.setWidthFull();
-//        leftSide.setMaxHeight("1000px");
-//
-//
-//
-////        Scroller left = ordersLeftSide.orderFeedHolder(
-////                ordersService.getOrderFeedData(filterData));
-//
-//        updateFeed();
-//
-//        leftSide.add(
-//                filterMemory,
-//                left,
-//                paganation.buttonHolder(
-//                        Math.toIntExact((ordersService.getPageCount(filterData)))));
-//
-//        VerticalLayout right = ordersRightSide.rightSideOrderInfo();
-//
-//        // LEFT SIDE
-//        leftSide.setWidth("250px");
-//
-//        // RIGHT SIDE
-//        right.setMaxWidth("1000px");
-//
-//
-//        sidesHolder.add(leftSide, right);
-//        sidesHolder.expand(leftSide);
-//
-//
-//
-//
-//
-//        verticalLayout.add(
-//                briefOrderPageExplanation.briefExplanation(),
-//                orderMiniStats.miniStatHolder(ordersService.getMiniStats(common.dateCrafter(0,0,0,0,true),common.dateCrafter(0,1,0,0,true))),
-//                sidesHolder);
-//    }
+
 
     public void setNewPage(){
         filterData.setPage(0);

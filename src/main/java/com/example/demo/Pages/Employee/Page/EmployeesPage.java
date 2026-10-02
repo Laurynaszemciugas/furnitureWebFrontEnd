@@ -15,6 +15,7 @@ import com.example.demo.Pages.Employee.Page.Components.EmployeeFilters;
 import com.example.demo.Pages.Employee.Page.Components.EmployeeGrid;
 import com.example.demo.Pages.Employee.Page.Components.EmployeeMiniStats;
 import com.example.demo.Services.EmployeeService.EmployeeService;
+import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.WorkDoneService.WorkDoneService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
@@ -34,6 +35,7 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
     Common common;
     EmployeeService employeeService;
     WorkDoneService workDoneService;
+    OrdersService ordersService;
 
     VerticalLayout verticalLayout = new VerticalLayout();
 
@@ -56,14 +58,15 @@ public class EmployeesPage extends VerticalLayout implements BeforeEnterObserver
     Div gridHolder = new Div();
 
 
-    public EmployeesPage(CommonComponents commonComponents, Common common, EmployeeService employeeService,WorkDoneService workDoneService) {
+    public EmployeesPage(CommonComponents commonComponents, Common common, EmployeeService employeeService,WorkDoneService workDoneService,OrdersService ordersService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.employeeService = employeeService;
+        this.ordersService = ordersService;
         this.employeeBriefExplanations = new EmployeeBriefExplanations(commonComponents,common);
         this.employeeMiniStats = new EmployeeMiniStats(commonComponents,common);
         this.employeeFilters = new EmployeeFilters(commonComponents,common);
-        this.employeeGrid = new EmployeeGrid(commonComponents,common,employeeService,workDoneService);
+        this.employeeGrid = new EmployeeGrid(commonComponents,common,employeeService,workDoneService,ordersService);
 
         this.paganation = new Paganation();
         this.currentFilterDisplay = new CurrentFilterDisplay(commonComponents,common);

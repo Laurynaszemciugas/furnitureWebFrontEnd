@@ -68,6 +68,7 @@ public class MaterialGrid {
     // realoding works like thos there is dialogmemory which stores every dialog main dialog created it can be 30 at max and min of 5 if updated inside the main page the http will update the page that will cause this page to keep the memory but remake the grid than openthedialog will store the id which
     // dialog needs to be open it opens it
     Map<Long,Dialog> dialogMemory = new HashMap<>();
+    List<Dialog> allDialogs = new ArrayList<>();
     Long openTheDialog = 0L;
 
 
@@ -166,6 +167,10 @@ public class MaterialGrid {
         vv.setPadding(false);
         vv.setSpacing(false);
         vv.setWidthFull();
+
+        vv.addDetachListener(ew -> {
+            closeAllDialogs();
+        });
 
 
 
@@ -370,6 +375,7 @@ public class MaterialGrid {
 
 
             Dialog dialog = new Dialog();
+            allDialogs.add(dialog);
             dialog.setWidth("1000px");
 
 
@@ -620,12 +626,17 @@ public class MaterialGrid {
         grid.setItems(stockMovementGrids);
 
         Dialog dialog = new Dialog();
+        allDialogs.add(dialog);
         dialog.setWidth("700px");
         Button close = new Button("Back",ee-> dialog.close());
         dialog.getFooter().add(close);
 
 
         HorizontalLayout h = new HorizontalLayout();
+
+
+
+
         h.setWidthFull();
         h.addClassName("layout-flex");
 
@@ -674,6 +685,7 @@ public class MaterialGrid {
     public void connectedProducts(MaterialBriefDto e){
 
         Dialog dialog = new Dialog();
+        allDialogs.add(dialog);
         dialog.setWidth("700px");
         Button close = new Button("Back",ee-> dialog.close());
         dialog.getFooter().add(close);
@@ -880,6 +892,7 @@ public class MaterialGrid {
     public void updateStock(MaterialBriefDto e){
 
         Dialog dialog = new Dialog();
+        allDialogs.add(dialog);
         dialog.setWidth("500px");
 
         VerticalLayout main = new VerticalLayout();
@@ -1135,6 +1148,7 @@ public class MaterialGrid {
     public void changeDeliveryDate(MaterialBriefDto eee){
 
         Dialog dialog = new Dialog();
+        allDialogs.add(dialog);
         dialog.setWidth("350px");
 
 
@@ -1422,6 +1436,17 @@ public class MaterialGrid {
         dialog1.add(
                 common.loadingOverlay("Reloading data", UI.getCurrent())
         );
+    }
+
+    public void closeAllDialogs() {
+
+        allDialogs.forEach(dialog -> {
+            if (dialog.isOpened()) {
+                dialog.close();
+            }
+        });
+
+        allDialogs.clear();
     }
 
 

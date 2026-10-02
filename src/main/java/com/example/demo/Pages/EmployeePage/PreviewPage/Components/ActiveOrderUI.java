@@ -2,15 +2,18 @@ package com.example.demo.Pages.EmployeePage.PreviewPage.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderStepsToComplete;
 import com.example.demo.ControllerModels.CommonDtos.OrderStepsJoin.OrderStepCompletionLogs;
 import com.example.demo.ControllerModels.CommonDtos.Orders;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
 import com.example.demo.ControllerModels.CommonDtos.User;
+import com.example.demo.ControllerModels.CommonDtos.UserSettings;
 import com.example.demo.Enums.ImageLogic;
 import com.example.demo.Enums.Priority;
 import com.example.demo.Enums.ProductFinishStepStatus;
+import com.example.demo.Enums.Role;
 import com.example.demo.Services.Orders.OrdersService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -46,6 +49,8 @@ public class ActiveOrderUI {
     Consumer<Boolean> reload;
     Consumer<Boolean> reloadOutSide;
 
+    SessionCrafter sessionCrafter;
+
 
     Long currentOrderId = 0L;
 
@@ -55,6 +60,9 @@ public class ActiveOrderUI {
         this.commonComponents = commonComponents;
         this.common = common;
         this.ordersService = ordersService;
+
+        this.sessionCrafter = new SessionCrafter();
+
     }
 
 
@@ -429,6 +437,9 @@ public class ActiveOrderUI {
 
     public VerticalLayout stepCrafter(List<OrderStepCompletionLogs> logs, Long id, Long stepId, String stepName, String stepDesc, Long totalSteps, ProductFinishStepStatus status, User emp, LocalDateTime create, Long totalStepsCompleted, String productSKU){
 
+
+        Role userRole = sessionCrafter.extractSession("user_role", Role.class);
+
         Dialog logDialog = logsDialogCrafter(logs,stepName);
 
 
@@ -465,6 +476,7 @@ public class ActiveOrderUI {
                     expand.setIcon(commonComponents.iconCrafter(VaadinIcon.ANGLE_UP,"25px","BLUE"));
                 }
             }
+
 
 
 
@@ -648,6 +660,13 @@ public class ActiveOrderUI {
                     competedItemsUI
             );
 
+
+            // make only employee be able to change the order stuff
+            if(!userRole.equals(Role.EMPLOYEE)){
+                finishStep.setVisible(false);
+                startStep.setVisible(false);
+                updateProgress.setVisible(false);
+            }
 
 
 

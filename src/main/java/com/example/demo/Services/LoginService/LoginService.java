@@ -6,6 +6,7 @@ import com.example.demo.ControllerModels.CommonDtos.User;
 import com.example.demo.ControllerModels.CommonDtos.UserSettings;
 import com.example.demo.ControllerModels.Error.ErrorResponse;
 import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
+import com.example.demo.Enums.Role;
 import com.example.demo.Pages.Orders.Page.OrdersPage;
 import com.vaadin.flow.component.UI;
 import lombok.Setter;
@@ -54,8 +55,9 @@ public class LoginService {
 
 
         UserSettings userSettings = httpCallLogic.HttpCall("user/getUserSettings", HttpMethod.GET, null, UserSettings.class, false);
-
+        Role userRole = httpCallLogic.HttpCall("user/getUserRole", HttpMethod.GET, null, Role.class, false);
         sessionCrafter.createSession("settings",userSettings);
+        sessionCrafter.createSession("user_role",userRole);
 
 
         if(userSettings != null){

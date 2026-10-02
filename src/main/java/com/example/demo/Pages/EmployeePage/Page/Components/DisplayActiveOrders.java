@@ -2,10 +2,13 @@ package com.example.demo.Pages.EmployeePage.Page.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderStepsToComplete;
 import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
+import com.example.demo.ControllerModels.CommonDtos.UserSettings;
 import com.example.demo.Enums.ImageLogic;
 import com.example.demo.Enums.Priority;
+import com.example.demo.Enums.Role;
 import com.example.demo.Services.EmployeeService.EmployeeActiveOrders;
 import com.example.demo.Services.Orders.OrdersService;
 import com.vaadin.flow.component.UI;
@@ -28,12 +31,18 @@ public class DisplayActiveOrders {
     CommonComponents commonComponents;
     Common common;
 
+
     OrdersService ordersService;
+
+    SessionCrafter sessionCrafter;
 
     public DisplayActiveOrders(CommonComponents commonComponents, Common common, OrdersService ordersService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.ordersService = ordersService;
+
+        this.sessionCrafter = new SessionCrafter();
+
     }
 
     public VerticalLayout myActiveOrders(List<EmployeeActiveOrders> employeeActiveOrders){
@@ -123,7 +132,7 @@ public class DisplayActiveOrders {
     public VerticalLayout activeOrdersPreview(Priority priority, Long id, String mainImage, String productName, String productSKU, Long howMany, Long totalSteps, Long totalStepsCompleted, List<OrderStepsToComplete> stepsList, List<ProductMaterials> productMaterials){
 
 
-
+        Role role = sessionCrafter.extractSession("user_role", Role.class);
 
         // REM
         HorizontalLayout stepsRequired = new HorizontalLayout();
@@ -142,12 +151,12 @@ public class DisplayActiveOrders {
         h.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         h.addClassName("layout-flex");
 
-        Image image = commonComponents.imageCrafter(mainImage,"100px","100px","5px");
+        Image image = commonComponents.imageCrafter(mainImage.isBlank()? "No_picture.png" : mainImage,"100px","100px","5px");
 
         VerticalLayout nameSku = new VerticalLayout();
         nameSku.setMaxWidth("150px");
 
-        Span productNameSpan =  commonComponents.spanCrafterWordNoHide(productName,"stat-example");
+        Span productNameSpan =  commonComponents.spanCrafterWordNoHide("order - #"+id,"stat-example");
         Tooltip.forComponent(productNameSpan)
                 .withText(productName);
 
@@ -233,6 +242,9 @@ public class DisplayActiveOrders {
                 h
         );
 
+        if(role.equals(Role.ADMIN)){
+            viewDetails.setText("Expand");
+        }
 
 
         return v;
