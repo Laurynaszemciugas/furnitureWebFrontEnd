@@ -4,7 +4,6 @@ import { injectGlobalCss } from 'Frontend/generated/jar-resources/theme-util.js'
 
 import { css, unsafeCSS, registerStyles } from '@vaadin/vaadin-themable-mixin';
 import $cssFromFile_0 from 'Frontend/MainCSS.css?inline';
-import $cssFromFile_1 from 'Frontend/COLOR.css?inline';
 import '@vaadin/vertical-layout/src/vaadin-vertical-layout.js';
 import '@vaadin/app-layout/src/vaadin-app-layout.js';
 import 'Frontend/google-signin.js';
@@ -115,7 +114,6 @@ import 'Frontend/generated/jar-resources/virtualListConnector.js';
 import '@vaadin/vaadin-lumo-styles/vaadin-iconset.js';
 
 injectGlobalWebcomponentCss($cssFromFile_0.toString());
-injectGlobalWebcomponentCss($cssFromFile_1.toString());
 const loadOnDemand = (key) => { return Promise.resolve(0); }
 window.Vaadin = window.Vaadin || {};
 window.Vaadin.Flow = window.Vaadin.Flow || {};
