@@ -2,17 +2,12 @@ package com.example.demo.Services.ActionTrackerService;
 
 
 import com.example.demo.Common.Logic.HttpCallLogic;
-import com.example.demo.ControllerModels.ActionLogs.ActionLogFeed;
-import com.example.demo.ControllerModels.CommonDtos.ActionTracker;
-import com.example.demo.ControllerModels.Filter.ActionLog.ActionLogFilterHolder;
-import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
-import com.example.demo.ControllerModels.Material.MaterialBriefDto;
-import com.example.demo.Pages.Reports.Common.ReportMiniStatHolder;
+import com.example.demo.DTOS.ActionLogs.ActionLogFeed;
+import com.example.demo.FilterDTO.ActionLog.ActionLogFilterHolder;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;

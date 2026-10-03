@@ -1,10 +1,9 @@
 package com.example.demo.Services.WorkDoneService;
 
 import com.example.demo.Common.Logic.HttpCallLogic;
-import com.example.demo.ControllerModels.CommonDtos.WorkDay;
-import com.example.demo.ControllerModels.CommonDtos.WorkDone;
-import com.example.demo.ControllerModels.Error.ErrorResponse;
-import com.example.demo.ControllerModels.User.ProfileInformation;
+import com.example.demo.Entity.WorkDay;
+import com.example.demo.Entity.WorkDone;
+import com.example.demo.DTOS.Error.ErrorResponse;
 import com.example.demo.DTOS.WorkDay.WorkDayMiniStats;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;

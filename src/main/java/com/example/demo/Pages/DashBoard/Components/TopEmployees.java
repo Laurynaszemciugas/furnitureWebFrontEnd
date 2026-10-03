@@ -2,7 +2,7 @@ package com.example.demo.Pages.DashBoard.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.DashBoard.TopEmployeesModel;
+import com.example.demo.DTOS.DashBoard.TopEmployeesModel;
 import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;

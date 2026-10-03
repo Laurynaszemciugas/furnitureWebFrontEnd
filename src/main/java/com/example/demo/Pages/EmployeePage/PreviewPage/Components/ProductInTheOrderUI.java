@@ -2,10 +2,10 @@ package com.example.demo.Pages.EmployeePage.PreviewPage.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
-import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderStepsToComplete;
-import com.example.demo.ControllerModels.CommonDtos.Orders;
-import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductMaterials;
+import com.example.demo.Entity.OrderJoin.OrderProducts;
+import com.example.demo.Entity.OrderJoin.OrderStepsToComplete;
+import com.example.demo.Entity.Orders;
+import com.example.demo.Entity.ProductJoin.ProductMaterials;
 import com.example.demo.Enums.ImageLogic;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;

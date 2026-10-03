@@ -1,6 +1,6 @@
 package com.example.demo.ChartsGraphs.DashBoard;
 
-import com.example.demo.ControllerModels.Common.GraphDataDateValue;
+import com.example.demo.DTOS.Common.GraphDataDateValue;
 import com.vaadin.flow.component.html.Div;
 import org.springframework.stereotype.Service;
 

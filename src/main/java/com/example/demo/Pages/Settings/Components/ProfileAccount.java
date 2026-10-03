@@ -3,11 +3,11 @@ package com.example.demo.Pages.Settings.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SinglePhotoLogic;
-import com.example.demo.ControllerModels.CommonDtos.User;
-import com.example.demo.ControllerModels.CommonDtos.UserSettings;
-import com.example.demo.ControllerModels.User.AccountOverview;
-import com.example.demo.ControllerModels.User.PersonalPrefrences;
-import com.example.demo.ControllerModels.User.ProfileInformation;
+import com.example.demo.Entity.User;
+import com.example.demo.Entity.UserSettings;
+import com.example.demo.DTOS.User.AccountOverview;
+import com.example.demo.DTOS.User.PersonalPrefrences;
+import com.example.demo.DTOS.User.ProfileInformation;
 import com.example.demo.Enums.*;
 import com.example.demo.Services.LoginService.LoginService;
 import com.example.demo.Services.UserService.UserService;
@@ -25,7 +25,6 @@ import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 
-import java.lang.reflect.Member;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 

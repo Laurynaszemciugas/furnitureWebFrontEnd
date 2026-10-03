@@ -2,8 +2,8 @@ package com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.CommonDtos.CreateReport.Report;
-import com.example.demo.ControllerModels.CommonDtos.CreateReport.ReportItems;
+import com.example.demo.Entity.CreateReport.Report;
+import com.example.demo.Entity.CreateReport.ReportItems;
 import com.example.demo.Enums.DashboardWidget;
 import com.example.demo.Enums.ReportCategory;
 import com.example.demo.Enums.Widget;

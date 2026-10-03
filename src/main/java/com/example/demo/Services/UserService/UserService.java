@@ -1,20 +1,16 @@
 package com.example.demo.Services.UserService;
 
 import com.example.demo.Common.Logic.HttpCallLogic;
-import com.example.demo.ControllerModels.CommonDtos.User;
-import com.example.demo.ControllerModels.Error.ErrorResponse;
-import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
-import com.example.demo.ControllerModels.Material.MaterialBriefDto;
-import com.example.demo.ControllerModels.User.AccountOverview;
-import com.example.demo.ControllerModels.User.Appearance;
-import com.example.demo.ControllerModels.User.PersonalPrefrences;
-import com.example.demo.ControllerModels.User.ProfileInformation;
+import com.example.demo.Entity.User;
+import com.example.demo.DTOS.Error.ErrorResponse;
+import com.example.demo.DTOS.User.AccountOverview;
+import com.example.demo.DTOS.User.Appearance;
+import com.example.demo.DTOS.User.PersonalPrefrences;
+import com.example.demo.DTOS.User.ProfileInformation;
 import lombok.Setter;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Consumer;
 
 @Service

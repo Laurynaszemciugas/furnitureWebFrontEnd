@@ -2,15 +2,11 @@ package com.example.demo.Pages.DashBoard.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
-import com.example.demo.ControllerModels.DashBoard.DashBoardPageData;
+import com.example.demo.DTOS.DashBoard.DashBoardPageData;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.DashBoard.Components.*;
 import com.example.demo.Services.Dashboard.DashBoardService;
 import com.example.demo.ChartsGraphs.DashBoard.DashBoardCharts;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;

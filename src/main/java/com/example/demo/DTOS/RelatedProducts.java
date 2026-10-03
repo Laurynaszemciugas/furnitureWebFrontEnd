@@ -1,7 +1,6 @@
 package com.example.demo.DTOS;
 
 import com.example.demo.Enums.Category;
-import com.example.demo.Enums.ProductCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

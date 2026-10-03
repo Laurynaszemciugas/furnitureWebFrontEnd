@@ -3,7 +3,7 @@ package com.example.demo.Pages.Material.Page.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.CurrentFilterDisplay;
-import com.example.demo.ControllerModels.Filter.Material.MaterialFilterHolder;
+import com.example.demo.FilterDTO.Material.MaterialFilterHolder;
 import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.MaterialType;
 import com.example.demo.Enums.Stock;

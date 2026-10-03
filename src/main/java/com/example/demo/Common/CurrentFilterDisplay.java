@@ -1,8 +1,7 @@
 package com.example.demo.Common;
 
 import com.example.demo.Common.Logic.SessionCrafter;
-import com.example.demo.ControllerModels.Filter.Common.FilterMeta;
-import com.vaadin.copilot.shaded.checkerframework.checker.units.qual.C;
+import com.example.demo.FilterDTO.Common.FilterMeta;
 import com.vaadin.copilot.shaded.guava.base.Objects;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;

@@ -3,9 +3,7 @@ package com.example.demo.Pages.Material.MaterialAddEdit;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ObjectConverter;
-import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
-import com.example.demo.ControllerModels.Common.CommonImagesData;
-import com.example.demo.ControllerModels.CommonDtos.Materials;
+import com.example.demo.DTOS.BreadCrums.BreadCrumsDto;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Common.Logic.ProductEditImage;
 import com.example.demo.Pages.Material.MaterialAddEdit.Components.RightSideMaterials;
@@ -13,14 +11,10 @@ import com.example.demo.Services.AI.AIService;
 import com.example.demo.Services.Material.MaterialService;
 
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Route(value = "MaterialAdd", layout = MainLayout.class)
 public class MaterialAddPage extends VerticalLayout implements BeforeEnterObserver {

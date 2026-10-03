@@ -2,9 +2,9 @@ package com.example.demo.Pages.Orders.Page.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.CommonDtos.Employee;
-import com.example.demo.ControllerModels.CommonDtos.EmployeeJoin.OrderEmployees;
-import com.example.demo.ControllerModels.CommonDtos.Orders;
+import com.example.demo.Entity.Employee;
+import com.example.demo.Entity.EmployeeJoin.OrderEmployees;
+import com.example.demo.Entity.Orders;
 import com.example.demo.DTOS.ComboBoxEmployees;
 import com.example.demo.Enums.EmployeeRole;
 import com.example.demo.Enums.OrderStatus;

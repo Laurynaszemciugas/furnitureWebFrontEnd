@@ -1,13 +1,11 @@
 package com.example.demo.Common;
 
-import com.example.demo.ControllerModels.CommonDtos.ExtraDetails;
-import com.example.demo.ControllerModels.CommonDtos.ProductJoin.ProductFinishSteps;
+import com.example.demo.Entity.ExtraDetails;
+import com.example.demo.Entity.ProductJoin.ProductFinishSteps;
 import com.example.demo.Enums.*;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Getter

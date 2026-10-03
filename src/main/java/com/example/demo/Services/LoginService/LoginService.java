@@ -2,15 +2,12 @@ package com.example.demo.Services.LoginService;
 
 import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.Common.Logic.SessionCrafter;
-import com.example.demo.ControllerModels.CommonDtos.User;
-import com.example.demo.ControllerModels.CommonDtos.UserSettings;
-import com.example.demo.ControllerModels.Error.ErrorResponse;
-import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
+import com.example.demo.Entity.User;
+import com.example.demo.Entity.UserSettings;
+import com.example.demo.DTOS.Error.ErrorResponse;
 import com.example.demo.Enums.Role;
-import com.example.demo.Pages.Orders.Page.OrdersPage;
 import com.vaadin.flow.component.UI;
 import lombok.Setter;
-import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 

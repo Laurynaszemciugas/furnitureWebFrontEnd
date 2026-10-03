@@ -1,10 +1,8 @@
 package com.example.demo.Services.EmployeeService;
 
 
-import com.example.demo.ControllerModels.CommonDtos.Employee;
-import com.example.demo.ControllerModels.CommonDtos.Orders;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.demo.Entity.Employee;
+import com.example.demo.Entity.Orders;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

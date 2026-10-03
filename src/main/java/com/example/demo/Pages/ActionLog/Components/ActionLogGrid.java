@@ -3,14 +3,8 @@ package com.example.demo.Pages.ActionLog.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.Common.Logic.SessionCrafter;
-import com.example.demo.ControllerModels.ActionLogs.ActionLogFeed;
-import com.example.demo.ControllerModels.CommonDtos.UserSettings;
-import com.example.demo.ControllerModels.Material.MaterialBriefDto;
+import com.example.demo.DTOS.ActionLogs.ActionLogFeed;
 import com.example.demo.Enums.ActionDesciptionEnum;
-import com.example.demo.Enums.ActiveInactive;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Image;
@@ -20,7 +14,6 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import org.springframework.http.HttpMethod;
 
 import java.util.List;
 

@@ -2,10 +2,10 @@ package com.example.demo.Pages.Orders.OrderAdd.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
-import com.example.demo.ControllerModels.CommonDtos.Orders;
-import com.example.demo.ControllerModels.CommonDtos.Product;
-import com.example.demo.ControllerModels.Orders.OrderAddProducts;
+import com.example.demo.Entity.OrderJoin.OrderProducts;
+import com.example.demo.Entity.Orders;
+import com.example.demo.Entity.Product;
+import com.example.demo.DTOS.Orders.OrderAddProducts;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.button.Button;

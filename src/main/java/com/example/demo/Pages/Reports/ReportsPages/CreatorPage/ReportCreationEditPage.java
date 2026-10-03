@@ -2,7 +2,7 @@ package com.example.demo.Pages.Reports.ReportsPages.CreatorPage;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
+import com.example.demo.DTOS.BreadCrums.BreadCrumsDto;
 import com.example.demo.Common.ColorSelector;
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.CustomReportPageBuilder;
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.LeftSideReportCreate;

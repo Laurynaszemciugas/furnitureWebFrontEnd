@@ -3,12 +3,10 @@ package com.example.demo.Pages.EmployeePage.AvailableOrderPage.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.CurrentFilterDisplay;
-import com.example.demo.ControllerModels.Filter.ActionLog.ActionLogFilterHolder;
-import com.example.demo.ControllerModels.Filter.EmployeeAvailableOrderFilter.EmployeeAvailableOrderFilter;
+import com.example.demo.FilterDTO.EmployeeAvailableOrderFilter.EmployeeAvailableOrderFilter;
 import com.example.demo.Enums.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -16,7 +14,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.function.Consumer;
 
 @Setter

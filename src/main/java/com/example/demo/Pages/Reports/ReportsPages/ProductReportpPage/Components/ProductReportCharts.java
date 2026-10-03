@@ -2,16 +2,10 @@ package com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage.Component
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.Common.GraphDataDateValue;
-import com.example.demo.ControllerModels.Common.GraphDataLongValue;
-import com.example.demo.ControllerModels.Orders.OrderReportPieChart;
-import com.example.demo.Enums.Widths;
-import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.RecentOrdersReportPage;
-import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.TopCustomerDto;
+import com.example.demo.DTOS.Common.GraphDataLongValue;
 import com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage.DTO.ProductLowStockList;
 import com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage.DTO.ProductPerformanceReport;
 import com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage.DTO.ProductReportPieChart;
-import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;

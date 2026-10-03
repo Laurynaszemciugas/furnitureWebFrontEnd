@@ -1,8 +1,8 @@
 package com.example.demo.Common.Logic;
 
 import com.example.demo.Common.Common;
-import com.example.demo.ControllerModels.Error.ErrorResponse;
-import com.example.demo.ControllerModels.Error.FrontEndError;
+import com.example.demo.DTOS.Error.ErrorResponse;
+import com.example.demo.DTOS.Error.FrontEndError;
 import com.example.demo.Enums.Warnings;
 import com.example.demo.ErrorHandling.Exseptions.HttpCallException;
 import lombok.SneakyThrows;

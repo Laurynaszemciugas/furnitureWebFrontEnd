@@ -1,14 +1,12 @@
 package com.example.demo.Common;
 
-import com.example.demo.ControllerModels.CommonDtos.User;
-import com.example.demo.Enums.EmployeeAcIn;
 import com.example.demo.Enums.EmployeeDepartment;
 import com.example.demo.Enums.EmployeeRole;
 import com.example.demo.Enums.EmploymentType;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor

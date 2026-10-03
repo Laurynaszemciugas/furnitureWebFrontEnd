@@ -3,7 +3,7 @@ package com.example.demo.Pages.Employee.Page.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.CurrentFilterDisplay;
-import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
+import com.example.demo.FilterDTO.Employee.EmployeeFilterHolder;
 import com.example.demo.Enums.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;

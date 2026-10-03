@@ -2,8 +2,6 @@ package com.example.demo.Services.InternetScraping;
 
 import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.Common.Logic.InternetScraper.PriceResult;
-import com.example.demo.ControllerModels.Material.MaterialInfo;
-import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 

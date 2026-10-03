@@ -2,8 +2,8 @@ package com.example.demo.Pages.Reports.ReportsPages.CreatorPage;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
-import com.example.demo.ControllerModels.CommonDtos.CreateReport.Report;
+import com.example.demo.DTOS.BreadCrums.BreadCrumsDto;
+import com.example.demo.Entity.CreateReport.Report;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Common.ColorSelector;
 import com.example.demo.Pages.Reports.Common.CommonBriefPageExplanation;
@@ -11,7 +11,6 @@ import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.Custom
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.LeftSideReportCreate;
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components.RightSideReportCreate;
 import com.example.demo.Services.CustomReportService;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;

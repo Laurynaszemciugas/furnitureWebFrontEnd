@@ -1,0 +1,24 @@
+package com.example.demo.DTOS.Products;
+
+import com.example.demo.Enums.Category;
+import com.example.demo.Enums.Visibility;
+import lombok.*;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class ProductFeedModel {
+
+    private Long id;
+    private String imageUrl;
+    private String productName;
+    private Category category;
+    private double price;
+    private Long stockQuantity;
+    private Long lowStockThreshold;
+
+    private double discount;
+    private double discountedPrice;
+    private Visibility visibility;
+}

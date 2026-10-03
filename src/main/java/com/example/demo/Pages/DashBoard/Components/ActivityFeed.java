@@ -3,8 +3,8 @@ package com.example.demo.Pages.DashBoard.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SessionCrafter;
-import com.example.demo.ControllerModels.CommonDtos.UserSettings;
-import com.example.demo.ControllerModels.DashBoard.ActivityFeedModel;
+import com.example.demo.Entity.UserSettings;
+import com.example.demo.DTOS.DashBoard.ActivityFeedModel;
 import com.example.demo.Services.Orders.OrdersService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -16,7 +16,6 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

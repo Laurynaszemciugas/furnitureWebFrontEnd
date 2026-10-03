@@ -1,17 +1,14 @@
 package com.example.demo.Services.EmployeeService;
 
 import com.example.demo.Common.Logic.HttpCallLogic;
-import com.example.demo.ControllerModels.Common.MiniStatHolder;
-import com.example.demo.ControllerModels.CommonDtos.Employee;
-import com.example.demo.ControllerModels.CommonDtos.Materials;
-import com.example.demo.ControllerModels.DashBoard.DashBoardEmployeeMiniInfo;
-import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialUsageInfo;
-import com.example.demo.ControllerModels.DashBoard.TopEmployeesModel;
-import com.example.demo.ControllerModels.Employee.EmployeeBriefDto;
-import com.example.demo.ControllerModels.Error.ErrorResponse;
-import com.example.demo.ControllerModels.Filter.Employee.EmployeeFilterHolder;
+import com.example.demo.DTOS.Common.MiniStatHolder;
+import com.example.demo.Entity.Employee;
+import com.example.demo.DTOS.DashBoard.DashBoardEmployeeMiniInfo;
+import com.example.demo.DTOS.DashBoard.TopEmployeesModel;
+import com.example.demo.DTOS.Employee.EmployeeBriefDto;
+import com.example.demo.DTOS.Error.ErrorResponse;
+import com.example.demo.FilterDTO.Employee.EmployeeFilterHolder;
 import com.example.demo.DTOS.ComboBoxEmployees;
-import com.example.demo.DTOS.ComboBoxMaterial;
 import com.example.demo.Enums.EmployeeAcIn;
 import lombok.Setter;
 import lombok.SneakyThrows;

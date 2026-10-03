@@ -1,12 +1,12 @@
 package com.example.demo.Services.Products;
 
 import com.example.demo.Common.Logic.HttpCallLogic;
-import com.example.demo.ControllerModels.Common.GraphDataLongValue;
-import com.example.demo.ControllerModels.Common.MiniStatHolder;
-import com.example.demo.ControllerModels.Error.ErrorResponse;
-import com.example.demo.ControllerModels.Filter.Prodcut.ProductFilterHolder;
-import com.example.demo.ControllerModels.Orders.OrderAddProducts;
-import com.example.demo.ControllerModels.Products.ProductFeedModel;
+import com.example.demo.DTOS.Common.GraphDataLongValue;
+import com.example.demo.DTOS.Common.MiniStatHolder;
+import com.example.demo.DTOS.Error.ErrorResponse;
+import com.example.demo.FilterDTO.Prodcut.ProductFilterHolder;
+import com.example.demo.DTOS.Orders.OrderAddProducts;
+import com.example.demo.DTOS.Products.ProductFeedModel;
 
 import com.example.demo.Pages.Reports.Common.ReportMiniStatHolder;
 import com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage.DTO.ProductLowStockList;

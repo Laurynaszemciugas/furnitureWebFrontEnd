@@ -2,8 +2,7 @@ package com.example.demo.Services;
 
 
 import com.example.demo.Common.Logic.HttpCallLogic;
-import com.example.demo.ControllerModels.CommonDtos.CreateReport.Report;
-import com.example.demo.ControllerModels.Error.ErrorResponse;
+import com.example.demo.DTOS.Error.ErrorResponse;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;

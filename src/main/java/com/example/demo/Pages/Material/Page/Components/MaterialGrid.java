@@ -5,15 +5,12 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.InternetScraper.Scraper;
 import com.example.demo.Common.Logic.InternetScraper.View;
 import com.example.demo.Common.Paganation;
-import com.example.demo.ControllerModels.Filter.Material.MaterialViewOnProductUsageFilter;
-import com.example.demo.ControllerModels.Material.MaterialBriefDto;
-import com.example.demo.ControllerModels.StockMovement.StockMovementGrid;
+import com.example.demo.FilterDTO.Material.MaterialViewOnProductUsageFilter;
+import com.example.demo.DTOS.Material.MaterialBriefDto;
+import com.example.demo.DTOS.StockMovement.StockMovementGrid;
 import com.example.demo.DTOS.RelatedProducts;
 import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.Category;
-import com.example.demo.Enums.MaterialType;
-import com.example.demo.Enums.Stock;
-import com.example.demo.Pages.DashBoard.Components.QuickAction;
 import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -35,18 +32,14 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.popover.Popover;
 import com.vaadin.flow.component.popover.PopoverPosition;
-import com.vaadin.flow.component.popover.PopoverVariant;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.dom.Style;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.function.Consumer;
 
 @Setter
 public class MaterialGrid {

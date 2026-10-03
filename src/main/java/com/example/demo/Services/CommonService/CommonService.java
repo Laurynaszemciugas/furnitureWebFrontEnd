@@ -1,9 +1,7 @@
 package com.example.demo.Services.CommonService;
 
 import com.example.demo.Common.Logic.HttpCallLogic;
-import com.example.demo.ControllerModels.CommonDtos.Materials;
-import com.example.demo.ControllerModels.CommonDtos.Orders;
-import com.example.demo.ControllerModels.Error.ErrorResponse;
+import com.example.demo.Entity.Materials;
 import com.example.demo.DTOS.ComboBoxMaterial;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;

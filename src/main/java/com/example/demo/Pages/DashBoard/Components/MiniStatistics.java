@@ -2,10 +2,10 @@ package com.example.demo.Pages.DashBoard.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.DashBoard.DashBoardEmployeeMiniInfo;
-import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialStock;
-import com.example.demo.ControllerModels.DashBoard.DashBoardMaterialUsageInfo;
-import com.example.demo.ControllerModels.DashBoard.DashBoardMonthlyOrdersCompleted;
+import com.example.demo.DTOS.DashBoard.DashBoardEmployeeMiniInfo;
+import com.example.demo.DTOS.DashBoard.DashBoardMaterialStock;
+import com.example.demo.DTOS.DashBoard.DashBoardMaterialUsageInfo;
+import com.example.demo.DTOS.DashBoard.DashBoardMonthlyOrdersCompleted;
 import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.example.demo.Services.Material.MaterialService;
 import com.example.demo.Services.Orders.OrdersService;

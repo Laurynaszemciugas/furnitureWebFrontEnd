@@ -1,8 +1,8 @@
 package com.example.demo.Services.Dashboard;
 
 
-import com.example.demo.ControllerModels.Common.GraphDataDateValue;
-import com.example.demo.ControllerModels.DashBoard.*;
+import com.example.demo.DTOS.Common.GraphDataDateValue;
+import com.example.demo.DTOS.DashBoard.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

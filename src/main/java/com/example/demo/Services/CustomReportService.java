@@ -2,12 +2,9 @@ package com.example.demo.Services;
 
 
 import com.example.demo.Common.Logic.HttpCallLogic;
-import com.example.demo.ControllerModels.CommonDtos.CreateReport.Report;
-import com.example.demo.ControllerModels.CommonDtos.Orders;
-import com.example.demo.ControllerModels.Error.ErrorResponse;
-import com.example.demo.ControllerModels.Orders.NewOrderFeedData;
+import com.example.demo.Entity.CreateReport.Report;
+import com.example.demo.DTOS.Error.ErrorResponse;
 import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.DTOS.CustomReportFeed;
-import com.vaadin.flow.component.UI;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;

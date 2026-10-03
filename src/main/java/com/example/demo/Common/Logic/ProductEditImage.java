@@ -4,7 +4,7 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.InternetScraper.ImagesScraper.ImageScraper;
 import com.example.demo.Common.Logic.InternetScraper.ImagesScraper.ImageScraperView;
-import com.example.demo.ControllerModels.Common.CommonImagesData;
+import com.example.demo.DTOS.Common.CommonImagesData;
 import com.example.demo.Enums.ImageLogic;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -19,8 +19,6 @@ import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.server.streams.InMemoryUploadHandler;
 import com.vaadin.flow.server.streams.UploadHandler;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

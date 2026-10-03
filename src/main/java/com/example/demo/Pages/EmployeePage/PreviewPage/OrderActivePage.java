@@ -4,7 +4,7 @@ package com.example.demo.Pages.EmployeePage.PreviewPage;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ImageViewer;
-import com.example.demo.ControllerModels.CommonDtos.Orders;
+import com.example.demo.Entity.Orders;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.EmployeePage.Components.PageDesc;
 import com.example.demo.Pages.EmployeePage.PreviewPage.Components.ActiveOrderUI;

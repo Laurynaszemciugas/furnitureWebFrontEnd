@@ -1,7 +1,7 @@
 package com.example.demo.Common;
 
 
-import com.example.demo.ControllerModels.Error.ErrorResponse;
+import com.example.demo.DTOS.Error.ErrorResponse;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -10,19 +10,9 @@ import com.vaadin.flow.component.textfield.NumberField;
 import lombok.SneakyThrows;
 import tools.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpTimeoutException;
-import java.time.Duration;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class AiCalls {

@@ -3,22 +3,14 @@ package com.example.demo.Pages.Reports.ReportsPages.OrderReports;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SessionCrafter;
-import com.example.demo.ControllerModels.BreadCrums.BreadCrumsDto;
-import com.example.demo.Enums.OrderStatus;
+import com.example.demo.DTOS.BreadCrums.BreadCrumsDto;
 import com.example.demo.Enums.Widths;
 import com.example.demo.MainLayout.MainLayout;
 import com.example.demo.Pages.Reports.Common.CommonBriefPageExplanation;
 import com.example.demo.Pages.Reports.Common.FromToDate;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.OrderReportMiniStatCrafter;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components.OrderReportCharts;
-import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.RecentOrdersReportPage;
-import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.TopCustomerDto;
 import com.example.demo.Services.Orders.OrdersService;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -27,7 +19,6 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Route(value = "OrderReport", layout = MainLayout.class)
 public class OrderReportPage extends VerticalLayout implements BeforeEnterObserver {

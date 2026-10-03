@@ -2,9 +2,8 @@ package com.example.demo.Pages.Reports.ReportsPages.OrderReports.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.Common.GraphDataDateValue;
-import com.example.demo.ControllerModels.Orders.OrderReportPieChart;
-import com.example.demo.Enums.Widths;
+import com.example.demo.DTOS.Common.GraphDataDateValue;
+import com.example.demo.DTOS.Orders.OrderReportPieChart;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.RecentOrdersReportPage;
 import com.example.demo.Pages.Reports.ReportsPages.OrderReports.DTOS.TopCustomerDto;
 import com.example.demo.Services.Orders.OrdersService;

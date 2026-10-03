@@ -1,0 +1,48 @@
+package com.example.demo.Entity;
+
+import com.example.demo.Enums.EmployeeAcIn;
+import com.example.demo.Enums.EmployeeRole;
+import com.example.demo.Enums.EmployeeDepartment;
+import com.example.demo.Enums.EmploymentType;
+import com.example.demo.Services.EmployeeService.EmployeeActiveOrders;
+import lombok.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class Employee {
+
+    private Long id;
+    private Double hourlyRate;
+    private Long productsFinished;
+    private String name;
+    private String lastName;
+    private String fullName;
+    private String gmail;
+
+    private String phoneNumber;
+    private LocalDate dateOfBirth;
+    private String address;
+    private String jobTittle;
+    private EmploymentType employmentType;
+
+    private String profileImage;
+
+    private byte[] imageData;
+
+    private EmployeeAcIn employeeAcIn;
+    private EmployeeRole employeeCategory;
+    private EmployeeDepartment employeeDepartment;
+    private User user;
+    private LocalDateTime created;
+
+    private List<EmployeeActiveOrders> employeeActiveOrders;
+
+
+}

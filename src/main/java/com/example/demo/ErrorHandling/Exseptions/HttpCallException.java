@@ -1,10 +1,9 @@
 package com.example.demo.ErrorHandling.Exseptions;
 
 
-import com.example.demo.ControllerModels.Error.FrontEndError;
+import com.example.demo.DTOS.Error.FrontEndError;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor

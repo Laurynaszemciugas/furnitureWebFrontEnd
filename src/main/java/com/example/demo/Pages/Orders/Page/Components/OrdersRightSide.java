@@ -2,8 +2,8 @@ package com.example.demo.Pages.Orders.Page.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.ControllerModels.CommonDtos.OrderJoin.OrderProducts;
-import com.example.demo.ControllerModels.CommonDtos.Orders;
+import com.example.demo.Entity.OrderJoin.OrderProducts;
+import com.example.demo.Entity.Orders;
 import com.example.demo.DTOS.ComboBoxEmployees;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Enums.PayMethod;
