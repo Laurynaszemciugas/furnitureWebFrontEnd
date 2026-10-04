@@ -10,6 +10,7 @@ import com.example.demo.DTOS.Error.ErrorResponse;
 import com.example.demo.FilterDTO.Employee.EmployeeFilterHolder;
 import com.example.demo.DTOS.ComboBoxEmployees;
 import com.example.demo.Enums.EmployeeAcIn;
+import com.example.demo.Pages.Reports.Common.ReportMiniStatHolder;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
@@ -97,6 +98,12 @@ public class EmployeeService {
     @SneakyThrows
     public List<TopEmployeesModel> getTopEmployeesModel() {
         return Arrays.stream(httpCallLogic.HttpCall("employee/getTopEmployeesModel", HttpMethod.GET,null , TopEmployeesModel[].class,false)).toList();
+    }
+
+
+    @SneakyThrows
+    public ReportMiniStatHolder getReportEmployeeMiNIStats(LocalDate from, LocalDate to, String jwt) {
+        return httpCallLogic.HttpCallWithJwt("employee/getReportEmployeeMiNIStats", HttpMethod.GET,String.format("%s/%s",from,to) , ReportMiniStatHolder.class,true,jwt);
     }
 
 }

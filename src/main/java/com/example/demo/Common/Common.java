@@ -199,7 +199,7 @@ public class Common {
         else{
             Span span = new Span();
             span.addClassName("stat-description");
-            span.setText(was + " Units sold");
+            span.setText(was + " Units");
             h.add(span);
         }
 

@@ -1,0 +1,146 @@
+package com.example.demo.Pages.Reports.ReportsPages.EmployeeReport;
+
+import com.example.demo.Common.Common;
+import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.DTOS.BreadCrums.BreadCrumsDto;
+import com.example.demo.Enums.Widths;
+import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.Pages.Reports.Common.CommonBriefPageExplanation;
+import com.example.demo.Pages.Reports.Common.FromToDate;
+import com.example.demo.Pages.Reports.ReportsPages.EmployeeReport.Components.EmployeeReportMiniStatCrafter;
+import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components.MaterialReportCharts;
+import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components.MaterialReportMiniStatCrafter;
+import com.example.demo.Services.EmployeeService.EmployeeService;
+import com.example.demo.Services.Material.MaterialService;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.router.Route;
+
+import java.time.LocalDate;
+
+@Route(value = "EmployeeReport", layout = MainLayout.class)
+public class EmloyeeReportPage extends VerticalLayout implements BeforeEnterObserver {
+
+
+    CommonComponents commonComponents;
+    Common common;
+    CommonBriefPageExplanation biefExplanation;
+    MaterialService materialService;
+
+    EmployeeService employeeService;
+
+    MaterialReportCharts charts;
+
+    EmployeeReportMiniStatCrafter orderReportMiniStatCrafter;
+
+    HorizontalLayout layout = new HorizontalLayout();
+
+    VerticalLayout briefExplanationMemory = new VerticalLayout();
+
+    SessionCrafter sessionCrafter;
+
+    String jwt;
+
+
+    public EmloyeeReportPage(CommonComponents commonComponents, Common common, MaterialService materialService,EmployeeService employeeService) {
+
+        this.commonComponents = commonComponents;
+        this.common = common;
+        this.biefExplanation = new CommonBriefPageExplanation(commonComponents, common);
+
+        this.employeeService = employeeService;
+
+        this.orderReportMiniStatCrafter = new EmployeeReportMiniStatCrafter(commonComponents, common,employeeService);
+
+        this.materialService = materialService;
+
+        this.charts = new MaterialReportCharts(commonComponents,common,materialService);
+
+        this.sessionCrafter = new SessionCrafter();
+
+
+        briefExplanationMemory.setPadding(false);
+        briefExplanationMemory.setWidthFull();
+        briefExplanationMemory.add(
+                commonComponents.breadCrums(new BreadCrumsDto("Reports", "Reports"),new BreadCrumsDto("Materials Report", null)),
+                biefExplanation.briefExplanation("Material report","#9768EF")
+        );
+
+        setPadding(false);
+        setSpacing(false);
+        setSizeFull();
+        setAlignItems(Alignment.CENTER);
+
+
+        addClassName("animation-page");
+
+        jwt = sessionCrafter.extractSession("JWT", String.class);
+
+    }
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
+
+        removeAll();
+
+
+        add(mainLayout());
+
+    }
+
+    public HorizontalLayout mainLayout() {
+
+
+        biefExplanation.setFromToDateConsumer(e->{
+            if(e.getFrom() == null && e.getTo() == null){
+                updateReports(new FromToDate(common.currentMonthStart(),common.nextMonthDate()));
+            }
+            else {
+                updateReports(e);
+            }
+        });
+
+        layout.setMaxWidth("1650px");
+        layout.setPadding(true);
+        layout.getStyle().set("margin-top", "5px");
+
+        layout.addClassName("layout-flex");
+
+
+        layout.add(
+                briefExplanationMemory,
+                orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#9768EF", Widths.FULL_WIDTH.getWidth(),jwt)
+
+        );
+
+        return layout;
+    }
+
+    public void updateReports(FromToDate fromToDate){
+        layout.removeAll();
+
+        LocalDate from  = fromToDate.getFrom();
+
+        LocalDate to = fromToDate.getTo();
+
+        layout.add(
+                briefExplanationMemory,
+                orderReportMiniStatCrafter.miniStatHolder(from, to, "#9768EF", Widths.FULL_WIDTH.getWidth(),jwt)
+//                charts.ProductByStatusChart(from, to,Widths.HALF_WIDTH.getWidth(),jwt),
+//                charts.ProductRevenueAccordingToMonth(from, to,Widths.HALF_WIDTH.getWidth(),jwt),
+//                charts.topCustomerOrder(from, to,Widths.HALF_WIDTH.getWidth(),jwt),
+//                charts.materialStockMovement(from, to,Widths.HALF_WIDTH.getWidth(),jwt)
+        );
+
+
+    }
+
+
+
+
+}
+
+
