@@ -2,6 +2,7 @@ package com.example.demo.Pages.Employee.Page.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
 import com.example.demo.Entity.WorkDay;
 import com.example.demo.Entity.WorkDone;
@@ -49,6 +50,9 @@ public class EmployeeGrid {
     WorkDoneService workDoneService;
     OrdersService ordersService;
 
+
+    SessionCrafter sessionCrafter;
+
     DisplayActiveOrders displayActiveOrders;
 
     Map<Long,Dialog> dialogMemory = new HashMap<>();
@@ -72,6 +76,8 @@ public class EmployeeGrid {
         this.workDoneService = workDoneService;
 
         this.ordersService = ordersService;
+
+        this.sessionCrafter = new SessionCrafter();
 
         this.paganation = new Paganation();
         this.displayActiveOrders = new DisplayActiveOrders(commonComponents,common,ordersService);
@@ -543,7 +549,9 @@ public class EmployeeGrid {
 
         viewAssignedOrdersHolder.removeAll();
 
-        List<EmployeeActiveOrders> workDones = ordersService.findEmployeeActiveOrders(filterData);
+        String jwt = sessionCrafter.extractSession("JWT", String.class);
+
+        List<EmployeeActiveOrders> workDones = ordersService.findEmployeeActiveOrders(filterData, jwt);
         Long pages = ordersService.findEmployeeActiveOrdersPages(filterData);
         Grid<EmployeeActiveOrders> grid = new Grid<>(EmployeeActiveOrders.class,false);
         grid.setItems(workDones);

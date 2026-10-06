@@ -2,7 +2,7 @@ package com.example.demo.Pages.Reports.Page;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.MainLayouts.Admin.MainLayout;
 import com.example.demo.Pages.Reports.Page.Components.BriefReportPageExplanation;
 import com.example.demo.Pages.Reports.Page.Components.MiniReportCard;
 import com.example.demo.Services.CustomReportService;

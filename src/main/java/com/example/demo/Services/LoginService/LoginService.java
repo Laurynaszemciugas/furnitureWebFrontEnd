@@ -57,7 +57,7 @@ public class LoginService {
         sessionCrafter.createSession("user_role",userRole);
 
 
-        if(userSettings != null){
+        if(userSettings != null && userRole.equals(Role.ADMIN)){
 
 
             switch (userSettings.getPageStart()){
@@ -73,6 +73,9 @@ public class LoginService {
 
             }
 
+        }
+        else if(userRole.equals(Role.EMPLOYEE)){
+            UI.getCurrent().navigate(userSettings.getEmployeePageStart());
         }
 
 

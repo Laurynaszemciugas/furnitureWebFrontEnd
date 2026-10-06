@@ -5,7 +5,7 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.DTOS.BreadCrums.BreadCrumsDto;
 import com.example.demo.Enums.Widths;
-import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.MainLayouts.Admin.MainLayout;
 import com.example.demo.Pages.Reports.Common.CommonBriefPageExplanation;
 import com.example.demo.Pages.Reports.Common.FromToDate;
 import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components.MaterialReportCharts;

@@ -5,7 +5,7 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ImageViewer;
 import com.example.demo.Entity.Orders;
-import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.MainLayouts.Admin.MainLayout;
 import com.example.demo.Pages.EmployeePage.Components.PageDesc;
 import com.example.demo.Pages.EmployeePage.PreviewPage.Components.ActiveOrderUI;
 import com.example.demo.Pages.EmployeePage.PreviewPage.Components.OrderDashboardMiniStat;
@@ -16,7 +16,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
-@Route(value = "OrderActive/:id", layout = MainLayout.class)
+@Route(value = "OrderActive/:id")
 public class OrderActivePage extends VerticalLayout implements BeforeEnterObserver {
 
 

@@ -7,7 +7,7 @@ import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.DTOS.BreadCrums.BreadCrumsDto;
 import com.example.demo.DTOS.Common.CommonImagesData;
 import com.example.demo.Entity.Product;
-import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.MainLayouts.Admin.MainLayout;
 import com.example.demo.Common.Logic.ProductEditImage;
 import com.example.demo.Pages.Products.Components.ProductEditRightSideFields;
 import com.example.demo.Common.ReviewCrafter;

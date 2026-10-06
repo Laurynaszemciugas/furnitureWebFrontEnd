@@ -4,7 +4,7 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.DTOS.BreadCrums.BreadCrumsDto;
-import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.MainLayouts.Admin.MainLayout;
 import com.example.demo.Common.Logic.ProductEditImage;
 import com.example.demo.Pages.Material.MaterialAddEdit.Components.RightSideMaterials;
 import com.example.demo.Services.AI.AIService;

@@ -8,7 +8,7 @@ import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
 import com.example.demo.DTOS.Employee.EmployeeBriefDto;
 import com.example.demo.FilterDTO.Employee.EmployeeFilterHolder;
-import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.MainLayouts.Admin.MainLayout;
 import com.example.demo.Pages.Employee.Page.Components.EmployeeBriefExplanations;
 import com.example.demo.Pages.Employee.Page.Components.EmployeeFilters;
 import com.example.demo.Pages.Employee.Page.Components.EmployeeGrid;

@@ -10,6 +10,7 @@ import com.example.demo.Enums.Priority;
 import com.example.demo.Enums.Role;
 import com.example.demo.Services.EmployeeService.EmployeeActiveOrders;
 import com.example.demo.Services.Orders.OrdersService;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -44,7 +45,7 @@ public class DisplayActiveOrders {
 
     }
 
-    public VerticalLayout myActiveOrders(List<EmployeeActiveOrders> employeeActiveOrders){
+    public Component myActiveOrders(List<EmployeeActiveOrders> employeeActiveOrders, boolean includeExtraData){
 
         VerticalLayout v = new VerticalLayout();
         v.setWidthFull();
@@ -58,7 +59,7 @@ public class DisplayActiveOrders {
         span.addClassNames("new-badge","status-in-progress");
 
 
-        Button viewAll = new Button("View all", e-> common.customNavigate("AvailableOrderPage"));
+        Button viewAll = new Button("View all", e-> common.customNavigate("ActiveOrderPage"));
         viewAll.setSuffixComponent(VaadinIcon.ANGLE_RIGHT.create());
 
         HorizontalLayout h = new HorizontalLayout();
@@ -121,9 +122,15 @@ public class DisplayActiveOrders {
                 grid
         );
 
+        if(!includeExtraData){
+            return grid;
+        }
+        else{
+            return v;
+        }
 
 
-        return v;
+
 
     }
 

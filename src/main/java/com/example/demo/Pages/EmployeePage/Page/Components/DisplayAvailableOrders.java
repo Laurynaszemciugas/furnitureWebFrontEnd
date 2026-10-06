@@ -57,23 +57,6 @@ public class DisplayAvailableOrders {
 
         HorizontalLayout h = new HorizontalLayout();
 
-        if(list == null || list.isEmpty()){
-            grid.setVisible(false);
-            v.add(
-                    commonComponents.noDataFound()
-            );
-        }
-        else{
-            h.add(
-                    commonComponents.spanCrafter("Orders", "stat-value")
-
-            );
-
-            grid.setVisible(true);
-        }
-
-
-
 
         if(includeExtra) {
 
@@ -83,19 +66,27 @@ public class DisplayAvailableOrders {
             Span span = commonComponents.spanCrafter(ordersService.findHowManyItemsAreAvailable() + " available", "stat-example");
             span.addClassNames("new-badge", "status-pending");
 
-            Button viewAll = new Button("View all");
+            Button viewAll = new Button("View all", e-> common.customNavigate("AvailableOrderPage"));
             viewAll.setSuffixComponent(VaadinIcon.ANGLE_RIGHT.create());
 
 
             h.setWidthFull();
             h.setPadding(false);
             h.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+
             h.add(
                     commonComponents.doubleValueRow(commonComponents.spanCrafter("Available orders", "activityFeed-name"), span),
                     commonComponents.spaceFiller(),
                     viewAll
             );
         }
+
+
+
+
+
+
+
 
 
 
@@ -234,6 +225,22 @@ public class DisplayAvailableOrders {
                 h,
                 grid
         );
+
+        if(list == null || list.isEmpty()){
+            grid.setVisible(false);
+            v.add(
+                    commonComponents.noDataFound()
+            );
+        }
+        else{
+            h.add(
+                    commonComponents.spanCrafter("Orders", "stat-value")
+
+            );
+
+            grid.setVisible(true);
+        }
+
 
 
         return v;

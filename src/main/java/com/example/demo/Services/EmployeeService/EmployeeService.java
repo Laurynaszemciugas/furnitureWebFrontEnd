@@ -1,6 +1,7 @@
 package com.example.demo.Services.EmployeeService;
 
 import com.example.demo.Common.Logic.HttpCallLogic;
+import com.example.demo.DTOS.Common.GraphDataLongValue;
 import com.example.demo.DTOS.Common.MiniStatHolder;
 import com.example.demo.Entity.Employee;
 import com.example.demo.DTOS.DashBoard.DashBoardEmployeeMiniInfo;
@@ -105,5 +106,14 @@ public class EmployeeService {
     public ReportMiniStatHolder getReportEmployeeMiNIStats(LocalDate from, LocalDate to, String jwt) {
         return httpCallLogic.HttpCallWithJwt("employee/getReportEmployeeMiNIStats", HttpMethod.GET,String.format("%s/%s",from,to) , ReportMiniStatHolder.class,true,jwt);
     }
+
+    @SneakyThrows
+    public List<GraphDataLongValue> getEmployeeReportBarChart(LocalDate from, LocalDate to, String jwt) {
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("employee/getEmployeeReportBarChart", HttpMethod.GET,String.format("%s/%s",from,to) , GraphDataLongValue[].class,true,jwt)).toList();
+    }
+
+
+
+
 
 }

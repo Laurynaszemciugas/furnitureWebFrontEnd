@@ -5,7 +5,7 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Entity.UserSettings;
 import com.example.demo.DTOS.User.Appearance;
-import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.MainLayouts.Admin.MainLayout;
 import com.example.demo.Services.UserService.UserService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;

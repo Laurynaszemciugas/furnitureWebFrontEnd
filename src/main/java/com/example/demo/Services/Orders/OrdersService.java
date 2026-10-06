@@ -245,9 +245,9 @@ public class OrdersService {
 
 
     @SneakyThrows
-    public List<EmployeeActiveOrders> findEmployeeActiveOrders(EmployeeActiveOrderFilter filter) {
+    public List<EmployeeActiveOrders> findEmployeeActiveOrders(EmployeeActiveOrderFilter filter, String jwt) {
 
-        return Arrays.stream(httpCallLogic.HttpCall("order/findEmployeeActiveOrders", HttpMethod.POST,filter, EmployeeActiveOrders[].class,false)).toList();
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("order/findEmployeeActiveOrders", HttpMethod.POST,filter, EmployeeActiveOrders[].class,false, jwt)).toList();
 
     }
 

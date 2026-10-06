@@ -7,7 +7,7 @@ import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
 import com.example.demo.DTOS.ActionLogs.ActionLogFeed;
 import com.example.demo.FilterDTO.ActionLog.ActionLogFilterHolder;
-import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.MainLayouts.Admin.MainLayout;
 import com.example.demo.Pages.ActionLog.Components.ActionLogFilters;
 import com.example.demo.Pages.ActionLog.Components.ActionLogGrid;
 import com.example.demo.Pages.ActionLog.Components.ActionLogsBriefExplanation;

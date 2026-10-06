@@ -32,6 +32,8 @@ public class UserSettings {
 
     private OrderProcessing orderProcessing;
 
+    private String employeePageStart;
+
     private PageStart pageStart;
 
     private User user;

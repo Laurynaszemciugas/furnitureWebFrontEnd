@@ -44,6 +44,7 @@ public class LoginPage extends VerticalLayout {
 
     public VerticalLayout login(){
         VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
 
         TextField textField1 = new TextField("Name");
         textField1.setValue("John@gmail.com");
@@ -61,8 +62,6 @@ public class LoginPage extends VerticalLayout {
             User user = new User();
             user.setGmail(textField1.getValue());
             user.setPassword(textField2.getValue());
-            System.out.println(user.getGmail());
-            System.out.println(user.getPassword());
             try {
                 loginService.getJWTToken(user);
                 loginService.createSettings();

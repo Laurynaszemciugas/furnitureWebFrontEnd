@@ -9,7 +9,7 @@ import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
 import com.example.demo.FilterDTO.Material.MaterialFilterHolder;
 import com.example.demo.DTOS.Material.MaterialBriefDto;
-import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.MainLayouts.Admin.MainLayout;
 import com.example.demo.Pages.Material.Page.Components.MaterialBriefExplanations;
 import com.example.demo.Pages.Material.Page.Components.MaterialFilters;
 import com.example.demo.Pages.Material.Page.Components.MaterialGrid;

@@ -1,4 +1,4 @@
-package com.example.demo.MainLayout;
+package com.example.demo.MainLayouts.Employee;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -20,7 +20,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.server.VaadinSession;
 
 @CssImport("./MainCSS.css")
-public class MainLayout extends AppLayout {
+public class EmployeeMainLayout extends AppLayout {
 
 
     CommonComponents commonComponents;
@@ -38,7 +38,7 @@ public class MainLayout extends AppLayout {
 
 
 
-    public MainLayout(CommonComponents commonComponents, Common common,LoginService loginService) {
+    public EmployeeMainLayout(CommonComponents commonComponents, Common common, LoginService loginService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.loginService = loginService;
@@ -157,14 +157,9 @@ public class MainLayout extends AppLayout {
 
 
         leftSideBar.add(
-                commonComponents.normalButtons("DashBoard","DashBoard",VaadinIcon.DASHBOARD),
-                commonComponents.normalButtons("Products/1","Products",VaadinIcon.PACKAGE),
-                commonComponents.normalButtons("Orders","Orders",VaadinIcon.CLIPBOARD),
-                commonComponents.normalButtons("Materials","Materials",VaadinIcon.STOCK),
-                commonComponents.normalButtons("Employees","Employees",VaadinIcon.USERS),
-                commonComponents.normalButtons("Reports","Reports",VaadinIcon.CHART_LINE),
-                commonComponents.normalButtons("Actions","Action logs",VaadinIcon.RECORDS),
-                commonComponents.normalButtons("Settings","Settings",VaadinIcon.COG),
+                commonComponents.normalButtons("EmployeesDashBoard","DashBoard",VaadinIcon.DASHBOARD),
+                commonComponents.normalButtons("AvailableOrderPage","Available",VaadinIcon.PACKAGE),
+                commonComponents.normalButtons("ActiveOrderPage","Active",VaadinIcon.CLIPBOARD),
                 logOut);
 
 

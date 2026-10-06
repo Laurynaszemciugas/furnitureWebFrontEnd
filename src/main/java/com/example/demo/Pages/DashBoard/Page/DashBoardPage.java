@@ -3,7 +3,7 @@ package com.example.demo.Pages.DashBoard.Page;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.DTOS.DashBoard.DashBoardPageData;
-import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.MainLayouts.Admin.MainLayout;
 import com.example.demo.Pages.DashBoard.Components.*;
 import com.example.demo.Services.Dashboard.DashBoardService;
 import com.example.demo.ChartsGraphs.DashBoard.DashBoardCharts;

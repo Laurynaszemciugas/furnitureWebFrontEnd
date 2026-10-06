@@ -3,11 +3,13 @@ package com.example.demo.Pages.EmployeePage.Page;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ImageViewer;
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Entity.OrderJoin.OrderStepsToComplete;
 import com.example.demo.Entity.WorkDay;
 import com.example.demo.Entity.WorkDone;
 import com.example.demo.FilterDTO.EmployeeActiveOrderFilter.EmployeeActiveOrderFilter;
-import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.MainLayouts.Admin.MainLayout;
+import com.example.demo.MainLayouts.Employee.EmployeeMainLayout;
 import com.example.demo.Pages.EmployeePage.Page.Components.DisplayActiveOrders;
 import com.example.demo.Pages.EmployeePage.Page.Components.DisplayAvailableOrders;
 import com.example.demo.Common.Logic.PageStuff.DefaultPageExplanation;
@@ -29,7 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Route(value = "EmployeesDashBoard", layout = MainLayout.class)
+@Route(value = "EmployeesDashBoard", layout = EmployeeMainLayout.class)
 public class EmployeePageDashboard extends VerticalLayout implements BeforeEnterObserver {
 
     CommonComponents commonComponents;
@@ -40,6 +42,8 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
     ImageViewer imageViewer;
 
     WorkDoneService workDoneService;
+
+    SessionCrafter sessionCrafter;
 
     // thigs to make page happen
 
@@ -55,6 +59,8 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         this.ordersService = ordersService;
         this.imageViewer = imageViewer;
         this.workDoneService = workDoneService;
+
+        this.sessionCrafter = new SessionCrafter();
 
         this.displayActiveOrders = new DisplayActiveOrders(commonComponents,common,ordersService);
 
@@ -98,6 +104,8 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
     public VerticalLayout mainLayout() {
 
+        String jwt = sessionCrafter.extractSession("JWT", String.class);
+
         VerticalLayout verticalLayout = new VerticalLayout();
 
         verticalLayout.setMaxWidth("1650px");
@@ -106,10 +114,10 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
         verticalLayout.add(
-                defaultPageExplanation.briefExplanation("Dashboard"),
+                defaultPageExplanation.briefExplanation("Employee Dashboard"),
                 dataAndWorkingHours(),
                 displayAvailableOrders.availableOrders(ordersService.getEmployeeOrderProjection(),true),
-                displayActiveOrders.myActiveOrders(ordersService.findEmployeeActiveOrders(new EmployeeActiveOrderFilter())));
+                displayActiveOrders.myActiveOrders(ordersService.findEmployeeActiveOrders(new EmployeeActiveOrderFilter(),jwt),true));
 
         return verticalLayout;
     }

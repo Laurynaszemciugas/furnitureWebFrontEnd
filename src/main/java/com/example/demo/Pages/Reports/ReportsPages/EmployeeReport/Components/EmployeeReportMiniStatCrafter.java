@@ -45,7 +45,7 @@ public class EmployeeReportMiniStatCrafter {
         miniStatHolders.add(
                 miniStatCrafter.miniStats(VaadinIcon.CART, "Total employees", items.getValue1ThisMonth(), common.lastMonthTrend(items.getValue1ThisMonth(), items.getValue1LastMonth(), fromDate, true), color, backgroundColor),
                 miniStatCrafter.miniStats(VaadinIcon.CLOCK, "Top performer", items.getValue2ThisMonth(), common.lastMonthTrend(items.getValue2LastMonth(), items.getValue2LastMonth(), fromDate, false), color, backgroundColor),
-                miniStatCrafter.miniStats(VaadinIcon.CHECK, "Average hours worked", items.getValue3LastMonth(), common.lastMonthTrend(items.getValue3ThisMonth(), items.getValue3ThisMonth(), fromDate, true), color, backgroundColor),
+                miniStatCrafter.miniStats(VaadinIcon.CHECK, "Average hours worked", items.getValue3ThisMonth(), common.lastMonthTrend(items.getValue3ThisMonth(), items.getValue3LastMonth(), fromDate, true), color, backgroundColor),
                 miniStatCrafter.miniStats(VaadinIcon.MONEY, "Labor cost", items.getValue4ThisMonth() + " Eur", common.lastMonthTrend(items.getValue4ThisMonth(), items.getValue4LastMonth(), fromDate, true), color, backgroundColor)
         );
 

@@ -5,12 +5,11 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.DTOS.BreadCrums.BreadCrumsDto;
 import com.example.demo.Enums.Widths;
-import com.example.demo.MainLayout.MainLayout;
+import com.example.demo.MainLayouts.Admin.MainLayout;
 import com.example.demo.Pages.Reports.Common.CommonBriefPageExplanation;
 import com.example.demo.Pages.Reports.Common.FromToDate;
+import com.example.demo.Pages.Reports.ReportsPages.EmployeeReport.Components.EmployeeReportCharts;
 import com.example.demo.Pages.Reports.ReportsPages.EmployeeReport.Components.EmployeeReportMiniStatCrafter;
-import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components.MaterialReportCharts;
-import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.Components.MaterialReportMiniStatCrafter;
 import com.example.demo.Services.EmployeeService.EmployeeService;
 import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -32,7 +31,7 @@ public class EmloyeeReportPage extends VerticalLayout implements BeforeEnterObse
 
     EmployeeService employeeService;
 
-    MaterialReportCharts charts;
+    EmployeeReportCharts charts;
 
     EmployeeReportMiniStatCrafter orderReportMiniStatCrafter;
 
@@ -57,7 +56,7 @@ public class EmloyeeReportPage extends VerticalLayout implements BeforeEnterObse
 
         this.materialService = materialService;
 
-        this.charts = new MaterialReportCharts(commonComponents,common,materialService);
+        this.charts = new EmployeeReportCharts(commonComponents,common,employeeService);
 
         this.sessionCrafter = new SessionCrafter();
 
@@ -112,7 +111,8 @@ public class EmloyeeReportPage extends VerticalLayout implements BeforeEnterObse
 
         layout.add(
                 briefExplanationMemory,
-                orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#9768EF", Widths.FULL_WIDTH.getWidth(),jwt)
+                orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#9768EF", Widths.FULL_WIDTH.getWidth(),jwt),
+                charts.employeeProductsMadeAccordingToCategory(common.currentMonthStart(), common.nextMonthDate(), Widths.HALF_WIDTH.getWidth(),jwt)
 
         );
 
