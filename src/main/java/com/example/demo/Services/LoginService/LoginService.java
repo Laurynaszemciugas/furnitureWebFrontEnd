@@ -6,6 +6,7 @@ import com.example.demo.Entity.User;
 import com.example.demo.Entity.UserSettings;
 import com.example.demo.DTOS.Error.ErrorResponse;
 import com.example.demo.Enums.Role;
+import com.example.demo.Pages.EmployeePage.Page.EmployeePageDashboard;
 import com.vaadin.flow.component.UI;
 import lombok.Setter;
 import org.springframework.http.HttpMethod;
@@ -75,7 +76,7 @@ public class LoginService {
 
         }
         else if(userRole.equals(Role.EMPLOYEE)){
-            UI.getCurrent().navigate(userSettings.getEmployeePageStart());
+            UI.getCurrent().navigate(EmployeePageDashboard.class);
         }
 
 
