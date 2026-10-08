@@ -6,9 +6,13 @@ import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Entity.User;
 import com.example.demo.Services.LoginService.LoginService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.dependency.JsModule;
@@ -37,6 +41,8 @@ public class LoginPage extends VerticalLayout {
         setPadding(false);
         setSpacing(false);
         setAlignItems(FlexComponent.Alignment.CENTER);
+        setJustifyContentMode(JustifyContentMode.CENTER);
+
 
         add(login());
     }
@@ -44,15 +50,29 @@ public class LoginPage extends VerticalLayout {
 
     public VerticalLayout login(){
         VerticalLayout v = new VerticalLayout();
+        v.setJustifyContentMode(JustifyContentMode.CENTER);
+        v.setAlignItems(Alignment.CENTER);
+        v.setWidth("400px");
         v.addClassName("island");
 
-        TextField textField1 = new TextField("Name");
-        textField1.setValue("John@gmail.com");
+        TextField gmailField = new TextField("Name");
+        gmailField.setWidthFull();
+        gmailField.setValue("John@gmail.com");
 
-        TextField textField2 = new TextField("Password");
-        textField2.setValue("John@gmail.com");
+        PasswordField passwordField = new PasswordField("Password");
+        passwordField.setWidthFull();
+        passwordField.setValue("John@gmail.com");
 
         Button button = new Button("Login");
+
+        Anchor dontHaveAnAccount = new Anchor("Don't have an account ?");
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setWidthFull();
+
+        h.add(
+                dontHaveAnAccount
+        );
 
 
 
@@ -60,8 +80,8 @@ public class LoginPage extends VerticalLayout {
 
         button.addClickListener(e->{
             User user = new User();
-            user.setGmail(textField1.getValue());
-            user.setPassword(textField2.getValue());
+            user.setGmail(gmailField.getValue());
+            user.setPassword(passwordField.getValue());
             try {
                 loginService.getJWTToken(user);
                 loginService.createSettings();
@@ -107,9 +127,20 @@ public class LoginPage extends VerticalLayout {
                 googleClientId
         );
 
-        v.add(textField1, textField2, button, googleButton);
+        Image logo = commonComponents.imageCrafter("No_picture.png","80px","80px","5px");
 
-        v.add(textField1,textField2,button,googleButton);
+        v.setSpacing(false);
+
+        v.add(
+                logo,
+                commonComponents.spanCrafterWordNoHide("Login page","activityFeed-name"),
+                gmailField,
+                passwordField,
+                button,
+                googleButton,
+                dontHaveAnAccount
+        );
+
 
         return  v;
     }
