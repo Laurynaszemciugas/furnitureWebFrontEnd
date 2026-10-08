@@ -5,6 +5,7 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Entity.User;
 import com.example.demo.Services.LoginService.LoginService;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Anchor;
@@ -80,10 +81,10 @@ public class LoginPage extends VerticalLayout {
         Button signIn = new Button("Sign in");
         signIn.addThemeVariants(ButtonVariant.PRIMARY);
 
-        Button dontHaveAnAccount = new Button("Sign up");
+        Button dontHaveAnAccount = new Button("Sign up", e-> UI.getCurrent().navigate(RegisterPage.class));
         dontHaveAnAccount.addClassName("color-button");
 
-        Button forgotPassword = new Button("Forgot password");
+        Button forgotPassword = new Button("Forgot password", e-> UI.getCurrent().navigate(ForgotPasswordPage.class));
         forgotPassword.addClassName("color-button");
 
         HorizontalLayout h = new HorizontalLayout();
