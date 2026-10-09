@@ -2,13 +2,16 @@ package com.example.demo.Services.LoginService;
 
 import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.DTOS.Auth.PasswordResetWithCode;
 import com.example.demo.Entity.User;
 import com.example.demo.Entity.UserSettings;
 import com.example.demo.DTOS.Error.ErrorResponse;
 import com.example.demo.Enums.Role;
+import com.example.demo.FilterDTO.Material.MaterialFilterHolder;
 import com.example.demo.Pages.EmployeePage.Page.EmployeePageDashboard;
 import com.vaadin.flow.component.UI;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
@@ -119,5 +122,22 @@ public class LoginService {
 
 
     }
+
+    @SneakyThrows
+    public void createPasswordResetGmailVerificationCode(String gmail) {
+
+        httpCallLogic.checkResponse(httpCallLogic.HttpCall("auth/createPasswordResetGmailVerificationCode", HttpMethod.GET,gmail, ErrorResponse.class,true),null,success,true);
+
+    }
+
+    @SneakyThrows
+    public void resetPasswordViaGmail(PasswordResetWithCode code) {
+
+        httpCallLogic.checkResponse(httpCallLogic.HttpCall("auth/resetPasswordViaGmail", HttpMethod.POST,code, ErrorResponse.class,false),null,success,true);
+
+    }
+
+
+
 
 }

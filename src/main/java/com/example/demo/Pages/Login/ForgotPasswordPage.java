@@ -2,6 +2,7 @@ package com.example.demo.Pages.Login;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Services.LoginService.LoginService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -9,6 +10,8 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 
 @Route("ForgotPassword")
@@ -18,9 +21,12 @@ public class ForgotPasswordPage extends VerticalLayout {
     CommonComponents commonComponents;
     Common common;
 
-    public ForgotPasswordPage(CommonComponents commonComponents, Common common) {
+    LoginService loginService;
+
+    public ForgotPasswordPage(CommonComponents commonComponents, Common common, LoginService loginService) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.loginService = loginService;
 
 
 
@@ -67,6 +73,10 @@ public class ForgotPasswordPage extends VerticalLayout {
                 commonComponents.spanCrafterWordNoHide("Gmail verification","activityFeed-name")
         );
 
+        gmailVerification.addClickListener(e->{
+           add(resetViaGmail());
+        });
+
         HorizontalLayout recoveryPin = new HorizontalLayout();
         recoveryPin.setAlignItems(Alignment.CENTER);
         recoveryPin.setJustifyContentMode(JustifyContentMode.CENTER);
@@ -80,6 +90,7 @@ public class ForgotPasswordPage extends VerticalLayout {
         );
 
         HorizontalLayout optionHolder = new HorizontalLayout();
+        optionHolder.addClassName("layout-flex");
         optionHolder.setWidthFull();
         optionHolder.add(
                 gmailVerification,
@@ -91,6 +102,48 @@ public class ForgotPasswordPage extends VerticalLayout {
                 commonComponents.spanCrafterWordNoHide("Recovery method","activityFeed-name"),
                 optionHolder,
                 backToLogin
+        );
+
+
+        return v;
+    }
+
+
+    public VerticalLayout resetViaGmail(){
+
+        VerticalLayout v = new VerticalLayout();
+        v.setAlignItems(Alignment.CENTER);
+        v.getStyle().setOpacity("97%");
+        v.addClassName("island");
+        v.setWidth("650px");
+
+        TextField gmailField = new TextField("Enter your gmail");
+
+        Button getCode = new Button("Code");
+
+        TextField newPassword = new TextField("New password");
+
+        TextField reEnterPassword = new TextField("Re enter password");
+
+        IntegerField code = new IntegerField("Code");
+
+        Button changePassword = new Button();
+
+        getCode.addClickListener(e->{
+
+            loginService.createPasswordResetGmailVerificationCode(gmailField.getValue());
+
+        });
+
+
+
+        v.add(
+                gmailField,
+                getCode,
+                newPassword,
+                reEnterPassword,
+                code,
+                changePassword
         );
 
 
