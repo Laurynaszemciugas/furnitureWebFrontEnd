@@ -14,6 +14,7 @@ public class PasswordResetWithCode {
     private String code;
     private String password;
     private String reEnterPassword;
+    private String gmail;
 
 
 }

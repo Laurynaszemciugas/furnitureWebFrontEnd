@@ -2,16 +2,21 @@ package com.example.demo.Pages.Login;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.DTOS.Auth.PasswordResetWithCode;
 import com.example.demo.Services.LoginService.LoginService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.router.Route;
 
 @Route("ForgotPassword")
@@ -22,6 +27,8 @@ public class ForgotPasswordPage extends VerticalLayout {
     Common common;
 
     LoginService loginService;
+
+    VerticalLayout mainLayout = new VerticalLayout();
 
     public ForgotPasswordPage(CommonComponents commonComponents, Common common, LoginService loginService) {
         this.commonComponents = commonComponents;
@@ -43,8 +50,13 @@ public class ForgotPasswordPage extends VerticalLayout {
                 .set("background-repeat", "no-repeat");
 
 
+        mainLayout.setAlignItems(Alignment.CENTER);
 
         add(
+                mainLayout
+        );
+
+        mainLayout.add(
                 forgotPasswordChooseType()
         );
 
@@ -54,6 +66,7 @@ public class ForgotPasswordPage extends VerticalLayout {
     public VerticalLayout forgotPasswordChooseType(){
 
         VerticalLayout v = new VerticalLayout();
+        v.addClassName("layout-flex");
         v.setAlignItems(Alignment.CENTER);
         v.getStyle().setOpacity("97%");
         v.addClassName("island");
@@ -74,7 +87,10 @@ public class ForgotPasswordPage extends VerticalLayout {
         );
 
         gmailVerification.addClickListener(e->{
-           add(resetViaGmail());
+           mainLayout.removeAll();
+           mainLayout.add(
+                   resetViaGmail()
+           );
         });
 
         HorizontalLayout recoveryPin = new HorizontalLayout();
@@ -105,7 +121,7 @@ public class ForgotPasswordPage extends VerticalLayout {
         );
 
 
-        return v;
+       return v;
     }
 
 
@@ -115,35 +131,92 @@ public class ForgotPasswordPage extends VerticalLayout {
         v.setAlignItems(Alignment.CENTER);
         v.getStyle().setOpacity("97%");
         v.addClassName("island");
-        v.setWidth("650px");
+        v.setWidth("400px");
+
+        Button getCode = new Button("Get code");
+        getCode.addThemeVariants(ButtonVariant.PRIMARY);
 
         TextField gmailField = new TextField("Enter your gmail");
+        gmailField.setWidthFull();
 
-        Button getCode = new Button("Code");
+
+
+        HorizontalLayout layout = new HorizontalLayout(gmailField, getCode);
+        layout.getStyle().setGap("10px");
+        layout.setWidthFull();
+        layout.setAlignItems(FlexComponent.Alignment.END);
+        layout.setJustifyContentMode(JustifyContentMode.CENTER);
+        layout.setWidthFull();
+
+
+
+
 
         TextField newPassword = new TextField("New password");
+        newPassword.setWidthFull();
 
         TextField reEnterPassword = new TextField("Re enter password");
+        reEnterPassword.setWidthFull();
 
-        IntegerField code = new IntegerField("Code");
+        IntegerField code = new IntegerField("Received code");
+        code.setWidthFull();
 
-        Button changePassword = new Button();
 
-        getCode.addClickListener(e->{
+        Button changePassword = new Button("Change password");
+        changePassword.addThemeVariants(ButtonVariant.PRIMARY);
 
-            loginService.createPasswordResetGmailVerificationCode(gmailField.getValue());
-
+        changePassword.addClickListener(e->{
+            PasswordResetWithCode passwordResetWithCode = new PasswordResetWithCode();
+            passwordResetWithCode.setPassword(newPassword.getValue());
+            passwordResetWithCode.setReEnterPassword(reEnterPassword.getValue());
+            passwordResetWithCode.setCode(code.getValue().toString());
+            passwordResetWithCode.setGmail(gmailField.getValue());
+            loginService.resetPasswordViaGmail(passwordResetWithCode);
         });
 
 
 
-        v.add(
-                gmailField,
-                getCode,
+        VerticalLayout vv = new VerticalLayout();
+        vv.setVisible(false);
+        vv.setPadding(false);
+        vv.add(
+                commonComponents.spanCrafterWordNoHide("Change password","activityFeed-name"),
                 newPassword,
                 reEnterPassword,
                 code,
                 changePassword
+        );
+
+
+
+        getCode.addClickListener(e->{
+
+
+
+            if(!gmailField.getValue().isEmpty()) {
+
+                vv.setVisible(true);
+                getCode.setText("Re-get code");
+                loginService.createPasswordResetGmailVerificationCode(gmailField.getValue());
+
+
+            }
+            else{
+                commonComponents.showNotification("Gmail field is empty",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.ERROR);
+                gmailField.setErrorMessage("Gmail field cannot be empty");
+
+            }
+        });
+
+         Button goBack = new Button("Back to sign in", e-> UI.getCurrent().navigate(LoginPage.class));
+         goBack.addThemeVariants(ButtonVariant.PRIMARY);
+
+
+        v.add(
+                commonComponents.spanCrafterWordNoHide("Receive code","activityFeed-name"),
+                layout,
+                vv,
+                goBack
         );
 
 
