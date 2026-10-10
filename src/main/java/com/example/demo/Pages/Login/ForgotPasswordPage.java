@@ -260,7 +260,7 @@ public class ForgotPasswordPage extends VerticalLayout {
 
         changePassword.addClickListener(e->{
 
-            if(newPassword.isEmpty() || reEnterPassword.isEmpty())
+            if(newPassword.isEmpty() || reEnterPassword.isEmpty() || code.isEmpty() || gmailField.isEmpty()){
 
             PasswordResetWithCode passwordResetWithCode = new PasswordResetWithCode();
             passwordResetWithCode.setPassword(newPassword.getValue());
