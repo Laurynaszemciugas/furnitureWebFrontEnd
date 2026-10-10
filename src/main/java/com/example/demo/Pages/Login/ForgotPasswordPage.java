@@ -15,6 +15,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.router.Route;
@@ -73,7 +74,6 @@ public class ForgotPasswordPage extends VerticalLayout {
         v.setWidth("650px");
 
         Button backToLogin = new Button("Back to sign in",e-> UI.getCurrent().navigate(LoginPage.class));
-        backToLogin.addThemeVariants(ButtonVariant.PRIMARY);
 
         HorizontalLayout gmailVerification = new HorizontalLayout();
         gmailVerification.setAlignItems(Alignment.CENTER);
@@ -104,6 +104,13 @@ public class ForgotPasswordPage extends VerticalLayout {
                 commonComponents.itemInsideTheBox(VaadinIcon.CODE,"Blue","rgba(59, 130, 246, 0.18)"),
                 commonComponents.spanCrafterWordNoHide("Recovery pin","activityFeed-name")
         );
+
+        recoveryPin.addClickListener(e->{
+           mainLayout.removeAll();
+           mainLayout.add(
+                   resetViaRecoveryCode()
+           );
+        });
 
         HorizontalLayout optionHolder = new HorizontalLayout();
         optionHolder.addClassName("layout-flex");
@@ -177,6 +184,7 @@ public class ForgotPasswordPage extends VerticalLayout {
 
 
         VerticalLayout vv = new VerticalLayout();
+        vv.setAlignItems(Alignment.CENTER);
         vv.setVisible(false);
         vv.setPadding(false);
         vv.add(
@@ -209,12 +217,82 @@ public class ForgotPasswordPage extends VerticalLayout {
         });
 
          Button goBack = new Button("Back to sign in", e-> UI.getCurrent().navigate(LoginPage.class));
-         goBack.addThemeVariants(ButtonVariant.PRIMARY);
 
 
         v.add(
                 commonComponents.spanCrafterWordNoHide("Receive code","activityFeed-name"),
                 layout,
+                vv,
+                goBack
+        );
+
+
+        return v;
+    }
+
+
+
+    public VerticalLayout resetViaRecoveryCode(){
+
+        VerticalLayout v = new VerticalLayout();
+        v.setAlignItems(Alignment.CENTER);
+        v.getStyle().setOpacity("97%");
+        v.addClassName("island");
+        v.setWidth("400px");
+
+
+        TextField gmailField = new TextField("Enter your gmail");
+        gmailField.setWidthFull();
+
+
+        PasswordField newPassword = new PasswordField("New password");
+        newPassword.setWidthFull();
+
+        PasswordField reEnterPassword = new PasswordField("Re enter password");
+        reEnterPassword.setWidthFull();
+
+        PasswordField code = new PasswordField("Recovery code");
+        code.setWidthFull();
+
+
+        Button changePassword = new Button("Change password");
+        changePassword.addThemeVariants(ButtonVariant.PRIMARY);
+
+        changePassword.addClickListener(e->{
+
+            if(newPassword.isEmpty() || reEnterPassword.isEmpty())
+
+            PasswordResetWithCode passwordResetWithCode = new PasswordResetWithCode();
+            passwordResetWithCode.setPassword(newPassword.getValue());
+            passwordResetWithCode.setReEnterPassword(reEnterPassword.getValue());
+            passwordResetWithCode.setCode(code.getValue().toString());
+            passwordResetWithCode.setGmail(gmailField.getValue());
+            loginService.resetPasswordViaRecoveryCode(passwordResetWithCode);
+        });
+
+
+
+        VerticalLayout vv = new VerticalLayout();
+        vv.setAlignItems(Alignment.CENTER);
+        vv.setPadding(false);
+        vv.add(
+                commonComponents.spanCrafterWordNoHide("Change password","activityFeed-name"),
+                gmailField,
+                newPassword,
+                reEnterPassword,
+                code,
+                changePassword
+        );
+
+
+
+
+
+        Button goBack = new Button("Back to sign in", e-> UI.getCurrent().navigate(LoginPage.class));
+
+
+
+        v.add(
                 vv,
                 goBack
         );

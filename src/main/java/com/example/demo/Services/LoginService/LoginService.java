@@ -138,6 +138,13 @@ public class LoginService {
 
     }
 
+    @SneakyThrows
+    public void resetPasswordViaRecoveryCode(PasswordResetWithCode code) {
+
+        httpCallLogic.checkResponse(httpCallLogic.HttpCall("auth/resetPasswordViaRecoveryCode", HttpMethod.POST,code, ErrorResponse.class,false), "Login",success,true);
+
+    }
+
 
 
 
