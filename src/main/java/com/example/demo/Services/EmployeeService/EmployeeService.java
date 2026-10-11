@@ -1,8 +1,10 @@
 package com.example.demo.Services.EmployeeService;
 
 import com.example.demo.Common.Logic.HttpCallLogic;
+import com.example.demo.DTOS.Common.GraphDataDateValue;
 import com.example.demo.DTOS.Common.GraphDataLongValue;
 import com.example.demo.DTOS.Common.MiniStatHolder;
+import com.example.demo.DTOS.Employee.EmployeeReportTopPerformers;
 import com.example.demo.Entity.Employee;
 import com.example.demo.DTOS.DashBoard.DashBoardEmployeeMiniInfo;
 import com.example.demo.DTOS.DashBoard.TopEmployeesModel;
@@ -111,6 +113,16 @@ public class EmployeeService {
     public List<GraphDataLongValue> getEmployeeReportBarChart(LocalDate from, LocalDate to, String jwt) {
         return Arrays.stream(httpCallLogic.HttpCallWithJwt("employee/getEmployeeReportBarChart", HttpMethod.GET,String.format("%s/%s",from,to) , GraphDataLongValue[].class,true,jwt)).toList();
     }
+
+
+    public List<GraphDataDateValue> hoursWorked(LocalDate from, LocalDate to, String jwt) {
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("employee/hoursWorked", HttpMethod.GET,String.format("%s/%s",from,to) , GraphDataDateValue[].class,true,jwt)).toList();
+    }
+
+    public List<EmployeeReportTopPerformers> allPerformers(LocalDate from, LocalDate to, String jwt) {
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("employee/allPerformers", HttpMethod.GET,String.format("%s/%s",from,to) , EmployeeReportTopPerformers[].class,true,jwt)).toList();
+    }
+
 
 
 

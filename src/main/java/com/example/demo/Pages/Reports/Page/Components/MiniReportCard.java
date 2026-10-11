@@ -99,18 +99,18 @@ public class MiniReportCard {
                         "Productivity trends"
                 ),
 
-                reportCardCrafter(
-                        VaadinIcon.MONEY,
-                        "View Financial Report",
-                        "Reports/Financial",
-                        "Financial Reports",
-                        "Get insights into revenue and expenses.",
-                        "#EC6766",
-                        "Revenue overview",
-                        "Expense breakdown",
-                        "Profit analysis",
-                        "Cash flow trends"
-                ),
+//                reportCardCrafter(
+//                        VaadinIcon.MONEY,
+//                        "View Financial Report",
+//                        "Reports/Financial",
+//                        "Financial Reports",
+//                        "Get insights into revenue and expenses.",
+//                        "#EC6766",
+//                        "Revenue overview",
+//                        "Expense breakdown",
+//                        "Profit analysis",
+//                        "Cash flow trends"
+//                ),
 
                 reportCardCrafter(
                         VaadinIcon.NEWSPAPER,

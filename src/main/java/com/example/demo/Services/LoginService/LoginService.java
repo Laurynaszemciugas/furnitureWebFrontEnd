@@ -3,6 +3,7 @@ package com.example.demo.Services.LoginService;
 import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.DTOS.Auth.PasswordResetWithCode;
+import com.example.demo.Entity.Materials;
 import com.example.demo.Entity.User;
 import com.example.demo.Entity.UserSettings;
 import com.example.demo.DTOS.Error.ErrorResponse;
@@ -32,6 +33,17 @@ public class LoginService {
         this.httpCallLogic = httpCallLogic;
         this.sessionCrafter = new SessionCrafter();
     }
+
+
+
+
+
+    @SneakyThrows
+    public void register(User user) {
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("auth/signup", HttpMethod.POST, user, ErrorResponse.class,false),"Login",success,true);
+    }
+
 
     public void getJWTToken(User user){
 

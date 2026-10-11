@@ -71,7 +71,7 @@ public class ForgotPasswordPage extends VerticalLayout {
         v.setAlignItems(Alignment.CENTER);
         v.getStyle().setOpacity("97%");
         v.addClassName("island");
-        v.setWidth("650px");
+        v.setMaxWidth("650px");
 
         Button backToLogin = new Button("Back to sign in",e-> UI.getCurrent().navigate(LoginPage.class));
 
@@ -260,14 +260,19 @@ public class ForgotPasswordPage extends VerticalLayout {
 
         changePassword.addClickListener(e->{
 
-            if(newPassword.isEmpty() || reEnterPassword.isEmpty() || code.isEmpty() || gmailField.isEmpty()){
+            if(newPassword.isEmpty() || reEnterPassword.isEmpty() || code.isEmpty() || gmailField.isEmpty()) {
 
-            PasswordResetWithCode passwordResetWithCode = new PasswordResetWithCode();
-            passwordResetWithCode.setPassword(newPassword.getValue());
-            passwordResetWithCode.setReEnterPassword(reEnterPassword.getValue());
-            passwordResetWithCode.setCode(code.getValue().toString());
-            passwordResetWithCode.setGmail(gmailField.getValue());
-            loginService.resetPasswordViaRecoveryCode(passwordResetWithCode);
+                commonComponents.showNotification("Fields cannot be empty",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.ERROR);
+
+            }
+            else{
+                PasswordResetWithCode passwordResetWithCode = new PasswordResetWithCode();
+                passwordResetWithCode.setPassword(newPassword.getValue());
+                passwordResetWithCode.setReEnterPassword(reEnterPassword.getValue());
+                passwordResetWithCode.setCode(code.getValue().toString());
+                passwordResetWithCode.setGmail(gmailField.getValue());
+                loginService.resetPasswordViaRecoveryCode(passwordResetWithCode);
+            }
         });
 
 

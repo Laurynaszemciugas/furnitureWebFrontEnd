@@ -1,4 +1,4 @@
-package com.example.demo.Pages;
+package com.example.demo.Pages.Verification;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -33,6 +33,10 @@ public class gmailVerification extends VerticalLayout implements BeforeEnterObse
     Common common;
     CommonComponents commonComponents;
 
+
+    Boolean firstCall = null;
+    int times = 0;
+
     public gmailVerification( Common common,CommonComponents commonComponents,HttpCallLogic httpCallLogic,GmailVerificationService gmailVerificationService) {
 
         this.common = common;
@@ -45,6 +49,7 @@ public class gmailVerification extends VerticalLayout implements BeforeEnterObse
         setSpacing(false);
         setSizeFull();
         setAlignItems(FlexComponent.Alignment.CENTER);
+        setJustifyContentMode(JustifyContentMode.CENTER);
 
 
         addClassName("animation-page");
@@ -84,13 +89,28 @@ public class gmailVerification extends VerticalLayout implements BeforeEnterObse
 
 
 
+
         gmailVerificationService.setSuccess(e->{
-            if(e){
-                verticalLayout.add(successScreen());
+
+
+
+            if(firstCall == null){
+                firstCall = e;
             }
-            else{
-                verticalLayout.add(failedScreen());
+
+
+
+            if(times == 0) {
+
+                times++;
+                if (e) {
+
+                    verticalLayout.add(successScreen());
+                } else {
+                    verticalLayout.add(failedScreen());
+                }
             }
+
         });
 
         gmailVerificationService.sendGmailCode(itemChoice);

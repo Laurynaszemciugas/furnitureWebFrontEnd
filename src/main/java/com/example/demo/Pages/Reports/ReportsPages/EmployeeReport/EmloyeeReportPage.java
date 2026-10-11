@@ -112,7 +112,9 @@ public class EmloyeeReportPage extends VerticalLayout implements BeforeEnterObse
         layout.add(
                 briefExplanationMemory,
                 orderReportMiniStatCrafter.miniStatHolder(common.currentMonthStart(), common.nextMonthDate(), "#9768EF", Widths.FULL_WIDTH.getWidth(),jwt),
-                charts.employeeProductsMadeAccordingToCategory(common.currentMonthStart(), common.nextMonthDate(), Widths.HALF_WIDTH.getWidth(),jwt)
+                charts.employeeProductsMadeAccordingToCategory(common.currentMonthStart(), common.nextMonthDate(), Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.employeeHoursLineGraph(common.currentMonthStart(), common.nextMonthDate(), Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.topEmployees(common.currentMonthStart(), common.nextMonthDate(), Widths.FULL_WIDTH.getWidth(),jwt)
 
         );
 
@@ -128,11 +130,11 @@ public class EmloyeeReportPage extends VerticalLayout implements BeforeEnterObse
 
         layout.add(
                 briefExplanationMemory,
-                orderReportMiniStatCrafter.miniStatHolder(from, to, "#9768EF", Widths.FULL_WIDTH.getWidth(),jwt)
-//                charts.ProductByStatusChart(from, to,Widths.HALF_WIDTH.getWidth(),jwt),
-//                charts.ProductRevenueAccordingToMonth(from, to,Widths.HALF_WIDTH.getWidth(),jwt),
-//                charts.topCustomerOrder(from, to,Widths.HALF_WIDTH.getWidth(),jwt),
-//                charts.materialStockMovement(from, to,Widths.HALF_WIDTH.getWidth(),jwt)
+                orderReportMiniStatCrafter.miniStatHolder(from, to, "#9768EF", Widths.FULL_WIDTH.getWidth(),jwt),
+                charts.employeeProductsMadeAccordingToCategory(from, to, Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.employeeHoursLineGraph(from, to, Widths.HALF_WIDTH.getWidth(),jwt),
+                charts.topEmployees(from, to, Widths.FULL_WIDTH.getWidth(),jwt)
+
         );
 
 

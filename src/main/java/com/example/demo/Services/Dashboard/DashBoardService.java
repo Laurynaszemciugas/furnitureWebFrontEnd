@@ -129,9 +129,7 @@ public class DashBoardService {
     public List<GraphDataDateValue> dashBoardGraphDataList(){
 
         List<GraphDataDateValue> list = new ArrayList<>();
-        list.add(new GraphDataDateValue(LocalDate.now(),45));
-        list.add(new GraphDataDateValue(LocalDate.now(),100));
-        list.add(new GraphDataDateValue(LocalDate.now(),45));
+
 
         return list;
 

@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class GraphDataDateValue {
 
     private LocalDate localDate;
-    private double value;
+    private Double value;
 
 
 }
