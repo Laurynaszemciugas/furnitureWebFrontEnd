@@ -13,7 +13,7 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
 @Route(value = "Reports", layout = MainLayout.class)
-public class Page extends VerticalLayout implements BeforeEnterObserver {
+public class ReportPage extends VerticalLayout implements BeforeEnterObserver {
 
     CommonComponents commonComponents;
     Common common;
@@ -23,7 +23,7 @@ public class Page extends VerticalLayout implements BeforeEnterObserver {
     CustomReportService customReportService;
 
 
-    public Page(CommonComponents commonComponents, Common common,CustomReportService customReportService) {
+    public ReportPage(CommonComponents commonComponents, Common common, CustomReportService customReportService) {
 
         this.commonComponents = commonComponents;
         this.common = common;

@@ -2,11 +2,7 @@ package com.example.demo.Pages.Reports.ReportsPages.CreatorPage.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.Pages.Reports.Common.CommonBriefPageExplanation;
-import com.example.demo.Pages.Reports.Page.Page;
-import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.ReportCreationPage;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
+import com.example.demo.Pages.Reports.Page.ReportPage;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -73,7 +69,7 @@ public class RightSideReportCreate {
 
         RouterLink link = new RouterLink(
                 "already have one",
-                Page.class
+                ReportPage.class
         );
 
         link.getStyle()

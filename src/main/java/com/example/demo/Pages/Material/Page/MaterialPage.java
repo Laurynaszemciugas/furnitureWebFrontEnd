@@ -199,6 +199,13 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
         });
 
 
+        commonComponents.setPageSelectorConsumer(e->{
+            setNewPage();
+            filterData.setPageCount(e);
+            loadGridValues();
+        });
+
+
 
         return  verticalLayout;
 
@@ -285,11 +292,13 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
     public VerticalLayout gridFilterHolder(List<MaterialBriefDto> filterStuff){
         VerticalLayout v = new VerticalLayout();
+        v.getStyle().set("position","relative");
         v.setPadding(false);
         v.setWidthFull();
 
         v.add(
                 materialGrid.gridHolder(filterStuff),
+                commonComponents.paganationExpander(filterData.getPageCount()),
                 paganation.buttonHolder(Math.toIntExact(materialService.getPageCount(filterData)))
 
         );

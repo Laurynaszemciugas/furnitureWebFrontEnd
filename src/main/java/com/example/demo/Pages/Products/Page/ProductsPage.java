@@ -149,50 +149,60 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         verticalLayout.getStyle().set("position","relative");
 
         productPageFilters.setFilterConsumer(promt->{
+            setNewPage();
             filterData.setPrompt(promt);
             loadGridValues();
         });
 
         productPageFilters.setStockConsumer(stock -> {
+            setNewPage();
             filterData.setStockChoice(stock);
             loadGridValues();
         });
 
 
         productPageFilters.setCategoryConsumer(e->{
+            setNewPage();
             filterData.setCategory(e);
             loadGridValues();
 
         });
 
         productPageFilters.setVisibilityConsumer(e->{
+            setNewPage();
             filterData.setVisibility(e);
             loadGridValues();
         });
 
         productPageFilters.setFromDateConsumer(e->{
+            setNewPage();
             filterData.setCreatedFrom(e);
             loadGridValues();
         });
         productPageFilters.setToDateConsumer(e->{
+            setNewPage();
             filterData.setCreatedTo(e);
             loadGridValues();
         });
         productPageFilters.setDiscountConsumer(e->{
+            setNewPage();
             filterData.setDiscount(e);
             loadGridValues();
         });
         productPageFilters.setPriceConsumer(e->{
+            setNewPage();
             filterData.setPrice(e);
             loadGridValues();
         });
         productPageFilters.setMaterialId(e->{
+            setNewPage();
             filterData.setMaterialId(e);
             loadGridValues();
         });
 
 
         paganation.setOnPageChange(page -> {
+            setNewPage();
             page = page -1;
             filterData.setPage(page);
             loadGridValues();
@@ -200,12 +210,14 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
 
         productService.setSuccess(e->{
+            setNewPage();
             loadGridValues();
         });
 
 
 
         productPageFilters.setClearFilters(e->{
+            setNewPage();
             currentFilterDisplay.clearAllData();
             filterData = new ProductFilterHolder();
             loadData();
@@ -216,6 +228,11 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
             loadGridValues();
         });
 
+        commonComponents.setPageSelectorConsumer(e->{
+            setNewPage();
+            filterData.setPageCount(e);
+            loadGridValues();
+        });
 
 
 
@@ -298,11 +315,13 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
     public VerticalLayout gridFilterHolder(List<ProductFeedModel> filterStuff){
         VerticalLayout v = new VerticalLayout();
+        v.getStyle().set("position","relative");
         v.setPadding(false);
         v.setWidthFull();
 
         v.add(
                 productPageProductFeed.productsMain(filterStuff),
+                commonComponents.paganationExpander(filterData.getPageCount()),
                 paganation.buttonHolder(Math.toIntExact(productService.loadProductPageCount(filterData)))
 
         );
@@ -312,7 +331,10 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
 
 
 
-
+    public void setNewPage(){
+        filterData.setPage(0);
+        paganation.updateUIFromExternal(1);
+    }
 
 
 

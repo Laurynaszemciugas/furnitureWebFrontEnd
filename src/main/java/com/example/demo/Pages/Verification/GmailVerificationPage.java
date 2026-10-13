@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Route(value = "GmailVerification/:code")
-public class gmailVerification extends VerticalLayout implements BeforeEnterObserver {
+public class GmailVerificationPage extends VerticalLayout implements BeforeEnterObserver {
 
 
     String itemChoice = "";
@@ -37,7 +37,7 @@ public class gmailVerification extends VerticalLayout implements BeforeEnterObse
     Boolean firstCall = null;
     int times = 0;
 
-    public gmailVerification( Common common,CommonComponents commonComponents,HttpCallLogic httpCallLogic,GmailVerificationService gmailVerificationService) {
+    public GmailVerificationPage(Common common, CommonComponents commonComponents, HttpCallLogic httpCallLogic, GmailVerificationService gmailVerificationService) {
 
         this.common = common;
         this.commonComponents = commonComponents;

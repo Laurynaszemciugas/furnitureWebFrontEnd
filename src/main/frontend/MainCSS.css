@@ -1395,3 +1395,128 @@ vaadin-radio-group {
 
 
 
+/* ================================
+   SIDEBAR NAVIGATION
+   ================================ */
+
+.white-side-nav {
+    --vaadin-side-nav-items-gap: 8px;
+    --vaadin-side-nav-child-indent: 20px;
+    --vaadin-side-nav-item-text-color: #ffffff;
+    --vaadin-side-nav-item-background: transparent;
+    --vaadin-side-nav-item-border-radius: 10px;
+    --vaadin-side-nav-item-padding: 12px;
+}
+
+/* ================================
+   ALL ITEMS: WHITE TEXT AND ICONS
+   ================================ */
+
+.white-side-nav vaadin-side-nav-item,
+.white-side-nav vaadin-side-nav-item::part(link),
+.white-side-nav vaadin-side-nav-item::part(content),
+.white-side-nav vaadin-side-nav-item::part(toggle-button),
+.white-side-nav vaadin-side-nav-item::part(toggle-button)::before,
+.white-side-nav vaadin-side-nav-item > vaadin-icon,
+.white-side-nav vaadin-side-nav-item [slot="prefix"],
+.white-side-nav vaadin-side-nav-item [slot="suffix"] {
+    color: #ffffff !important;
+}
+
+/* ================================
+   MAIN NAVIGATION ITEMS
+   ================================ */
+
+.white-side-nav vaadin-side-nav-item {
+    margin: 5px 0;
+}
+
+.white-side-nav vaadin-side-nav-item::part(link) {
+    padding: 14px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.white-side-nav vaadin-side-nav-item::part(content) {
+    font-size: 17px !important;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.white-side-nav vaadin-side-nav-item > vaadin-icon {
+    width: 22px;
+    height: 22px;
+}
+
+/* ================================
+   HOVER AND CURRENT PAGE
+   ================================ */
+
+.white-side-nav vaadin-side-nav-item:hover::part(link) {
+    background-color: #2A3B6F !important;
+}
+
+.white-side-nav vaadin-side-nav-item[current]::part(link) {
+    background-color: #4169A8 !important;
+}
+
+.white-side-nav vaadin-side-nav-item[current]:hover::part(link) {
+    background-color: #4B78BA !important;
+}
+
+/* ================================
+   EXPAND / COLLAPSE ARROW
+   ================================ */
+
+.white-side-nav vaadin-side-nav-item::part(toggle-button) {
+    color: #ffffff !important;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.white-side-nav vaadin-side-nav-item::part(toggle-button)::before {
+    color: #ffffff !important;
+}
+
+/* ================================
+   CHILD NAVIGATION ITEMS
+   ================================ */
+
+.white-side-nav vaadin-side-nav-item[slot="children"] {
+    margin: 6px 0 6px 22px !important;
+    width: calc(100% - 22px);
+    border-left: 2px solid rgba(255, 255, 255, 0.25);
+    border-radius: 0 10px 10px 0;
+}
+
+.white-side-nav vaadin-side-nav-item[slot="children"]::part(link) {
+    padding: 11px 12px 11px 14px;
+    border-radius: 0 10px 10px 0;
+}
+
+.white-side-nav vaadin-side-nav-item[slot="children"]::part(content) {
+    font-size: 15px !important;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.white-side-nav vaadin-side-nav-item[slot="children"] > vaadin-icon {
+    width: 19px;
+    height: 19px;
+}
+
+.white-side-nav vaadin-side-nav-item[slot="children"]:hover::part(link) {
+    background-color: #2A3B6F !important;
+}
+
+.white-side-nav vaadin-side-nav-item[slot="children"][current]::part(link) {
+    background-color: #4169A8 !important;
+}
+
+/* ================================
+   SIDEBAR BACKGROUND
+   ================================ */
+
+.custom-layout-large {
+    --vaadin-app-layout-drawer-background: #374A75;
+}

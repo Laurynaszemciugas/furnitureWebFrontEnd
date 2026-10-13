@@ -154,12 +154,24 @@ public class LoginPage extends VerticalLayout {
         Image logo = commonComponents.imageCrafter("No_picture.png","80px","80px","5px");
 
 
+        HorizontalLayout continueWith = new HorizontalLayout();
+        continueWith.setAlignItems(Alignment.START);
+        continueWith.setJustifyContentMode(JustifyContentMode.CENTER);
+        continueWith.setWidthFull();
+        continueWith.add(
+                commonComponents.lineCrafter("25%"),
+                commonComponents.spanCrafterWordNoHide("or continue with","stat-description"),
+                commonComponents.lineCrafter("25%")
+        );
+
+
         v.add(
                 logo,
                 commonComponents.spanCrafterWordNoHide("Sign in","activityFeed-name"),
                 gmailField,
                 passwordField,
                 signIn,
+                continueWith,
                 googleButton,
                 h
         );

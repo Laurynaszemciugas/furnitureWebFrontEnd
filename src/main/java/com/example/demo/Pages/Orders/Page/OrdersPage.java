@@ -98,8 +98,8 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
         filterMemory.setWidthFull();
         feedHolder.setWidthFull();
         feedHolder.setWidthFull();
-
-
+        feedHolder.setPadding(false);
+        feedHolder.getStyle().set("position","relative");
 
 
 
@@ -243,6 +243,12 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
             updateFeed();
         });
 
+        commonComponents.setPageSelectorConsumer(e->{
+            setNewPage();
+            filterData.setPageCount(e);
+            updateFeed();
+        });
+
 
     }
 
@@ -337,6 +343,7 @@ public class OrdersPage extends VerticalLayout implements BeforeEnterObserver {
                     ui.access(() -> {
                          feedHolder.removeAll();
                          feedHolder.add(ordersLeftSide.orderFeedHolder(e),
+                                 commonComponents.paganationExpander(filterData.getPageCount()),
                                  paganation.buttonHolder(Math.toIntExact(ordersService.getPageCount(filterData))));
 
                     });

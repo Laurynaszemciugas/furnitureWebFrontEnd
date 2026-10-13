@@ -4,6 +4,23 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Entity.UserSettings;
+import com.example.demo.Pages.ActionLog.Main.ActionLogPage;
+import com.example.demo.Pages.DashBoard.Page.DashBoardPage;
+import com.example.demo.Pages.Employee.EmployeeAddEdit.EmployeeAddPage;
+import com.example.demo.Pages.Employee.Page.EmployeesPage;
+import com.example.demo.Pages.Material.MaterialAddEdit.MaterialAddPage;
+import com.example.demo.Pages.Material.Page.MaterialPage;
+import com.example.demo.Pages.Orders.OrderAdd.OrderAdd;
+import com.example.demo.Pages.Orders.Page.OrdersPage;
+import com.example.demo.Pages.Products.Page.ProductsPage;
+import com.example.demo.Pages.Products.ProductAdd.Page.ProductsAdd;
+import com.example.demo.Pages.Reports.Page.ReportPage;
+import com.example.demo.Pages.Reports.ReportsPages.CreatorPage.ReportCreationPage;
+import com.example.demo.Pages.Reports.ReportsPages.EmployeeReport.EmloyeeReportPage;
+import com.example.demo.Pages.Reports.ReportsPages.MaterialReport.MaterialReportPage;
+import com.example.demo.Pages.Reports.ReportsPages.OrderReports.OrderReportPage;
+import com.example.demo.Pages.Reports.ReportsPages.ProductReportpPage.ProductReportPage;
+import com.example.demo.Pages.Settings.Page.Settings;
 import com.example.demo.Services.LoginService.LoginService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -17,7 +34,11 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.sidenav.SideNav;
+import com.vaadin.flow.component.sidenav.SideNavItem;
+import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.theme.lumo.Lumo;
 
 @CssImport("./MainCSS.css")
 public class MainLayout extends AppLayout {
@@ -116,7 +137,193 @@ public class MainLayout extends AppLayout {
     private VerticalLayout createDrawerLarge() {
 
 
+        SideNav nav = new SideNav();
 
+        nav.getStyle().setOverflow(Style.Overflow.HIDDEN);
+        nav.setWidthFull();
+        nav.addClassName("white-side-nav");
+
+// Dashboard
+        SideNavItem dashboard = new SideNavItem(
+                "DashBoard",
+                DashBoardPage.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.DASHBOARD, "25px", "white"
+                )
+        );
+
+// Products
+        SideNavItem products = new SideNavItem(
+                "Products",
+                ProductsPage.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.PACKAGE, "25px", "white"
+                )
+        );
+
+        products.addItem(new SideNavItem(
+                "Add new product",
+                ProductsAdd.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.PLUS_CIRCLE, "25px", "white"
+                )
+        ));
+
+// Orders
+        SideNavItem orders = new SideNavItem(
+                "Orders",
+                OrdersPage.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.CLIPBOARD_CHECK, "25px", "white"
+                )
+        );
+
+        orders.addItem(new SideNavItem(
+                "Add new order",
+                OrderAdd.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.PLUS_CIRCLE, "25px", "white"
+                )
+        ));
+
+// Materials
+        SideNavItem material = new SideNavItem(
+                "Materials",
+                MaterialPage.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.CUBES, "25px", "white"
+                )
+        );
+
+        material.addItem(new SideNavItem(
+                "Add new material",
+                MaterialAddPage.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.PLUS_CIRCLE, "25px", "white"
+                )
+        ));
+
+// Employees
+        SideNavItem employee = new SideNavItem(
+                "Employees",
+                EmployeesPage.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.USERS, "25px", "white"
+                )
+        );
+
+        employee.addItem(new SideNavItem(
+                "Add new employee",
+                EmployeeAddPage.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.PLUS_CIRCLE, "25px", "white"
+                )
+        ));
+
+// Reports
+        SideNavItem reports = new SideNavItem(
+                "Reports",
+                ReportPage.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.BAR_CHART, "25px", "white"
+                )
+        );
+
+        reports.addItem(new SideNavItem(
+                "Order report",
+                OrderReportPage.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.CLIPBOARD, "25px", "white"
+                )
+        ));
+
+        reports.addItem(new SideNavItem(
+                "Product report",
+                ProductReportPage.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.PACKAGE, "25px", "white"
+                )
+        ));
+
+        reports.addItem(new SideNavItem(
+                "Material report",
+                MaterialReportPage.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.CUBES, "25px", "white"
+                )
+        ));
+
+        reports.addItem(new SideNavItem(
+                "Employee report",
+                EmloyeeReportPage.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.USERS, "25px", "white"
+                )
+        ));
+
+        reports.addItem(new SideNavItem(
+                "Create custom report",
+                ReportCreationPage.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.FILE_ADD, "25px", "white"
+                )
+        ));
+
+// Action logs
+        SideNavItem actionLogs = new SideNavItem(
+                "Action logs",
+                ActionLogPage.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.LIST, "25px", "white"
+                )
+        );
+
+// Settings
+        SideNavItem settings = new SideNavItem(
+                "Settings",
+                Settings.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.COG, "25px", "white"
+                )
+        );
+
+// Add all navigation items
+        nav.addItem(
+                dashboard,
+                products,
+                orders,
+                material,
+                employee,
+                reports,
+                actionLogs,
+                settings
+        );
+        nav.getElement().executeJs("""
+    const sideNav = this;
+
+    sideNav.addEventListener('click', (event) => {
+        const item = event.composedPath().find(
+            element => element?.tagName === 'VAADIN-SIDE-NAV-ITEM'
+        );
+
+        if (!item) {
+            return;
+        }
+
+        // Wait for Vaadin to process the click first.
+        setTimeout(() => {
+            const items = sideNav.querySelectorAll(
+                'vaadin-side-nav-item'
+            );
+
+            items.forEach(otherItem => {
+                if (otherItem !== item && otherItem.hasAttribute('expanded')) {
+                    otherItem.expanded = false;
+                }
+            });
+        }, 0);
+    });
+""");
         Button toggle = new Button("Switch scenes", e -> switchDrawer());
 
         Div Logo = new Div(new Span("Furniture CO"));
@@ -157,14 +364,15 @@ public class MainLayout extends AppLayout {
 
 
         leftSideBar.add(
-                commonComponents.normalButtons("DashBoard","DashBoard",VaadinIcon.DASHBOARD),
-                commonComponents.normalButtons("Products/1","Products",VaadinIcon.PACKAGE),
-                commonComponents.normalButtons("Orders","Orders",VaadinIcon.CLIPBOARD),
-                commonComponents.normalButtons("Materials","Materials",VaadinIcon.STOCK),
-                commonComponents.normalButtons("Employees","Employees",VaadinIcon.USERS),
-                commonComponents.normalButtons("Reports","Reports",VaadinIcon.CHART_LINE),
-                commonComponents.normalButtons("Actions","Action logs",VaadinIcon.RECORDS),
-                commonComponents.normalButtons("Settings","Settings",VaadinIcon.COG),
+//                commonComponents.normalButtons("DashBoard","DashBoard",VaadinIcon.DASHBOARD),
+//                commonComponents.normalButtons("Products/1","Products",VaadinIcon.PACKAGE),
+//                commonComponents.normalButtons("Orders","Orders",VaadinIcon.CLIPBOARD),
+//                commonComponents.normalButtons("Materials","Materials",VaadinIcon.STOCK),
+//                commonComponents.normalButtons("Employees","Employees",VaadinIcon.USERS),
+//                commonComponents.normalButtons("Reports","Reports",VaadinIcon.CHART_LINE),
+//                commonComponents.normalButtons("Actions","Action logs",VaadinIcon.RECORDS),
+//                commonComponents.normalButtons("Settings","Settings",VaadinIcon.COG),
+                nav,
                 logOut);
 
 

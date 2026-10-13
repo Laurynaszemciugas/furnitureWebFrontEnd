@@ -166,7 +166,11 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
             reloadData();
         });
 
-
+        commonComponents.setPageSelectorConsumer(e->{
+            setNewPage();
+            filterData.setPageCount(e);
+            loadGridValues();
+        });
 
 
 
@@ -242,11 +246,13 @@ public class ActionLogPage extends VerticalLayout implements BeforeEnterObserver
 
     public VerticalLayout gridFilterHolder(List<ActionLogFeed> filterStuff){
         VerticalLayout v = new VerticalLayout();
+        v.getStyle().set("position","relative");
         v.setPadding(false);
         v.setWidthFull();
 
         v.add(
                 actionLogGrid.gridHolder(filterStuff),
+                commonComponents.paganationExpander(filterData.getPageCount()),
                 paganation.buttonHolder(Math.toIntExact(actionService.getAmountOfPages(filterData)))
 
         );

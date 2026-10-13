@@ -104,7 +104,7 @@ public class EmployeeGrid {
         grid.setAllRowsVisible(true);
         grid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
         grid.setItems(materiaData);
-        grid.setAllRowsVisible(true);
+
 
 
         vv.add(grid);
