@@ -106,8 +106,8 @@ public class ActiveOrderUI {
         );
 
         v.add(
-                h,
-                commonComponents.spanCrafter("Some name","stat-description")
+                h
+                //commonComponents.spanCrafter("Some name","stat-description") MAYBE ADD THE ORDER NAME
         );
 
 
@@ -183,10 +183,6 @@ public class ActiveOrderUI {
         }
 
         setReload(e->{
-
-
-            System.out.println("reload in side");
-
 
             for (var dialog : dialogMemory.values()) {
                 dialog.close();
@@ -271,7 +267,7 @@ public class ActiveOrderUI {
         h.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         h.addClassName("layout-flex");
 
-        Image image = commonComponents.imageCrafter(mainImage,"100px","100px","5px");
+        Image image = commonComponents.imageCrafter(mainImage == null ? "No_picture.png" : mainImage,"100px","100px","5px");
 
         VerticalLayout nameSku = new VerticalLayout();
         nameSku.setMaxWidth("150px");

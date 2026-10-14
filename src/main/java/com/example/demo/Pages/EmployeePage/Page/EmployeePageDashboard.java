@@ -154,6 +154,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
 
 
         VerticalLayout v = new VerticalLayout();
+        v.addClassName("animated-card");
         v.addClassName("island");
 
         v.getStyle().set("flex", "1 1 252px");
@@ -219,6 +220,8 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         );
 
 
+
+
         VerticalLayout right = new VerticalLayout();
         right.setPadding(false);
 
@@ -233,6 +236,7 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
                 left,
                 right
         );
+
 
         v.add(
                 h
@@ -253,6 +257,8 @@ public class EmployeePageDashboard extends VerticalLayout implements BeforeEnter
         Long minutess = minutes == null ? 0 : minutes % 60;
 
         VerticalLayout v = new VerticalLayout();
+        v.addClassName("animated-card");
+
         v.addClassName("island");
         v.setAlignItems(Alignment.CENTER);
 

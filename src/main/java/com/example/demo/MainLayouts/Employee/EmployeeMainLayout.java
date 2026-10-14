@@ -3,14 +3,18 @@ package com.example.demo.MainLayouts.Employee;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.DTOS.User.ProfileInformation;
 import com.example.demo.Entity.UserSettings;
 import com.example.demo.Services.LoginService.LoginService;
+import com.example.demo.Services.UserService.UserService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -28,6 +32,8 @@ public class EmployeeMainLayout extends AppLayout {
 
     LoginService loginService;
 
+    UserService userService;
+
 
     private VerticalLayout drawerSmall = new VerticalLayout();
     private VerticalLayout drawerLarge = new VerticalLayout();
@@ -38,10 +44,12 @@ public class EmployeeMainLayout extends AppLayout {
 
 
 
-    public EmployeeMainLayout(CommonComponents commonComponents, Common common, LoginService loginService) {
+    public EmployeeMainLayout(CommonComponents commonComponents, Common common, LoginService loginService, UserService userService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.loginService = loginService;
+
+        this.userService = userService;
 
 
         this.sessionCrafter = new SessionCrafter();
@@ -117,7 +125,6 @@ public class EmployeeMainLayout extends AppLayout {
 
 
 
-        Button toggle = new Button("Switch scenes", e -> switchDrawer());
 
         Div Logo = new Div(new Span("Furniture CO"));
         Logo.getStyle()
@@ -149,10 +156,10 @@ public class EmployeeMainLayout extends AppLayout {
                 .set("border-right", "1px solid #2A3B6F");
         leftSideBar.setAlignItems(FlexComponent.Alignment.START);
 
-        Button logOut = new Button();
+        Button logOut =  commonComponents.normalButtons("Login","Logout",VaadinIcon.SIGN_OUT);
         logOut.addClickListener(e->{
             VaadinSession.getCurrent().close();
-            UI.getCurrent().getPage().reload();
+            //UI.getCurrent().getPage().reload();
         });
 
 
@@ -160,10 +167,10 @@ public class EmployeeMainLayout extends AppLayout {
                 commonComponents.normalButtons("EmployeesDashBoard","DashBoard",VaadinIcon.DASHBOARD),
                 commonComponents.normalButtons("AvailableOrderPage","Available",VaadinIcon.PACKAGE),
                 commonComponents.normalButtons("ActiveOrderPage","Active",VaadinIcon.CLIPBOARD),
+                commonComponents.spaceFiller(),
                 logOut);
 
 
-        leftSideBar.add(toggle);
 
         leftSideBar.getStyle().set("gap","10px");
 
@@ -175,7 +182,6 @@ public class EmployeeMainLayout extends AppLayout {
 
     private VerticalLayout createDrawerSmall() {
 
-        Button toggle = new Button("Switch scenes", e -> switchDrawer());
 
         Div Logo = new Div(new Span("Furniture CO"));
         Logo.getStyle()
@@ -226,7 +232,7 @@ public class EmployeeMainLayout extends AppLayout {
                 commonComponents.smallIconButtons("Settings",VaadinIcon.COG,"white"),
                 logOut);
 
-        leftSideBar.add(toggle);
+        leftSideBar.add();
 
         leftSideBar.getStyle().set("gap","10px");
 
@@ -260,6 +266,34 @@ public class EmployeeMainLayout extends AppLayout {
 
         HorizontalLayout header = new HorizontalLayout(toggle);
         header.setAlignItems(FlexComponent.Alignment.CENTER);
+
+
+        ProfileInformation profileInformation = userService.getProfileInfo();
+
+
+        if(profileInformation.getImageUrl() == null || profileInformation.getImageUrl().equals("No_picture.png")){
+
+            Avatar avatar = new Avatar(profileInformation.getFullName());
+            avatar.setWidth("80px");
+            avatar.setHeight("80px");
+
+            header.add(
+                    avatar
+            );
+        }
+        else{
+
+            Image logos =commonComponents.imageCrafter(profileInformation.getImageUrl() == null ? "No_picture.png" : profileInformation.getImageUrl(),"80px","80px","50%");
+            header.add(
+                    logos
+            );
+        }
+
+
+
+
+
+
 
         header.addClassName("header-island");
 

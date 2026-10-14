@@ -324,7 +324,6 @@ public class MainLayout extends AppLayout {
         }, 0);
     });
 """);
-        Button toggle = new Button("Switch scenes", e -> switchDrawer());
 
         Div Logo = new Div(new Span("Furniture CO"));
         Logo.getStyle()
@@ -356,11 +355,12 @@ public class MainLayout extends AppLayout {
                 .set("border-right", "1px solid #2A3B6F");
         leftSideBar.setAlignItems(FlexComponent.Alignment.START);
 
-        Button logOut = new Button();
+        Button logOut =  commonComponents.normalButtons("Login","Logout",VaadinIcon.SIGN_OUT);
         logOut.addClickListener(e->{
             VaadinSession.getCurrent().close();
-            UI.getCurrent().getPage().reload();
+            //UI.getCurrent().getPage().reload();
         });
+
 
 
         leftSideBar.add(
@@ -373,10 +373,10 @@ public class MainLayout extends AppLayout {
 //                commonComponents.normalButtons("Actions","Action logs",VaadinIcon.RECORDS),
 //                commonComponents.normalButtons("Settings","Settings",VaadinIcon.COG),
                 nav,
+                commonComponents.spaceFiller(),
                 logOut);
 
 
-        leftSideBar.add(toggle);
 
         leftSideBar.getStyle().set("gap","10px");
 
@@ -472,6 +472,9 @@ public class MainLayout extends AppLayout {
         // header stuff
 
         HorizontalLayout header = new HorizontalLayout(toggle);
+
+
+
         header.setAlignItems(FlexComponent.Alignment.CENTER);
 
         header.addClassName("header-island");

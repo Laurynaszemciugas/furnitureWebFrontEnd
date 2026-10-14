@@ -43,6 +43,8 @@ public class DisplayAvailableOrders {
 
         VerticalLayout v = new VerticalLayout();
         v.setPadding(false);
+        v.addClassName("animated-card");
+
 
 
 

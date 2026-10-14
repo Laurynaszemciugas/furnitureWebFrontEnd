@@ -48,6 +48,7 @@ public class DisplayActiveOrders {
     public Component myActiveOrders(List<EmployeeActiveOrders> employeeActiveOrders, boolean includeExtraData){
 
         VerticalLayout v = new VerticalLayout();
+        v.addClassName("animated-card");
         v.setWidthFull();
         v.addClassName("island");
         v.addClassName("layout-flex");

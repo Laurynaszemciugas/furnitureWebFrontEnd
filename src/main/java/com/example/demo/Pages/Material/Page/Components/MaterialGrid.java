@@ -84,66 +84,66 @@ public class MaterialGrid {
     }
 
 
-    public Button testForGridRemoval(Grid grid, String... columnsList ){
-
-
-        List<String> columns = List.of(columnsList);
-
-        Button target = new Button("Test");
-
-        Popover popover = new Popover();
-        popover.setModal(true);
-        popover.setBackdropVisible(true);
-        popover.setPosition(PopoverPosition.BOTTOM_END);
-        popover.setTarget(target);
-
-
-        VerticalLayout v = new VerticalLayout();
-
-        Button showAll = new Button("Show all");
-        Button reset = new Button("Reset");
-
-
-        CheckboxGroup<String> group = new CheckboxGroup<>();
-        group.setItems(columns);
-        group.addThemeVariants(CheckboxGroupVariant.LUMO_VERTICAL);
-
-        Set<String> defaultColumns = Set.of("Material", "Type", "Description",
-                "Status");
-        group.setValue(defaultColumns);
-
-
-        group.addValueChangeListener((e) -> {
-
-
-            for(var s : columns){
-                grid.getColumnByKey(s).setVisible(e.getValue().contains(s));
-            }
-
-
-        });
-
-        reset.addClickListener(e->{
-            group.setValue(defaultColumns);
-        });
-
-        showAll.addClickListener(e->{
-            group.setValue(new HashSet<>(columns));
-        });
-
-        v.add(
-                group,
-                reset,
-                showAll
-        );
-
-        popover.add(
-                v
-        );
-
-
-        return target;
-    }
+//    public Button testForGridRemoval(Grid grid, String... columnsList ){
+//
+//
+//        List<String> columns = List.of(columnsList);
+//
+//        Button target = new Button("Test");
+//
+//        Popover popover = new Popover();
+//        popover.setModal(true);
+//        popover.setBackdropVisible(true);
+//        popover.setPosition(PopoverPosition.BOTTOM_END);
+//        popover.setTarget(target);
+//
+//
+//        VerticalLayout v = new VerticalLayout();
+//
+//        Button showAll = new Button("Show all");
+//        Button reset = new Button("Reset");
+//
+//
+//        CheckboxGroup<String> group = new CheckboxGroup<>();
+//        group.setItems(columns);
+//        group.addThemeVariants(CheckboxGroupVariant.LUMO_VERTICAL);
+//
+//        Set<String> defaultColumns = Set.of("Material", "Type", "Description",
+//                "Status");
+//        group.setValue(defaultColumns);
+//
+//
+//        group.addValueChangeListener((e) -> {
+//
+//
+//            for(var s : columns){
+//                grid.getColumnByKey(s).setVisible(e.getValue().contains(s));
+//            }
+//
+//
+//        });
+//
+//        reset.addClickListener(e->{
+//            group.setValue(defaultColumns);
+//        });
+//
+//        showAll.addClickListener(e->{
+//            group.setValue(new HashSet<>(columns));
+//        });
+//
+//        v.add(
+//                group,
+//                reset,
+//                showAll
+//        );
+//
+//        popover.add(
+//                v
+//        );
+//
+//
+//        return target;
+//    }
 
 
     public VerticalLayout gridHolder(List<MaterialBriefDto> materiaData){
@@ -568,7 +568,7 @@ public class MaterialGrid {
 
 
         vv.add(
-                testForGridRemoval(grid, "Material","Type","Description","Status","Stock","Actions","Created")
+                //testForGridRemoval(grid, "Material","Type","Description","Status","Stock","Actions","Created")
         );
 
         return vv;
