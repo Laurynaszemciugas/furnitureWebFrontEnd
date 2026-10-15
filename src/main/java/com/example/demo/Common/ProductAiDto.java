@@ -26,7 +26,7 @@ public class ProductAiDto {
 
     private List<ProductFinishSteps> productFinishStepsList = List.of(new ProductFinishSteps(null,0L,"auto_Fill","auto_Fill",null, ProductFinishStepStatus.NOT_STARTED,null,null,null) );
 
-    private List<ExtraDetails> extraDetails = List.of(new ExtraDetails(null,"auto_Fill","auto_Fill",null,null,null));
+    private List<ExtraDetails> extraDetails = List.of(new ExtraDetails(null,"auto_Fill","auto_Fill",null,null,null,null));
 
 
     public ProductAiDto(String productName, String sku, String description, Double price, Long discount, Long stockQuantity, Long lowThreshold, Category category, List<ProductFinishSteps> productFinishStepsList, List<ExtraDetails> extraDetails) {

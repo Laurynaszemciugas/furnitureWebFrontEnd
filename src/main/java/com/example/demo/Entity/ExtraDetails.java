@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = "product")
 public class ExtraDetails {
 
     private Long id;
@@ -16,6 +17,9 @@ public class ExtraDetails {
     private String specDescription;
     @JsonIgnore
     private Product product;
+
+    @JsonIgnore
+    private ProductMultiple productMultiple;
 
     @JsonIgnore
     private User user;

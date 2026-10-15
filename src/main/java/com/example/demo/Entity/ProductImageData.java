@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "product")
 public class ProductImageData {
 
     private Long id;
@@ -24,6 +24,8 @@ public class ProductImageData {
 
     @JsonIgnore
     private Product product;
+
+    private ProductMultiple productMultiple;
 
     private User user;
 

@@ -1,7 +1,7 @@
 package com.example.demo.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+
 
 import java.time.LocalDateTime;
 
@@ -9,16 +9,17 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Comments {
+@ToString(exclude = "product")
+public class ProductComments {
 
     private Long id;
     private String commenter;
     private String comment;
     private Long review;
 
-    @JsonIgnore
     private Product product;
-    @JsonIgnore
+
+
     private User user;
 
     private LocalDateTime created;

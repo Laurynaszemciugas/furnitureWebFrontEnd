@@ -24,6 +24,8 @@ public class Product {
 
     private Long id;
 
+    private String color;
+
     private boolean stockCalculatedManually;
 
     private String productName;
@@ -47,9 +49,13 @@ public class Product {
 
     private List<ExtraDetails> extraDetails = new ArrayList<>();
 
-    private List<Comments> comments= new ArrayList<>();
+    private List<ProductComments> comments= new ArrayList<>();
 
     private List<ProductFinishSteps> steps = new ArrayList<>();
+
+    private Boolean multipleItems;
+
+    private List<ProductMultiple> productMultiples = new ArrayList<>();
 
     @JsonIgnore
     private User user;

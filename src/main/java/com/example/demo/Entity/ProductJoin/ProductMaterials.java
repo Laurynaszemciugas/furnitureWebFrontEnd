@@ -2,6 +2,7 @@ package com.example.demo.Entity.ProductJoin;
 
 import com.example.demo.Entity.Materials;
 import com.example.demo.Entity.Product;
+import com.example.demo.Entity.ProductMultiple;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.apache.catalina.User;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "product")
 public class ProductMaterials {
 
     private Long id;
@@ -23,6 +24,9 @@ public class ProductMaterials {
     private Materials materials;
     @JsonIgnore
     private Product product;
+    @JsonIgnore
+    private ProductMultiple productMultiple;
+
     @JsonIgnore
     private User user;
 

@@ -1,6 +1,6 @@
 package com.example.demo.Common;
 
-import com.example.demo.Entity.Comments;
+import com.example.demo.Entity.ProductComments;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -20,7 +20,7 @@ public class ReviewCrafter {
         this.common = common;
     }
 
-    public VerticalLayout commentsHolder(List<Comments> comments){
+    public VerticalLayout commentsHolder(List<ProductComments> comments){
         VerticalLayout h = new VerticalLayout();
         h.setWidthFull();
         h.setAlignItems(FlexComponent.Alignment.CENTER);
