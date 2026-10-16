@@ -11,6 +11,7 @@ import com.example.demo.Enums.Role;
 import com.example.demo.FilterDTO.Material.MaterialFilterHolder;
 import com.example.demo.Pages.EmployeePage.Page.EmployeePageDashboard;
 import com.example.demo.Pages.Login.LoginPage;
+import com.example.demo.Pages.Products.MultipleProductChoices;
 import com.vaadin.flow.component.UI;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -92,7 +93,7 @@ public class LoginService {
 
         }
         else if(userRole.equals(Role.EMPLOYEE)){
-            UI.getCurrent().navigate(EmployeePageDashboard.class);
+            UI.getCurrent().navigate(MultipleProductChoices.class);
         }
 
 

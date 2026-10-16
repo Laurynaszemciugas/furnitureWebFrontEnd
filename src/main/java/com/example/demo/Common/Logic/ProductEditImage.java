@@ -412,6 +412,16 @@ public class ProductEditImage {
 
     }
 
+    public void reset(){
+        imagesDataList.clear();
+        newUploadedImages.clear();
+        feedLayout.removeAll();
+//        verticalLayout.removeAll();
+//        holder.removeAll();
+//        imageHolder.removeAll();
+        mainImage = new Image("No_picture.png", "Product image");
+        mainFound = false;
+    }
 
 
 
