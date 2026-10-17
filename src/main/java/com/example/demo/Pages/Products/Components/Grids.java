@@ -192,7 +192,7 @@ public class Grids {
 
         productFeedModelGrid.addComponentColumn(row -> {
 
-                    Span span = commonComponents.spanCrafter(row.getUnitPrice().toString(),"stat-example");
+                    Span span = commonComponents.spanCrafter(row.getInStock().toString(),"stat-example");
 
                     return span;
                 })

@@ -241,7 +241,7 @@ public class ProductEditRightSideFields {
     }
 
 
-    public VerticalLayout rightSide(Product productEditDtoss){
+    public VerticalLayout  rightSide(Product productEditDtoss){
 
 
 

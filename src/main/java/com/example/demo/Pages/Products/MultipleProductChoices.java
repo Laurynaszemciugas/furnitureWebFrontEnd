@@ -20,6 +20,7 @@ import com.example.demo.Pages.Products.Components.MaterialAndDetails;
 import com.example.demo.Services.AI.AIService;
 import com.example.demo.Services.CommonService.CommonService;
 import com.example.demo.Services.Material.MaterialService;
+import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -48,6 +49,7 @@ import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 @Route(value = "testtttttt", layout = MainLayout.class)
@@ -61,6 +63,8 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
         Grids grids;
 
         MaterialService materialService;
+
+        ProductService productService;
 
 
         ProductEditImage productEditImage;
@@ -148,13 +152,14 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
         VerticalLayout rightSide =new VerticalLayout();
         HorizontalLayout multipleProductHolder = new HorizontalLayout();
 
-        Product productEditDtos = new Product();
+        Product product = new Product();
 
 
         List<ProductMultiple> multipleProducts = new ArrayList<>();
 
 
-    HorizontalLayout joinImageAndRightSideHolder =new HorizontalLayout();
+        // display all prodcut variants
+        HorizontalLayout joinImageAndRightSideHolder =new HorizontalLayout();
 
 
         public MultipleProductChoices(CommonComponents commonComponents,
@@ -162,7 +167,8 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
                                           CommonService commonService,
                                           ObjectConverter objectConverter,
                                           MaterialService materialService,
-                                          AIService aiService
+                                          AIService aiService,
+                                          ProductService productService
         ) {
             this.commonComponents = commonComponents;
             this.common = common;
@@ -173,6 +179,7 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
             this.materialAndDetails = new MaterialAndDetails(commonComponents,common,commonService,grids);
             this.aiService = aiService;
             this.productAiDto = new ProductAiDto();
+            this.productService = productService;
 
 
             this.productEditImage = new ProductEditImage(commonComponents,common);
@@ -180,10 +187,11 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
             loadNewData();
             bindFields();
 
+
             manualStock.addClassName("stat-example");
             totalMaterialCost = commonComponents.spanCrafter("Total material cost - 0.0 Eur","stat-example");
 
-
+            joinImagesInfoProgramSide(null);
 
             setPadding(false);
             setSpacing(false);
@@ -195,9 +203,14 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 
             addNewMaterial = commonComponents.buttonThemeAndIcon("Add Material",null, ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White");
 
-            addNewDetail = commonComponents.buttonThemeAndIcon("Add Detail",null, ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White");
 
-            addNewStep = commonComponents.buttonThemeAndIcon("Add Step",null, ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White");
+
+            category.addValueChangeListener(ee -> {
+                if (ee.isFromClient()) {
+                    product.setCategory(ee.getValue());
+                }
+            });
+
 
             save = commonComponents.normalThemeButtonNoNavigate("Save", ButtonVariant.LUMO_PRIMARY);
 
@@ -205,7 +218,7 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 
             addNewVariant = commonComponents.normalThemeButtonNoNavigate("Add new variant", ButtonVariant.LUMO_PRIMARY);
 
-            saveDate(addNewVariant,productEditDtos);
+            saveDate(addNewVariant);
 
 
 //            List<CommonImagesData> commonImagesData = new ArrayList<>();
@@ -265,7 +278,6 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 
 
 
-
         add(mainLayout());
 
     }
@@ -273,26 +285,33 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 
     public VerticalLayout mainLayout() {
 
+        joinImagesInfoProgramSide(null);
+
 
         Dialog commonData = new Dialog();
+        commonData.setWidth("1000px");
+
+        commonData.add(
+                commonStuff()
+        );
 
         Button openCommonData = new Button("Common data",e-> commonData.open());
 
         Dialog addNewProductVariant = new Dialog();
         addNewProductVariant.getFooter().add(addNewVariant);
 
-        Button openNewProductVariant = new Button("Add new variant");
+        Button openNewProductVariant = new Button("Add new varianteeeeeee");
         openNewProductVariant.addClickListener(e->{
 
             // remove all image prepate for a another variant
-
-
             addNewProductVariant.removeAll();
             joinImageAndRightSideHolder.removeAll();
+
             addNewProductVariant.add(
-                    joinImagesInfo()
+                    joinImagesInfoProgramSide(null)
             );
-         addNewProductVariant.open() ;
+
+         addNewProductVariant.open();
         });
 
 
@@ -306,9 +325,7 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 //        });
 
 
-        commonData.add(
-                commonStuff()
-        );
+
 
 
 
@@ -324,9 +341,12 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
     }
 
 
-    public HorizontalLayout joinImagesInfo(){
 
-            productEditImage.reset();
+
+    public HorizontalLayout joinImagesInfoProgramSide(ProductMultiple productMultiple){
+
+
+        productEditImage.reset();
 
         joinImageAndRightSideHolder.setWidthFull();
 
@@ -334,8 +354,15 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
         joinImageAndRightSideHolder.getStyle().set("overflow","hidden");
 
         //make an empty field
-        Product sharedProductInstance = new Product();
         List<CommonImagesData> commonImagesData = new ArrayList<>();
+
+        if(productMultiple != null) {
+            if (productMultiple.getImages() != null || productMultiple.getImages().isEmpty()) {
+                for (var s : productMultiple.getImages()) {
+                    commonImagesData.add(new CommonImagesData(s.getId(), s.getUuId(), s.getImageName(), s.getImageUrl(), s.getImageType(), s.getImageLogic(), s.getImageData()));
+                }
+            }
+        }
 
         HorizontalLayout images = productEditImage.images(commonImagesData);
 
@@ -344,8 +371,8 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
         holder.add(images,
                 productEditImage.uploadStuff()
 //                reviewCrafter.commentsHolder(sharedProductInstance.getComments())
-                );
-        VerticalLayout fields = rightSide(sharedProductInstance);
+        );
+        VerticalLayout fields = rightSide(product,productMultiple);
         fields.addClassName("fromRightToLeft");
 
         holder.addClassName("fromLeftToRight");
@@ -356,6 +383,7 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 
         return joinImageAndRightSideHolder;
     }
+
 
 
 
@@ -428,13 +456,17 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
         }
 
 
-        public VerticalLayout rightSide(Product productEditDtoss){
+        public VerticalLayout rightSide(Product productEditDtoss, ProductMultiple productMultiple){
 
 
+            product = productEditDtoss;
 
+            if (productMultiple == null) {
+                loadData(new ProductMultiple());
+            } else {
+                loadData(productMultiple);
+            }
 
-
-            productEditDtos = productEditDtoss;
 
             rightSide.removeAll();
 
@@ -445,7 +477,10 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
                 }
             });
 
-            loadData(productEditDtos);
+
+            // load data here of the common used stuff and  the display stuff
+
+
 
 
             rightSide.setWidth("700px");
@@ -467,7 +502,7 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
                 status.setEnabled(false);
             }
 
-            if(productEditDtos.isStockCalculatedManually()) {
+            if(product.isStockCalculatedManually()) {
                 materialCost.setReadOnly(false);
                 stockQuantity.setReadOnly(false);
             }
@@ -505,6 +540,20 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
                             3000,
                             Notification.Position.BOTTOM_CENTER,
                             NotificationVariant.LUMO_SUCCESS);
+
+
+                    List<ProductTags> productTags = new ArrayList<>();
+
+                    for (Tags tag : tagss) {
+                        ProductTags productTag = new ProductTags();
+                        productTag.setProduct(product);
+                        productTag.setTags(tag);
+                        productTag.setUser(null);
+                        productTags.add(productTag);
+                    }
+
+                    product.setTags(productTags);
+
                 }
                 else{
                     commonComponents.showNotification(String.format("%s - '%s' %s","Tag",e.getValue(),"already exists"),
@@ -524,26 +573,7 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 
 
 
-            addNewDetail.addClickListener(e->{
 
-                listExtraDetailsGrids.add(new ListExtraDetailsGrid(null,
-                        materialAndDetails.specName(""),
-                        materialAndDetails.specDescription("")));
-                upgradeExtraDetailsGrid();
-
-            });
-
-
-            addNewStep.addClickListener(e->{
-
-                listStepsToPrepares.add(new ListStepsToPrepare(
-                        null,
-                        Long.valueOf(listStepsToPrepares.size()+1),
-                        materialAndDetails.specName(""),
-                        materialAndDetails.specDescription("")));
-                updateStepGrid(listStepsToPrepares,listStepsToPrepareGrid);
-
-            });
 
             productFeedModelGrid.removeAllColumns();
 
@@ -567,6 +597,9 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 
 
         public VerticalLayout commonStuff(){
+
+
+
 
             VerticalLayout v = new VerticalLayout();
             v.setPadding(false);
@@ -609,18 +642,17 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 
 
 
-        public void loadData(Product productEditDto){
+        public void loadData(ProductMultiple productEditDto){
+
+
+
+
             Double sumPrice = 0.0;
 
-            listExtraDetailsGrids.clear();
-            materialInfoList.clear();
-            tagss.clear();
-            tagsSelected.removeAll();
 
             manualStock.setValue(productEditDto.isStockCalculatedManually());
 
-            category.setItems(Category.values());
-            tags.setItems(Tags.values());
+
             status.setItems(Status.values());
             List<Visibility> list = new ArrayList<>();
 
@@ -646,13 +678,17 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
             stockQuantity.setValue(productEditDto.getStockQuantity() != null ? (double) productEditDto.getStockQuantity() : 0.0);
             lowThreshold.setValue(productEditDto.getLowStockThreshold() != null ? (double) productEditDto.getLowStockThreshold() : 0.0);
 
-            category.setValue(productEditDto.getCategory());
+            category.setValue(product.getCategory());
+
+
+
+
             status.setValue(productEditDto.getStatus());
             visibility.setValue(productEditDto.getVisibility());
 
-            if (productEditDto.getTags() != null && !productEditDto.getTags().isEmpty()) {
-                tags.setValue(productEditDto.getTags().get(0).getTags());
-                for(var s : productEditDto.getTags()) {
+            if (product.getTags() != null && !product.getTags().isEmpty()) {
+                tags.setValue(product.getTags().get(0).getTags());
+                for(var s : product.getTags()) {
                     tagss.addAll(Collections.singleton(s.getTags()));
                 }
             } else {
@@ -660,8 +696,8 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
             }
 
 
-            if(productEditDto.getExtraDetails() != null && !productEditDto.getExtraDetails().isEmpty()) {
-                for (var s : productEditDto.getExtraDetails()) {
+            if(product.getExtraDetails() != null && !product.getExtraDetails().isEmpty()) {
+                for (var s : product.getExtraDetails()) {
                     listExtraDetailsGrids.add(new ListExtraDetailsGrid(
                             s.getId(),
                             materialAndDetails.specName(s.getSpecName()),
@@ -669,21 +705,20 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
                 }
                 upgradeExtraDetailsGrid();
             }
+//            if(productEditDto.getMaterials() != null &&  !productEditDto.getMaterials().isEmpty()) {
+//                for(var s : productEditDto.getMaterials()) {
+//
+//                    MaterialInfo materialInfo = materialService.getMaterialInfoAccordingToId(s.getMaterials().getId(), productEditDto.getId());
+//                    materialInfoList.add(materialInfo);
+//                    sumPrice+= (s.getAmountUsed() * s.getUnitPrice());
+//
+//                }
+//                upgradeMaterialGrid();
+//            }
+//
 
-            if(productEditDto.getMaterials() != null &&  !productEditDto.getMaterials().isEmpty()) {
-                for(var s : productEditDto.getMaterials()) {
-
-                    System.out.println(s.getMaterials().getId());
-                    MaterialInfo materialInfo = materialService.getMaterialInfoAccordingToId(s.getMaterials().getId(), productEditDto.getId());
-                    materialInfoList.add(materialInfo);
-                    sumPrice+= (s.getAmountUsed() * s.getUnitPrice());
-
-                }
-                upgradeMaterialGrid();
-            }
-
-            if(productEditDto.getSteps() != null &&  !productEditDto.getSteps().isEmpty()) {
-                for(var s : productEditDto.getSteps()) {
+            if(product.getSteps() != null &&  !product.getSteps().isEmpty()) {
+                for(var s : product.getSteps()) {
 
                     listStepsToPrepares.add(new ListStepsToPrepare(
                             s.getId(),
@@ -699,7 +734,8 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 
             materialCost.setValue(sumPrice);
 
-            updateSelectedTags(productEditDto);
+            updateSelectedTags(product);
+
 
 
 
@@ -707,7 +743,15 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
         }
 
 
-        public void saveDate(Button save, Product product){
+        public void saveDate(Button save){
+
+
+
+            this.save.addClickListener(e->{
+
+                productService.saveMultipleProducts(product);
+
+            });
 
             save.addClickListener(e -> {
                 if(e.isFromClient()){
@@ -769,7 +813,7 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
                     multipleProduct.setMaterialCost(materialCost.getValue());
                     multipleProduct.setStockQuantity(stockQuantity.getValue().longValue());
                     multipleProduct.setLowStockThreshold(lowThreshold.getValue().longValue());
-                    multipleProduct.setCategory(category.getValue());
+
                     multipleProduct.setStatus(status.getValue());
                     multipleProduct.setVisibility(visibility.getValue());
 
@@ -820,21 +864,23 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 
 
 
-                    multipleProducts.add(multipleProduct);
+                    //multipleProducts.add(multipleProduct);
 
 
                     //consumer.accept(product);
                     //common.customNavigate("Products/1");
 
-                    //product.getProductMultiples().add(multipleProduct);
+                    product.getProductMultiples().add(multipleProduct);
 
 
-                    System.out.println("LISTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
-                        System.out.println(multipleProducts);
-                        displayAllProducts();
+//                    System.out.println("LISTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
+//                        System.out.println(multipleProducts);
+//                    System.out.println("LISTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
 
+
+                    displayAllProducts();
                     newImages = new ArrayList<>();
-                    System.out.println("LISTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
+
 
 
 //                } else {
@@ -844,20 +890,22 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
             });
         }
 
+
+        // display the prodcut variants
         public void displayAllProducts(){
 
 
             System.out.println("Size of the array");
-            System.out.println(multipleProducts.size());
+            System.out.println(product.getProductMultiples().size());
 
             multipleProductHolder.removeAll();
 
             HorizontalLayout h= new HorizontalLayout();
             h.setWidthFull();
-            for(var s :  multipleProducts){
+            for(var s :  product.getProductMultiples()){
 
                 VerticalLayout v = new VerticalLayout();
-                v.addClassName("island");
+                v.addClassName("island-hover");
 
                 String mainImageUrl = "No_picture.png";
                 if(!s.getImages().isEmpty()) {
@@ -877,19 +925,153 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
                         commonComponents.spanCrafterWordNoHide(s.getProductName(),"stat-example"),
                         commonComponents.spanCrafterWordNoHide(s.getPrice() + "","stat-example")
                 );
+                Dialog addNewProductVariant = new Dialog();
+
+                Button save = new Button("Save");
+                addNewProductVariant.getFooter().add(save);
+
+                save.addClickListener(e->{
+
+                            if(newImages !=null) {
+                                System.out.println("changing pictures");
+                                for (var ss : newImages) {
+
+                                    if (ss.getImageType().equals("Internet") || ss.getImageData() == null) {
+                                        continue;
+                                    } else {
+                                        ss.setImageUrl(common.imageMaker(ss.getImageData(), ss.getImageType()));
+                                    }
+
+
+                                }
+
+                                s.setImages(objectConverter.convert(newImages, ProductImageData.class));
+                            }
+
+
+                    // get materials
+                    List<ProductMaterials> materials = new ArrayList<>();
+                    for(var ss : materialInfoList){
+
+                        ProductMaterials productMaterials = new ProductMaterials();
+                        productMaterials.setProduct(product);
+                        productMaterials.setUser(null);
+                        productMaterials.setMaterials(null);
+                        productMaterials.setId(ss.getId());
+                        productMaterials.setNameForRefrence(ss.getMaterialName());
+                        productMaterials.setAmountUsed(Long.valueOf(ss.getAmountTaken()));
+
+                        materials.add(productMaterials);
+                    }
+                    s.setMaterials(materials);
+
+
+                    s.setProductName(productName.getValue());
+                    s.setSku(sku.getValue());
+                    s.setDescription(description.getValue());
+                    s.setPrice(price.getValue());
+                    s.setDiscount(discount.getValue());
+                    s.setMaterialCost(materialCost.getValue());
+                    s.setStockQuantity(stockQuantity.getValue().longValue());
+                    s.setLowStockThreshold(lowThreshold.getValue().longValue());
+                    s.setCategory(category.getValue());
+                    s.setStatus(status.getValue());
+                    s.setVisibility(visibility.getValue());
+
+
+                    displayAllProducts();
+
+                    materialInfoList.clear();
+
+                });
+
+                v.addClickListener(e-> {
+
+                            addNewProductVariant.removeAll();
+                            joinImageAndRightSideHolder.removeAll();
+
+
+                            addNewProductVariant.add(
+                                    joinImagesInfoProgramSide(s)
+                            );
+
+
+                            materialInfoList.clear();
+                            for (var mat : s.getMaterials()) {
+                                materialInfoList.add(new MaterialInfo(
+
+                                        mat.getId(),
+                                        null,
+                                        mat.getNameForRefrence(),
+                                        mat.getUnitPrice(),
+                                        0L,
+                                        mat.getAmountUsed()
+
+                                ));
+                            }
+
+
+
+                    addNewProductVariant.open();
+
+
+
+
+
+
+                });
 
                 h.add(
                     v
                 );
+
+
+
+
             }
 
             multipleProductHolder.add(h);
         }
 
 
-        public void loadNewData(){
+    public HorizontalLayout loadForEditing(){
+
+
+        productEditImage.reset();
+
+        joinImageAndRightSideHolder.setWidthFull();
+
+        joinImageAndRightSideHolder.getStyle().set("flex-wrap","wrap");
+        joinImageAndRightSideHolder.getStyle().set("overflow","hidden");
+
+        //make an empty field
+        List<CommonImagesData> commonImagesData = new ArrayList<>();
+
+        HorizontalLayout images = productEditImage.images(commonImagesData);
+
+
+        Div holder = new Div();
+        holder.add(images,
+                productEditImage.uploadStuff()
+//                reviewCrafter.commentsHolder(sharedProductInstance.getComments())
+        );
+        VerticalLayout fields = rightSide(product,null);
+        fields.addClassName("fromRightToLeft");
+
+        holder.addClassName("fromLeftToRight");
+
+        joinImageAndRightSideHolder.add(holder,fields);
+        joinImageAndRightSideHolder.expand(fields);
+
+
+        return joinImageAndRightSideHolder;
+    }
+
+
+
+    public void loadNewData(){
             grids.setConsumer(e->{
-                MaterialInfo materials = materialService.getMaterialInfoAccordingToId(e,productEditDtos.getId());
+                MaterialInfo materials = materialService.getMaterialInfoAccordingToId(e,product.getId());
 
                 materials.setAmountTaken(1L);
 
@@ -965,6 +1147,21 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 
         public VerticalLayout specs(){
 
+            addNewDetail = commonComponents.buttonThemeAndIcon("Add Detail",null, ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White");
+
+            addNewDetail.addClickListener(e->{
+
+                listExtraDetailsGrids.add(new ListExtraDetailsGrid(null,
+                        materialAndDetails.specName(""),
+                        materialAndDetails.specDescription("")));
+                upgradeExtraDetailsGrid();
+
+            });
+
+
+
+
+
             VerticalLayout v = new VerticalLayout();
             v.addClassName("island");
 
@@ -978,6 +1175,20 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
         }
 
         public VerticalLayout steps(){
+
+
+            addNewStep = commonComponents.buttonThemeAndIcon("Add Step",null, ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White");
+
+            addNewStep.addClickListener(e->{
+
+                listStepsToPrepares.add(new ListStepsToPrepare(
+                        null,
+                        Long.valueOf(listStepsToPrepares.size()+1),
+                        materialAndDetails.specName(""),
+                        materialAndDetails.specDescription("")));
+                updateStepGrid(listStepsToPrepares,listStepsToPrepareGrid);
+
+            });
 
             VerticalLayout v = new VerticalLayout();
             v.addClassName("island");
@@ -1034,8 +1245,8 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
         }
 
         public VerticalLayout categoriesTags(){
-
-
+            category.setItems(Category.values());
+            tags.setItems(Tags.values());
             FormLayout categoryTags = new FormLayout();
             categoryTags.add(category,tags);
 

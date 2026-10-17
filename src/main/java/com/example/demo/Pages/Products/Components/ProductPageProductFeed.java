@@ -62,7 +62,7 @@ public class ProductPageProductFeed {
         }
         else{
             for(var s : productFeedModelList){
-                verticalLayout.add(productFeed(s.getId(),s.getImageUrl(),s.getProductName(),s.getCategory(),s.getPrice(),s.getStockQuantity(),s.getLowStockThreshold(),s.getDiscount(),s.getDiscountedPrice(),s.getVisibility()));
+                verticalLayout.add(productFeed(s.getId(),s.getImageUrl(),s.getProductName(),s.getCategory(),s.getPrice(),s.getStockQuantity(),s.getLowStockThreshold(),s.getDiscount(),s.getDiscountedPrice(),s.getVisibility(),s.getMultipleProducts()));
             }
         }
 
@@ -79,9 +79,19 @@ public class ProductPageProductFeed {
 
 
 
-    public VerticalLayout productFeed(long id, String mainImageUrl, String productName, Category productCategory, double price, long unitsLeft, long minTreshold, double discount, double discountedPrice, Visibility visibility){
+    public VerticalLayout productFeed(long id, String mainImageUrl, String productName, Category productCategory, double price, long unitsLeft, long minTreshold, double discount, double discountedPrice, Visibility visibility, Boolean with){
         VerticalLayout product = new VerticalLayout();
         product.addClassName("island");
+
+
+
+        if(with == true){
+            VerticalLayout products = new VerticalLayout();
+            products.addClassName("island");
+            return products;
+        }
+
+
         product.getStyle().set("flex", "1 1 302px");
         product.getStyle().set("max-width", "620px");
         product.getStyle().set("min-width", "302px");

@@ -4,6 +4,7 @@ import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.DTOS.Common.GraphDataLongValue;
 import com.example.demo.DTOS.Common.MiniStatHolder;
 import com.example.demo.DTOS.Error.ErrorResponse;
+import com.example.demo.Entity.Product;
 import com.example.demo.FilterDTO.Prodcut.ProductFilterHolder;
 import com.example.demo.DTOS.Orders.OrderAddProducts;
 import com.example.demo.DTOS.Products.ProductFeedModel;
@@ -51,6 +52,13 @@ public class ProductService {
     public void removeProductById(Long id){
          httpCallLogic.checkResponse(
                  httpCallLogic.HttpCall("product/removeProduct", HttpMethod.POST, id, ErrorResponse.class,false),"Products/1",success,true);
+    }
+
+
+    @SneakyThrows
+    public void saveMultipleProducts(Product product){
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("product/saveMultipleProducts", HttpMethod.POST, product, ErrorResponse.class,false),null,success,true);
     }
 
 
