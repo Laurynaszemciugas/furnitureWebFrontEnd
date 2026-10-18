@@ -52,173 +52,173 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-@Route(value = "testtttttt", layout = MainLayout.class)
-public class MultipleProductChoices extends VerticalLayout implements BeforeEnterObserver {
+//@Route(value = "testtttttt", layout = MainLayout.class)
+public class MultipleProductChoices extends VerticalLayout  {
 
 
 
-        CommonComponents commonComponents;
-        Common common;
-        CommonService commonService;
-        Grids grids;
+    CommonComponents commonComponents;
+    Common common;
+    CommonService commonService;
+    Grids grids;
 
-        MaterialService materialService;
+    MaterialService materialService;
 
-        ProductService productService;
+    ProductService productService;
 
 
-        ProductEditImage productEditImage;
+    ProductEditImage productEditImage;
 
-        MaterialAndDetails materialAndDetails;
+    MaterialAndDetails materialAndDetails;
 
-        ObjectConverter objectConverter;
+    ObjectConverter objectConverter;
 
 
 
 
-        private Binder<Product> binder =
-                new Binder<>(Product.class);
+    private Binder<Product> binder =
+            new Binder<>(Product.class);
 
-        private TextField productName = new TextField("Product name");
-        private TextField sku = new TextField("SKU");
-        private TextArea description = new TextArea("Description");
+    private TextField productName = new TextField("Product name");
+    private TextField sku = new TextField("SKU");
+    private TextArea description = new TextArea("Description");
 
-        private NumberField price = new NumberField("Price");
-        private NumberField discount = new NumberField("Discount %");
-        private NumberField materialCost = new NumberField("Material Cost");
+    private NumberField price = new NumberField("Price");
+    private NumberField discount = new NumberField("Discount %");
+    private NumberField materialCost = new NumberField("Material Cost");
 
-        private NumberField stockQuantity = new NumberField("Stock Quantity");
-        private NumberField lowThreshold = new NumberField("Low Stock Threshold");
+    private NumberField stockQuantity = new NumberField("Stock Quantity");
+    private NumberField lowThreshold = new NumberField("Low Stock Threshold");
 
-        private Checkbox manualStock = new Checkbox("Manual stock 'Setting stock by hand not effecting the materials stock'");
+    private Checkbox manualStock = new Checkbox("Manual stock 'Setting stock by hand not effecting the materials stock'");
 
-        private ComboBox<Category> category = new ComboBox<>("Category");
-        private ComboBox<Tags> tags = new ComboBox<>("Tags");
+    private ComboBox<Category> category = new ComboBox<>("Category");
+    private ComboBox<Tags> tags = new ComboBox<>("Tags");
 
 
-        private ComboBox<Status> status = new ComboBox<>("Status");
-        private ComboBox<Visibility> visibility = new ComboBox<>("Visibility");
+    private ComboBox<Status> status = new ComboBox<>("Status");
+    private ComboBox<Visibility> visibility = new ComboBox<>("Visibility");
 
 
 
 
-        Button save;
-        Button goBack;
+    Button save;
+    Button goBack;
 
-        Button addNewVariant;
+    Button addNewVariant;
 
-        Button addNewDetail = new Button();
+    Button addNewDetail = new Button();
 
-        Button addNewStep = new Button();
+    Button addNewStep = new Button();
 
-        List<ListExtraDetailsGrid> listExtraDetailsGrids = new ArrayList<>();
-        Grid<ListExtraDetailsGrid> extraDetailsGrid = new Grid<>(ListExtraDetailsGrid.class,false);
+    List<ListExtraDetailsGrid> listExtraDetailsGrids = new ArrayList<>();
+    Grid<ListExtraDetailsGrid> extraDetailsGrid = new Grid<>(ListExtraDetailsGrid.class,false);
 
-        List<ListStepsToPrepare> listStepsToPrepares = new ArrayList<>();
-        Grid<ListStepsToPrepare> listStepsToPrepareGrid = new Grid<>(ListStepsToPrepare.class,false);
+    List<ListStepsToPrepare> listStepsToPrepares = new ArrayList<>();
+    Grid<ListStepsToPrepare> listStepsToPrepareGrid = new Grid<>(ListStepsToPrepare.class,false);
 
 
-        Grid<MaterialInfo> productFeedModelGrid = new Grid<>(MaterialInfo.class,false);
+    Grid<MaterialInfo> productFeedModelGrid = new Grid<>(MaterialInfo.class,false);
 
-        List<Tags> tagss = new ArrayList<>();
+    List<Tags> tagss = new ArrayList<>();
 
 
-        Button addNewMaterial = new Button();
+    Button addNewMaterial = new Button();
 
-        List<MaterialInfo> materialInfoList = new ArrayList<>();
+    List<MaterialInfo> materialInfoList = new ArrayList<>();
 
-        // send message that info is ready
-        Consumer<Product> consumer;
+    // send message that info is ready
+    Consumer<Product> consumer;
 
-        HorizontalLayout tagsSelected = new HorizontalLayout();
+    HorizontalLayout tagsSelected = new HorizontalLayout();
 
-        List<CommonImagesData> newImages = null;
+    List<CommonImagesData> newImages = null;
 
-        // total material cost
-        Span totalMaterialCost;
+    // total material cost
+    Span totalMaterialCost;
 
-        // memory of the material cost
-        Double value;
+    // memory of the material cost
+    Double value;
 
-        private ProductAiDto productAiDto = new ProductAiDto();
+    private ProductAiDto productAiDto = new ProductAiDto();
 
-        public void setConsumer (Consumer<Product> consumer){
-            this.consumer = consumer;
-        }
+    public void setConsumer (Consumer<Product> consumer){
+        this.consumer = consumer;
+    }
 
 
-        AIService aiService;
+    AIService aiService;
 
-        VerticalLayout rightSide =new VerticalLayout();
-        HorizontalLayout multipleProductHolder = new HorizontalLayout();
+    VerticalLayout rightSide =new VerticalLayout();
+    HorizontalLayout multipleProductHolder = new HorizontalLayout();
 
-        Product product = new Product();
+    Product product = new Product();
 
 
-        List<ProductMultiple> multipleProducts = new ArrayList<>();
+    List<ProductMultiple> multipleProducts = new ArrayList<>();
 
 
-        // display all prodcut variants
-        HorizontalLayout joinImageAndRightSideHolder =new HorizontalLayout();
+    // display all prodcut variants
+    HorizontalLayout joinImageAndRightSideHolder =new HorizontalLayout();
 
 
-        public MultipleProductChoices(CommonComponents commonComponents,
-                                          Common common,
-                                          CommonService commonService,
-                                          ObjectConverter objectConverter,
-                                          MaterialService materialService,
-                                          AIService aiService,
-                                          ProductService productService
-        ) {
-            this.commonComponents = commonComponents;
-            this.common = common;
-            this.commonService = commonService;
-            this.objectConverter = objectConverter;
-            this.materialService = materialService;
-            this.grids = new Grids(commonComponents,common,materialService);
-            this.materialAndDetails = new MaterialAndDetails(commonComponents,common,commonService,grids);
-            this.aiService = aiService;
-            this.productAiDto = new ProductAiDto();
-            this.productService = productService;
+    public MultipleProductChoices(CommonComponents commonComponents,
+                                  Common common,
+                                  CommonService commonService,
+                                  ObjectConverter objectConverter,
+                                  MaterialService materialService,
+                                  AIService aiService,
+                                  ProductService productService
+    ) {
+        this.commonComponents = commonComponents;
+        this.common = common;
+        this.commonService = commonService;
+        this.objectConverter = objectConverter;
+        this.materialService = materialService;
+        this.grids = new Grids(commonComponents,common,materialService);
+        this.materialAndDetails = new MaterialAndDetails(commonComponents,common,commonService,grids);
+        this.aiService = aiService;
+        this.productAiDto = new ProductAiDto();
+        this.productService = productService;
 
 
-            this.productEditImage = new ProductEditImage(commonComponents,common);
+        this.productEditImage = new ProductEditImage(commonComponents,common);
 
-            loadNewData();
-            bindFields();
+        loadNewData();
+        bindFields();
 
 
-            manualStock.addClassName("stat-example");
-            totalMaterialCost = commonComponents.spanCrafter("Total material cost - 0.0 Eur","stat-example");
+        manualStock.addClassName("stat-example");
+        totalMaterialCost = commonComponents.spanCrafter("Total material cost - 0.0 Eur","stat-example");
 
-            joinImagesInfoProgramSide(null);
+        joinImagesInfoProgramSide(null);
 
-            setPadding(false);
-            setSpacing(false);
-            setSizeFull();
-            setAlignItems(Alignment.CENTER);
-            addClassName("animation-page");
-            //getAiData();
+        setPadding(false);
+        setSpacing(false);
+        setSizeFull();
+        setAlignItems(Alignment.CENTER);
+        addClassName("animation-page");
+        //getAiData();
 
 
-            addNewMaterial = commonComponents.buttonThemeAndIcon("Add Material",null, ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White");
+        addNewMaterial = commonComponents.buttonThemeAndIcon("Add Material",null, ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White");
 
 
 
-            category.addValueChangeListener(ee -> {
-                if (ee.isFromClient()) {
-                    product.setCategory(ee.getValue());
-                }
-            });
+        category.addValueChangeListener(ee -> {
+            if (ee.isFromClient()) {
+                product.setCategory(ee.getValue());
+            }
+        });
 
 
-            save = commonComponents.normalThemeButtonNoNavigate("Save", ButtonVariant.LUMO_PRIMARY);
+        save = commonComponents.normalThemeButtonNoNavigate("Save", ButtonVariant.LUMO_PRIMARY);
 
-            goBack = new Button("Cancel",e-> common.customNavigate("Products/1"));
+        goBack = new Button("Cancel",e-> common.customNavigate("Products/1"));
 
-            addNewVariant = commonComponents.normalThemeButtonNoNavigate("Add new variant", ButtonVariant.LUMO_PRIMARY);
+        addNewVariant = commonComponents.normalThemeButtonNoNavigate("Add new variant", ButtonVariant.LUMO_PRIMARY);
 
-            saveDate(addNewVariant);
+        saveDate(addNewVariant);
 
 
 //            List<CommonImagesData> commonImagesData = new ArrayList<>();
@@ -250,42 +250,80 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 //                    multipleProductHolder
 //            );
 
-            productEditImage.setMainChange(list -> {
-                newImages = new ArrayList<>();
-                newImages.addAll(list);
-            });
+        productEditImage.setMainChange(list -> {
+            newImages = new ArrayList<>();
+            newImages.addAll(list);
+        });
 
 
-            productEditImage.setListConsumer(list -> {
-                newImages = new ArrayList<>();
-                newImages.addAll(list);
-            });
-
-
-
+        productEditImage.setListConsumer(list -> {
+            newImages = new ArrayList<>();
+            newImages.addAll(list);
+        });
 
 
 
+        status.setItems(Status.values());
 
+        List<Visibility> list = new ArrayList<>();
+
+        for (var v : Visibility.values()) {
+            if (v != Visibility.ALL) {
+                list.add(v);
+            }
         }
 
-
-    @Override
-    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-
-        removeAll();
+        visibility.setItems(list);
 
 
-
-
-        add(mainLayout());
 
     }
 
 
-    public VerticalLayout mainLayout() {
 
-        joinImagesInfoProgramSide(null);
+    public void reset(){
+
+        materialInfoList.clear();
+        productName.clear();
+        sku.clear();
+        description.clear();
+        price.clear();
+        discount.clear();
+        materialCost.clear();
+        lowThreshold.setValue(Double.valueOf(0));
+        manualStock.clear();
+        status.clear();
+        visibility.clear();
+        stockQuantity.setValue(Double.valueOf(0));
+
+    }
+
+
+
+
+//    @Override
+//    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
+//
+//        removeAll();
+//
+//
+//
+//
+//        add(mainLayout());
+//
+//    }
+
+
+    public VerticalLayout mainLayout(Product product) {
+
+        loadData(null);
+
+
+        this.product = product;
+
+        displayAllProducts();
+
+
 
 
         Dialog commonData = new Dialog();
@@ -295,13 +333,19 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
                 commonStuff()
         );
 
-        Button openCommonData = new Button("Common data",e-> commonData.open());
+        Button openCommonData = new Button("Common data");
+        openCommonData.addClickListener(e->{
+            commonData.open();
+        });
 
         Dialog addNewProductVariant = new Dialog();
         addNewProductVariant.getFooter().add(addNewVariant);
 
         Button openNewProductVariant = new Button("Add new varianteeeeeee");
         openNewProductVariant.addClickListener(e->{
+
+
+            reset();
 
             // remove all image prepate for a another variant
             addNewProductVariant.removeAll();
@@ -311,11 +355,11 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
                     joinImagesInfoProgramSide(null)
             );
 
-         addNewProductVariant.open();
+            addNewProductVariant.open();
         });
 
 
-            VerticalLayout verticalLayout = new VerticalLayout();
+        VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setMaxWidth("1650px");
 
         verticalLayout.getStyle().set("margin-top", "5px");
@@ -328,12 +372,17 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 
 
 
+        Button b = new Button("Show data");
+        b.addClickListener(e->{
+            System.out.println(product);
+        });
 
         verticalLayout.add(
 //                commonComponents.breadCrums(new BreadCrumsDto("Products", "Products/1"),new BreadCrumsDto("Add new product", "ProductsAdd")),
                 briefPageExplanation("Add multiple product variants"),
                 openCommonData,
                 openNewProductVariant,
+                b,
 
                 multipleProductHolder);
 
@@ -352,6 +401,7 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 
         joinImageAndRightSideHolder.getStyle().set("flex-wrap","wrap");
         joinImageAndRightSideHolder.getStyle().set("overflow","hidden");
+
 
         //make an empty field
         List<CommonImagesData> commonImagesData = new ArrayList<>();
@@ -372,7 +422,7 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
                 productEditImage.uploadStuff()
 //                reviewCrafter.commentsHolder(sharedProductInstance.getComments())
         );
-        VerticalLayout fields = rightSide(product,productMultiple);
+        VerticalLayout fields = rightSide(productMultiple);
         fields.addClassName("fromRightToLeft");
 
         holder.addClassName("fromLeftToRight");
@@ -387,122 +437,128 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 
 
 
-        public void getAiData() {
+    public void getAiData() {
 
 
 
 
-            aiService.setProductFinishStepsConsumer(e -> {
+        aiService.setProductFinishStepsConsumer(e -> {
 
 
-                listStepsToPrepares.clear();
+            listStepsToPrepares.clear();
 
-                for (var s : e) {
+            for (var s : e) {
 
 
-                    ListStepsToPrepare listStepsToPrepare =
-                            new ListStepsToPrepare(
-                                    null,
-                                    1L,
-                                    materialAndDetails.specName(s.getStepName()),
-                                    materialAndDetails.specDescription(s.getStepDescription())
-                            );
+                ListStepsToPrepare listStepsToPrepare =
+                        new ListStepsToPrepare(
+                                null,
+                                1L,
+                                materialAndDetails.specName(s.getStepName()),
+                                materialAndDetails.specDescription(s.getStepDescription())
+                        );
 
-                    listStepsToPrepares.add(listStepsToPrepare);
-                }
+                listStepsToPrepares.add(listStepsToPrepare);
+            }
 
-                grids.updateStepGrid(listStepsToPrepares,
-                        listStepsToPrepareGrid);
+            grids.updateStepGrid(listStepsToPrepares,
+                    listStepsToPrepareGrid);
+        });
+
+        aiService.setProductExtraDetailsConsumer(e -> {
+
+            listExtraDetailsGrids.clear();
+
+            for (var s : e) {
+
+
+                ListExtraDetailsGrid extraDetails =
+                        new ListExtraDetailsGrid(
+                                null,
+                                materialAndDetails.specName(s.getSpecName()),
+                                materialAndDetails.specDescription(s.getSpecDescription())
+                        );
+
+                listExtraDetailsGrids.add(extraDetails);
+            }
+
+            grids.upgradeExtraDetailsGrid(listExtraDetailsGrids,
+                    extraDetailsGrid);
+        });
+
+    }
+
+    // set consumer so it could react this is due to because in controller new not used
+    public void setProductEditImage(ProductEditImage productEditImage) {
+        this.productEditImage = productEditImage;
+        if (this.productEditImage != null) {
+            productEditImage.setListConsumer(list -> {
+                newImages = new ArrayList<>();
+                newImages.addAll(list);
             });
 
-            aiService.setProductExtraDetailsConsumer(e -> {
-
-                listExtraDetailsGrids.clear();
-
-                for (var s : e) {
-
-
-                    ListExtraDetailsGrid extraDetails =
-                            new ListExtraDetailsGrid(
-                                    null,
-                                    materialAndDetails.specName(s.getSpecName()),
-                                    materialAndDetails.specDescription(s.getSpecDescription())
-                            );
-
-                    listExtraDetailsGrids.add(extraDetails);
-                }
-
-                grids.upgradeExtraDetailsGrid(listExtraDetailsGrids,
-                        extraDetailsGrid);
+            productEditImage.setMainChange(list -> {
+                newImages = new ArrayList<>();
+                newImages.addAll(list);
             });
 
         }
+    }
 
-        // set consumer so it could react this is due to because in controller new not used
-        public void setProductEditImage(ProductEditImage productEditImage) {
-            this.productEditImage = productEditImage;
-            if (this.productEditImage != null) {
-                productEditImage.setListConsumer(list -> {
-                    newImages = new ArrayList<>();
-                    newImages.addAll(list);
-                });
 
-                productEditImage.setMainChange(list -> {
-                    newImages = new ArrayList<>();
-                    newImages.addAll(list);
-                });
+    public VerticalLayout rightSide( ProductMultiple productMultiple){
 
+
+
+
+        loadData(productMultiple);
+
+        rightSide.removeAll();
+
+
+        manualStock.addClickListener(e->{
+            if(!manualStock.getValue()){
+                materialCost.setValue(value);
             }
+        });
+
+
+        // load data here of the common used stuff and  the display stuff
+
+
+
+
+        rightSide.setWidth("700px");
+        rightSide.setPadding(false);
+
+
+
+
+
+
+
+
+        tagsSelected.setWidthFull();
+        tagsSelected.addClassName("island");
+        tagsSelected.setSpacing(false);
+        tagsSelected.setPadding(false);
+
+        if( visibility.getValue() != null && visibility.getValue().equals(Visibility.NonVisible)) {
+            status.setEnabled(false);
         }
 
+        if(product.isStockCalculatedManually()) {
+            materialCost.setReadOnly(false);
+            stockQuantity.setReadOnly(false);
+        }
+        else{
+            materialCost.setReadOnly(true);
+            stockQuantity.setReadOnly(true);
+        }
 
-        public VerticalLayout rightSide(Product productEditDtoss, ProductMultiple productMultiple){
+        manualStock.addValueChangeListener(e->{
 
-
-            product = productEditDtoss;
-
-            if (productMultiple == null) {
-                loadData(new ProductMultiple());
-            } else {
-                loadData(productMultiple);
-            }
-
-
-            rightSide.removeAll();
-
-
-            manualStock.addClickListener(e->{
-                if(!manualStock.getValue()){
-                    materialCost.setValue(value);
-                }
-            });
-
-
-            // load data here of the common used stuff and  the display stuff
-
-
-
-
-            rightSide.setWidth("700px");
-            rightSide.setPadding(false);
-
-
-
-
-
-
-
-
-            tagsSelected.setWidthFull();
-            tagsSelected.addClassName("island");
-            tagsSelected.setSpacing(false);
-            tagsSelected.setPadding(false);
-
-            if( visibility.getValue() != null && visibility.getValue().equals(Visibility.NonVisible)) {
-                status.setEnabled(false);
-            }
-
-            if(product.isStockCalculatedManually()) {
+            if(e.getValue()){
                 materialCost.setReadOnly(false);
                 stockQuantity.setReadOnly(false);
             }
@@ -511,58 +567,47 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
                 stockQuantity.setReadOnly(true);
             }
 
-            manualStock.addValueChangeListener(e->{
-
-                if(e.getValue()){
-                    materialCost.setReadOnly(false);
-                    stockQuantity.setReadOnly(false);
-                }
-                else{
-                    materialCost.setReadOnly(true);
-                    stockQuantity.setReadOnly(true);
-                }
-
-            });
+        });
 
 
 
-            tags.addValueChangeListener(e->{
+        tags.addValueChangeListener(e->{
 
-                if (!e.isFromClient()) {
-                    return;
-                }
+            if (!e.isFromClient()) {
+                return;
+            }
 
-                if(!tagss.contains(e.getValue()) && e.getValue() != null ) {
-                    tagss.add(e.getValue());
-                    tagsSelected.add(tagCrafter(e.getValue()));
+            if(!tagss.contains(e.getValue()) && e.getValue() != null ) {
+                tagss.add(e.getValue());
+                tagsSelected.add(tagCrafter(e.getValue()));
 
-                    commonComponents.showNotification(String.format("%s - '%s' %s","Tag",e.getValue(),"added"),
-                            3000,
-                            Notification.Position.BOTTOM_CENTER,
-                            NotificationVariant.LUMO_SUCCESS);
+                commonComponents.showNotification(String.format("%s - '%s' %s","Tag",e.getValue(),"added"),
+                        3000,
+                        Notification.Position.BOTTOM_CENTER,
+                        NotificationVariant.LUMO_SUCCESS);
 
 
-                    List<ProductTags> productTags = new ArrayList<>();
+                List<ProductTags> productTags = new ArrayList<>();
 
-                    for (Tags tag : tagss) {
-                        ProductTags productTag = new ProductTags();
-                        productTag.setProduct(product);
-                        productTag.setTags(tag);
-                        productTag.setUser(null);
-                        productTags.add(productTag);
-                    }
-
-                    product.setTags(productTags);
-
-                }
-                else{
-                    commonComponents.showNotification(String.format("%s - '%s' %s","Tag",e.getValue(),"already exists"),
-                            3000,
-                            Notification.Position.BOTTOM_CENTER,
-                            NotificationVariant.LUMO_WARNING);
+                for (Tags tag : tagss) {
+                    ProductTags productTag = new ProductTags();
+                    productTag.setProduct(product);
+                    productTag.setTags(tag);
+                    productTag.setUser(null);
+                    productTags.add(productTag);
                 }
 
-            });
+                product.setTags(productTags);
+
+            }
+            else{
+                commonComponents.showNotification(String.format("%s - '%s' %s","Tag",e.getValue(),"already exists"),
+                        3000,
+                        Notification.Position.BOTTOM_CENTER,
+                        NotificationVariant.LUMO_WARNING);
+            }
+
+        });
 
 
 
@@ -575,302 +620,291 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 
 
 
-            productFeedModelGrid.removeAllColumns();
+        productFeedModelGrid.removeAllColumns();
 
 
-            rightSide.add(
-                    basicInfo(),
-                    pricingInv(),
-                    productStatus(),
-                    requiredMaterials()
+        rightSide.add(
+                basicInfo(),
+                pricingInv(),
+                productStatus(),
+                requiredMaterials()
 
 
-            );
-
-
-
-
-
-
-            return rightSide;
-        }
-
-
-        public VerticalLayout commonStuff(){
-
-
-
-
-            VerticalLayout v = new VerticalLayout();
-            v.setPadding(false);
-
-            v.add(
-                    commonComponents.spanCrafterWordNoHide("Common settings used for products","activityFeed-name"),
-                    categoriesTags(),
-                    specs(),
-                    steps()
-            );
+        );
 
 
 
 
 
 
-
-            return v;
-
-
-        }
+        return rightSide;
+    }
 
 
-
-
-        public HorizontalLayout briefPageExplanation(String name){
-            HorizontalLayout left = commonComponents.biefPageExplanation(name);
-            left.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-
-            HorizontalLayout buttonSave = new HorizontalLayout();
-            buttonSave.add(goBack,save);
-
-            left.add(buttonSave);
-
-            left.setWidthFull();
-
-            return left;
-        }
+    public VerticalLayout commonStuff(){
 
 
 
 
-        public void loadData(ProductMultiple productEditDto){
+        VerticalLayout v = new VerticalLayout();
+        v.setPadding(false);
+
+        v.add(
+                commonComponents.spanCrafterWordNoHide("Common settings used for products","activityFeed-name"),
+                categoriesTags(),
+                specs(),
+                steps()
+        );
 
 
 
+
+
+
+
+        return v;
+
+
+    }
+
+
+
+
+    public HorizontalLayout briefPageExplanation(String name){
+        HorizontalLayout left = commonComponents.biefPageExplanation(name);
+        left.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+
+        HorizontalLayout buttonSave = new HorizontalLayout();
+        buttonSave.add(goBack,save);
+
+        left.add(buttonSave);
+
+        left.setWidthFull();
+
+        return left;
+    }
+
+
+
+
+    public void loadData(ProductMultiple products){
+
+
+
+
+
+        if(products != null) {
 
             Double sumPrice = 0.0;
 
-
-            manualStock.setValue(productEditDto.isStockCalculatedManually());
-
-
-            status.setItems(Status.values());
-            List<Visibility> list = new ArrayList<>();
-
-            for (var v : Visibility.values()) {
-                if (v != Visibility.ALL) {
-                    list.add(v);
-                }
-            }
-
-            visibility.setItems(list);
+            manualStock.setValue(products.isStockCalculatedManually());
 
 
-            productName.setValue(productEditDto.getProductName() == null ? "" : productEditDto.getProductName());
-            sku.setValue(productEditDto.getSku() == null ? "" : productEditDto.getSku());
-            description.setValue(productEditDto.getDescription() == null ? "" : productEditDto.getDescription());
 
-            price.setValue(productEditDto.getPrice());
-            discount.setValue(productEditDto.getDiscount());
+
+            productName.setValue(products.getProductName() == null ? "" : products.getProductName());
+            sku.setValue(products.getSku() == null ? "" : products.getSku());
+            description.setValue(products.getDescription() == null ? "" : products.getDescription());
+
+            price.setValue(products.getPrice());
+            discount.setValue(products.getDiscount());
 
             materialCost.setValue(sumPrice);
 
 
-            stockQuantity.setValue(productEditDto.getStockQuantity() != null ? (double) productEditDto.getStockQuantity() : 0.0);
-            lowThreshold.setValue(productEditDto.getLowStockThreshold() != null ? (double) productEditDto.getLowStockThreshold() : 0.0);
-
-            category.setValue(product.getCategory());
+            stockQuantity.setValue(products.getStockQuantity() != null ? (double) products.getStockQuantity() : 0.0);
+            lowThreshold.setValue(products.getLowStockThreshold() != null ? (double) products.getLowStockThreshold() : 0.0);
 
 
 
-
-            status.setValue(productEditDto.getStatus());
-            visibility.setValue(productEditDto.getVisibility());
-
-            if (product.getTags() != null && !product.getTags().isEmpty()) {
-                tags.setValue(product.getTags().get(0).getTags());
-                for(var s : product.getTags()) {
-                    tagss.addAll(Collections.singleton(s.getTags()));
-                }
-            } else {
-                tags.setValue(null);
-            }
-
-
-            if(product.getExtraDetails() != null && !product.getExtraDetails().isEmpty()) {
-                for (var s : product.getExtraDetails()) {
-                    listExtraDetailsGrids.add(new ListExtraDetailsGrid(
-                            s.getId(),
-                            materialAndDetails.specName(s.getSpecName()),
-                            materialAndDetails.specDescription(s.getSpecDescription())));
-                }
-                upgradeExtraDetailsGrid();
-            }
-//            if(productEditDto.getMaterials() != null &&  !productEditDto.getMaterials().isEmpty()) {
-//                for(var s : productEditDto.getMaterials()) {
-//
-//                    MaterialInfo materialInfo = materialService.getMaterialInfoAccordingToId(s.getMaterials().getId(), productEditDto.getId());
-//                    materialInfoList.add(materialInfo);
-//                    sumPrice+= (s.getAmountUsed() * s.getUnitPrice());
-//
-//                }
-//                upgradeMaterialGrid();
-//            }
-//
-
-            if(product.getSteps() != null &&  !product.getSteps().isEmpty()) {
-                for(var s : product.getSteps()) {
-
-                    listStepsToPrepares.add(new ListStepsToPrepare(
-                            s.getId(),
-                            s.getStepId(),
-                            materialAndDetails.specName(s.getStepName()),
-                            materialAndDetails.specDescription(s.getStepDescription())));
-
-                }
-                updateStepGrid(listStepsToPrepares,listStepsToPrepareGrid);
-            }
-
-
+            status.setValue(products.getStatus());
+            visibility.setValue(products.getVisibility());
 
             materialCost.setValue(sumPrice);
 
-            updateSelectedTags(product);
+        }
+        tags.setItems(Tags.values());
+
+        category.setItems(Category.values());
+        category.setValue(product.getCategory());
 
 
+        tagss.clear();
+        listStepsToPrepares.clear();
+        listExtraDetailsGrids.clear();
 
-
-
+        if (product.getTags() != null && !product.getTags().isEmpty()) {
+            tags.setValue(product.getTags().get(0).getTags());
+            for(var s : product.getTags()) {
+                tagss.addAll(Collections.singleton(s.getTags()));
+            }
+        } else {
+            tags.setValue(null);
         }
 
 
-        public void saveDate(Button save){
+        if(product.getExtraDetails() != null && !product.getExtraDetails().isEmpty()) {
+            for (var s : product.getExtraDetails()) {
+                listExtraDetailsGrids.add(new ListExtraDetailsGrid(
+                        s.getId(),
+                        materialAndDetails.specName(s.getSpecName()),
+                        materialAndDetails.specDescription(s.getSpecDescription())));
+            }
+            upgradeExtraDetailsGrid();
+        }
+
+
+        if(product.getSteps() != null &&  !product.getSteps().isEmpty()) {
+            for(var s : product.getSteps()) {
+
+                listStepsToPrepares.add(new ListStepsToPrepare(
+                        s.getId(),
+                        s.getStepId(),
+                        materialAndDetails.specName(s.getStepName()),
+                        materialAndDetails.specDescription(s.getStepDescription())));
+
+            }
+            updateStepGrid(listStepsToPrepares,listStepsToPrepareGrid);
+        }
 
 
 
-            this.save.addClickListener(e->{
 
-                productService.saveMultipleProducts(product);
+        updateSelectedTags(product);
 
-            });
 
-            save.addClickListener(e -> {
-                if(e.isFromClient()){
+
+
+
+    }
+
+
+    public void saveDate(Button save){
+
+
+
+        // save all stuff
+        this.save.addClickListener(e->{
+
+
+
+            List<ExtraDetails> extraDetails = new ArrayList<>();
+            for(var s : listExtraDetailsGrids){
+                ExtraDetails details = new ExtraDetails();
+                details.setProduct(product);
+                details.setSpecName(s.getSpecName().getValue());
+                details.setSpecDescription(s.getSpecDescription().getValue());
+                details.setUser(null);
+                extraDetails.add(details);
+            }
+            product.setExtraDetails(extraDetails);
+
+
+            List<ProductFinishSteps> stepsToPrepares = new ArrayList<>();
+            for(var s : listStepsToPrepares){
+                ProductFinishSteps steps = new ProductFinishSteps();
+                steps.setProduct(product);
+                steps.setStepId(s.getStep());
+                steps.setStepName(s.getStepName().getValue());
+                steps.setStepDescription(s.getStepDescription().getValue());
+
+                stepsToPrepares.add(steps);
+            }
+            product.setSteps(stepsToPrepares);
+
+
+            System.out.println("TAGS");
+            System.out.println(product.getTags());
+            System.out.println("SPEFICATIONS");
+            System.out.println(product.getExtraDetails());
+            System.out.println("STEPS TO FINISH");
+            System.out.println(product.getSteps());
+            productService.saveEditedMultipleProduct(product);
+
+        });
+
+
+
+        // SAVE NEW VARIANT
+        save.addClickListener(e -> {
+            if(e.isFromClient()){
                 System.out.println("======================================================");
                 System.out.println("SAVE CLICKED: " + System.nanoTime());
 //                if (binder.validate().isOk()) {
 
-                    ProductMultiple multipleProduct = new ProductMultiple();
+                ProductMultiple multipleProduct = new ProductMultiple();
 
-                    product.setMultipleItems(true);
-
-
-                    //================================================================
-
-                    // get tags
-                    List<ProductTags> productTags = new ArrayList<>();
-                    for(var s : tagss) {
-                        ProductTags allTags = new ProductTags();
-                        allTags.setProduct(product);
-                        allTags.setUser(null);
-                        allTags.setTags(s);
-                        productTags.add(allTags);
-                    }
-                    product.setTags(productTags);
-
-                    // get extra details
-                    List<ExtraDetails> extraDetails = new ArrayList<>();
-                    for(var s : listExtraDetailsGrids){
-                        ExtraDetails details = new ExtraDetails();
-                        details.setProduct(product);
-                        details.setSpecName(s.getSpecName().getValue());
-                        details.setSpecDescription(s.getSpecDescription().getValue());
-                        details.setUser(null);
-                        extraDetails.add(details);
-                    }
-                    product.setExtraDetails(extraDetails);
+                product.setMultipleItems(true);
 
 
-                    List<ProductFinishSteps> stepsToPrepares = new ArrayList<>();
-                    for(var s : listStepsToPrepares){
-                        ProductFinishSteps steps = new ProductFinishSteps();
-                        steps.setProduct(product);
-                        steps.setStepId(s.getStep());
-                        steps.setStepName(s.getStepName().getValue());
-                        steps.setStepDescription(s.getStepDescription().getValue());
+                //================================================================
 
-                        stepsToPrepares.add(steps);
-                    }
-                    product.setSteps(stepsToPrepares);
+                multipleProduct.setProductName(productName.getValue());
+                multipleProduct.setSku(sku.getValue());
+                multipleProduct.setDescription(description.getValue());
+                multipleProduct.setPrice(price.getValue());
+                multipleProduct.setDiscount(discount.getValue());
+                multipleProduct.setMaterialCost(materialCost.getValue());
+                multipleProduct.setStockQuantity(stockQuantity.getValue().longValue());
+                multipleProduct.setLowStockThreshold(lowThreshold.getValue().longValue());
 
-                    //================================================================
-
-
-                    multipleProduct.setProductName(productName.getValue());
-                    multipleProduct.setSku(sku.getValue());
-                    multipleProduct.setDescription(description.getValue());
-                    multipleProduct.setPrice(price.getValue());
-                    multipleProduct.setDiscount(discount.getValue());
-                    multipleProduct.setMaterialCost(materialCost.getValue());
-                    multipleProduct.setStockQuantity(stockQuantity.getValue().longValue());
-                    multipleProduct.setLowStockThreshold(lowThreshold.getValue().longValue());
-
-                    multipleProduct.setStatus(status.getValue());
-                    multipleProduct.setVisibility(visibility.getValue());
+                multipleProduct.setStatus(status.getValue());
+                multipleProduct.setVisibility(visibility.getValue());
 
 
 
 
-                    //get images
+                //get images
 
-                    if(newImages !=null){
-                        System.out.println("changing pictures");
-                        for(var s : newImages){
+                if(newImages !=null){
+                    System.out.println("changing pictures");
+                    for(var s : newImages){
 
-                            if (s.getImageType().equals("Internet") || s.getImageData() == null) {
-                                continue;
-                            } else {
-                                s.setImageUrl(common.imageMaker(s.getImageData(), s.getImageType()));
-                            }
-
-
-
-
+                        if (s.getImageType().equals("Internet") || s.getImageData() == null) {
+                            continue;
+                        } else {
+                            s.setImageUrl(common.imageMaker(s.getImageData(), s.getImageType()));
                         }
 
-                        multipleProduct.setImages(objectConverter.convert(newImages, ProductImageData.class));
+
+
 
                     }
 
-                    // get materials
-                    List<ProductMaterials> materials = new ArrayList<>();
-                    for(var s : materialInfoList){
+                    multipleProduct.setImages(objectConverter.convert(newImages, ProductImageData.class));
 
-                        ProductMaterials productMaterials = new ProductMaterials();
-                        productMaterials.setProduct(product);
-                        productMaterials.setUser(null);
-                        productMaterials.setMaterials(null);
-                        productMaterials.setId(s.getId());
-                        productMaterials.setNameForRefrence(s.getMaterialName());
-                        productMaterials.setAmountUsed(Long.valueOf(s.getAmountTaken()));
-
-                        materials.add(productMaterials);
-                    }
-                    multipleProduct.setMaterials(materials);
-
-
-
-
-                    multipleProduct.setStockCalculatedManually(manualStock.getValue());
+                }
+//                // get materials
+//                List<ProductMaterials> materials = new ArrayList<>();
+//                for(var s : materialInfoList){
+//
+//                    ProductMaterials productMaterials = new ProductMaterials();
+//                    productMaterials.setProduct(product);
+//                    productMaterials.setUser(null);
+//                    productMaterials.setMaterials(null);
+//                    productMaterials.setId(s.getId());
+//                    productMaterials.setNameForRefrence(s.getMaterialName());
+//                    productMaterials.setAmountUsed(Long.valueOf(s.getAmountTaken()));
+//
+//                    materials.add(productMaterials);
+//                }
+//                multipleProduct.setMaterials(materials);
 
 
 
-                    //multipleProducts.add(multipleProduct);
 
 
-                    //consumer.accept(product);
-                    //common.customNavigate("Products/1");
+                multipleProduct.setStockCalculatedManually(manualStock.getValue());
 
-                    product.getProductMultiples().add(multipleProduct);
+
+
+                //multipleProducts.add(multipleProduct);
+
+
+                //consumer.accept(product);
+                //common.customNavigate("Products/1");
+
+                product.getProductMultiples().add(multipleProduct);
 
 
 //                    System.out.println("LISTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
@@ -878,160 +912,162 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 //                    System.out.println("LISTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
 
 
-                    displayAllProducts();
-                    newImages = new ArrayList<>();
+                displayAllProducts();
+                newImages = new ArrayList<>();
 
 
 
 //                } else {
 //                    System.out.println("Validation failed");
 //                }
-                    }
-            });
-        }
+            }
+        });
+    }
 
 
-        // display the prodcut variants
-        public void displayAllProducts(){
+    // display the prodcut variants
+    public void displayAllProducts(){
 
 
-            System.out.println("Size of the array");
-            System.out.println(product.getProductMultiples().size());
+        System.out.println("Size of the array");
+        System.out.println(product.getProductMultiples().size());
 
-            multipleProductHolder.removeAll();
+        multipleProductHolder.removeAll();
 
-            HorizontalLayout h= new HorizontalLayout();
-            h.setWidthFull();
-            for(var s :  product.getProductMultiples()){
+        HorizontalLayout h= new HorizontalLayout();
+        h.setWidthFull();
+        for(var s :  product.getProductMultiples()){
 
-                VerticalLayout v = new VerticalLayout();
-                v.addClassName("island-hover");
+            VerticalLayout v = new VerticalLayout();
+            v.addClassName("island-hover");
 
-                String mainImageUrl = "No_picture.png";
-                if(!s.getImages().isEmpty()) {
-                    for (var imagesOfTheProduct : s.getImages()) {
-                        if (imagesOfTheProduct.getImageLogic().equals(ImageLogic.Main)) {
-                            mainImageUrl = imagesOfTheProduct.getImageUrl();
-                        }
+            String mainImageUrl = "No_picture.png";
+            if(!s.getImages().isEmpty()) {
+                for (var imagesOfTheProduct : s.getImages()) {
+                    if (imagesOfTheProduct.getImageLogic().equals(ImageLogic.Main)) {
+                        mainImageUrl = imagesOfTheProduct.getImageUrl();
                     }
                 }
-
-                Image image = commonComponents.imageCrafter(mainImageUrl,"100px","100px","5px");
-
-
-
-                v.add(
-                        image,
-                        commonComponents.spanCrafterWordNoHide(s.getProductName(),"stat-example"),
-                        commonComponents.spanCrafterWordNoHide(s.getPrice() + "","stat-example")
-                );
-                Dialog addNewProductVariant = new Dialog();
-
-                Button save = new Button("Save");
-                addNewProductVariant.getFooter().add(save);
-
-                save.addClickListener(e->{
-
-                            if(newImages !=null) {
-                                System.out.println("changing pictures");
-                                for (var ss : newImages) {
-
-                                    if (ss.getImageType().equals("Internet") || ss.getImageData() == null) {
-                                        continue;
-                                    } else {
-                                        ss.setImageUrl(common.imageMaker(ss.getImageData(), ss.getImageType()));
-                                    }
-
-
-                                }
-
-                                s.setImages(objectConverter.convert(newImages, ProductImageData.class));
-                            }
-
-
-                    // get materials
-                    List<ProductMaterials> materials = new ArrayList<>();
-                    for(var ss : materialInfoList){
-
-                        ProductMaterials productMaterials = new ProductMaterials();
-                        productMaterials.setProduct(product);
-                        productMaterials.setUser(null);
-                        productMaterials.setMaterials(null);
-                        productMaterials.setId(ss.getId());
-                        productMaterials.setNameForRefrence(ss.getMaterialName());
-                        productMaterials.setAmountUsed(Long.valueOf(ss.getAmountTaken()));
-
-                        materials.add(productMaterials);
-                    }
-                    s.setMaterials(materials);
-
-
-                    s.setProductName(productName.getValue());
-                    s.setSku(sku.getValue());
-                    s.setDescription(description.getValue());
-                    s.setPrice(price.getValue());
-                    s.setDiscount(discount.getValue());
-                    s.setMaterialCost(materialCost.getValue());
-                    s.setStockQuantity(stockQuantity.getValue().longValue());
-                    s.setLowStockThreshold(lowThreshold.getValue().longValue());
-                    s.setCategory(category.getValue());
-                    s.setStatus(status.getValue());
-                    s.setVisibility(visibility.getValue());
-
-
-                    displayAllProducts();
-
-                    materialInfoList.clear();
-
-                });
-
-                v.addClickListener(e-> {
-
-                            addNewProductVariant.removeAll();
-                            joinImageAndRightSideHolder.removeAll();
-
-
-                            addNewProductVariant.add(
-                                    joinImagesInfoProgramSide(s)
-                            );
-
-
-                            materialInfoList.clear();
-                            for (var mat : s.getMaterials()) {
-                                materialInfoList.add(new MaterialInfo(
-
-                                        mat.getId(),
-                                        null,
-                                        mat.getNameForRefrence(),
-                                        mat.getUnitPrice(),
-                                        0L,
-                                        mat.getAmountUsed()
-
-                                ));
-                            }
-
-
-
-                    addNewProductVariant.open();
-
-
-
-
-
-
-                });
-
-                h.add(
-                    v
-                );
-
-
-
-
             }
 
-            multipleProductHolder.add(h);
+            Image image = commonComponents.imageCrafter(mainImageUrl,"100px","100px","5px");
+
+
+
+            v.add(
+                    image,
+                    commonComponents.spanCrafterWordNoHide(s.getProductName(),"stat-example"),
+                    commonComponents.spanCrafterWordNoHide(s.getPrice() + "","stat-example")
+            );
+            Dialog addNewProductVariant = new Dialog();
+
+            Button save = new Button("Save");
+            addNewProductVariant.getFooter().add(save);
+
+            save.addClickListener(e->{
+
+                if(newImages !=null) {
+                    System.out.println("changing pictures");
+                    for (var ss : newImages) {
+
+                        if (ss.getImageType().equals("Internet") || ss.getImageData() == null) {
+                            continue;
+                        } else {
+                            ss.setImageUrl(common.imageMaker(ss.getImageData(), ss.getImageType()));
+                        }
+
+
+                    }
+
+                    s.setImages(objectConverter.convert(newImages, ProductImageData.class));
+                }
+
+
+                // get materials
+                List<ProductMaterials> materials = new ArrayList<>();
+                for(var ss : materialInfoList){
+
+                    ProductMaterials productMaterials = new ProductMaterials();
+                    productMaterials.setProduct(product);
+                    productMaterials.setUser(null);
+                    productMaterials.setMaterials(null);
+                    productMaterials.setId(ss.getId());
+                    productMaterials.setNameForRefrence(ss.getMaterialName());
+                    productMaterials.setAmountUsed(Long.valueOf(ss.getAmountTaken()));
+
+                    materials.add(productMaterials);
+                }
+                s.setMaterials(materials);
+
+
+                s.setProductName(productName.getValue());
+                s.setSku(sku.getValue());
+                s.setDescription(description.getValue());
+                s.setPrice(price.getValue());
+                s.setDiscount(discount.getValue());
+                s.setMaterialCost(materialCost.getValue());
+                s.setStockQuantity(stockQuantity.getValue().longValue());
+                s.setLowStockThreshold(lowThreshold.getValue().longValue());
+                s.setCategory(category.getValue());
+                s.setStatus(status.getValue());
+                s.setVisibility(visibility.getValue());
+
+
+                displayAllProducts();
+
+                materialInfoList.clear();
+
+            });
+
+            v.addClickListener(e-> {
+
+                upgradeMaterialGrid();
+
+                addNewProductVariant.removeAll();
+                joinImageAndRightSideHolder.removeAll();
+
+
+                addNewProductVariant.add(
+                        joinImagesInfoProgramSide(s)
+                );
+
+
+                materialInfoList.clear();
+                for (var mat : s.getMaterials()) {
+                    materialInfoList.add(new MaterialInfo(
+
+                            mat.getId(),
+                            null,
+                            mat.getNameForRefrence(),
+                            mat.getUnitPrice(),
+                            0L,
+                            mat.getAmountUsed()
+
+                    ));
+                }
+
+
+
+                addNewProductVariant.open();
+
+
+
+
+
+
+            });
+
+            h.add(
+                    v
+            );
+
+
+
+
         }
+
+        multipleProductHolder.add(h);
+    }
 
 
     public HorizontalLayout loadForEditing(){
@@ -1055,7 +1091,7 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
                 productEditImage.uploadStuff()
 //                reviewCrafter.commentsHolder(sharedProductInstance.getComments())
         );
-        VerticalLayout fields = rightSide(product,null);
+        VerticalLayout fields = rightSide(null);
         fields.addClassName("fromRightToLeft");
 
         holder.addClassName("fromLeftToRight");
@@ -1070,452 +1106,450 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 
 
     public void loadNewData(){
-            grids.setConsumer(e->{
-                MaterialInfo materials = materialService.getMaterialInfoAccordingToId(e,product.getId());
+        grids.setConsumer(e->{
+            MaterialInfo materials = materialService.getMaterialInfoAccordingToId(e,product.getId());
 
-                materials.setAmountTaken(1L);
+            materials.setAmountTaken(1L);
 
-                materialInfoList.add(
-                        materials
-                );
-
-                upgradeMaterialGrid();
-
-                grids.calculateTotal();
-
-            });
-        }
-
-
-
-        public VerticalLayout basicInfo(){
-
-            VerticalLayout v = new VerticalLayout();
-
-
-
-
-
-
-            v.addClassName("island");
-            v.getStyle().set("position","relative");
-            FormLayout basicInfo = new FormLayout();
-
-            basicInfo.add(productName, sku, description);
-            basicInfo.setColspan(description,2);
-
-            Button aiButton = commonComponents.buttonThemeAndIconNoNavigate("AI",ButtonVariant.LUMO_PRIMARY, VaadinIcon.MAGIC,"WHITE");
-            aiButton.setTooltipText("Generate information with a prompt");
-            aiButton.getStyle().set("position","absolute").set("right","10px").set("top","10px");
-
-
-
-
-            aiButton.addClickListener(e -> {
-
-                VerticalLayout component = new VerticalLayout();
-
-                component.setPadding(false);
-                component.add(
-                        basicInfo(),
-                        specs(),
-                        steps(),
-                        pricingInv(),
-                        categoriesTags(),
-                        productStatus(),
-                        requiredMaterials()
-                );
-
-
-                aiService.dialogTest(productAiDto, ProductAiDto.class,rightSide,component,this,"Products");
-
-
-
-            });
-
-
-
-
-            v.add(
-                    aiButton,
-                    commonComponents.spanCrafterWordNoHide("Basic information","activityFeed-name"),
-                    basicInfo
+            materialInfoList.add(
+                    materials
             );
 
-            return v;
-        }
+            upgradeMaterialGrid();
 
-        public VerticalLayout specs(){
+            grids.calculateTotal();
 
-            addNewDetail = commonComponents.buttonThemeAndIcon("Add Detail",null, ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White");
+        });
+    }
 
-            addNewDetail.addClickListener(e->{
 
-                listExtraDetailsGrids.add(new ListExtraDetailsGrid(null,
-                        materialAndDetails.specName(""),
-                        materialAndDetails.specDescription("")));
-                upgradeExtraDetailsGrid();
 
-            });
+    public VerticalLayout basicInfo(){
+
+        VerticalLayout v = new VerticalLayout();
 
 
 
 
 
-            VerticalLayout v = new VerticalLayout();
-            v.addClassName("island");
 
-            v.add(
-                    commonComponents.spanCrafterWordNoHide("Specification","activityFeed-name"),
-                    grids.extraDetailsGridCrafter(listExtraDetailsGrids,extraDetailsGrid),
-                    addNewDetail
-            );
+        v.addClassName("island");
+        v.getStyle().set("position","relative");
+        FormLayout basicInfo = new FormLayout();
 
-            return v;
-        }
+        basicInfo.add(productName, sku, description);
+        basicInfo.setColspan(description,2);
 
-        public VerticalLayout steps(){
+        Button aiButton = commonComponents.buttonThemeAndIconNoNavigate("AI",ButtonVariant.LUMO_PRIMARY, VaadinIcon.MAGIC,"WHITE");
+        aiButton.setTooltipText("Generate information with a prompt");
+        aiButton.getStyle().set("position","absolute").set("right","10px").set("top","10px");
 
 
-            addNewStep = commonComponents.buttonThemeAndIcon("Add Step",null, ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White");
-
-            addNewStep.addClickListener(e->{
-
-                listStepsToPrepares.add(new ListStepsToPrepare(
-                        null,
-                        Long.valueOf(listStepsToPrepares.size()+1),
-                        materialAndDetails.specName(""),
-                        materialAndDetails.specDescription("")));
-                updateStepGrid(listStepsToPrepares,listStepsToPrepareGrid);
-
-            });
-
-            VerticalLayout v = new VerticalLayout();
-            v.addClassName("island");
-
-            v.add(
-                    commonComponents.spanCrafterWordNoHide("Steps to finish","activityFeed-name"),
-                    grids.preparationSteps(listStepsToPrepares,listStepsToPrepareGrid),
-                    addNewStep
-            );
-
-            return v;
-        }
-
-        public VerticalLayout pricingInv(){
 
 
-            FormLayout pricingInventoryOne = new FormLayout();
+        aiButton.addClickListener(e -> {
 
-            pricingInventoryOne.setResponsiveSteps(
-                    new FormLayout.ResponsiveStep("0", 3)
+            VerticalLayout component = new VerticalLayout();
+
+            component.setPadding(false);
+            component.add(
+                    basicInfo(),
+                    specs(),
+                    steps(),
+                    pricingInv(),
+                    categoriesTags(),
+                    productStatus(),
+                    requiredMaterials()
             );
 
 
+            aiService.dialogTest(productAiDto, ProductAiDto.class,rightSide,component,this,"Products");
 
-            pricingInventoryOne.add(price, discount, materialCost);
 
 
-            FormLayout pricingInventoryTwo = new FormLayout();
-            pricingInventoryTwo.setResponsiveSteps(
-                    new FormLayout.ResponsiveStep("0", 2)
-            );
+        });
 
-            pricingInventoryTwo.add(stockQuantity, lowThreshold);
 
-            FormLayout pricingInventoryThree = new FormLayout();
-            pricingInventoryTwo.setResponsiveSteps(
-                    new FormLayout.ResponsiveStep("0", 2)
-            );
 
-            pricingInventoryThree.add(manualStock);
 
+        v.add(
+                aiButton,
+                commonComponents.spanCrafterWordNoHide("Basic information","activityFeed-name"),
+                basicInfo
+        );
 
-            VerticalLayout v = new VerticalLayout();
-            v.addClassName("island");
+        return v;
+    }
 
-            v.add(
-                    commonComponents.spanCrafterWordNoHide("Pricing & Inventory","activityFeed-name"),
-                    pricingInventoryOne,
-                    pricingInventoryTwo,
-                    pricingInventoryThree
-            );
+    public VerticalLayout specs(){
 
-            return v;
-        }
+        addNewDetail = commonComponents.buttonThemeAndIcon("Add Detail",null, ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White");
 
-        public VerticalLayout categoriesTags(){
-            category.setItems(Category.values());
-            tags.setItems(Tags.values());
-            FormLayout categoryTags = new FormLayout();
-            categoryTags.add(category,tags);
+        addNewDetail.addClickListener(e->{
 
-            VerticalLayout v = new VerticalLayout();
-            v.addClassName("island");
+            listExtraDetailsGrids.add(new ListExtraDetailsGrid(null,
+                    materialAndDetails.specName(""),
+                    materialAndDetails.specDescription("")));
+            upgradeExtraDetailsGrid();
 
-            v.add(
-                    commonComponents.spanCrafterWordNoHide("Selected Tags","activityFeed-name"),
-                    categoryTags,
-                    tagsSelected
+        });
 
 
-            );
 
-            return v;
-        }
 
-        public VerticalLayout productStatus(){
 
+        VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
 
-            FormLayout productStatus = new FormLayout();
-            visibility.addValueChangeListener(e->{
-                if(e.isFromClient()) {
-                    if (e.getValue().equals(Visibility.NonVisible)) {
-                        status.setValue(Status.Disabled);
-                        status.setEnabled(false);
-                    } else {
-                        status.setEnabled(true);
-                    }
-                }
-            });
+        v.add(
+                commonComponents.spanCrafterWordNoHide("Specification","activityFeed-name"),
+                grids.extraDetailsGridCrafter(listExtraDetailsGrids,extraDetailsGrid),
+                addNewDetail
+        );
 
+        return v;
+    }
 
-            productStatus.add(status,visibility);
+    public VerticalLayout steps(){
 
-            VerticalLayout v = new VerticalLayout();
-            v.addClassName("island");
 
-            v.add(
-                    commonComponents.spanCrafterWordNoHide("Product Status","activityFeed-name"),
-                    productStatus
+        addNewStep = commonComponents.buttonThemeAndIcon("Add Step",null, ButtonVariant.PRIMARY, VaadinIcon.PLUS,"White");
 
+        addNewStep.addClickListener(e->{
 
-            );
+            listStepsToPrepares.add(new ListStepsToPrepare(
+                    null,
+                    Long.valueOf(listStepsToPrepares.size()+1),
+                    materialAndDetails.specName(""),
+                    materialAndDetails.specDescription("")));
+            updateStepGrid(listStepsToPrepares,listStepsToPrepareGrid);
 
-            return v;
-        }
+        });
 
-        public VerticalLayout requiredMaterials(){
+        VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
 
-            VerticalLayout v = new VerticalLayout();
-            v.addClassName("island");
+        v.add(
+                commonComponents.spanCrafterWordNoHide("Steps to finish","activityFeed-name"),
+                grids.preparationSteps(listStepsToPrepares,listStepsToPrepareGrid),
+                addNewStep
+        );
 
-            HorizontalLayout totalMaterialCostHolder = new HorizontalLayout();
-            totalMaterialCostHolder.setWidthFull();
-            totalMaterialCostHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        return v;
+    }
 
+    public VerticalLayout pricingInv(){
 
-            totalMaterialCostHolder.add(
-                    totalMaterialCost
-            );
-            grids.setPrice(e->{
-                totalMaterialCost.setText("Total material cost - " + e + " Eur");
-                value = e;
-                if(!manualStock.getValue()) {
-                    materialCost.setValue(e);
-                }
-            });
 
-            v.add(
-                    commonComponents.spanCrafterWordNoHide("Required Materials","activityFeed-name"),
-                    grids.materialGridCrafter(productFeedModelGrid,materialInfoList,addNewMaterial),
-                    totalMaterialCostHolder,
-                    addNewMaterial
+        FormLayout pricingInventoryOne = new FormLayout();
 
+        pricingInventoryOne.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("0", 3)
+        );
 
-            );
 
-            return v;
-        }
 
+        pricingInventoryOne.add(price, discount, materialCost);
 
 
-        // tag crafter
-        public HorizontalLayout tagCrafter(Tags newTag) {
+        FormLayout pricingInventoryTwo = new FormLayout();
+        pricingInventoryTwo.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("0", 2)
+        );
 
-            HorizontalLayout layout = new HorizontalLayout();
+        pricingInventoryTwo.add(stockQuantity, lowThreshold);
 
+        FormLayout pricingInventoryThree = new FormLayout();
+        pricingInventoryTwo.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("0", 2)
+        );
 
+        pricingInventoryThree.add(manualStock);
 
-            layout.addClassName("tag-badge");
 
-            layout.setPadding(false);
-            layout.setSpacing(true);
-            layout.setAlignItems(FlexComponent.Alignment.CENTER);
+        VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
 
+        v.add(
+                commonComponents.spanCrafterWordNoHide("Pricing & Inventory","activityFeed-name"),
+                pricingInventoryOne,
+                pricingInventoryTwo,
+                pricingInventoryThree
+        );
 
+        return v;
+    }
 
-            Span span = commonComponents.spanCrafterWordNoHide(
-                    newTag != null ? newTag.toString() : "",
-                    "none"
-            );
+    public VerticalLayout categoriesTags(){
+        FormLayout categoryTags = new FormLayout();
+        categoryTags.add(category,tags);
 
-            Button removeButton = new Button(VaadinIcon.CLOSE_SMALL.create());
-            removeButton.addClassName("remove-button");
+        VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
 
-            removeButton.addClickListener(e->{
-                tagss.removeIf(tags1 -> tags1.equals(newTag));
+        v.add(
+                commonComponents.spanCrafterWordNoHide("Selected Tags","activityFeed-name"),
+                categoryTags,
+                tagsSelected
 
-                tags.setValue(!tagss.isEmpty() ? tagss.get(0) : null);
 
-                layout.getParent().ifPresent(parent ->{
-                    ((HasComponents) parent).remove(layout);
-                });
+        );
 
-                commonComponents.showNotification(String.format("%s - '%s' %s","Tag",newTag.toString(),"removed"),
-                        3000,
-                        Notification.Position.BOTTOM_CENTER,
-                        NotificationVariant.LUMO_SUCCESS);
-            });
+        return v;
+    }
 
+    public VerticalLayout productStatus(){
 
 
-            removeButton.setMinWidth("30px");
-            removeButton.setHeight("30px");
-
-            layout.add(span, removeButton);
-
-
-
-            return layout;
-        }
-
-
-        // update
-
-        public void upgradeMaterialGrid(){
-            productFeedModelGrid.setItems(materialInfoList);
-        }
-
-        public void upgradeExtraDetailsGrid(){
-            extraDetailsGrid.setItems(listExtraDetailsGrids);
-        }
-
-        public void updateSelectedTags(Product productEditDtos){
-
-            tagsSelected.removeAll();
-
-            if( productEditDtos.getTags() != null && !productEditDtos.getTags().isEmpty()) {
-                for (var s : productEditDtos.getTags()) {
-                    tagsSelected.add(tagCrafter(s.getTags()));
+        FormLayout productStatus = new FormLayout();
+        visibility.addValueChangeListener(e->{
+            if(e.isFromClient()) {
+                if (e.getValue().equals(Visibility.NonVisible)) {
+                    status.setValue(Status.Disabled);
+                    status.setEnabled(false);
+                } else {
+                    status.setEnabled(true);
                 }
             }
+        });
+
+
+        productStatus.add(status,visibility);
+
+        VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
+
+        v.add(
+                commonComponents.spanCrafterWordNoHide("Product Status","activityFeed-name"),
+                productStatus
+
+
+        );
+
+        return v;
+    }
+
+    public VerticalLayout requiredMaterials(){
+
+        VerticalLayout v = new VerticalLayout();
+        v.addClassName("island");
+
+        HorizontalLayout totalMaterialCostHolder = new HorizontalLayout();
+        totalMaterialCostHolder.setWidthFull();
+        totalMaterialCostHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+
+
+        totalMaterialCostHolder.add(
+                totalMaterialCost
+        );
+        grids.setPrice(e->{
+            totalMaterialCost.setText("Total material cost - " + e + " Eur");
+            value = e;
+            if(!manualStock.getValue()) {
+                materialCost.setValue(e);
+            }
+        });
+
+        v.add(
+                commonComponents.spanCrafterWordNoHide("Required Materials","activityFeed-name"),
+                grids.materialGridCrafter(productFeedModelGrid,materialInfoList,addNewMaterial),
+                totalMaterialCostHolder,
+                addNewMaterial
+
+
+        );
+
+        return v;
+    }
+
+
+
+    // tag crafter
+    public HorizontalLayout tagCrafter(Tags newTag) {
+
+        HorizontalLayout layout = new HorizontalLayout();
+
+
+
+        layout.addClassName("tag-badge");
+
+        layout.setPadding(false);
+        layout.setSpacing(true);
+        layout.setAlignItems(FlexComponent.Alignment.CENTER);
+
+
+
+        Span span = commonComponents.spanCrafterWordNoHide(
+                newTag != null ? newTag.toString() : "",
+                "none"
+        );
+
+        Button removeButton = new Button(VaadinIcon.CLOSE_SMALL.create());
+        removeButton.addClassName("remove-button");
+
+        removeButton.addClickListener(e->{
+            tagss.removeIf(tags1 -> tags1.equals(newTag));
+
+            tags.setValue(!tagss.isEmpty() ? tagss.get(0) : null);
+
+            layout.getParent().ifPresent(parent ->{
+                ((HasComponents) parent).remove(layout);
+            });
+
+            commonComponents.showNotification(String.format("%s - '%s' %s","Tag",newTag.toString(),"removed"),
+                    3000,
+                    Notification.Position.BOTTOM_CENTER,
+                    NotificationVariant.LUMO_SUCCESS);
+        });
+
+
+
+        removeButton.setMinWidth("30px");
+        removeButton.setHeight("30px");
+
+        layout.add(span, removeButton);
+
+
+
+        return layout;
+    }
+
+
+    // update
+
+    public void upgradeMaterialGrid(){
+        productFeedModelGrid.setItems(materialInfoList);
+    }
+
+    public void upgradeExtraDetailsGrid(){
+        extraDetailsGrid.setItems(listExtraDetailsGrids);
+    }
+
+    public void updateSelectedTags(Product productEditDtos){
+
+        tagsSelected.removeAll();
+
+        if( productEditDtos.getTags() != null && !productEditDtos.getTags().isEmpty()) {
+            for (var s : productEditDtos.getTags()) {
+                tagsSelected.add(tagCrafter(s.getTags()));
+            }
         }
+    }
 
-        public void updateStepGrid(List<ListStepsToPrepare> listExtraDetailsGrids,Grid<ListStepsToPrepare> extraDetailsGrid){
-            extraDetailsGrid.setItems(listExtraDetailsGrids);
-        }
-
-
-        public void removeTags(){
-
-            tagsSelected.removeAll();
-            tags.clear();
-            tagss.clear();
+    public void updateStepGrid(List<ListStepsToPrepare> listExtraDetailsGrids,Grid<ListStepsToPrepare> extraDetailsGrid){
+        extraDetailsGrid.setItems(listExtraDetailsGrids);
+    }
 
 
-        }
+    public void removeTags(){
 
-        // material stuff components
-
-        // binder for textfield checks
-        private void bindFields() {
-
-            // PRODUCT NAME
-            binder.forField(productName)
-                    .asRequired("Product name required")
-                    .withValidator(
-                            value -> value.length() >= 3,
-                            "Minimum 3 characters"
-                    )
-                    .bind(Product::getProductName,
-                            Product::setProductName);
+        tagsSelected.removeAll();
+        tags.clear();
+        tagss.clear();
 
 
-            // SKU
-            binder.forField(sku)
-                    .asRequired("SKU required")
-                    .withValidator(
-                            value -> value.length() >= 2,
-                            "SKU too short"
-                    )
-                    .bind(Product::getSku,
-                            Product::setSku);
+    }
+
+    // material stuff components
+
+    // binder for textfield checks
+    private void bindFields() {
+
+        // PRODUCT NAME
+        binder.forField(productName)
+                .asRequired("Product name required")
+                .withValidator(
+                        value -> value.length() >= 3,
+                        "Minimum 3 characters"
+                )
+                .bind(Product::getProductName,
+                        Product::setProductName);
 
 
-            // DESCRIPTION
-            binder.forField(description)
-                    .asRequired("Description required")
-                    .withValidator(
-                            value -> value.length() >= 10,
-                            "Description too short"
-                    )
-                    .bind(Product::getDescription,
-                            Product::setDescription);
+        // SKU
+        binder.forField(sku)
+                .asRequired("SKU required")
+                .withValidator(
+                        value -> value.length() >= 2,
+                        "SKU too short"
+                )
+                .bind(Product::getSku,
+                        Product::setSku);
 
 
-            // PRICE
-            binder.forField(price)
-                    .asRequired("Price required")
-                    .withValidator(
-                            value -> value >= 0,
-                            "Price must be positive"
-                    )
-                    .bind(Product::getPrice,
-                            Product::setPrice);
+        // DESCRIPTION
+        binder.forField(description)
+                .asRequired("Description required")
+                .withValidator(
+                        value -> value.length() >= 10,
+                        "Description too short"
+                )
+                .bind(Product::getDescription,
+                        Product::setDescription);
 
 
-            // DISCOUNT
-            binder.forField(discount)
-                    .withValidator(
-                            value -> value == null || (value >= 0 && value <= 100),
-                            "Discount must be between 0 and 100"
-                    )
-                    .bind(Product::getDiscount,
-                            Product::setDiscount);
+        // PRICE
+        binder.forField(price)
+                .asRequired("Price required")
+                .withValidator(
+                        value -> value >= 0,
+                        "Price must be positive"
+                )
+                .bind(Product::getPrice,
+                        Product::setPrice);
 
 
-            // MATERIAL COST
-            binder.forField(materialCost)
-                    .withValidator(value -> value == null || value >= 0,
-                            "Must be positive")
-                    .bind(Product::getMaterialCost,
-                            Product::setMaterialCost);
+        // DISCOUNT
+        binder.forField(discount)
+                .withValidator(
+                        value -> value == null || (value >= 0 && value <= 100),
+                        "Discount must be between 0 and 100"
+                )
+                .bind(Product::getDiscount,
+                        Product::setDiscount);
 
 
-            // STOCK QUANTITY
-            binder.forField(stockQuantity)
-                    .withConverter(
-                            Double::longValue,
-                            Long::doubleValue
-                    )
-                    .withValidator(
-                            value -> value >= 0,
-                            "Stock cannot be negative"
-                    )
-                    .bind(Product::getStockQuantity,
-                            Product::setStockQuantity);
+        // MATERIAL COST
+        binder.forField(materialCost)
+                .withValidator(value -> value == null || value >= 0,
+                        "Must be positive")
+                .bind(Product::getMaterialCost,
+                        Product::setMaterialCost);
 
 
-            // LOW STOCK THRESHOLD
-            binder.forField(lowThreshold)
-                    .withConverter(
-                            Double::longValue,
-                            Long::doubleValue
-                    )
-                    .withValidator(
-                            value -> value >= 0,
-                            "Threshold cannot be negative"
-                    )
-                    .bind(Product::getLowStockThreshold,
-                            Product::setLowStockThreshold);
+        // STOCK QUANTITY
+        binder.forField(stockQuantity)
+                .withConverter(
+                        Double::longValue,
+                        Long::doubleValue
+                )
+                .withValidator(
+                        value -> value >= 0,
+                        "Stock cannot be negative"
+                )
+                .bind(Product::getStockQuantity,
+                        Product::setStockQuantity);
 
 
-            // CATEGORY
-            binder.forField(category)
-                    .asRequired("Category required")
-                    .bind(Product::getCategory,
-                            Product::setCategory);
+        // LOW STOCK THRESHOLD
+        binder.forField(lowThreshold)
+                .withConverter(
+                        Double::longValue,
+                        Long::doubleValue
+                )
+                .withValidator(
+                        value -> value >= 0,
+                        "Threshold cannot be negative"
+                )
+                .bind(Product::getLowStockThreshold,
+                        Product::setLowStockThreshold);
+
+
+        // CATEGORY
+        binder.forField(category)
+                .asRequired("Category required")
+                .bind(Product::getCategory,
+                        Product::setCategory);
 
 
 //        // TAGS
@@ -1529,19 +1563,19 @@ public class MultipleProductChoices extends VerticalLayout implements BeforeEnte
 //                        Product::setTags);
 
 
-            // STATUS
-            binder.forField(status)
-                    .asRequired("Status required")
-                    .bind(Product::getStatus,
-                            Product::setStatus);
+        // STATUS
+        binder.forField(status)
+                .asRequired("Status required")
+                .bind(Product::getStatus,
+                        Product::setStatus);
 
 
-            // VISIBILITY
-            binder.forField(visibility)
-                    .asRequired("Visibility required")
-                    .bind(Product::getVisibility,
-                            Product::setVisibility);
-        }
+        // VISIBILITY
+        binder.forField(visibility)
+                .asRequired("Visibility required")
+                .bind(Product::getVisibility,
+                        Product::setVisibility);
+    }
 
 
 

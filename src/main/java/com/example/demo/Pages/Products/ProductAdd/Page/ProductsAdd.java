@@ -15,6 +15,7 @@ import com.example.demo.Services.AI.AIService;
 import com.example.demo.Services.CommonService.CommonService;
 import com.example.demo.Services.Material.MaterialService;
 import com.example.demo.Services.ProductAdd.ProductAddService;
+import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -43,6 +44,8 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
     ProductEditImage productEditImage;
     ReviewCrafter reviewCrafter;
 
+    ProductService productService;
+
 
     AIService aiService;
 
@@ -52,7 +55,8 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
                        ProductAddService productAddService,
                        ObjectConverter objectConverter,
                        MaterialService materialService,
-                       AIService aiService) {
+                       AIService aiService,
+                       ProductService productService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.commonService = commonService;
@@ -60,9 +64,10 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
         this.objectConverter = objectConverter;
 
         this.aiService = aiService;
+        this.productService = productService;
 
 
-        this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonService,objectConverter,materialService,aiService);
+        this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonService,objectConverter,materialService,aiService,productService);
         this.productEditImage = new ProductEditImage(commonComponents,common);
         this.reviewCrafter = new ReviewCrafter(commonComponents,common);
 

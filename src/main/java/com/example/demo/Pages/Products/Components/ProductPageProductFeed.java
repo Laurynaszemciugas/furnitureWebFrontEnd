@@ -83,20 +83,22 @@ public class ProductPageProductFeed {
         VerticalLayout product = new VerticalLayout();
         product.addClassName("island");
 
-
-
-        if(with == true){
-            VerticalLayout products = new VerticalLayout();
-            products.addClassName("island");
-            return products;
-        }
-
-
         product.getStyle().set("flex", "1 1 302px");
         product.getStyle().set("max-width", "620px");
         product.getStyle().set("min-width", "302px");
         product.getStyle().set("position","relative");
         product.setHeight("400px");
+
+        if(with){
+
+            product.add(
+                    new Span("Multiple choices are available")
+            );
+
+        }
+
+
+
 
         product.setSpacing(false);
 

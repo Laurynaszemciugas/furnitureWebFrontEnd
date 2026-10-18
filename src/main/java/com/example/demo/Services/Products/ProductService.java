@@ -58,7 +58,14 @@ public class ProductService {
     @SneakyThrows
     public void saveMultipleProducts(Product product){
         httpCallLogic.checkResponse(
-                httpCallLogic.HttpCall("product/saveMultipleProducts", HttpMethod.POST, product, ErrorResponse.class,false),null,success,true);
+                httpCallLogic.HttpCall("product/addNewMultipleProduct", HttpMethod.POST, product, ErrorResponse.class,false),null,success,true);
+    }
+
+
+    @SneakyThrows
+    public void saveEditedMultipleProduct(Product product){
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("product/saveEditedMultipleProduct", HttpMethod.POST, product, ErrorResponse.class,false),null,success,true);
     }
 
 

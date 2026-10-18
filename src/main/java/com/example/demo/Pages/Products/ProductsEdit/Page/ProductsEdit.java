@@ -11,11 +11,13 @@ import com.example.demo.MainLayouts.Admin.MainLayout;
 import com.example.demo.Common.Logic.ProductEditImage;
 import com.example.demo.Pages.Products.Components.ProductEditRightSideFields;
 import com.example.demo.Common.ReviewCrafter;
+import com.example.demo.Pages.Products.MultipleProductChoices;
 import com.example.demo.Services.AI.AIService;
 import com.example.demo.Services.CommonService.CommonService;
 import com.example.demo.Services.Material.MaterialService;
 import com.example.demo.Services.ProductEditService.ProductEditService;
 
+import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -41,11 +43,17 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
     ProductEditImage productEditImage;
     ReviewCrafter reviewCrafter;
 
+    ProductService productService;
+
 
     int productId = 0;
 
 
     AIService aiService;
+
+    MultipleProductChoices multipleProductChoices;
+
+    Product product;
 
     public ProductsEdit(CommonComponents commonComponents,
                         Common common,
@@ -53,7 +61,8 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
                         ProductEditService productEditService,
                         ObjectConverter objectConverter,
                         MaterialService materialService,
-                        AIService aiService) {
+                        AIService aiService,
+                        ProductService productService) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.commonService = commonService;
@@ -61,9 +70,12 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
         this.objectConverter = objectConverter;
         this.materialService = materialService;
         this.aiService = aiService;
-        this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonService,objectConverter,materialService,aiService);
+        this.productService = productService;
+        this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonService,objectConverter,materialService,aiService,productService);
         this.productEditImage = new ProductEditImage(commonComponents,common);
         this.reviewCrafter = new ReviewCrafter(commonComponents,common);
+
+        this.multipleProductChoices = new MultipleProductChoices(commonComponents,common,commonService,objectConverter,materialService,aiService,productService);
 
         this.productEditRightSideFields.setProductEditImage(this.productEditImage);
 
@@ -90,7 +102,7 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
 
         this.productId = id;
 
-
+        product = productEditService.productEditDtoLoad(Long.valueOf(productId));
 
         add(mainLayout());
 
@@ -109,7 +121,11 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
 
         });
 
-        verticalLayout.add(briefPageExplanation(), joinImagesInfo());
+        if(product.getMultipleItems() == false){
+            verticalLayout.add(briefPageExplanation());
+        }
+
+        verticalLayout.add(joinImagesInfo());
 
         return verticalLayout;
     }
@@ -123,15 +139,26 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
         Product product = productEditService.productEditDtoLoad(Long.valueOf(productId));
 
 
-        HorizontalLayout images = productEditImage.images(objectConverter.convert(product.getImages(),CommonImagesData.class));
-        Div holder = new Div(images,productEditImage.uploadStuff(),
-                reviewCrafter.commentsHolder(product.getComments()));
-        VerticalLayout fields = productEditRightSideFields.rightSide(product);
-        fields.setPadding(false);
+        if(product.getMultipleItems()){
 
-        h.add(holder,fields);
-        h.expand(fields);
+            removeAll();
 
+            h.add(
+                    multipleProductChoices.mainLayout(product)
+            );
+
+
+        }
+        else {
+            HorizontalLayout images = productEditImage.images(objectConverter.convert(product.getImages(), CommonImagesData.class));
+            Div holder = new Div(images, productEditImage.uploadStuff(),
+                    reviewCrafter.commentsHolder(product.getComments()));
+            VerticalLayout fields = productEditRightSideFields.rightSide(product);
+            fields.setPadding(false);
+
+            h.add(holder, fields);
+            h.expand(fields);
+        }
 
         return h;
     }

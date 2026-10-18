@@ -17,9 +17,11 @@ import com.example.demo.Enums.Status;
 import com.example.demo.Enums.Tags;
 import com.example.demo.Enums.Visibility;
 import com.example.demo.Common.Logic.ProductEditImage;
+import com.example.demo.Pages.Products.MultipleProductChoices;
 import com.example.demo.Services.AI.AIService;
 import com.example.demo.Services.CommonService.CommonService;
 import com.example.demo.Services.Material.MaterialService;
+import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -139,7 +141,10 @@ public class ProductEditRightSideFields {
 
     Product productEditDtos = new Product();
 
+    ProductService productService;
 
+
+    MultipleProductChoices multipleProductChoices;
 
 
     public ProductEditRightSideFields(CommonComponents commonComponents,
@@ -147,7 +152,8 @@ public class ProductEditRightSideFields {
                                       CommonService commonService,
                                       ObjectConverter objectConverter,
                                       MaterialService materialService,
-                                      AIService aiService
+                                      AIService aiService,
+                                      ProductService productService
     ) {
         this.commonComponents = commonComponents;
         this.common = common;
@@ -158,7 +164,9 @@ public class ProductEditRightSideFields {
         this.materialAndDetails = new MaterialAndDetails(commonComponents,common,commonService,grids);
         this.aiService = aiService;
         this.productAiDto = new ProductAiDto();
+        this.productService = productService;
 
+        this.multipleProductChoices = new MultipleProductChoices(commonComponents,common,commonService,objectConverter,materialService,aiService,productService);
 
         loadNewData();
         bindFields();
@@ -247,7 +255,11 @@ public class ProductEditRightSideFields {
 
 
 
+
+
         productEditDtos = productEditDtoss;
+
+
 
         rightSide.removeAll();
 
@@ -517,6 +529,10 @@ public class ProductEditRightSideFields {
 
 
     public void saveDate(Button save, Product product){
+
+        if(save == null){
+            save = new Button();
+        }
 
         save.addClickListener(e -> {
 
