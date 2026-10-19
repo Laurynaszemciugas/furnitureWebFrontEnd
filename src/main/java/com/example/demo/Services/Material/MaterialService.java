@@ -197,6 +197,15 @@ public class MaterialService {
 
     }
 
+    @SneakyThrows
+    public Materials getMaterialAccordingToId(Long id) {
+
+
+
+        return httpCallLogic.HttpCall("material/getMaterialAccordingToId", HttpMethod.GET,id, Materials.class,true);
+
+    }
+
     // dashboard
 
     @SneakyThrows

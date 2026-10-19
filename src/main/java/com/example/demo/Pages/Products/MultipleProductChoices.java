@@ -982,26 +982,40 @@ public class MultipleProductChoices extends VerticalLayout  {
                     s.setImages(objectConverter.convert(newImages, ProductImageData.class));
                 }
 
-
                 List<ProductMaterials> updatedMaterials = new ArrayList<>();
 
                 for (MaterialInfo info : materialInfoList) {
 
+                    // First: look for an existing link by ProductMaterials ID
                     ProductMaterials existing = s.getMaterials()
                             .stream()
                             .filter(m -> m.getId().equals(info.getId()))
                             .findFirst()
-                            .orElseThrow(() ->
-                                    new IllegalStateException(
-                                            "Material link not found: " + info.getId()
-                                    )
-                            );
+                            .orElse(null);
 
-                    // Preserve existing ID and Materials relationship
-                    existing.setAmountUsed(info.getAmountTaken());
-                    existing.setNameForRefrence(info.getMaterialName());
+                    if (existing != null) {
+                        // Existing link: preserve the Materials relationship
+                        existing.setAmountUsed(info.getAmountTaken());
+                        existing.setNameForRefrence(info.getMaterialName());
 
-                    updatedMaterials.add(existing);
+                        updatedMaterials.add(existing);
+
+                    } else {
+                        // New link: resolve the actual Materials entity
+                        ProductMaterials newLink = new ProductMaterials();
+
+                        newLink.setProduct(product);
+                        newLink.setUser(null);
+                        newLink.setNameForRefrence(info.getMaterialName());
+                        newLink.setAmountUsed(info.getAmountTaken());
+
+                        // Replace materialRepository with your actual repository
+                        Materials material = materialService.getMaterialAccordingToId(info.getId());
+
+                        newLink.setMaterials(material);
+
+                        updatedMaterials.add(newLink);
+                    }
                 }
 
                 s.setMaterials(updatedMaterials);
