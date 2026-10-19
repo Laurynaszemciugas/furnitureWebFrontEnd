@@ -1034,13 +1034,21 @@ public class MultipleProductChoices extends VerticalLayout  {
 
                 materialInfoList.clear();
                 for (var mat : s.getMaterials()) {
+
+                    String url = "";
+                    for(var images : mat.getMaterials().getImages()){
+                        if(images.getImageLogic().equals(ImageLogic.Main)){
+                            url = images.getImageUrl();
+                        }
+                    }
+
                     materialInfoList.add(new MaterialInfo(
 
                             mat.getId(),
-                            null,
+                            url,
                             mat.getNameForRefrence(),
                             mat.getUnitPrice(),
-                            0L,
+                            mat.getMaterials().getInStock(),
                             mat.getAmountUsed()
 
                     ));
