@@ -987,6 +987,9 @@ public class MultipleProductChoices extends VerticalLayout  {
                 List<ProductMaterials> materials = new ArrayList<>();
                 for(var ss : materialInfoList){
 
+                    System.out.println("idssssss");
+                    System.out.println(ss.getId());
+
                     ProductMaterials productMaterials = new ProductMaterials();
                     productMaterials.setProduct(product);
                     productMaterials.setUser(null);
@@ -1035,20 +1038,24 @@ public class MultipleProductChoices extends VerticalLayout  {
                 materialInfoList.clear();
                 for (var mat : s.getMaterials()) {
 
-                    String url = "";
-                    for(var images : mat.getMaterials().getImages()){
-                        if(images.getImageLogic().equals(ImageLogic.Main)){
-                            url = images.getImageUrl();
-                        }
-                    }
+
+                    System.out.println("stock");
+                    System.out.println(mat.getMaterials().getInStock());
+
+//                    String url = "";
+//                    for(var images : mat.getMaterials().getImages()){
+//                        if(images.getImageLogic().equals(ImageLogic.Main)){
+//                            url = images.getImageUrl();
+//                        }
+//                    }
 
                     materialInfoList.add(new MaterialInfo(
 
                             mat.getId(),
-                            url,
+                            null,
                             mat.getNameForRefrence(),
                             mat.getUnitPrice(),
-                            mat.getMaterials().getInStock(),
+                            1L,
                             mat.getAmountUsed()
 
                     ));
