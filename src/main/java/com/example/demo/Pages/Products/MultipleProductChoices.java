@@ -162,6 +162,10 @@ public class MultipleProductChoices extends VerticalLayout  {
     HorizontalLayout joinImageAndRightSideHolder =new HorizontalLayout();
 
 
+    // global value that tells if its editing or adding new
+    boolean addNew = false;
+
+
     public MultipleProductChoices(CommonComponents commonComponents,
                                   Common common,
                                   CommonService commonService,
@@ -314,12 +318,27 @@ public class MultipleProductChoices extends VerticalLayout  {
 //    }
 
 
-    public VerticalLayout mainLayout(Product product) {
+    public VerticalLayout mainLayout(Product product, boolean addNewBool) {
 
+        String briefExplanation = "";
+        if(addNewBool){
+            briefExplanation = "Add multiple product variants";
+            addNew = true;
+        }
+        else{
+            briefExplanation = "Edit multiple product variants";
+            addNew = false;
+        }
+
+
+        // load the display stuff the variants
         loadData(null);
 
 
+        // load date tot the product global and the loadcommon data
         this.product = product;
+        loadCommonData();
+
 
         displayAllProducts();
 
@@ -341,7 +360,7 @@ public class MultipleProductChoices extends VerticalLayout  {
         Dialog addNewProductVariant = new Dialog();
         addNewProductVariant.getFooter().add(addNewVariant);
 
-        Button openNewProductVariant = new Button("Add new varianteeeeeee");
+        Button openNewProductVariant = new Button("Add new varianteeee");
         openNewProductVariant.addClickListener(e->{
 
 
@@ -379,7 +398,7 @@ public class MultipleProductChoices extends VerticalLayout  {
 
         verticalLayout.add(
 //                commonComponents.breadCrums(new BreadCrumsDto("Products", "Products/1"),new BreadCrumsDto("Add new product", "ProductsAdd")),
-                briefPageExplanation("Add multiple product variants"),
+                briefPageExplanation(briefExplanation),
                 openCommonData,
                 openNewProductVariant,
                 b,
@@ -778,6 +797,57 @@ public class MultipleProductChoices extends VerticalLayout  {
 
     }
 
+    public void loadCommonData(){
+        tags.setItems(Tags.values());
+
+        category.setItems(Category.values());
+        category.setValue(product.getCategory());
+
+
+        tagss.clear();
+        listStepsToPrepares.clear();
+        listExtraDetailsGrids.clear();
+
+        if (product.getTags() != null && !product.getTags().isEmpty()) {
+            tags.setValue(product.getTags().get(0).getTags());
+            for(var s : product.getTags()) {
+                tagss.addAll(Collections.singleton(s.getTags()));
+            }
+        } else {
+            tags.setValue(null);
+        }
+
+
+        if(product.getExtraDetails() != null && !product.getExtraDetails().isEmpty()) {
+            for (var s : product.getExtraDetails()) {
+                listExtraDetailsGrids.add(new ListExtraDetailsGrid(
+                        s.getId(),
+                        materialAndDetails.specName(s.getSpecName()),
+                        materialAndDetails.specDescription(s.getSpecDescription())));
+            }
+            upgradeExtraDetailsGrid();
+        }
+
+
+        if(product.getSteps() != null &&  !product.getSteps().isEmpty()) {
+            for(var s : product.getSteps()) {
+
+                listStepsToPrepares.add(new ListStepsToPrepare(
+                        s.getId(),
+                        s.getStepId(),
+                        materialAndDetails.specName(s.getStepName()),
+                        materialAndDetails.specDescription(s.getStepDescription())));
+
+            }
+            updateStepGrid(listStepsToPrepares,listStepsToPrepareGrid);
+        }
+
+
+
+
+        updateSelectedTags(product);
+    }
+
 
     public void saveDate(Button save){
 
@@ -819,7 +889,17 @@ public class MultipleProductChoices extends VerticalLayout  {
             System.out.println(product.getExtraDetails());
             System.out.println("STEPS TO FINISH");
             System.out.println(product.getSteps());
-            productService.saveEditedMultipleProduct(product);
+
+
+            if(addNew){
+                productService.saveMultipleProducts(product);
+
+            }
+            else{
+                productService.saveEditedMultipleProduct(product);
+
+            }
+
 
         });
 
@@ -989,19 +1069,17 @@ public class MultipleProductChoices extends VerticalLayout  {
                     // First: look for an existing link by ProductMaterials ID
                     ProductMaterials existing = s.getMaterials()
                             .stream()
-                            .filter(m -> m.getId().equals(info.getId()))
+                            .filter(m -> m.getMaterials().getId().equals(info.getId()))
                             .findFirst()
                             .orElse(null);
 
                     if (existing != null) {
-                        // Existing link: preserve the Materials relationship
                         existing.setAmountUsed(info.getAmountTaken());
                         existing.setNameForRefrence(info.getMaterialName());
 
                         updatedMaterials.add(existing);
 
                     } else {
-                        // New link: resolve the actual Materials entity
                         ProductMaterials newLink = new ProductMaterials();
 
                         newLink.setProduct(product);
@@ -1009,7 +1087,6 @@ public class MultipleProductChoices extends VerticalLayout  {
                         newLink.setNameForRefrence(info.getMaterialName());
                         newLink.setAmountUsed(info.getAmountTaken());
 
-                        // Replace materialRepository with your actual repository
                         Materials material = materialService.getMaterialAccordingToId(info.getId());
 
                         newLink.setMaterials(material);
@@ -1042,7 +1119,6 @@ public class MultipleProductChoices extends VerticalLayout  {
 
             v.addClickListener(e-> {
 
-                upgradeMaterialGrid();
 
                 addNewProductVariant.removeAll();
                 joinImageAndRightSideHolder.removeAll();
@@ -1068,7 +1144,7 @@ public class MultipleProductChoices extends VerticalLayout  {
 
                     materialInfoList.add(new MaterialInfo(
 
-                            mat.getId(),
+                            mat.getMaterials().getId(),
                             url,
                             mat.getNameForRefrence(),
                             mat.getUnitPrice(),
@@ -1078,6 +1154,8 @@ public class MultipleProductChoices extends VerticalLayout  {
                     ));
                 }
 
+                upgradeMaterialGrid();
+                grids.calculateTotal();
 
 
                 addNewProductVariant.open();

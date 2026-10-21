@@ -144,7 +144,7 @@ public class ProductsEdit extends VerticalLayout implements BeforeEnterObserver 
             removeAll();
 
             h.add(
-                    multipleProductChoices.mainLayout(product)
+                    multipleProductChoices.mainLayout(product,false)
             );
 
 
