@@ -32,6 +32,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -42,6 +43,7 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
@@ -279,6 +281,9 @@ public class MultipleProductChoices extends VerticalLayout  {
 
         visibility.setItems(list);
 
+        multipleProductHolder.setWidthFull();
+        multipleProductHolder.addClassName("island-dotted");
+
 
 
     }
@@ -349,7 +354,7 @@ public class MultipleProductChoices extends VerticalLayout  {
         commonData.setWidth("1000px");
 
         commonData.add(
-                commonStuff()
+
         );
 
         Button openCommonData = new Button("Common data");
@@ -399,6 +404,7 @@ public class MultipleProductChoices extends VerticalLayout  {
         verticalLayout.add(
 //                commonComponents.breadCrums(new BreadCrumsDto("Products", "Products/1"),new BreadCrumsDto("Add new product", "ProductsAdd")),
                 briefPageExplanation(briefExplanation),
+                displayCommonData(),
                 openCommonData,
                 openNewProductVariant,
                 b,
@@ -660,33 +666,6 @@ public class MultipleProductChoices extends VerticalLayout  {
     }
 
 
-    public VerticalLayout commonStuff(){
-
-
-
-
-        VerticalLayout v = new VerticalLayout();
-        v.setPadding(false);
-
-        v.add(
-                commonComponents.spanCrafterWordNoHide("Common settings used for products","activityFeed-name"),
-                categoriesTags(),
-                specs(),
-                steps()
-        );
-
-
-
-
-
-
-
-        return v;
-
-
-    }
-
-
 
 
     public HorizontalLayout briefPageExplanation(String name){
@@ -702,9 +681,6 @@ public class MultipleProductChoices extends VerticalLayout  {
 
         return left;
     }
-
-
-
 
     public void loadData(ProductMultiple products){
 
@@ -950,26 +926,25 @@ public class MultipleProductChoices extends VerticalLayout  {
 
 
                     }
-
                     multipleProduct.setImages(objectConverter.convert(newImages, ProductImageData.class));
-
                 }
-//                // get materials
-//                List<ProductMaterials> materials = new ArrayList<>();
-//                for(var s : materialInfoList){
-//
-//                    ProductMaterials productMaterials = new ProductMaterials();
-//                    productMaterials.setProduct(product);
-//                    productMaterials.setUser(null);
-//                    productMaterials.setMaterials(null);
-//                    productMaterials.setId(s.getId());
-//                    productMaterials.setNameForRefrence(s.getMaterialName());
-//                    productMaterials.setAmountUsed(Long.valueOf(s.getAmountTaken()));
-//
-//                    materials.add(productMaterials);
-//                }
-//                multipleProduct.setMaterials(materials);
 
+
+                // get materials
+                List<ProductMaterials> materials = new ArrayList<>();
+                for(var s : materialInfoList){
+
+                    ProductMaterials productMaterials = new ProductMaterials();
+                    productMaterials.setProduct(product);
+                    productMaterials.setUser(null);
+                    productMaterials.setMaterials(materialService.getMaterial(s.getId()));
+                    productMaterials.setId(s.getId());
+                    productMaterials.setNameForRefrence(s.getMaterialName());
+                    productMaterials.setAmountUsed(Long.valueOf(s.getAmountTaken()));
+
+                    materials.add(productMaterials);
+                }
+                multipleProduct.setMaterials(materials);
 
 
 
@@ -978,39 +953,77 @@ public class MultipleProductChoices extends VerticalLayout  {
 
 
 
-                //multipleProducts.add(multipleProduct);
 
-
-                //consumer.accept(product);
-                //common.customNavigate("Products/1");
 
                 product.getProductMultiples().add(multipleProduct);
 
-
-//                    System.out.println("LISTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
-//                        System.out.println(multipleProducts);
-//                    System.out.println("LISTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
 
 
                 displayAllProducts();
                 newImages = new ArrayList<>();
 
-
-
-//                } else {
-//                    System.out.println("Validation failed");
-//                }
             }
         });
     }
 
 
+    public VerticalLayout displayCommonData(){
+
+        VerticalLayout v = new VerticalLayout();
+        v.getStyle().setPosition(Style.Position.RELATIVE);
+        v.addClassName("island");
+
+        VerticalLayout commonHolder = new VerticalLayout();
+        commonHolder.addClassName("removetop");
+
+
+        Icon icon = commonComponents.iconCrafter(VaadinIcon.ANGLE_DOWN,"40px","royalblue");
+
+
+        Button button = new Button(icon);
+        button.getStyle().setBackgroundColor("Transparent");
+        button.getStyle().setPosition(Style.Position.ABSOLUTE);
+        button.getStyle().set("top","10px").set("right","20px");
+
+
+
+        button.addClickListener(e->{
+
+            if(commonHolder.hasClassName("removetop")){
+                commonHolder.removeClassName("removetop");
+                commonHolder.addClassName("addtop");
+            }
+            else{
+                commonHolder.removeClassName("addtop");
+                commonHolder.addClassName("removetop");
+
+            }
+
+        });
+
+
+
+        commonHolder.setPadding(false);
+        commonHolder.add(
+                categoriesTags(),
+                specs(),
+                steps()
+        );
+
+        v.add(
+                button,
+                commonComponents.spanCrafterWordNoHide("Common settings used for products","activityFeed-name"),
+                commonHolder
+        );
+
+
+        return v;
+
+    }
+
+
     // display the prodcut variants
     public void displayAllProducts(){
-
-
-        System.out.println("Size of the array");
-        System.out.println(product.getProductMultiples().size());
 
         multipleProductHolder.removeAll();
 
@@ -1019,8 +1032,12 @@ public class MultipleProductChoices extends VerticalLayout  {
         for(var s :  product.getProductMultiples()){
 
             VerticalLayout v = new VerticalLayout();
+            v.getStyle().set("flex", "1 1 252px");
+            v.getStyle().set("max-width", "320px");
+            v.getStyle().set("min-width", "252px");
             v.addClassName("island-hover");
 
+            // find the main image default it to no image png
             String mainImageUrl = "No_picture.png";
             if(!s.getImages().isEmpty()) {
                 for (var imagesOfTheProduct : s.getImages()) {
@@ -1030,14 +1047,29 @@ public class MultipleProductChoices extends VerticalLayout  {
                 }
             }
 
-            Image image = commonComponents.imageCrafter(mainImageUrl,"100px","100px","5px");
+            Image image = commonComponents.imageCrafter(mainImageUrl,"100%","150px","5px");
 
+
+            Span span = commonComponents.spanCrafter(s.getStock() == null ? "Unknown" : String.valueOf(s.getStock().getDisplayName()),"activityFeed-name");
+            span.addClassName("stock-badge");
+            span.getStyle().set("width", "fit-content");
+
+
+            if(s.getStock() != null) {
+                switch (s.getStock()) {
+                    case In_Stock -> span.addClassName("stock-in");
+                    case No_Stock -> span.addClassName("stock-out");
+                    case Low_Stock -> span.addClassName("stock-low");
+                }
+            }
 
 
             v.add(
                     image,
                     commonComponents.spanCrafterWordNoHide(s.getProductName(),"stat-example"),
-                    commonComponents.spanCrafterWordNoHide(s.getPrice() + "","stat-example")
+                    commonComponents.spanCrafterWordNoHide(s.getPrice() + " Eur","stat-example"),
+
+                    commonComponents.doubleValueRow(span,commonComponents.spanCrafterWordNoHide(s.getStockQuantity() + " units","stat-description"))
             );
             Dialog addNewProductVariant = new Dialog();
 
@@ -1045,6 +1077,11 @@ public class MultipleProductChoices extends VerticalLayout  {
             addNewProductVariant.getFooter().add(save);
 
             save.addClickListener(e->{
+
+
+
+
+                // update the images
 
                 if(newImages !=null) {
                     System.out.println("changing pictures");
@@ -1062,6 +1099,9 @@ public class MultipleProductChoices extends VerticalLayout  {
                     s.setImages(objectConverter.convert(newImages, ProductImageData.class));
                 }
 
+
+
+                // save material make new one or find the link and update it to not lose info
                 List<ProductMaterials> updatedMaterials = new ArrayList<>();
 
                 for (MaterialInfo info : materialInfoList) {
@@ -1097,7 +1137,7 @@ public class MultipleProductChoices extends VerticalLayout  {
 
                 s.setMaterials(updatedMaterials);
 
-
+                // save new data
                 s.setProductName(productName.getValue());
                 s.setSku(sku.getValue());
                 s.setDescription(description.getValue());
@@ -1133,7 +1173,7 @@ public class MultipleProductChoices extends VerticalLayout  {
                 for (var mat : s.getMaterials()) {
 
 
-                    String url = "";
+                    String url = "No_picture.png";
 
                     for(var img : mat.getMaterials().getImages()){
                         if(img.getImageLogic().equals(ImageLogic.Main)){
@@ -1177,41 +1217,16 @@ public class MultipleProductChoices extends VerticalLayout  {
         }
 
         multipleProductHolder.add(h);
+
     }
 
 
-    public HorizontalLayout loadForEditing(){
 
 
-        productEditImage.reset();
-
-        joinImageAndRightSideHolder.setWidthFull();
-
-        joinImageAndRightSideHolder.getStyle().set("flex-wrap","wrap");
-        joinImageAndRightSideHolder.getStyle().set("overflow","hidden");
-
-        //make an empty field
-        List<CommonImagesData> commonImagesData = new ArrayList<>();
-
-        HorizontalLayout images = productEditImage.images(commonImagesData);
 
 
-        Div holder = new Div();
-        holder.add(images,
-                productEditImage.uploadStuff()
-//                reviewCrafter.commentsHolder(sharedProductInstance.getComments())
-        );
-        VerticalLayout fields = rightSide(null);
-        fields.addClassName("fromRightToLeft");
-
-        holder.addClassName("fromLeftToRight");
-
-        joinImageAndRightSideHolder.add(holder,fields);
-        joinImageAndRightSideHolder.expand(fields);
 
 
-        return joinImageAndRightSideHolder;
-    }
 
 
 

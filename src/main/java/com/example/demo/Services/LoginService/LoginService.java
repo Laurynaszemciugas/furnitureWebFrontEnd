@@ -93,7 +93,7 @@ public class LoginService {
 
         }
         else if(userRole.equals(Role.EMPLOYEE)){
-            UI.getCurrent().navigate(MultipleProductChoices.class);
+            UI.getCurrent().navigate("Products/1");
         }
 
 

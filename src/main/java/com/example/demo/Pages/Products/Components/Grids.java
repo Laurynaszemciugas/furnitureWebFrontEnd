@@ -116,7 +116,6 @@ public class Grids {
                                s.setAmountTaken(Long.valueOf(textField.getValue()));
                            }
                        }
-
                         calculateTotal();
                         upgradeMaterialGrid(productFeedModelGrid,listMaterialGrids);
                     });
