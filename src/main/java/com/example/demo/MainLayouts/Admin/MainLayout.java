@@ -12,6 +12,8 @@ import com.example.demo.Pages.Material.MaterialAddEdit.MaterialAddPage;
 import com.example.demo.Pages.Material.Page.MaterialPage;
 import com.example.demo.Pages.Orders.OrderAdd.OrderAdd;
 import com.example.demo.Pages.Orders.Page.OrdersPage;
+import com.example.demo.Pages.Products.AddNewMultiProducts;
+import com.example.demo.Pages.Products.MultipleProductChoices;
 import com.example.demo.Pages.Products.Page.ProductsPage;
 import com.example.demo.Pages.Products.ProductAdd.Page.ProductsAdd;
 import com.example.demo.Pages.Reports.Page.ReportPage;
@@ -164,6 +166,14 @@ public class MainLayout extends AppLayout {
         products.addItem(new SideNavItem(
                 "Add new product",
                 ProductsAdd.class,
+                commonComponents.iconCrafter(
+                        VaadinIcon.PLUS_CIRCLE, "25px", "white"
+                )
+        ));
+
+        products.addItem(new SideNavItem(
+                "Add new multi variant product",
+                AddNewMultiProducts.class,
                 commonComponents.iconCrafter(
                         VaadinIcon.PLUS_CIRCLE, "25px", "white"
                 )

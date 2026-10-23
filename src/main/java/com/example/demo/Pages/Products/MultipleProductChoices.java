@@ -1,11 +1,9 @@
 package com.example.demo.Pages.Products;
 
-import com.example.demo.Common.Common;
-import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.*;
+import com.example.demo.Common.AI.MultiProductAiDto;
 import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.Common.Logic.ProductEditImage;
-import com.example.demo.Common.ProductAiDto;
-import com.example.demo.DTOS.BreadCrums.BreadCrumsDto;
 import com.example.demo.DTOS.Common.CommonImagesData;
 import com.example.demo.DTOS.Common.ListExtraDetailsGrid;
 import com.example.demo.DTOS.Common.ListStepsToPrepare;
@@ -14,7 +12,6 @@ import com.example.demo.Entity.*;
 import com.example.demo.Entity.ProductJoin.ProductFinishSteps;
 import com.example.demo.Entity.ProductJoin.ProductMaterials;
 import com.example.demo.Enums.*;
-import com.example.demo.MainLayouts.Admin.MainLayout;
 import com.example.demo.Pages.Products.Components.Grids;
 import com.example.demo.Pages.Products.Components.MaterialAndDetails;
 import com.example.demo.Services.AI.AIService;
@@ -44,14 +41,10 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.dom.Style;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
-import com.vaadin.flow.router.Route;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 //@Route(value = "testtttttt", layout = MainLayout.class)
@@ -80,6 +73,10 @@ public class MultipleProductChoices extends VerticalLayout  {
 
     private Binder<Product> binder =
             new Binder<>(Product.class);
+
+    private TextField displayedName = new TextField("Displayed name");
+
+    private TextField productColor = new TextField("Product color");
 
     private TextField productName = new TextField("Product name");
     private TextField sku = new TextField("SKU");
@@ -136,13 +133,15 @@ public class MultipleProductChoices extends VerticalLayout  {
 
     List<CommonImagesData> newImages = null;
 
+    ColorSelector colorSelector;
+
     // total material cost
     Span totalMaterialCost;
 
     // memory of the material cost
     Double value;
 
-    private ProductAiDto productAiDto = new ProductAiDto();
+    private MultiProductAiDto multiProductAiDto = new MultiProductAiDto();
 
     public void setConsumer (Consumer<Product> consumer){
         this.consumer = consumer;
@@ -152,7 +151,8 @@ public class MultipleProductChoices extends VerticalLayout  {
     AIService aiService;
 
     VerticalLayout rightSide =new VerticalLayout();
-    HorizontalLayout multipleProductHolder = new HorizontalLayout();
+    VerticalLayout multipleProductHolder = new VerticalLayout();
+    HorizontalLayout multipleProductHolderButtons = new HorizontalLayout();
 
     Product product = new Product();
 
@@ -184,8 +184,8 @@ public class MultipleProductChoices extends VerticalLayout  {
         this.grids = new Grids(commonComponents,common,materialService);
         this.materialAndDetails = new MaterialAndDetails(commonComponents,common,commonService,grids);
         this.aiService = aiService;
-        this.productAiDto = new ProductAiDto();
         this.productService = productService;
+        this.colorSelector = new ColorSelector();
 
 
         this.productEditImage = new ProductEditImage(commonComponents,common);
@@ -218,6 +218,17 @@ public class MultipleProductChoices extends VerticalLayout  {
         });
 
 
+        displayedName.addValueChangeListener(ee -> {
+            if (ee.isFromClient()) {
+                product.setProductName(displayedName.getValue());
+            }
+        });
+
+
+
+
+
+
         save = commonComponents.normalThemeButtonNoNavigate("Save", ButtonVariant.LUMO_PRIMARY);
 
         goBack = new Button("Cancel",e-> common.customNavigate("Products/1"));
@@ -226,35 +237,6 @@ public class MultipleProductChoices extends VerticalLayout  {
 
         saveDate(addNewVariant);
 
-
-//            List<CommonImagesData> commonImagesData = new ArrayList<>();
-//            HorizontalLayout images = productEditImage.images(commonImagesData);
-//
-//
-//            Div holder = new Div(images,
-//                    productEditImage.uploadStuff());
-//
-//
-//
-//            add(
-//                    briefPageExplanation("Add new product")
-//
-//            );
-//
-//            HorizontalLayout main = new HorizontalLayout();
-//
-//            main.setWidth("1650px");
-//            main.add(
-//                    holder,
-//                    rightSide(new Product())
-//
-//            );
-//
-//            add(
-//                    main,
-//                    commonStuff(),
-//                    multipleProductHolder
-//            );
 
         productEditImage.setMainChange(list -> {
             newImages = new ArrayList<>();
@@ -281,10 +263,13 @@ public class MultipleProductChoices extends VerticalLayout  {
 
         visibility.setItems(list);
 
-        multipleProductHolder.setWidthFull();
-        multipleProductHolder.addClassName("island-dotted");
+        multipleProductHolder.setPadding(false);
+        multipleProductHolder.addClassName("island");
 
 
+
+
+        addTheButtonsOfDisplayAllProducts();
 
     }
 
@@ -303,6 +288,7 @@ public class MultipleProductChoices extends VerticalLayout  {
         manualStock.clear();
         status.clear();
         visibility.clear();
+        productColor.clear();
         stockQuantity.setValue(Double.valueOf(0));
 
     }
@@ -357,30 +343,11 @@ public class MultipleProductChoices extends VerticalLayout  {
 
         );
 
-        Button openCommonData = new Button("Common data");
-        openCommonData.addClickListener(e->{
-            commonData.open();
-        });
-
-        Dialog addNewProductVariant = new Dialog();
-        addNewProductVariant.getFooter().add(addNewVariant);
-
-        Button openNewProductVariant = new Button("Add new varianteeee");
-        openNewProductVariant.addClickListener(e->{
 
 
-            reset();
 
-            // remove all image prepate for a another variant
-            addNewProductVariant.removeAll();
-            joinImageAndRightSideHolder.removeAll();
 
-            addNewProductVariant.add(
-                    joinImagesInfoProgramSide(null)
-            );
 
-            addNewProductVariant.open();
-        });
 
 
         VerticalLayout verticalLayout = new VerticalLayout();
@@ -396,19 +363,12 @@ public class MultipleProductChoices extends VerticalLayout  {
 
 
 
-        Button b = new Button("Show data");
-        b.addClickListener(e->{
-            System.out.println(product);
-        });
+
 
         verticalLayout.add(
 //                commonComponents.breadCrums(new BreadCrumsDto("Products", "Products/1"),new BreadCrumsDto("Add new product", "ProductsAdd")),
                 briefPageExplanation(briefExplanation),
                 displayCommonData(),
-                openCommonData,
-                openNewProductVariant,
-                b,
-
                 multipleProductHolder);
 
         return verticalLayout;
@@ -706,6 +666,8 @@ public class MultipleProductChoices extends VerticalLayout  {
 
             materialCost.setValue(sumPrice);
 
+            productColor.setValue(products.getColor()  == null ? "" : products.getColor());
+
 
             stockQuantity.setValue(products.getStockQuantity() != null ? (double) products.getStockQuantity() : 0.0);
             lowThreshold.setValue(products.getLowStockThreshold() != null ? (double) products.getLowStockThreshold() : 0.0);
@@ -718,6 +680,11 @@ public class MultipleProductChoices extends VerticalLayout  {
             materialCost.setValue(sumPrice);
 
         }
+        else{
+            productName.setValue(this.product.getProductName() == null ? "" : this.product.getProductName());
+        }
+
+
         tags.setItems(Tags.values());
 
         category.setItems(Category.values());
@@ -779,6 +746,7 @@ public class MultipleProductChoices extends VerticalLayout  {
         category.setItems(Category.values());
         category.setValue(product.getCategory());
 
+        displayedName.setValue(product.getProductName() == null ? "" : product.getProductName());
 
         tagss.clear();
         listStepsToPrepares.clear();
@@ -834,6 +802,8 @@ public class MultipleProductChoices extends VerticalLayout  {
 
 
 
+
+
             List<ExtraDetails> extraDetails = new ArrayList<>();
             for(var s : listExtraDetailsGrids){
                 ExtraDetails details = new ExtraDetails();
@@ -865,6 +835,8 @@ public class MultipleProductChoices extends VerticalLayout  {
             System.out.println(product.getExtraDetails());
             System.out.println("STEPS TO FINISH");
             System.out.println(product.getSteps());
+
+
 
 
             if(addNew){
@@ -967,6 +939,7 @@ public class MultipleProductChoices extends VerticalLayout  {
     }
 
 
+    //display the common product data shared over all the multi products
     public VerticalLayout displayCommonData(){
 
         VerticalLayout v = new VerticalLayout();
@@ -977,10 +950,16 @@ public class MultipleProductChoices extends VerticalLayout  {
         commonHolder.addClassName("removetop");
 
 
-        Icon icon = commonComponents.iconCrafter(VaadinIcon.ANGLE_DOWN,"40px","royalblue");
+        Icon downIcon = commonComponents.iconCrafter(
+                VaadinIcon.ANGLE_DOWN, "40px", "royalblue"
+        );
+
+        Icon upIcon = commonComponents.iconCrafter(
+                VaadinIcon.ANGLE_UP, "40px", "royalblue"
+        );
 
 
-        Button button = new Button(icon);
+        Button button = new Button("Expand",downIcon);
         button.getStyle().setBackgroundColor("Transparent");
         button.getStyle().setPosition(Style.Position.ABSOLUTE);
         button.getStyle().set("top","10px").set("right","20px");
@@ -992,10 +971,18 @@ public class MultipleProductChoices extends VerticalLayout  {
             if(commonHolder.hasClassName("removetop")){
                 commonHolder.removeClassName("removetop");
                 commonHolder.addClassName("addtop");
+
+                button.setIcon(upIcon);
+                button.setText("Minimize");
+
             }
             else{
                 commonHolder.removeClassName("addtop");
                 commonHolder.addClassName("removetop");
+                button.setText("Expand");
+
+
+                button.setIcon(downIcon);
 
             }
 
@@ -1022,12 +1009,43 @@ public class MultipleProductChoices extends VerticalLayout  {
     }
 
 
+    public void addTheButtonsOfDisplayAllProducts(){
+
+
+        Dialog addNewProductVariant = new Dialog();
+        addNewProductVariant.getFooter().add(addNewVariant);
+
+
+        Button openNewProductVariant = new Button("Add new variant");
+        openNewProductVariant.addThemeVariants(ButtonVariant.PRIMARY);
+        openNewProductVariant.addClickListener(e->{
+
+
+            reset();
+
+            // remove all image prepate for a another variant
+            addNewProductVariant.removeAll();
+            joinImageAndRightSideHolder.removeAll();
+
+            addNewProductVariant.add(
+                    joinImagesInfoProgramSide(null)
+            );
+
+            addNewProductVariant.open();
+        });
+
+        multipleProductHolderButtons.add(
+                openNewProductVariant
+        );
+
+    }
+
     // display the prodcut variants
     public void displayAllProducts(){
 
         multipleProductHolder.removeAll();
 
-        HorizontalLayout h= new HorizontalLayout();
+        HorizontalLayout h = new HorizontalLayout();
         h.setWidthFull();
         for(var s :  product.getProductMultiples()){
 
@@ -1149,6 +1167,7 @@ public class MultipleProductChoices extends VerticalLayout  {
                 s.setCategory(category.getValue());
                 s.setStatus(status.getValue());
                 s.setVisibility(visibility.getValue());
+                s.setColor(productColor.getValue());
 
 
                 displayAllProducts();
@@ -1216,7 +1235,18 @@ public class MultipleProductChoices extends VerticalLayout  {
 
         }
 
-        multipleProductHolder.add(h);
+        HorizontalLayout firstLayerHolder = new HorizontalLayout();
+        firstLayerHolder.setWidthFull();
+        firstLayerHolder.add(
+                commonComponents.spanCrafterWordNoHide(String.format("%s product variants",product.getProductName() == null ? "Unknown" : product.getProductName()),"activityFeed-name"),
+                multipleProductHolderButtons
+        );
+        firstLayerHolder.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+
+        multipleProductHolder.add(
+                firstLayerHolder,
+                h);
 
     }
 
@@ -1262,7 +1292,10 @@ public class MultipleProductChoices extends VerticalLayout  {
         v.getStyle().set("position","relative");
         FormLayout basicInfo = new FormLayout();
 
-        basicInfo.add(productName, sku, description);
+        description.setHeight("150px");
+
+        basicInfo.add(productName, sku,colorSelector.colorSelector(productColor), description);
+        basicInfo.setColspan(productName,2);
         basicInfo.setColspan(description,2);
 
         Button aiButton = commonComponents.buttonThemeAndIconNoNavigate("AI",ButtonVariant.LUMO_PRIMARY, VaadinIcon.MAGIC,"WHITE");
@@ -1279,16 +1312,16 @@ public class MultipleProductChoices extends VerticalLayout  {
             component.setPadding(false);
             component.add(
                     basicInfo(),
-                    specs(),
-                    steps(),
+//                    specs(),
+//                    steps(),
                     pricingInv(),
-                    categoriesTags(),
+//                    categoriesTags(),
                     productStatus(),
                     requiredMaterials()
             );
 
 
-            aiService.dialogTest(productAiDto, ProductAiDto.class,rightSide,component,this,"Products");
+            aiService.dialogTest(multiProductAiDto, MultiProductAiDto.class,rightSide,component,this,"MultiProducts");
 
 
 
@@ -1407,13 +1440,14 @@ public class MultipleProductChoices extends VerticalLayout  {
 
     public VerticalLayout categoriesTags(){
         FormLayout categoryTags = new FormLayout();
-        categoryTags.add(category,tags);
+        categoryTags.add(displayedName,category,tags);
+        categoryTags.setColspan(displayedName,2);
 
         VerticalLayout v = new VerticalLayout();
         v.addClassName("island");
 
         v.add(
-                commonComponents.spanCrafterWordNoHide("Selected Tags","activityFeed-name"),
+                commonComponents.spanCrafterWordNoHide("Basic information","activityFeed-name"),
                 categoryTags,
                 tagsSelected
 

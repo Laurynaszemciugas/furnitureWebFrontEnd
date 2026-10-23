@@ -3,7 +3,7 @@ package com.example.demo.Pages.Products.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ObjectConverter;
-import com.example.demo.Common.ProductAiDto;
+import com.example.demo.Common.AI.ProductAiDto;
 import com.example.demo.Entity.ExtraDetails;
 import com.example.demo.Entity.Product;
 import com.example.demo.Entity.ProductImageData;

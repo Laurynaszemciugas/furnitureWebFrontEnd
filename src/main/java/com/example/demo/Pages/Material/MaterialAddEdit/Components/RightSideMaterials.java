@@ -1,6 +1,7 @@
 package com.example.demo.Pages.Material.MaterialAddEdit.Components;
 
 import com.example.demo.Common.*;
+import com.example.demo.Common.AI.MaterialAiDto;
 import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.DTOS.Common.CommonImagesData;

@@ -1,13 +1,10 @@
-package com.example.demo.Common;
+package com.example.demo.Common.AI;
 
-import com.example.demo.Enums.ActiveInactive;
 import com.example.demo.Enums.MaterialGrainPatterns;
 import com.example.demo.Enums.MaterialTextures;
 import com.example.demo.Enums.MaterialType;
-import com.vaadin.flow.component.HasValue;
 import lombok.*;
 
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 
 @Getter

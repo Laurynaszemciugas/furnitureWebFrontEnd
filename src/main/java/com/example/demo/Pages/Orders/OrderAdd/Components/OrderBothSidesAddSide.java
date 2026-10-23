@@ -2,7 +2,7 @@ package com.example.demo.Pages.Orders.OrderAdd.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.Common.OrderAiDto;
+import com.example.demo.Common.AI.OrderAiDto;
 import com.example.demo.Entity.Orders;
 import com.example.demo.Entity.User;
 import com.example.demo.Enums.OrderStatus;

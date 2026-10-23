@@ -1,6 +1,9 @@
 package com.example.demo.Services.AI;
 
 import com.example.demo.Common.*;
+import com.example.demo.Common.AI.AiCalls;
+import com.example.demo.Common.AI.AiQuestion;
+import com.example.demo.Common.AI.ProductAiDto;
 import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Entity.ExtraDetails;

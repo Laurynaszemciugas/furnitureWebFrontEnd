@@ -2,7 +2,7 @@ package com.example.demo.Pages.Employee.EmployeeAddEdit.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
-import com.example.demo.Common.EmployeeAiDto;
+import com.example.demo.Common.AI.EmployeeAiDto;
 import com.example.demo.Common.Logic.SinglePhotoLogic;
 import com.example.demo.Entity.Employee;
 import com.example.demo.Entity.User;

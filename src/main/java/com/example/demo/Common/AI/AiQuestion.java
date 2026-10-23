@@ -1,4 +1,4 @@
-package com.example.demo.Common;
+package com.example.demo.Common.AI;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -4,7 +4,7 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.Common.Logic.ProductEditImage;
-import com.example.demo.Common.ProductAiDto;
+import com.example.demo.Common.AI.ProductAiDto;
 import com.example.demo.DTOS.Common.CommonImagesData;
 import com.example.demo.DTOS.Common.ListExtraDetailsGrid;
 import com.example.demo.DTOS.Common.ListStepsToPrepare;

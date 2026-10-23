@@ -1,4 +1,4 @@
-package com.example.demo.Common;
+package com.example.demo.Common.AI;
 
 import com.example.demo.Entity.ExtraDetails;
 import com.example.demo.Entity.ProductJoin.ProductFinishSteps;
