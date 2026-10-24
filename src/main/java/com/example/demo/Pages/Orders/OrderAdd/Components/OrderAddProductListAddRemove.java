@@ -6,6 +6,8 @@ import com.example.demo.Entity.OrderJoin.OrderProducts;
 import com.example.demo.Entity.Orders;
 import com.example.demo.Entity.Product;
 import com.example.demo.DTOS.Orders.OrderAddProducts;
+import com.example.demo.Entity.ProductMultiple;
+import com.example.demo.Enums.ImageLogic;
 import com.example.demo.Enums.OrderStatus;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.button.Button;
@@ -37,7 +39,7 @@ public class OrderAddProductListAddRemove {
     Grid<OrderAddProducts> orderItems;
 
     Span totalValueOfItems = new Span();;
-    List<OrderAddProducts> listOfProducts = new ArrayList<>();
+    List<Product> listOfProducts = new ArrayList<>();
 
 
     public OrderAddProductListAddRemove(CommonComponents commonComponents, Common common,ProductService productService) {
@@ -47,7 +49,7 @@ public class OrderAddProductListAddRemove {
         this.orderGridProductRemoveAdd = new OrderGridProductRemoveAdd(commonComponents,common);
 
         listOfProducts.clear();
-        listOfProducts.addAll(productService.getProductsForAddOrder());
+        listOfProducts.addAll(productService.getAllProductsAccordingToTheUser());
 
         updataTotalValue();
     }
@@ -69,6 +71,11 @@ public class OrderAddProductListAddRemove {
         orderItems = new Grid<>(OrderAddProducts.class,false);
 
         if(orders.getProductsData()!=null) {
+
+            //FILL DATA BY HAND PERHAPS ??????????????
+
+
+
             selectedProducts = new ArrayList<>(productService.getExisitingData(orders.getId()));
         }
 
@@ -116,15 +123,25 @@ public class OrderAddProductListAddRemove {
         dialog.setWidth("1000px");
         dialog.setHeight("600px");
 
-        Grid<OrderAddProducts> productList = new Grid<>(OrderAddProducts.class,false);
+        Grid<Product> productList = new Grid<>(Product.class,false);
         productList.setItems(listOfProducts);
         productList.setSizeFull();
 
         productList.addComponentColumn(e->{
 
-            Image image = commonComponents.imageCrafter(e.getMainImage() == null ? "No_picture.png" : e.getMainImage() ,"80px","80px","15px");
+            String mainImage = "No_picture.png";
+            for(var s : e.getImages()){
+                if(s.getImageLogic().equals(ImageLogic.Main)){
+                    mainImage = s.getImageUrl();
+                }
+            }
+
+
+            Image image = commonComponents.imageCrafter(mainImage ,"80px","80px","15px");
 
             Span productName = commonComponents.spanCrafterWordNoHide(e.getProductName() == null ? "None" : e.getProductName(),"stat-example");
+
+
             Span productSku = commonComponents.spanCrafterWordNoHide(e.getSku() == null ? "None" : e.getSku(),"stat-title");
 
             VerticalLayout nameHolder = new VerticalLayout();
@@ -171,7 +188,7 @@ public class OrderAddProductListAddRemove {
 
         productList.addComponentColumn(e->{
 
-            Span productPrice = commonComponents.spanCrafterWordNoHide(e.getPrice() == null ? "None" : String.format("%.2f %s",e.getPrice(),"Eur"),"stat-example");
+            Span productPrice = commonComponents.spanCrafterWordNoHide(String.format("%.2f %s",e.getPrice(),"Eur"),"stat-example");
 
             return  productPrice;
         }).setAutoWidth(true).setHeader("Price");
@@ -179,14 +196,248 @@ public class OrderAddProductListAddRemove {
 
         productList.addComponentColumn(e->{
 
-            Button button = new Button("Select");
-            OrderAddProducts orderAddProducts = e;
-            button.setVisible(orderAddProducts != null);
-            button.addClickListener(ee->{
-                if(selectedProducts.stream().anyMatch(item-> item.getId().equals(orderAddProducts.getId()))) {
-                    commonComponents.showNotification("Product already exists in the list +1 added",3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_WARNING);
-                    for(var s : selectedProducts){
-                        if(s.getId().equals(orderAddProducts.getId())){
+
+            String mainImage = "No_picture.png";
+            for(var s : e.getImages()){
+                if(s.getImageLogic().equals(ImageLogic.Main)){
+                    mainImage = s.getImageUrl();
+                }
+            }
+
+
+            if(e.getMultipleItems()){
+
+                Dialog dialog1 = new Dialog();
+                dialog1.setWidth("300px");
+
+
+
+
+                Button button = new Button("Expand");
+
+
+
+
+
+
+                OrderAddProducts orderAddProducts = new OrderAddProducts();
+                orderAddProducts.setId(e.getId());
+                orderAddProducts.setMainImage(mainImage);
+                orderAddProducts.setProductName(e.getProductName());
+                orderAddProducts.setSku(e.getSku());
+                orderAddProducts.setCategory(e.getCategory());
+                orderAddProducts.setStockQuantity(e.getStockQuantity());
+                orderAddProducts.setStock(e.getStock());
+                orderAddProducts.setPrice(e.getPrice());
+                orderAddProducts.setColor(e.getColor());
+
+
+                button.addClickListener(ee -> {
+
+
+                    showAllVariant(e.getProductMultiples(),orders);
+
+
+                });
+
+
+
+                return button;
+            }
+
+            else {
+
+
+                Button button = new Button("Select");
+                OrderAddProducts orderAddProducts = new OrderAddProducts();
+                orderAddProducts.setId(e.getId());
+                orderAddProducts.setMainImage(mainImage);
+                orderAddProducts.setProductName(e.getProductName());
+                orderAddProducts.setSku(e.getSku());
+                orderAddProducts.setCategory(e.getCategory());
+                orderAddProducts.setStockQuantity(e.getStockQuantity());
+                orderAddProducts.setStock(e.getStock());
+                orderAddProducts.setPrice(e.getPrice());
+
+
+                button.setVisible(orderAddProducts != null);
+                button.addClickListener(ee -> {
+                    if (selectedProducts.stream().anyMatch(item -> item.getId().equals(orderAddProducts.getId()))) {
+                        commonComponents.showNotification("Product already exists in the list +1 added", 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_WARNING);
+                        for (var s : selectedProducts) {
+                            if (s.getId().equals(orderAddProducts.getId())) {
+                                Long value = s.getAmountSelected() == null ? 1 : s.getAmountSelected();
+                                value++;
+                                s.setAmountSelected(value);
+                                break;
+                            }
+                        }
+                        orderGridProductRemoveAdd.updateGrid(orderItems, selectedProducts);
+                        orderGridProductRemoveAdd.calculateTotal(selectedProducts);
+                    } else {
+                        orderAddProducts.setAmountSelected(1L);
+                        selectedProducts.add(orderAddProducts);
+                    }
+                    dialog.close();
+                    orderGridProductRemoveAdd.updateGrid(orderItems, selectedProducts);
+                    orderGridProductRemoveAdd.calculateTotal(selectedProducts);
+
+                    if (orders.getProductsData() != null) {
+                        orders.getProductsData().clear();
+                    }
+                    List<OrderProducts> orderProducts = new ArrayList<>();
+                    for (var s : selectedProducts) {
+
+                        Product product = new Product();
+                        ProductMultiple productMultiple = new ProductMultiple();
+                        productMultiple.setId(s.getId());
+                        product.setId(s.getId());
+                        OrderProducts orderProducts1 = new OrderProducts();
+                        orderProducts1.setAmountOfProduct(s.getAmountSelected());
+                        if(s.getColor() !=null){
+                            orderProducts1.setProduct(null);
+                            orderProducts1.setProductMultiple(productMultiple);
+                        }
+                        else{
+                            orderProducts1.setProduct(product);
+                            orderProducts1.setProductMultiple(null);
+                        }
+
+                        orderProducts.add(orderProducts1);
+                    }
+                    orders.setProductsData(orderProducts);
+
+
+                });
+
+
+                return button;
+            }
+        }).setAutoWidth(true).setHeader("Actions");
+
+        dialog.add(
+                productList
+        );
+
+        dialog.open();
+    }
+
+
+    public void showAllVariant(List<ProductMultiple> productMultiples, Orders orders){
+        Dialog dialog = new Dialog("Products");
+        dialog.setWidth("1000px");
+        dialog.setHeight("600px");
+
+        Grid<ProductMultiple> productList = new Grid<>(ProductMultiple.class,false);
+        productList.setItems(productMultiples);
+        productList.setSizeFull();
+
+        productList.addComponentColumn(e->{
+
+            String mainImage = "No_picture.png";
+            for(var s : e.getImages()){
+                if(s.getImageLogic().equals(ImageLogic.Main)){
+                    mainImage = s.getImageUrl();
+                }
+            }
+
+
+            Image image = commonComponents.imageCrafter(mainImage ,"80px","80px","15px");
+
+            Span productName = commonComponents.spanCrafterWordNoHide(e.getProductName() == null ? "None" : e.getProductName(),"stat-example");
+
+
+            Span productSku = commonComponents.spanCrafterWordNoHide(e.getSku() == null ? "None" : e.getSku(),"stat-title");
+
+            VerticalLayout circle = new VerticalLayout();
+            circle.setWidth("25px");
+            circle.setHeight("25px");
+            circle.getStyle().setBorderRadius("50%");
+            circle.getStyle().setBackgroundColor(e.getColor());
+
+            VerticalLayout nameHolder = new VerticalLayout();
+            nameHolder.add(
+                    productName,
+                    productSku,
+                    circle
+            );
+
+            HorizontalLayout productHolder = new HorizontalLayout();
+            productHolder.setAlignItems(FlexComponent.Alignment.CENTER);
+            productHolder.add(
+                    image,
+                    nameHolder
+            );
+
+
+
+            return  productHolder;
+        }).setAutoWidth(true).setHeader("Product");
+
+
+        productList.addComponentColumn(e->{
+
+
+
+            Span productCategory = commonComponents.spanCrafterWordNoHide(e.getCategory() == null ? "None" : e.getCategory().toString(),"stat-title");
+
+            return  productCategory;
+        }).setAutoWidth(true).setHeader("Category");
+
+        productList.addComponentColumn(e->{
+
+            Span stockQuantity = commonComponents.spanCrafterWordNoHide(e.getStockQuantity() == null ? "None" : String.format("%s %d","In stock:",e.getStockQuantity()),"stat-title");
+            Span lowStockThreshold = commonComponents.spanCrafterWordNoHide(e.getLowStockThreshold() == null ? "None" : String.format("%s %d","Threshold:",e.getLowStockThreshold()),"stat-title");
+
+            VerticalLayout stockLevel = new VerticalLayout();
+            stockLevel.add(
+                    stockQuantity,
+                    lowStockThreshold
+            );
+
+            return  stockLevel;
+        }).setAutoWidth(true).setHeader("Stock levels");
+
+        productList.addComponentColumn(e->{
+
+            Span productPrice = commonComponents.spanCrafterWordNoHide(String.format("%.2f %s",e.getPrice(),"Eur"),"stat-example");
+
+            return  productPrice;
+        }).setAutoWidth(true).setHeader("Price");
+
+
+        productList.addComponentColumn(e->{
+
+
+            String mainImage = "No_picture.png";
+            for(var s : e.getImages()){
+                if(s.getImageLogic().equals(ImageLogic.Main)){
+                    mainImage = s.getImageUrl();
+                }
+            }
+
+
+            Button button = new Button("Select variant");
+
+
+            OrderAddProducts orderAddProducts = new OrderAddProducts();
+            orderAddProducts.setId(e.getId());
+            orderAddProducts.setMainImage(mainImage);
+            orderAddProducts.setProductName(e.getProductName());
+            orderAddProducts.setSku(e.getSku());
+            orderAddProducts.setCategory(e.getCategory());
+            orderAddProducts.setStockQuantity(e.getStockQuantity());
+            orderAddProducts.setStock(e.getStock());
+            orderAddProducts.setPrice(e.getPrice());
+            orderAddProducts.setColor(e.getColor());
+            orderAddProducts.setVariant(true);
+
+
+            button.addClickListener(ee -> {
+                if (selectedProducts.stream().anyMatch(item -> item.getId().equals(orderAddProducts.getId()))) {
+                    commonComponents.showNotification("Product already exists in the list +1 added", 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_WARNING);
+                    for (var s : selectedProducts) {
+                        if (s.getId().equals(orderAddProducts.getId())) {
                             Long value = s.getAmountSelected() == null ? 1 : s.getAmountSelected();
                             value++;
                             s.setAmountSelected(value);
@@ -195,8 +446,7 @@ public class OrderAddProductListAddRemove {
                     }
                     orderGridProductRemoveAdd.updateGrid(orderItems, selectedProducts);
                     orderGridProductRemoveAdd.calculateTotal(selectedProducts);
-                }
-                else{
+                } else {
                     orderAddProducts.setAmountSelected(1L);
                     selectedProducts.add(orderAddProducts);
                 }
@@ -204,16 +454,28 @@ public class OrderAddProductListAddRemove {
                 orderGridProductRemoveAdd.updateGrid(orderItems, selectedProducts);
                 orderGridProductRemoveAdd.calculateTotal(selectedProducts);
 
-                if(orders.getProductsData() != null) {
+
+                if (orders.getProductsData() != null) {
                     orders.getProductsData().clear();
                 }
                 List<OrderProducts> orderProducts = new ArrayList<>();
-                for(var s : selectedProducts){
+                for (var s : selectedProducts) {
+
                     Product product = new Product();
+                    ProductMultiple productMultiple = new ProductMultiple();
+                    productMultiple.setId(s.getId());
                     product.setId(s.getId());
                     OrderProducts orderProducts1 = new OrderProducts();
                     orderProducts1.setAmountOfProduct(s.getAmountSelected());
-                    orderProducts1.setProduct(product);
+                    if(s.getColor() !=null){
+                        orderProducts1.setProduct(null);
+                        orderProducts1.setProductMultiple(productMultiple);
+                    }
+                    else{
+                        orderProducts1.setProduct(product);
+                        orderProducts1.setProductMultiple(null);
+                    }
+
                     orderProducts.add(orderProducts1);
                 }
                 orders.setProductsData(orderProducts);
@@ -222,7 +484,8 @@ public class OrderAddProductListAddRemove {
             });
 
 
-            return  button;
+            return button;
+
         }).setAutoWidth(true).setHeader("Actions");
 
         dialog.add(

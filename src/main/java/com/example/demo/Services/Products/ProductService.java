@@ -74,6 +74,13 @@ public class ProductService {
         return Arrays.stream(httpCallLogic.HttpCall("product/getProductsForAddOrder", HttpMethod.GET, null, OrderAddProducts[].class,false)).toList();
     }
 
+
+    @SneakyThrows
+    public List<Product> getAllProductsAccordingToTheUser(){
+        return Arrays.stream(httpCallLogic.HttpCall("product/getAllProductsAccordingToTheUser", HttpMethod.GET, null, Product[].class,false)).toList();
+    }
+
+
     @SneakyThrows
     public List<OrderAddProducts> getExisitingData(Long id){
         return Arrays.stream(httpCallLogic.HttpCall("product/getExistingData", HttpMethod.GET, id, OrderAddProducts[].class,true)).toList();

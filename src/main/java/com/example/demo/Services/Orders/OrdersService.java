@@ -73,7 +73,7 @@ public class OrdersService {
     public void saveNewOrder(Orders orders) {
 
         httpCallLogic.checkResponse(
-                httpCallLogic.HttpCall("order/saveNewOrder", HttpMethod.POST,orders, ErrorResponse.class,false),"Orders",success,true);
+                httpCallLogic.HttpCall("order/saveNewOrder", HttpMethod.POST,orders, ErrorResponse.class,false),null,success,true);
 
     }
 

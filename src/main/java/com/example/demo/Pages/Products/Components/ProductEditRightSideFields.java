@@ -549,6 +549,7 @@ public class ProductEditRightSideFields {
             product.setCategory(category.getValue());
             product.setStatus(status.getValue());
             product.setVisibility(visibility.getValue());
+            product.setMultipleItems(false);
 
             // get tags
             List<ProductTags> productTags = new ArrayList<>();

@@ -22,5 +22,8 @@ public class OrderAddProducts {
     private Stock stock;
     private Double price;
     private Long amountSelected;
+    private String color = null;
+    private Boolean variant = false;
+
 
 }

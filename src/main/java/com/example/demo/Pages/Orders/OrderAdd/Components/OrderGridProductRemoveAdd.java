@@ -46,11 +46,29 @@ public class OrderGridProductRemoveAdd {
             Span productName = commonComponents.spanCrafterWordNoHide(e.getProductName() == null ? "None" : e.getProductName(),"stat-example");
             Span productSku = commonComponents.spanCrafterWordNoHide(e.getSku() == null ? "None" : e.getSku(),"stat-title");
 
+
+
+
+
+
             VerticalLayout nameHolder = new VerticalLayout();
             nameHolder.add(
                     productName,
                     productSku
+
             );
+
+            if(e.getColor() != null){
+                VerticalLayout circle = new VerticalLayout();
+                circle.setWidth("25px");
+                circle.setHeight("25px");
+                circle.getStyle().setBorderRadius("50%");
+                circle.getStyle().setBackgroundColor(e.getColor());
+
+                nameHolder.add(
+                        circle
+                );
+            }
 
             HorizontalLayout productHolder = new HorizontalLayout();
             productHolder.setAlignItems(FlexComponent.Alignment.CENTER);
