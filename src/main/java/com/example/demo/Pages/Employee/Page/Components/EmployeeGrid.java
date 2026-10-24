@@ -583,7 +583,7 @@ public class EmployeeGrid {
 
                 }
 
-                va.add(displayActiveOrders.activeOrdersPreview(e.getOrder().getPriority(), e.getOrder().getId(),mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
+                va.add(displayActiveOrders.activeOrdersPreview(e.getOrder().getPriority(), e.getOrder().getId(),mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted));
             }
 
             return va;

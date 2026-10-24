@@ -84,12 +84,23 @@ public class DisplayActiveOrders {
             VerticalLayout va = new VerticalLayout();
             va.setPadding(false);
 
+
+            String mainImageUrl = "";
+            Long totalSteps = 0L;
+            Long totalStepsCompleted = 0L;
+
+
+            totalSteps = 0L;
+            totalStepsCompleted = 0L;
+
+            String sku = "";
+
+            Long totalItems = 0L;
+
             for(var product : e.getOrder().getProductsData()){
 
-                String mainImageUrl = "";
 
-                Long totalSteps = 0L;
-                Long totalStepsCompleted = 0L;
+                totalItems++;
 
                 for(var images : product.getProduct().getImages()){
                     if(images.getImageLogic().equals(ImageLogic.Main)){
@@ -103,9 +114,14 @@ public class DisplayActiveOrders {
                     totalStepsCompleted += steps.getStepsCompleted();
 
                 }
+                System.out.println(totalSteps + "TOTAL STEPS");
 
-                va.add(activeOrdersPreview(e.getOrder().getPriority(), e.getOrder().getId(),mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
+                sku = product.getProduct().getSku();
             }
+
+
+            va.add(activeOrdersPreview(e.getOrder().getPriority(), e.getOrder().getId(),mainImageUrl,"Product name","",totalItems,totalSteps,totalStepsCompleted));
+
 
             return va;
 
@@ -136,7 +152,7 @@ public class DisplayActiveOrders {
     }
 
 
-    public VerticalLayout activeOrdersPreview(Priority priority, Long id, String mainImage, String productName, String productSKU, Long howMany, Long totalSteps, Long totalStepsCompleted, List<OrderStepsToComplete> stepsList, List<ProductMaterials> productMaterials){
+    public VerticalLayout activeOrdersPreview(Priority priority, Long id, String mainImage, String productName, String productSKU, Long howMany, Long totalSteps, Long totalStepsCompleted){
 
 
         Role role = sessionCrafter.extractSession("user_role", Role.class);
