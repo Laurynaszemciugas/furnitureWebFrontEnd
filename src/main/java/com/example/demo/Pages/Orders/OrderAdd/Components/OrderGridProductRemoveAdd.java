@@ -6,6 +6,7 @@ import com.example.demo.Entity.OrderJoin.OrderProducts;
 import com.example.demo.Entity.Orders;
 import com.example.demo.Entity.Product;
 import com.example.demo.DTOS.Orders.OrderAddProducts;
+import com.example.demo.Entity.ProductMultiple;
 import com.example.demo.Enums.OrderStatus;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -144,11 +145,22 @@ public class OrderGridProductRemoveAdd {
                     }
                     List<OrderProducts> orderProducts = new ArrayList<>();
                     for (var s : selectedProducts) {
+
                         Product product = new Product();
+                        ProductMultiple productMultiple = new ProductMultiple();
+                        productMultiple.setId(s.getId());
                         product.setId(s.getId());
                         OrderProducts orderProducts1 = new OrderProducts();
                         orderProducts1.setAmountOfProduct(s.getAmountSelected());
-                        orderProducts1.setProduct(product);
+                        if(s.getVariant()){
+                            orderProducts1.setProduct(null);
+                            orderProducts1.setProductMultiple(productMultiple);
+                        }
+                        else{
+                            orderProducts1.setProduct(product);
+                            orderProducts1.setProductMultiple(null);
+                        }
+
                         orderProducts.add(orderProducts1);
                     }
                     orders.setProductsData(orderProducts);

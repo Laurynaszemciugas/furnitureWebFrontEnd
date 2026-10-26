@@ -75,6 +75,15 @@ public class OrderAddProductListAddRemove {
             //FILL DATA BY HAND PERHAPS ??????????????
 
 
+            for(var s : orders.getProductsData()){
+
+                OrderAddProducts orderAddProducts = new OrderAddProducts();
+
+
+
+            }
+
+
 
             selectedProducts = new ArrayList<>(productService.getExisitingData(orders.getId()));
         }
@@ -294,7 +303,7 @@ public class OrderAddProductListAddRemove {
                         product.setId(s.getId());
                         OrderProducts orderProducts1 = new OrderProducts();
                         orderProducts1.setAmountOfProduct(s.getAmountSelected());
-                        if(s.getColor() !=null){
+                        if(s.getVariant()){
                             orderProducts1.setProduct(null);
                             orderProducts1.setProductMultiple(productMultiple);
                         }
@@ -467,11 +476,14 @@ public class OrderAddProductListAddRemove {
                     product.setId(s.getId());
                     OrderProducts orderProducts1 = new OrderProducts();
                     orderProducts1.setAmountOfProduct(s.getAmountSelected());
-                    if(s.getColor() !=null){
+                    if(s.getVariant()){
                         orderProducts1.setProduct(null);
                         orderProducts1.setProductMultiple(productMultiple);
+
+
                     }
                     else{
+                        System.out.println("baddddd");
                         orderProducts1.setProduct(product);
                         orderProducts1.setProductMultiple(null);
                     }
