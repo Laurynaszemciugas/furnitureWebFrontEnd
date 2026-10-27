@@ -74,10 +74,64 @@ public class OrderAddProductListAddRemove {
 
             //FILL DATA BY HAND PERHAPS ??????????????
 
+            selectedProducts.clear();
+
 
             for(var s : orders.getProductsData()){
 
-                OrderAddProducts orderAddProducts = new OrderAddProducts();
+                if(s.getProduct().getMultipleItems()){
+
+                    String mainImage = "No_picture.png";
+                    for(var images : s.getProductMultiple().getImages()){
+                        if(images.getImageLogic().equals(ImageLogic.Main)){
+                            mainImage = images.getImageUrl();
+                        }
+                    }
+
+                    OrderAddProducts orderAddProducts = new OrderAddProducts();
+                    orderAddProducts.setId(s.getProductMultiple().getId());
+                    orderAddProducts.setMainImage(mainImage);
+                    orderAddProducts.setProductName(s.getProductMultiple().getProductName());
+                    orderAddProducts.setSku(s.getProductMultiple().getSku());
+                    orderAddProducts.setCategory(s.getProductMultiple().getCategory());
+                    orderAddProducts.setStockQuantity(s.getProductMultiple().getStockQuantity());
+                    orderAddProducts.setLowStockThreshold(s.getProductMultiple().getLowStockThreshold());
+                    orderAddProducts.setStock(s.getProductMultiple().getStock());
+                    orderAddProducts.setPrice(s.getProductMultiple().getPrice());
+                    orderAddProducts.setAmountSelected(s.getAmountOfProduct());
+                    orderAddProducts.setColor(s.getProductMultiple().getColor());
+                    orderAddProducts.setVariant(true);
+
+                    selectedProducts.add(orderAddProducts);
+                }
+                else {
+
+                    String mainImage = "No_picture.png";
+                    for(var images : s.getProduct().getImages()){
+                        if(images.getImageLogic().equals(ImageLogic.Main)){
+                            mainImage = images.getImageUrl();
+                        }
+                    }
+
+                    OrderAddProducts orderAddProducts = new OrderAddProducts();
+                    orderAddProducts.setId(s.getProduct().getId());
+                    orderAddProducts.setMainImage(mainImage);
+                    orderAddProducts.setProductName(s.getProduct().getProductName());
+                    orderAddProducts.setSku(s.getProduct().getSku());
+                    orderAddProducts.setCategory(s.getProduct().getCategory());
+                    orderAddProducts.setStockQuantity(s.getProduct().getStockQuantity());
+                    orderAddProducts.setLowStockThreshold(s.getProduct().getLowStockThreshold());
+                    orderAddProducts.setStock(s.getProduct().getStock());
+                    orderAddProducts.setPrice(s.getProduct().getPrice());
+                    orderAddProducts.setAmountSelected(s.getAmountOfProduct());
+                    orderAddProducts.setColor(s.getProduct().getColor());
+                    orderAddProducts.setVariant(false);
+
+                    selectedProducts.add(orderAddProducts);
+
+                }
+
+
 
 
 
@@ -85,7 +139,7 @@ public class OrderAddProductListAddRemove {
 
 
 
-            selectedProducts = new ArrayList<>(productService.getExisitingData(orders.getId()));
+            //selectedProducts = new ArrayList<>(productService.getExisitingData(orders.getId()));
         }
 
         orderGridProductRemoveAdd.updateGrid(orderItems, selectedProducts);

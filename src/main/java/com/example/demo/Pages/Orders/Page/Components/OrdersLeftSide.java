@@ -60,6 +60,10 @@ public class OrdersLeftSide {
         if(ordersFeedData != null && !ordersFeedData.isEmpty()) {
             for (var s : ordersFeedData) {
                 feed.add(createOrderPreview(s.getId(), s.getOrderStatus(), s.getProductCount(), s.getEstimatedDueDate(), s.getCreated(),s.getTotalPrice(), s.getAddress(), s.getGmail(),s.getActiveInactive()));
+
+
+                System.out.println("PRICES");
+                System.out.println(s.getTotalPrice());
             }
         }
         else{
