@@ -1,6 +1,8 @@
 package com.example.demo.Services.Products;
 
 import com.example.demo.Common.Logic.HttpCallLogic;
+import com.example.demo.DTOS.Client.CategoryDisplay;
+import com.example.demo.DTOS.Client.ProductsClients;
 import com.example.demo.DTOS.Common.GraphDataLongValue;
 import com.example.demo.DTOS.Common.MiniStatHolder;
 import com.example.demo.DTOS.Error.ErrorResponse;
@@ -119,6 +121,20 @@ public class ProductService {
         return Arrays.stream(httpCallLogic.HttpCallWithJwt("product/getProductPerformance", HttpMethod.GET, String.format("%s/%s",from,to), ProductPerformanceReport[].class,true,jwt)).toList();
     }
 
+
+    // ====================================================================
+    // Client side category
+    // ====================================================================
+
+    @SneakyThrows
+    public List<CategoryDisplay> getClientProductCategorys(int amountOfCategorys){
+        return Arrays.stream(httpCallLogic.HttpCall("product/getClientProductCategorys", HttpMethod.GET, amountOfCategorys , CategoryDisplay[].class,true)).toList();
+    }
+
+    @SneakyThrows
+    public List<ProductsClients> getProductsClients(int amountOfCategorys){
+        return Arrays.stream(httpCallLogic.HttpCall("product/getProductsClients", HttpMethod.GET, amountOfCategorys , ProductsClients[].class,true)).toList();
+    }
 
 
 }

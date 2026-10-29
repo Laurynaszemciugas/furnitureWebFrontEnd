@@ -42,7 +42,6 @@ import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.Lumo;
 
-@CssImport("./MainCSS.css")
 public class MainLayout extends AppLayout {
 
 

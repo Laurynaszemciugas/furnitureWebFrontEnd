@@ -159,44 +159,34 @@ public class ActiveOrderUI {
 
         for(var product : productsData){
 
-            String mainImageUrl = "";
+            if(product.getProductMultiple() != null){
 
-            Long totalSteps = 0L;
-            Long totalStepsCompleted = 0L;
+                String mainImageUrl = "No_picture.png";
 
-            for(var images : product.getProduct().getImages()){
-                if(images.getImageLogic().equals(ImageLogic.Main)){
-                    mainImageUrl = images.getImageUrl();
+                Long totalSteps = 0L;
+                Long totalStepsCompleted = 0L;
+
+                for(var images : product.getProductMultiple().getImages()){
+                    if(images.getImageLogic().equals(ImageLogic.Main)){
+                        mainImageUrl = images.getImageUrl();
+                    }
                 }
+
+
+
+                for(var steps : product.getOrderSteps()){
+
+                    totalSteps += steps.getStepsNeeded();
+                    totalStepsCompleted += steps.getStepsCompleted();
+
+                }
+
+                v.add(activeOrderPreview(oldOrder.getPriority(),mainImageUrl,product.getProductMultiple().getProductName(),product.getProductMultiple().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProductMultiple().getMaterials()));
+
             }
+            else{
 
-
-
-            for(var steps : product.getOrderSteps()){
-
-                totalSteps += steps.getStepsNeeded();
-                totalStepsCompleted += steps.getStepsCompleted();
-
-            }
-
-            v.add(activeOrderPreview(oldOrder.getPriority(),mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
-        }
-
-        setReload(e->{
-
-            for (var dialog : dialogMemory.values()) {
-                dialog.close();
-            }
-
-            dialogMemory.clear();
-
-            v.removeAll();
-
-            Orders order = ordersService.getSelectedOrder(currentOrderId);
-
-            for(var product : order.getProductsData()){
-
-                String mainImageUrl = "";
+                String mainImageUrl = "No_picture.png";
 
                 Long totalSteps = 0L;
                 Long totalStepsCompleted = 0L;
@@ -216,7 +206,80 @@ public class ActiveOrderUI {
 
                 }
 
-                v.add(activeOrderPreview(order.getPriority(),mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
+                v.add(activeOrderPreview(oldOrder.getPriority(),mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
+
+            }
+
+
+        }
+
+        setReload(e->{
+
+            for (var dialog : dialogMemory.values()) {
+                dialog.close();
+            }
+
+            dialogMemory.clear();
+
+            v.removeAll();
+
+            Orders order = ordersService.getSelectedOrder(currentOrderId);
+
+            for(var product : order.getProductsData()){
+
+                if(product.getProductMultiple() != null){
+
+                    String mainImageUrl = "No_picture.png";
+
+                    Long totalSteps = 0L;
+                    Long totalStepsCompleted = 0L;
+
+                    for(var images : product.getProductMultiple().getImages()){
+                        if(images.getImageLogic().equals(ImageLogic.Main)){
+                            mainImageUrl = images.getImageUrl();
+                        }
+                    }
+
+
+
+                    for(var steps : product.getOrderSteps()){
+
+                        totalSteps += steps.getStepsNeeded();
+                        totalStepsCompleted += steps.getStepsCompleted();
+
+                    }
+
+                    v.add(activeOrderPreview(order.getPriority(),mainImageUrl,product.getProductMultiple().getProductName(),product.getProductMultiple().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProductMultiple().getMaterials()));
+
+                }
+
+                else{
+
+                    String mainImageUrl = "No_picture.png";
+
+                    Long totalSteps = 0L;
+                    Long totalStepsCompleted = 0L;
+
+                    for(var images : product.getProduct().getImages()){
+                        if(images.getImageLogic().equals(ImageLogic.Main)){
+                            mainImageUrl = images.getImageUrl();
+                        }
+                    }
+
+
+
+                    for(var steps : product.getOrderSteps()){
+
+                        totalSteps += steps.getStepsNeeded();
+                        totalStepsCompleted += steps.getStepsCompleted();
+
+                    }
+
+                    v.add(activeOrderPreview(order.getPriority(),mainImageUrl,product.getProduct().getProductName(),product.getProduct().getSku(),product.getAmountOfProduct(),totalSteps,totalStepsCompleted,product.getOrderSteps(), product.getProduct().getMaterials()));
+
+                }
+
+
 
 
 
@@ -500,18 +563,34 @@ public class ActiveOrderUI {
         updateProgress.addClickListener(e->{
             Long numberOfCompleted = Long.valueOf(integerField.getValue());
 
-            if(numberOfCompleted > totalStepsCompleted){
-                numberOfCompleted = totalSteps;
+            System.out.println(numberOfCompleted);
+            System.out.println(totalSteps);
+
+            System.out.println(totalStepsCompleted);
+
+            boolean canContinue = true;
+
+            if(numberOfCompleted > totalSteps){
                 commonComponents.showNotification("Too much taken the number was set to the max which is " + totalSteps, 3000, Notification.Position.BOTTOM_CENTER,NotificationVariant.WARNING);
+                canContinue = false;
+            }
+            if(numberOfCompleted < 0){
+                commonComponents.showNotification("Too little taken the number was set to the max which is " + totalSteps, 3000, Notification.Position.BOTTOM_CENTER,NotificationVariant.WARNING);
+                canContinue = false;
             }
 
-            ordersService.updateStep(id, numberOfCompleted);
 
-            reload.accept(true);
-            reloadOutSide.accept(true);
+            if(canContinue){
+                ordersService.updateStep(id, numberOfCompleted);
 
-            dialogMemory.get(productSKU).close();
-            dialogMemory.get(productSKU).open();
+                reload.accept(true);
+                reloadOutSide.accept(true);
+
+                dialogMemory.get(productSKU).close();
+                dialogMemory.get(productSKU).open();
+
+            }
+
 
         });
 

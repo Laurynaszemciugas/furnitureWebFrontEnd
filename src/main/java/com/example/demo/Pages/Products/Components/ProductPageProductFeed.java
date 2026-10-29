@@ -55,7 +55,6 @@ public class ProductPageProductFeed {
 
         verticalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
-        System.out.println(productFeedModelList);
 
         if(empty){
             verticalLayout.add(commonComponents.noDataFound());
@@ -105,6 +104,8 @@ public class ProductPageProductFeed {
         Span stockLevel = commonComponents.spanCrafter("In Stock","stock-badge");
 
         colorSpan(unitsLeft,minTreshold,stockLevel);
+
+
 
         Span productPrice = commonComponents.spanCrafterWordNoHide(String.format("%.2f %s",price,"Eur"),"activityFeed-name");
         productPrice.getStyle().set("margin-top","10px");

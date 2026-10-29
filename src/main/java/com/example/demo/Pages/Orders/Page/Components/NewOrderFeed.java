@@ -4,7 +4,9 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
+import com.example.demo.Entity.OrderJoin.OrderProducts;
 import com.example.demo.Entity.Orders;
+import com.example.demo.Enums.ImageLogic;
 import com.example.demo.FilterDTO.Order.OrderFilterHolder;
 import com.example.demo.DTOS.Orders.NewOrderFeedData;
 import com.example.demo.Enums.OrderStatus;
@@ -457,23 +459,48 @@ public class NewOrderFeed {
         v.setWidthFull();
         v.setPadding(false);
 
-        Grid<NewOrderFeedData> ordersGrid = new Grid<>(NewOrderFeedData.class,false);
+        Grid<OrderProducts> ordersGrid = new Grid<>(OrderProducts.class,false);
 
-        List<NewOrderFeedData> stuff = ordersService.getSelectedNewOrdersGridData(id);
-        ordersGrid.setItems(stuff);
+        Orders orders = ordersService.getSelectedOrder(id);
+
+        ordersGrid.setItems(orders.getProductsData());
 
         ordersGrid.addComponentColumn(e->{
+
+
+            String main = "No_picture.png";
+            for(var s : e.getProduct().getImages()){
+                if(s.getImageLogic().equals(ImageLogic.Main)){
+                    main = s.getImageUrl();
+                }
+            }
 
             HorizontalLayout h = new HorizontalLayout();
             h.setAlignItems(FlexComponent.Alignment.CENTER);
 
-            Image image = commonComponents.imageCrafter(e.getMainImage(),"70px","70px","10px");
-            Span span = commonComponents.spanCrafter(e.getName(),"s");
+            Image image = commonComponents.imageCrafter(main,"70px","70px","10px");
+            Span span = commonComponents.spanCrafter(e.getProductMultiple() == null ? e.getProduct().getProductName() : e.getProductMultiple().getProductName() , "stat-example");
+
+
+
 
             h.add(
                     image,
                     span
             );
+
+
+            if(e.getProductMultiple() != null && e.getProductMultiple().getColor() != null){
+                VerticalLayout circle = new VerticalLayout();
+                circle.setWidth("25px");
+                circle.setHeight("25px");
+                circle.getStyle().setBorderRadius("50%");
+                circle.getStyle().setBackgroundColor(e.getProductMultiple().getColor());
+
+                h.add(
+                        circle
+                );
+            }
 
             return h;
 
@@ -482,7 +509,7 @@ public class NewOrderFeed {
 
         ordersGrid.addComponentColumn(e->{
 
-            Span span = commonComponents.spanCrafter(e.getSku(),"s");
+            Span span = commonComponents.spanCrafter(e.getProductMultiple() == null ? e.getProduct().getSku() : e.getProductMultiple().getSku(),"stat-example");
 
 
             return span;
@@ -495,8 +522,8 @@ public class NewOrderFeed {
 
 
 
-            Span span = commonComponents.spanCrafter( "Ordered: " + e.getQuantity().toString(),"s");
-            Span span2 = commonComponents.spanCrafter("Remaining: " + e.getRemainingAmount().toString(),"s");
+            Span span = commonComponents.spanCrafter( "Ordered: " +  e.getAmountOfProduct().toString(),"stat-example");
+            Span span2 = commonComponents.spanCrafter( e.getProductMultiple() == null ?  "Remaining: " + e.getProduct().getStockQuantity().toString() :  "Remaining: " + e.getProductMultiple().getStockQuantity().toString(),"stat-example");
 
             vv.add(
                     span,
@@ -511,7 +538,7 @@ public class NewOrderFeed {
 
         ordersGrid.addComponentColumn(e->{
 
-            Span span = commonComponents.spanCrafter(e.getUnitPrice() + " Eur","s");
+            Span span = commonComponents.spanCrafter(e.getProductMultiple() == null ? e.getProduct().getPrice() + " Eur" : e.getProductMultiple().getPrice() + " Eur","stat-example");
 
 
             return span;
@@ -520,7 +547,16 @@ public class NewOrderFeed {
 
         ordersGrid.addComponentColumn(e->{
 
-            Span span = commonComponents.spanCrafter(e.getTotal() + " Eur","s");
+            Double total = 0.0;
+
+            if(e.getProductMultiple() != null){
+                total = (double)e.getAmountOfProduct() * (double)e.getProductMultiple().getStockQuantity();
+            }
+            else {
+                total = (double)e.getAmountOfProduct() * (double)e.getProduct().getStockQuantity();
+            }
+
+            Span span = commonComponents.spanCrafter(total + " Eur","stat-example");
 
 
             return span;
@@ -528,30 +564,30 @@ public class NewOrderFeed {
         }).setAutoWidth(true).setHeader("Total");
 
 
-        ordersGrid.addComponentColumn(e->{
-
-            Long taken = e.getQuantity();
-            Long remaining = e.getRemainingAmount();
-
-            Span span = commonComponents.spanCrafter( "","s");
-            span.addClassName("stock-badge");
-            span.getStyle()
-                    .set("width", "fit-content");
-
-
-            if(taken < remaining) {
-                span.addClassName("stock-in");
-                span.setText("Pass");
-            }
-            else{
-                span.addClassName("stock-out");
-                span.setText("Not enough stock");
-            }
-
-
-            return span;
-
-        }).setAutoWidth(true).setHeader("Exists");
+//        ordersGrid.addComponentColumn(e->{
+//
+//            Long taken = e.getQuantity();
+//            Long remaining = e.getRemainingAmount();
+//
+//            Span span = commonComponents.spanCrafter( "","s");
+//            span.addClassName("stock-badge");
+//            span.getStyle()
+//                    .set("width", "fit-content");
+//
+//
+//            if(taken < remaining) {
+//                span.addClassName("stock-in");
+//                span.setText("Pass");
+//            }
+//            else{
+//                span.addClassName("stock-out");
+//                span.setText("Not enough stock");
+//            }
+//
+//
+//            return span;
+//
+//        }).setAutoWidth(true).setHeader("Exists");
 
 
 
@@ -560,9 +596,15 @@ public class NewOrderFeed {
         sumHolder.setWidthFull();
         sumHolder.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
 
-        Double sum = stuff.stream().mapToDouble(NewOrderFeedData::getTotal).sum();
+        Double sum = 0.0;
+        for(var s : orders.getProductsData()){
 
-        Span totalSum = commonComponents.spanCrafter("Total- " +  sum + " Eur"  ,"activityFeed-name");
+            sum += s.getCost();
+
+        }
+
+
+        Span totalSum = commonComponents.spanCrafter( String.format("Total- %.2f Eur", sum) ,"activityFeed-name");
         sumHolder.add(
                 totalSum
         );

@@ -235,10 +235,10 @@ public class DisplayAvailableOrders {
             );
         }
         else{
-            h.add(
-                    commonComponents.spanCrafter("Orders", "stat-value")
-
-            );
+//            h.add(
+//                    commonComponents.spanCrafter("Orders", "stat-value")
+//
+//            );
 
             grid.setVisible(true);
         }
