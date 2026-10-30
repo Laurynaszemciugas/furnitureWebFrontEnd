@@ -1,7 +1,9 @@
 package com.example.demo.MainLayouts.Client;
 
+import com.example.demo.ClientUIUpdater;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -10,11 +12,16 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.dom.Style;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @CssImport("./MainCSS.css")
@@ -27,10 +34,24 @@ public class ClientMainLayout extends AppLayout {
     Common common;
 
 
-    public ClientMainLayout(CommonComponents commonComponents, Common common) {
+    ClientUIUpdater clientUIUpdater;
+
+
+    public ClientMainLayout(CommonComponents commonComponents, Common common,ClientUIUpdater clientUIUpdater) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.clientUIUpdater = clientUIUpdater;
 
+
+        clientUIUpdater.setUpdateCart(e->{
+
+            System.out.println("Cart update required ");
+
+
+            openCart();
+
+
+        });
 
 
         createHeader();
