@@ -94,6 +94,13 @@ public class ProductService {
         return httpCallLogic.HttpCall("product/getProductMiniStats", HttpMethod.GET, String.format("%s/%s",from,to), MiniStatHolder.class,true);
     }
 
+    @SneakyThrows
+    public Product getProduct(Long id){
+        return httpCallLogic.HttpCall("product/getProduct", HttpMethod.GET, id, Product.class,true);
+    }
+
+
+
     // report calls
 
     @SneakyThrows
