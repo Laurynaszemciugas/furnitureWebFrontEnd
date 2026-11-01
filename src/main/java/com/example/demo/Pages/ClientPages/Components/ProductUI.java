@@ -118,6 +118,12 @@ public class ProductUI {
 
                 VerticalLayout multiVariant = new VerticalLayout();
 
+                multiVariant.addClickListener(e->{
+
+                    UI.getCurrent().navigate("ProductPreview/" + s.getId());
+
+                });
+
                 multiVariant.getStyle().setPosition(Style.Position.RELATIVE);
                 multiVariant.setSpacing(false);
                 multiVariant.addClassName("island-hover");
@@ -238,7 +244,7 @@ public class ProductUI {
 
                 multiVariant.addClickListener(e->{
 
-                    System.out.println("CLICK");
+                    UI.getCurrent().navigate("ProductPreview/" + s.getId());
 
                 });
 
