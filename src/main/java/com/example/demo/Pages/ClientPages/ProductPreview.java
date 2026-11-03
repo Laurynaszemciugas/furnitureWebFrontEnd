@@ -320,6 +320,7 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
 
         HorizontalLayout h = new HorizontalLayout();
+        h.addClassName("layout-flex");
         h.setJustifyContentMode(JustifyContentMode.EVENLY);
         h.setWidthFull();
 
@@ -328,6 +329,7 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
 
         VerticalLayout left = new VerticalLayout();
+        left.setWidth("800px");
         left.add(
                 commonComponents.spanCrafterWordNoHide("Description","stat-value"),
                 description,
@@ -338,12 +340,14 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
 
         VerticalLayout right = new VerticalLayout();
+        right.setWidth("500px");
         right.setAlignItems(Alignment.CENTER);
 
 
         Image image = new Image(mainImage,"Product image error");
+        image.addClassName("island");
         image.getStyle().setBorderRadius("10px");
-        image.setWidth("500px");
+        image.setMaxWidth("500px");
 
         right.add(
                 image
@@ -539,20 +543,22 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
         buttonsHolder.setSpacing(false);
         buttonsHolder.setJustifyContentMode(JustifyContentMode.CENTER);
 
+
+
         IntegerField amount = new IntegerField("Amount");
-        amount.setWidth("400px");
+        amount.setWidth("75%");
         amount.setValue(1);
         amount.setStepButtonsVisible(true);
         amount.setMin(1);
         amount.setMax(99);
 
         Button addToCart = new Button("Add to cart", VaadinIcon.CART.create());
-        addToCart.setWidth("400px");
+        addToCart.setWidth("75%");
         addToCart.addThemeVariants(ButtonVariant.PRIMARY);
 
 
         Button whiteList = new Button("Whitelist", VaadinIcon.HEART.create());
-        whiteList.setWidth("400px");
+        whiteList.setWidth("75%");
 
 
 
