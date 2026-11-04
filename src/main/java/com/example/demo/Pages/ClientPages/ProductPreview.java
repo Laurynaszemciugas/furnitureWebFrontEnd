@@ -8,6 +8,7 @@ import com.example.demo.Entity.Materials;
 import com.example.demo.Entity.Orders;
 import com.example.demo.Entity.Product;
 import com.example.demo.Enums.ImageLogic;
+import com.example.demo.Enums.SpecTypes;
 import com.example.demo.MainLayouts.Client.ClientMainLayout;
 import com.example.demo.Pages.ClientPages.Components.ProductUI;
 import com.example.demo.Services.Orders.OrdersService;
@@ -157,8 +158,7 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
         tabSheet.add("Specification", specifications());
 
-        tabSheet.add("Shipping",
-                new Div(new Text("This is the Shipping tab content")));
+        tabSheet.add("Reviews", reviewCrafter.commentsHolder(product.getComments()));
 
         tabSheet.setWidthFull();
 
@@ -174,39 +174,106 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
     }
 
+
     public VerticalLayout specifications(){
 
         VerticalLayout v = new VerticalLayout();
 
         HorizontalLayout holder = new HorizontalLayout();
+        holder.setAlignItems(Alignment.START);
+        holder.addClassName("layout-flex");
+        holder.setWidthFull();
 
 
-        holder.setWidth("30%");
-
-        HorizontalLayout first = new HorizontalLayout();
-        first.getStyle().setBorder("1px solid black");
-        first.setJustifyContentMode(JustifyContentMode.BETWEEN);
-        first.setWidthFull();
-        first.add(
+        HorizontalLayout hh = new HorizontalLayout();
+        hh.setWidthFull();
+        hh.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        hh.add(
                 commonComponents.spanCrafterWordNoHide("Type","activityFeed-name"),
                 commonComponents.spanCrafterWordNoHide(product.getProductName(),"activityFeed-name")
         );
 
-        holder.add(
-                first
+        VerticalLayout first = new VerticalLayout();
+        first.addClassName("island");
+        first.setWidth("700px");
+        first.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        first.add(
+                hh
         );
+
+
+        VerticalLayout second = new VerticalLayout();
+        second.setWidth("500px");
+        second.addClassName("island");
+        second.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+        Image dimensions = commonComponents.imageCrafter("furnitureDimensions.png","100%","100%","0px");
+
+        second.add(
+                dimensions
+        );
+
+
+        holder.add(
+                first,
+                second
+        );
+        holder.expand(second);
 
 
         for(var specs : product.getExtraDetails()){
 
-            Span name = commonComponents.spanCrafterWordNoHide(specs.getSpecName(),"stat-example");
-            Span desc = commonComponents.spanCrafterWordNoHide(specs.getSpecDescription(),"stat-example");
+            HorizontalLayout h = new HorizontalLayout();
+            h.setWidthFull();
 
 
-            holder.add(
-                    name,
-                    desc
-            );
+
+
+            if(specs.getSpecTypes().equals(SpecTypes.DEFAULT)) {
+
+                h.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+                Span name = commonComponents.spanCrafterWordNoHide(specs.getSpecName(), "stat-example");
+                Span desc = commonComponents.spanCrafterWordNoHide(specs.getSpecDescription(), "stat-example");
+
+                h.add(
+                        name,
+                        desc
+                );
+
+                first.add(
+                        h
+                );
+            }
+
+            else{
+
+                String credentials = "";
+                if(specs.getSpecTypes().equals(SpecTypes.HEIGHT)){
+                    credentials = "H";
+                }
+                if(specs.getSpecTypes().equals(SpecTypes.WIDTH)){
+                    credentials = "W";
+                }
+                if(specs.getSpecTypes().equals(SpecTypes.DEPTH)){
+                    credentials = "D";
+                }
+
+
+                Span name = commonComponents.spanCrafterWordNoHide(String.format("(%s) ",credentials)+ specs.getSpecName(), "stat-example");
+                Span desc = commonComponents.spanCrafterWordNoHide(specs.getSpecDescription(), "stat-example");
+
+                h.add(
+                        name,
+                        desc
+                );
+
+                second.add(
+                        h
+                );
+
+            }
+
 
         }
 
@@ -419,11 +486,14 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
         //get all starts of this product
         Double totalStars = 0.0;
+        int items = product.getComments().size();
         for(var starts : product.getComments()){
 
             totalStars += starts.getReview();
 
         }
+
+        Double avgStarts = totalStars / items;
 
 
         Span sku = commonComponents.spanCrafterWordNoHide("","stat-description");
@@ -494,7 +564,7 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
             productInfo.add(
                     sku,
                     productName,
-                    reviewCrafter.starCrafter(totalStars),
+                    reviewCrafter.starCrafter(avgStarts),
                     productPrice,
                     productDescription,
                     loadVariant(),

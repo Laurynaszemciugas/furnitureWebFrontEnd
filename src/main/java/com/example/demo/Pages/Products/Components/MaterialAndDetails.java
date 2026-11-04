@@ -3,7 +3,9 @@ package com.example.demo.Pages.Products.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.DTOS.ComboBoxMaterial;
+import com.example.demo.Enums.SpecTypes;
 import com.example.demo.Services.CommonService.CommonService;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import lombok.SneakyThrows;
@@ -41,6 +43,14 @@ public class MaterialAndDetails {
 
     public TextArea specDescription(String name){
         TextArea textArea = new TextArea();
+        textArea.setValue(name);
+        textArea.setWidthFull();
+        return textArea;
+    }
+
+    public ComboBox<SpecTypes> specType(SpecTypes name){
+        ComboBox<SpecTypes> textArea = new ComboBox();
+        textArea.setItems(SpecTypes.values());
         textArea.setValue(name);
         textArea.setWidthFull();
         return textArea;

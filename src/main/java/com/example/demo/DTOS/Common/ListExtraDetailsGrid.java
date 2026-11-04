@@ -1,5 +1,7 @@
 package com.example.demo.DTOS.Common;
 
+import com.example.demo.Enums.SpecTypes;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import lombok.*;
@@ -15,5 +17,6 @@ public class ListExtraDetailsGrid {
     private Long id;
     private TextField specName;
     private TextArea specDescription;
+    private ComboBox<SpecTypes> specTypes;
 
 }

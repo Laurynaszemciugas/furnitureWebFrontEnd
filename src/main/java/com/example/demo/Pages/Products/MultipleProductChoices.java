@@ -461,7 +461,8 @@ public class MultipleProductChoices extends VerticalLayout  {
                         new ListExtraDetailsGrid(
                                 null,
                                 materialAndDetails.specName(s.getSpecName()),
-                                materialAndDetails.specDescription(s.getSpecDescription())
+                                materialAndDetails.specDescription(s.getSpecDescription().toString()),
+                                materialAndDetails.specType(SpecTypes.DEFAULT)
                         );
 
                 listExtraDetailsGrids.add(extraDetails);
@@ -710,7 +711,8 @@ public class MultipleProductChoices extends VerticalLayout  {
                 listExtraDetailsGrids.add(new ListExtraDetailsGrid(
                         s.getId(),
                         materialAndDetails.specName(s.getSpecName()),
-                        materialAndDetails.specDescription(s.getSpecDescription())));
+                        materialAndDetails.specDescription(s.getSpecDescription()),
+                       materialAndDetails.specType(SpecTypes.DEFAULT)));
             }
             upgradeExtraDetailsGrid();
         }
@@ -767,7 +769,8 @@ public class MultipleProductChoices extends VerticalLayout  {
                 listExtraDetailsGrids.add(new ListExtraDetailsGrid(
                         s.getId(),
                         materialAndDetails.specName(s.getSpecName()),
-                        materialAndDetails.specDescription(s.getSpecDescription())));
+                        materialAndDetails.specDescription(s.getSpecDescription()),
+                        materialAndDetails.specType(s.getSpecTypes())));
             }
             upgradeExtraDetailsGrid();
         }
@@ -810,6 +813,7 @@ public class MultipleProductChoices extends VerticalLayout  {
                 details.setProduct(product);
                 details.setSpecName(s.getSpecName().getValue());
                 details.setSpecDescription(s.getSpecDescription().getValue());
+                details.setSpecTypes(s.getSpecTypes().getValue());
                 details.setUser(null);
                 extraDetails.add(details);
             }
@@ -823,6 +827,7 @@ public class MultipleProductChoices extends VerticalLayout  {
                 steps.setStepId(s.getStep());
                 steps.setStepName(s.getStepName().getValue());
                 steps.setStepDescription(s.getStepDescription().getValue());
+
 
                 stepsToPrepares.add(steps);
             }
@@ -1347,7 +1352,8 @@ public class MultipleProductChoices extends VerticalLayout  {
 
             listExtraDetailsGrids.add(new ListExtraDetailsGrid(null,
                     materialAndDetails.specName(""),
-                    materialAndDetails.specDescription("")));
+                    materialAndDetails.specDescription(""),
+                   materialAndDetails.specType(SpecTypes.DEFAULT)));
             upgradeExtraDetailsGrid();
 
         });

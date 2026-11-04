@@ -5,6 +5,7 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.DTOS.Common.ListExtraDetailsGrid;
 import com.example.demo.DTOS.Common.ListStepsToPrepare;
 import com.example.demo.DTOS.Material.MaterialInfo;
+import com.example.demo.Enums.SpecTypes;
 import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -272,9 +273,68 @@ public class Grids {
         extraDetailsGrid.addComponentColumn(ListExtraDetailsGrid::getSpecDescription)
                 .setHeader("Specification description").setAutoWidth(true);
 
+
+        extraDetailsGrid.addComponentColumn(e->{
+
+            e.getSpecTypes().addValueChangeListener(ee->{
+
+                boolean widthExists = false;
+                boolean heightExists = false;
+                boolean depthExists = false;
+
+                for(var s : listExtraDetailsGrids){
+
+
+
+
+                    //skip the current item
+                    if(e.getSpecTypes().equals(s.getSpecTypes())){
+                        continue;
+                    }
+
+
+
+                    if(s.getSpecTypes().getValue().equals(SpecTypes.DEPTH)){
+                        depthExists = true;
+                    }
+                    if(s.getSpecTypes().getValue().equals(SpecTypes.HEIGHT)){
+                        heightExists = true;
+                    }
+                    if(s.getSpecTypes().getValue().equals(SpecTypes.WIDTH)){
+                        widthExists = true;
+                    }
+
+                }
+
+
+
+                if(ee.isFromClient() && depthExists && ee.getValue().equals(SpecTypes.DEPTH)){
+                    commonComponents.showNotification("Depth is already used ",3000, Notification.Position.BOTTOM_CENTER,NotificationVariant.LUMO_SUCCESS);
+                    e.getSpecTypes().setValue(SpecTypes.DEFAULT);
+                }
+                if(ee.isFromClient() && heightExists && ee.getValue().equals(SpecTypes.HEIGHT)){
+                    commonComponents.showNotification("Height is already used ",3000, Notification.Position.BOTTOM_CENTER,NotificationVariant.LUMO_SUCCESS);
+                    e.getSpecTypes().setValue(SpecTypes.DEFAULT);
+                }
+
+                if(ee.isFromClient() && widthExists && ee.getValue().equals(SpecTypes.WIDTH)){
+                    commonComponents.showNotification("Width is already used ",3000, Notification.Position.BOTTOM_CENTER,NotificationVariant.LUMO_SUCCESS);
+                    e.getSpecTypes().setValue(SpecTypes.DEFAULT);
+                }
+
+
+
+
+            });
+
+
+            return e.getSpecTypes();
+
+        }).setHeader("Specification type").setAutoWidth(true);
+
         extraDetailsGrid.addComponentColumn(row ->{
 
-            Button remove = commonComponents.buttonThemeAndIconNoNavigate("",ButtonVariant.PRIMARY,VaadinIcon.TRASH,"RED");
+            Button remove = commonComponents.buttonThemeAndIconNoNavigate("",ButtonVariant.SMALL,VaadinIcon.TRASH,"RED");
 
             HorizontalLayout h = new HorizontalLayout();
             h.setWidthFull();

@@ -12,10 +12,7 @@ import com.example.demo.DTOS.Common.*;
 import com.example.demo.Entity.ProductJoin.ProductFinishSteps;
 import com.example.demo.Entity.ProductJoin.ProductMaterials;
 import com.example.demo.DTOS.Material.MaterialInfo;
-import com.example.demo.Enums.Category;
-import com.example.demo.Enums.Status;
-import com.example.demo.Enums.Tags;
-import com.example.demo.Enums.Visibility;
+import com.example.demo.Enums.*;
 import com.example.demo.Common.Logic.ProductEditImage;
 import com.example.demo.Pages.Products.MultipleProductChoices;
 import com.example.demo.Services.AI.AIService;
@@ -219,7 +216,8 @@ public class ProductEditRightSideFields {
                         new ListExtraDetailsGrid(
                                 null,
                                 materialAndDetails.specName(s.getSpecName()),
-                                materialAndDetails.specDescription(s.getSpecDescription())
+                                materialAndDetails.specDescription(s.getSpecDescription()),
+                                null
                         );
 
                 listExtraDetailsGrids.add(extraDetails);
@@ -359,7 +357,8 @@ public class ProductEditRightSideFields {
 
             listExtraDetailsGrids.add(new ListExtraDetailsGrid(null,
                             materialAndDetails.specName(""),
-                            materialAndDetails.specDescription("")));
+                            materialAndDetails.specDescription(""),
+                            materialAndDetails.specType(SpecTypes.DEFAULT)));
             upgradeExtraDetailsGrid();
 
         });
@@ -486,7 +485,8 @@ public class ProductEditRightSideFields {
                 listExtraDetailsGrids.add(new ListExtraDetailsGrid(
                         s.getId(),
                         materialAndDetails.specName(s.getSpecName()),
-                        materialAndDetails.specDescription(s.getSpecDescription())));
+                        materialAndDetails.specDescription(s.getSpecDescription()),
+                        materialAndDetails.specType(s.getSpecTypes())));
             }
             upgradeExtraDetailsGrid();
         }
@@ -619,6 +619,7 @@ public class ProductEditRightSideFields {
                 details.setProduct(product);
                 details.setSpecName(s.getSpecName().getValue());
                 details.setSpecDescription(s.getSpecDescription().getValue());
+                details.setSpecTypes(s.getSpecTypes().getValue());
                 details.setUser(null);
                 extraDetails.add(details);
             }

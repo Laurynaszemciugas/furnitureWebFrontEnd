@@ -459,7 +459,8 @@ public class AddNewMultiProduct extends VerticalLayout implements BeforeEnterObs
                             new ListExtraDetailsGrid(
                                     null,
                                     materialAndDetails.specName(s.getSpecName()),
-                                    materialAndDetails.specDescription(s.getSpecDescription())
+                                    materialAndDetails.specDescription(s.getSpecDescription()),
+                                    materialAndDetails.specType(SpecTypes.DEFAULT)
                             );
 
                     listExtraDetailsGrids.add(extraDetails);
@@ -731,7 +732,8 @@ public class AddNewMultiProduct extends VerticalLayout implements BeforeEnterObs
                     listExtraDetailsGrids.add(new ListExtraDetailsGrid(
                             s.getId(),
                             materialAndDetails.specName(s.getSpecName()),
-                            materialAndDetails.specDescription(s.getSpecDescription())));
+                            materialAndDetails.specDescription(s.getSpecDescription()),
+                            materialAndDetails.specType(SpecTypes.DEFAULT)));
                 }
                 upgradeExtraDetailsGrid();
             }
@@ -1170,7 +1172,8 @@ public class AddNewMultiProduct extends VerticalLayout implements BeforeEnterObs
 
                 listExtraDetailsGrids.add(new ListExtraDetailsGrid(null,
                         materialAndDetails.specName(""),
-                        materialAndDetails.specDescription("")));
+                        materialAndDetails.specDescription(""),
+                        null));
                 upgradeExtraDetailsGrid();
 
             });

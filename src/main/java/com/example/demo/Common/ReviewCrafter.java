@@ -87,7 +87,7 @@ public class ReviewCrafter {
                 starHolder.add(starr);
             }
             double remaining = Math.abs(star-5);
-            System.out.println(remaining +  " remaining" );
+            System.out.println("Remainer" +  star % 2);
             for (int i = 1; i <= remaining; i++) {
                 Icon starr = VaadinIcon.STAR.create();
                 starr.getStyle().set("color", "black");
