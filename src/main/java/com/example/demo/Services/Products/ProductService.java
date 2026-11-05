@@ -7,6 +7,7 @@ import com.example.demo.DTOS.Common.GraphDataLongValue;
 import com.example.demo.DTOS.Common.MiniStatHolder;
 import com.example.demo.DTOS.Error.ErrorResponse;
 import com.example.demo.Entity.Product;
+import com.example.demo.Enums.Category;
 import com.example.demo.FilterDTO.Prodcut.ProductFilterHolder;
 import com.example.demo.DTOS.Orders.OrderAddProducts;
 import com.example.demo.DTOS.Products.ProductFeedModel;
@@ -139,8 +140,13 @@ public class ProductService {
     }
 
     @SneakyThrows
-    public List<ProductsClients> getProductsClients(int amountOfCategorys){
-        return Arrays.stream(httpCallLogic.HttpCall("product/getProductsClients", HttpMethod.GET, amountOfCategorys , ProductsClients[].class,true)).toList();
+    public List<ProductsClients> getProductsClients(int amountOfItems){
+        return Arrays.stream(httpCallLogic.HttpCall("product/getProductsClients", HttpMethod.GET, amountOfItems , ProductsClients[].class,true)).toList();
+    }
+
+    @SneakyThrows
+    public List<ProductsClients> getSimilarItems(Category category){
+        return Arrays.stream(httpCallLogic.HttpCall("product/getSimilarItems", HttpMethod.GET, category , ProductsClients[].class,true)).toList();
     }
 
 

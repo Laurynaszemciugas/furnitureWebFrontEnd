@@ -3,6 +3,7 @@ package com.example.demo.Pages.ClientPages.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.DTOS.Client.ProductsClients;
+import com.example.demo.Enums.Category;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -52,7 +53,26 @@ public class ProductUI {
         this.common = common;
     }
 
-    public HorizontalLayout productDisplay(){
+
+    public VerticalLayout similarProduct(Category category){
+
+        VerticalLayout h = new VerticalLayout();
+        h.addClassName("island");
+        h.setPadding(false);
+        h.setWidthFull();
+
+        h.add(
+                commonComponents.spanCrafterWordNoHide("You may also like","activityFeed-name"),
+                productDisplay(productService.getSimilarItems(category))
+        );
+
+        return h;
+    }
+
+
+
+
+    public HorizontalLayout productDisplay(List<ProductsClients> productsClients){
 
 
         HorizontalLayout v = new HorizontalLayout();
@@ -60,7 +80,7 @@ public class ProductUI {
 
 
 
-        List<ProductsClients> productsClients = productService.getProductsClients(10);
+
 
 
 

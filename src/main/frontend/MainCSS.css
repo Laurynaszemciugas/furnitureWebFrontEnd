@@ -202,6 +202,25 @@ vaadin-button {
     will-change: transform;
 }
 
+.island-hover-active {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    border: 1px solid rgba(37, 99, 235, 0.65);
+    border-radius: 18px;
+
+    box-shadow:
+        0 2px 6px rgba(15, 23, 42, 0.04),
+        0 14px 35px rgba(37, 99, 235, 0.08);
+
+    padding: 18px;
+    transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        border-color 0.22s ease,
+        background 0.22s ease;
+
+    will-change: transform;
+}
+
 .island-hover:hover {
     transform: translateY(-4px);
     background: linear-gradient(180deg, #ffffff 0%, #f3f8ff 100%);
@@ -221,6 +240,8 @@ vaadin-button {
         0 3px 8px rgba(37, 99, 235, 0.10),
         0 10px 22px rgba(37, 99, 235, 0.12);
 }
+
+
 
 
 .clean-btn {

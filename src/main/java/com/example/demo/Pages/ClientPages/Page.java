@@ -99,10 +99,9 @@ public class Page extends VerticalLayout implements BeforeEnterObserver {
         verticalLayout.getStyle().set("margin-top", "5px");
 
 
-
         verticalLayout.add(
                 categoryList(),
-                productUI.productDisplay()
+                productUI.productDisplay(productService.getProductsClients(10))
 
         );
 

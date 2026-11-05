@@ -13,6 +13,7 @@ import com.example.demo.MainLayouts.Client.ClientMainLayout;
 import com.example.demo.Pages.ClientPages.Components.ProductUI;
 import com.example.demo.Services.Orders.OrdersService;
 import com.example.demo.Services.Products.ProductService;
+import com.vaadin.copilot.shaded.checkerframework.checker.units.qual.C;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -28,6 +29,7 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
@@ -45,6 +47,8 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
     Product product;
 
     ReviewCrafter reviewCrafter;
+
+    ProductUI productUI;
 
     // left side images
     VerticalLayout productImages = new VerticalLayout();
@@ -65,11 +69,13 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
     Long productId = 0L;
     Long multiVariantId = 0L;
 
+    HorizontalLayout selected;
 
-    public ProductPreview(CommonComponents commonComponents, Common common, ProductService productService) {
+    public ProductPreview(CommonComponents commonComponents, Common common, ProductService productService,ProductUI productUI) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.productService = productService;
+        this.productUI = productUI;
 
 
         this.reviewCrafter = new ReviewCrafter(commonComponents,common);
@@ -135,7 +141,8 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
         verticalLayout.add(
                 firstLayer(),
-                descriptionHolder
+                descriptionHolder,
+                productUI.similarProduct(product.getCategory())
         );
 
         specs();
@@ -144,6 +151,10 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
         return verticalLayout;
     }
+
+
+
+
 
     public void specs(){
 
@@ -500,7 +511,15 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
         Span productName = commonComponents.spanCrafterWordNoHide("","stat-value");
 
+        HorizontalLayout price = new HorizontalLayout();
+        price.setAlignItems(Alignment.CENTER);
+        price.setWidthFull();
+
         Span productPrice = commonComponents.spanCrafterWordNoHide("","stat-value");
+        Span discountPrice = commonComponents.spanCrafterWordNoHide("","stat-value");
+        Span discount = commonComponents.spanCrafterWordNoHide("","stat-value");
+        discount.addClassNames("stock-badge","stock-out ");
+
 
         Span productDescription = commonComponents.spanCrafterWordNoHide("","stat-description");
 
@@ -528,6 +547,29 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
                     productPrice.setText(s.getPrice() + "Eur");
                     productDescription.setText(s.getDescription());
 
+                      if(s.getDiscount() > 0){
+
+                          productPrice.getStyle()
+                                  .set("text-decoration", "line-through").setColor("Grey");
+
+                          discount.setText("Save " + (long)s.getDiscount() + "%" );
+                          discountPrice.setText(s.getPrice() - (s.getPrice() * s.getDiscount()/100 )+ "Eur");
+
+
+                          price.add(
+                                  discountPrice,
+                                  productPrice,
+                                  discount
+                          );
+                      }
+                      else{
+                          price.add(
+                                  productPrice
+                          );
+                      }
+
+
+
 
 
                     // break out of this list its no longer needed
@@ -549,6 +591,30 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
                         productPrice.setText(s.getPrice() + "Eur");
                         productDescription.setText(s.getDescription());
 
+
+                        if(s.getDiscount() > 0){
+
+                            productPrice.getStyle()
+                                    .set("text-decoration", "line-through").setColor("Grey");
+
+                            discount.setText("Save " + (long)s.getDiscount() + "%" );
+                            discountPrice.setText(s.getPrice() - (s.getPrice() * s.getDiscount()/100 )+ "Eur");
+
+
+                            price.add(
+                                    discountPrice,
+                                    productPrice,
+                                    discount
+                            );
+                        }
+                        else{
+                            price.add(
+                                    productPrice
+                            );
+                        }
+
+
+
                         productId = product.getId();
                         multiVariantId = s.getId();
 
@@ -565,7 +631,7 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
                     sku,
                     productName,
                     reviewCrafter.starCrafter(avgStarts),
-                    productPrice,
+                    price,
                     productDescription,
                     loadVariant(),
                     addToCardWhiteList()
@@ -586,11 +652,34 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
             productPrice.setText(product.getPrice() + "Eur");
             productDescription.setText(product.getDescription());
 
+
+            if(product.getDiscount() > 0){
+
+                productPrice.getStyle()
+                        .set("text-decoration", "line-through").setColor("Grey");
+
+                discount.setText("Save " + (long)product.getDiscount() + "%" );
+                discountPrice.setText(product.getPrice() - (product.getPrice() * product.getDiscount()/100 )+ "Eur");
+
+
+                price.add(
+                        discountPrice,
+                        productPrice,
+                        discount
+                );
+            }
+            else{
+                price.add(
+                        productPrice
+                );
+            }
+
+
             productInfo.add(
                     sku,
                     productName,
                     reviewCrafter.starCrafter(totalStars),
-                    productPrice,
+                    price,
                     productDescription,
                     addToCardWhiteList()
             );
@@ -646,6 +735,7 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
     public VerticalLayout loadVariant(){
 
+
         VerticalLayout v = new VerticalLayout();
         v.setPadding(false);
 
@@ -653,6 +743,8 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
         h.setWidthFull();
 
         for(var s : product.getProductMultiples()){
+
+
 
             VerticalLayout circle = new VerticalLayout();
             circle.setWidth("50px");
@@ -668,7 +760,21 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
             );
 
 
+            if (s.getId().equals(multiVariantId)) {
+                selected = button;
+                button.addClassName("island-hover-active");
+            }
+
+
             button.addClickListener(e->{
+
+                if (selected != null) {
+                    selected.removeClassName("island-hover-active");
+                }
+
+                selected = button;
+                button.addClassName("island-hover-active");
+
 
                 Long id = s.getId();
 
@@ -687,6 +793,8 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
             );
         }
+
+
 
 
         v.add(
