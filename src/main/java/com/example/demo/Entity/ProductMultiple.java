@@ -23,6 +23,8 @@ public class ProductMultiple {
 
     private Long id;
 
+    private String uuid;
+
     private String color;
 
     private boolean stockCalculatedManually;

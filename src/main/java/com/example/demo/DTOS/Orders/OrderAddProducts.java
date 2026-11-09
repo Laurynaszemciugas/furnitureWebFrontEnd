@@ -12,6 +12,7 @@ import lombok.*;
 public class OrderAddProducts {
 
     private Long id;
+    private String uuid;
     @ToString.Exclude
     private String mainImage;
     private String productName;

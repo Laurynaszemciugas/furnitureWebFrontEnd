@@ -152,9 +152,11 @@ public class ProductUI {
                 multiVariant.getStyle().set("max-width", "320px");
                 multiVariant.getStyle().set("min-width", "252px");
 
-
-
-                Image image = commonComponents.imageCrafter(multiVariantImages.get(0),"100%","120px","5px");
+                String url = "";
+                if(!multiVariantImages.isEmpty()) {
+                     url = multiVariantImages.get(0);
+                }
+                Image image = commonComponents.imageCrafter(url,"100%","120px","5px");
                 image.getStyle().setPaddingBottom("10px");
 
 

@@ -91,6 +91,7 @@ public class OrderAddProductListAddRemove {
                     OrderAddProducts orderAddProducts = new OrderAddProducts();
                     orderAddProducts.setId(s.getProductMultiple().getId());
                     orderAddProducts.setMainImage(mainImage);
+                    orderAddProducts.setUuid(s.getProductMultiple().getUuid());
                     orderAddProducts.setProductName(s.getProductMultiple().getProductName());
                     orderAddProducts.setSku(s.getProductMultiple().getSku());
                     orderAddProducts.setCategory(s.getProductMultiple().getCategory());
@@ -115,6 +116,7 @@ public class OrderAddProductListAddRemove {
 
                     OrderAddProducts orderAddProducts = new OrderAddProducts();
                     orderAddProducts.setId(s.getProduct().getId());
+                    orderAddProducts.setUuid(s.getProduct().getUuid());
                     orderAddProducts.setMainImage(mainImage);
                     orderAddProducts.setProductName(s.getProduct().getProductName());
                     orderAddProducts.setSku(s.getProduct().getSku());
@@ -314,6 +316,7 @@ public class OrderAddProductListAddRemove {
                 Button button = new Button("Select");
                 OrderAddProducts orderAddProducts = new OrderAddProducts();
                 orderAddProducts.setId(e.getId());
+                orderAddProducts.setUuid(e.getUuid());
                 orderAddProducts.setMainImage(mainImage);
                 orderAddProducts.setProductName(e.getProductName());
                 orderAddProducts.setSku(e.getSku());
@@ -323,12 +326,19 @@ public class OrderAddProductListAddRemove {
                 orderAddProducts.setPrice(e.getPrice());
 
 
+
                 button.setVisible(orderAddProducts != null);
                 button.addClickListener(ee -> {
-                    if (selectedProducts.stream().anyMatch(item -> item.getId().equals(orderAddProducts.getId()))) {
+
+                    System.out.println("FUCKING UUID");
+                    System.out.println(orderAddProducts.getUuid());
+
+                    System.out.println(selectedProducts);
+
+                    if (selectedProducts.stream().anyMatch(item -> item.getUuid().equals(orderAddProducts.getUuid()))) {
                         commonComponents.showNotification("Product already exists in the list +1 added", 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_WARNING);
                         for (var s : selectedProducts) {
-                            if (s.getId().equals(orderAddProducts.getId())) {
+                            if (s.getUuid().equals(orderAddProducts.getUuid())) {
                                 Long value = s.getAmountSelected() == null ? 1 : s.getAmountSelected();
                                 value++;
                                 s.setAmountSelected(value);
@@ -355,7 +365,8 @@ public class OrderAddProductListAddRemove {
                         ProductMultiple productMultiple = new ProductMultiple();
                         productMultiple.setId(s.getId());
                         product.setId(s.getId());
-                        OrderProducts orderProducts1 = new OrderProducts();
+                        product.setUuid(s.getUuid());
+                            OrderProducts orderProducts1 = new OrderProducts();
                         orderProducts1.setAmountOfProduct(s.getAmountSelected());
                         if(s.getVariant()){
                             orderProducts1.setProduct(null);
@@ -485,6 +496,7 @@ public class OrderAddProductListAddRemove {
 
             OrderAddProducts orderAddProducts = new OrderAddProducts();
             orderAddProducts.setId(e.getId());
+            orderAddProducts.setUuid(e.getUuid());
             orderAddProducts.setMainImage(mainImage);
             orderAddProducts.setProductName(e.getProductName());
             orderAddProducts.setSku(e.getSku());
@@ -497,10 +509,16 @@ public class OrderAddProductListAddRemove {
 
 
             button.addClickListener(ee -> {
-                if (selectedProducts.stream().anyMatch(item -> item.getId().equals(orderAddProducts.getId()))) {
+
+                System.out.println("FUCKING UUID");
+                System.out.println(orderAddProducts.getUuid());
+
+                System.out.println(selectedProducts);
+
+                if (selectedProducts.stream().anyMatch(item -> item.getUuid().equals(orderAddProducts.getUuid()))) {
                     commonComponents.showNotification("Product already exists in the list +1 added", 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_WARNING);
                     for (var s : selectedProducts) {
-                        if (s.getId().equals(orderAddProducts.getId())) {
+                        if (s.getUuid().equals(orderAddProducts.getUuid())) {
                             Long value = s.getAmountSelected() == null ? 1 : s.getAmountSelected();
                             value++;
                             s.setAmountSelected(value);
@@ -527,7 +545,9 @@ public class OrderAddProductListAddRemove {
                     Product product = new Product();
                     ProductMultiple productMultiple = new ProductMultiple();
                     productMultiple.setId(s.getId());
+                    productMultiple.setUuid(s.getUuid());
                     product.setId(s.getId());
+                    product.setUuid(s.getUuid());
                     OrderProducts orderProducts1 = new OrderProducts();
                     orderProducts1.setAmountOfProduct(s.getAmountSelected());
                     if(s.getVariant()){
