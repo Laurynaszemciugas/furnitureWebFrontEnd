@@ -76,6 +76,8 @@ public class ProductUI {
 
 
         HorizontalLayout v = new HorizontalLayout();
+        v.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        v.addClassName("layout-flex");
         v.setWidthFull();
 
 
@@ -89,8 +91,8 @@ public class ProductUI {
 
             Div wrapper = new Div();
             wrapper.getStyle().setPosition(Style.Position.RELATIVE);
-            wrapper.getStyle().set("flex", "1 1 300px");
-            wrapper.getStyle().set("max-width", "320px");
+            wrapper.getStyle().set("flex", "1 1 500px");
+            wrapper.getStyle().set("max-width", "500px");
             wrapper.getStyle().set("min-width", "252px");
 
 
@@ -148,8 +150,8 @@ public class ProductUI {
                 multiVariant.setSpacing(false);
                 multiVariant.addClassName("island-hover");
 
-                multiVariant.getStyle().set("flex", "1 1 300px");
-                multiVariant.getStyle().set("max-width", "320px");
+                multiVariant.getStyle().set("flex", "1 1 500px");
+                multiVariant.getStyle().set("max-width", "520px");
                 multiVariant.getStyle().set("min-width", "252px");
 
                 String url = "";
@@ -273,8 +275,8 @@ public class ProductUI {
                 multiVariant.setSpacing(false);
                 multiVariant.addClassName("island-hover");
 
-                multiVariant.getStyle().set("flex", "1 1 300px");
-                multiVariant.getStyle().set("max-width", "320px");
+                multiVariant.getStyle().set("flex", "1 1 500px");
+                multiVariant.getStyle().set("max-width", "520px");
                 multiVariant.getStyle().set("min-width", "252px");
 
 

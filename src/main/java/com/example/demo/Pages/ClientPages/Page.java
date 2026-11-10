@@ -13,9 +13,11 @@ import com.example.demo.Pages.ClientPages.Components.ProductUI;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
@@ -100,7 +102,9 @@ public class Page extends VerticalLayout implements BeforeEnterObserver {
 
 
         verticalLayout.add(
+                mainImage(),
                 categoryList(),
+                commonComponents.spanCrafterWordNoHide("Products","activityFeed-name"),
                 productUI.productDisplay(productService.getProductsClients(10))
 
         );
@@ -108,6 +112,34 @@ public class Page extends VerticalLayout implements BeforeEnterObserver {
 
         return verticalLayout;
     }
+
+
+    public HorizontalLayout mainImage(){
+
+        HorizontalLayout holder = new HorizontalLayout();
+        holder.getStyle().setPosition(Style.Position.RELATIVE);
+        holder.setWidthFull();
+
+        Image image = commonComponents.imageCrafter("ClientPageMainImage.png","100%","200px","20px");
+
+
+        Span mainText = commonComponents.spanCrafterWordNoHide("Make your home comfortable place","stat-value");
+        mainText.setWidth("350px");
+        mainText.getStyle().setPosition(Style.Position.ABSOLUTE);
+        mainText.getStyle().setLeft("10px").setTop("20px");
+
+        holder.add(
+                image,
+                mainText
+        );
+
+
+
+
+        return holder;
+
+    }
+
 
     public VerticalLayout categoryList(){
 
@@ -117,6 +149,7 @@ public class Page extends VerticalLayout implements BeforeEnterObserver {
         main.setPadding(false);
 
         HorizontalLayout h = new HorizontalLayout();
+        h.addClassName("layout-flex");
         h.setWidthFull();
 
         for(var s : categoryDisplays){
@@ -129,7 +162,8 @@ public class Page extends VerticalLayout implements BeforeEnterObserver {
             v.getStyle().set("max-width", "320px");
             v.getStyle().set("min-width", "252px");
 
-            Image image = commonComponents.imageCrafter(s.getImageUrl() == null ? "No_picture.png" : s.getImageUrl(), "100%","50px","10px");
+
+            Image image = commonComponents.imageCrafter(s.getImageUrl() == null ? "No_picture.png" : s.getImageUrl(), "100%","100px","10px");
 
 
             v.add(
@@ -148,10 +182,9 @@ public class Page extends VerticalLayout implements BeforeEnterObserver {
         HorizontalLayout holder = new HorizontalLayout();
         holder.setWidthFull();
         holder.setJustifyContentMode(JustifyContentMode.BETWEEN);
-        Button viewAllCategory = new Button("View all");
+       // Button viewAllCategory = new Button("View all");
         holder.add(
-                commonComponents.spanCrafterWordNoHide("Category's","activityFeed-name"),
-                viewAllCategory
+             //   viewAllCategory
         );
         main.add(
                 holder,

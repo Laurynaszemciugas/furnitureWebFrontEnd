@@ -334,7 +334,7 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
                             st.setAlignItems(Alignment.CENTER);
                             st.addClassName("island");
                             st.add(
-                                    commonComponents.imageCrafter(imgs.getImageUrl(), "50px", "50px", "50%"),
+                                    commonComponents.imageCrafter(imgs.getImageUrl() == null ? "No_picture.png" : imgs.getImageUrl(), "50px", "50px", "50%"),
                                     commonComponents.spanCrafterWordNoHide(material.getMaterials().getMaterialName(), "stat-example")
                             );
 
