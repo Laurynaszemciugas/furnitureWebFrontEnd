@@ -140,6 +140,7 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
 
         verticalLayout.add(
+                commonComponents.breadCrums(new BreadCrumsDto("Home", "ClientFrontPage"),new BreadCrumsDto("Products", "ClientProducts"),new BreadCrumsDto(product.getCategory().getDisplayName(), "Product/smth"),new BreadCrumsDto(product.getProductName(), null)),
                 firstLayer(),
                 descriptionHolder,
                 productUI.similarProduct(product.getCategory())
@@ -509,6 +510,9 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
         Span sku = commonComponents.spanCrafterWordNoHide("","stat-description");
 
+        Span stock = commonComponents.spanCrafter("","stock-badge");
+
+
         Span productName = commonComponents.spanCrafterWordNoHide("","stat-value");
 
         HorizontalLayout price = new HorizontalLayout();
@@ -527,6 +531,7 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
 
 
+        // load first if id is null
         if(product.getMultipleItems()){
 
 
@@ -541,6 +546,15 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
                     multiVariantId = s.getId();
 
                     mainAttempted = true;
+
+
+
+                    stock =  commonComponents.spanCrafter(s.getStock() == null ? "Unknown" : String.valueOf(s.getStock().getDisplayName()),"activityFeed-name");
+                    switch (s.getStock()) {
+                        case In_Stock -> stock.addClassName("stock-in");
+                        case No_Stock -> stock.addClassName("stock-out");
+                        case Low_Stock -> stock.addClassName("stock-low");
+                    }
 
                     sku.setText(String.format("SKU: %s", s.getSku()));
                     productName.setText(s.getProductName());
@@ -581,11 +595,22 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
                 }
             }
 
+            // if id exists means user pressed other variant
+
             else{
 
                 for (var s : product.getProductMultiples()) {
 
                     if(id.equals(s.getId())) {
+
+
+                       stock =  commonComponents.spanCrafter(s.getStock() == null ? "Unknown" : String.valueOf(s.getStock().getDisplayName()),"activityFeed-name");
+                        switch (s.getStock()) {
+                            case In_Stock -> stock.addClassName("stock-in");
+                            case No_Stock -> stock.addClassName("stock-out");
+                            case Low_Stock -> stock.addClassName("stock-low");
+                        }
+
                         sku.setText(String.format("SKU: %s", s.getSku()));
                         productName.setText(s.getProductName());
                         productPrice.setText(s.getPrice() + "Eur");
@@ -626,8 +651,12 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
             }
 
+            stock.addClassName("stock-badge");
+            stock.getStyle().set("width", "fit-content");
+
 
             productInfo.add(
+                    stock,
                     sku,
                     productName,
                     reviewCrafter.starCrafter(avgStarts),
@@ -646,6 +675,14 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
             productId = product.getId();
             multiVariantId = null;
+
+
+            stock =  commonComponents.spanCrafter(product.getStock() == null ? "Unknown" : String.valueOf(product.getStock().getDisplayName()),"activityFeed-name");
+            switch (product.getStock()) {
+                case In_Stock -> stock.addClassName("stock-in");
+                case No_Stock -> stock.addClassName("stock-out");
+                case Low_Stock -> stock.addClassName("stock-low");
+            }
 
             sku.setText(String.format("SKU: %s",product .getSku()));
             productName.setText(product.getProductName());
@@ -674,8 +711,12 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
                 );
             }
 
+            stock.addClassName("stock-badge");
+            stock.getStyle().set("width", "fit-content");
+
 
             productInfo.add(
+                    stock,
                     sku,
                     productName,
                     reviewCrafter.starCrafter(totalStars),

@@ -105,7 +105,7 @@ public class Page extends VerticalLayout implements BeforeEnterObserver {
                 mainImage(),
                 categoryList(),
                 commonComponents.spanCrafterWordNoHide("Products","activityFeed-name"),
-                productUI.productDisplay(productService.getProductsClients(10))
+                productUI.productDisplay(productService.getProductsClients(10), "500px","500px","250px")
 
         );
 

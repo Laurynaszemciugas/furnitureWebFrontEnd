@@ -63,7 +63,7 @@ public class ProductUI {
 
         h.add(
                 commonComponents.spanCrafterWordNoHide("You may also like","activityFeed-name"),
-                productDisplay(productService.getSimilarItems(category))
+                productDisplay(productService.getSimilarItems(category), "500px","500px","250px")
         );
 
         return h;
@@ -72,11 +72,10 @@ public class ProductUI {
 
 
 
-    public HorizontalLayout productDisplay(List<ProductsClients> productsClients){
+    public HorizontalLayout productDisplay(List<ProductsClients> productsClients, String first, String second, String third){
 
 
         HorizontalLayout v = new HorizontalLayout();
-        v.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         v.addClassName("layout-flex");
         v.setWidthFull();
 
@@ -91,9 +90,9 @@ public class ProductUI {
 
             Div wrapper = new Div();
             wrapper.getStyle().setPosition(Style.Position.RELATIVE);
-            wrapper.getStyle().set("flex", "1 1 500px");
-            wrapper.getStyle().set("max-width", "500px");
-            wrapper.getStyle().set("min-width", "252px");
+            wrapper.getStyle().set("flex", "1 1 " + first );
+            wrapper.getStyle().set("max-width", second);
+            wrapper.getStyle().set("min-width", third);
 
 
             if(s.isMultiVariants()){
@@ -150,9 +149,7 @@ public class ProductUI {
                 multiVariant.setSpacing(false);
                 multiVariant.addClassName("island-hover");
 
-                multiVariant.getStyle().set("flex", "1 1 500px");
-                multiVariant.getStyle().set("max-width", "520px");
-                multiVariant.getStyle().set("min-width", "252px");
+
 
                 String url = "";
                 if(!multiVariantImages.isEmpty()) {
@@ -219,7 +216,12 @@ public class ProductUI {
                     if (!multiVariantImages.isEmpty()) {
                         image.setSrc(multiVariantImages.get(0));
                     }
+
                 });
+
+                if(multiVariantImages.isEmpty()){
+                    image.setSrc("No_picture.png");
+                }
 
                 HorizontalLayout colorHolder = new HorizontalLayout();
                 for(var colors : multiVariantColor){
@@ -275,9 +277,7 @@ public class ProductUI {
                 multiVariant.setSpacing(false);
                 multiVariant.addClassName("island-hover");
 
-                multiVariant.getStyle().set("flex", "1 1 500px");
-                multiVariant.getStyle().set("max-width", "520px");
-                multiVariant.getStyle().set("min-width", "252px");
+
 
 
                 Image image = commonComponents.imageCrafter(s.getNonMultiVariantImage() == null ? "No_picture.png" : s.getNonMultiVariantImage(),"100%","120px","5px");
@@ -398,15 +398,20 @@ public class ProductUI {
 
     public Span discountBubble(Long discount,boolean selected){
 
-        Span span = null;
+        Span span = commonComponents.spanCrafter("","stat-value");
 
 
-        if(selected){
-            span = commonComponents.spanCrafterWordNoHide(String.format("Up to %d",discount) + "%","stat-example");
+        if(discount > 0) {
+            if (selected) {
+                span = commonComponents.spanCrafterWordNoHide(String.format("Up to %d", discount) + "%", "stat-example");
 
+            } else {
+                span = commonComponents.spanCrafterWordNoHide(String.format("%d", discount) + "%", "stat-example");
+            }
         }
         else{
-            span = commonComponents.spanCrafterWordNoHide(String.format("%d",discount) + "%","stat-example");
+            span.setVisible(false);
+
         }
 
         span.addClassName("discount-badge");
