@@ -123,7 +123,7 @@ public class ApperanceTab {
         image.setWidthFull();
         image.getStyle().set("border-radius","10px");
 
-       image.add("island");
+      // image.aadddd("island");
 
 
 
@@ -348,7 +348,7 @@ public class ApperanceTab {
         image.setWidthFull();
         image.getStyle().set("border-radius","10px");
 
-        image.add("island");
+       // image.add("island");
 
 
 

@@ -1,4 +1,5 @@
 import { ConnectionIndicator, ConnectionState } from '@vaadin/common-frontend';
+import { collectBrowserDetails } from './BrowserHelpers';
 class FlowUiInitializationError extends Error {
 }
 // flow uses body for keeping references
@@ -47,8 +48,6 @@ export class Flow {
                 isActive: () => this.isActive
             }
         };
-        // Set browser details collection function as global for use by refresh()
-        $wnd.Vaadin.Flow.getBrowserDetailsParameters = this.collectBrowserDetails.bind(this);
         // Regular expression used to remove the app-context
         const elm = document.head.querySelector('base');
         this.baseRegex = new RegExp(`^${
@@ -117,7 +116,12 @@ export class Flow {
                 }
                 catch (error) {
                     if (error instanceof FlowUiInitializationError) {
-                        // error initializing Flow: assume connection lost
+                        // error initializing Flow: assume connection lost. Report the
+                        // cause first: the message carries the HTTP status and response
+                        // body of the failed init request, and the offline stub returned
+                        // below replaces the view without a trace of why, so swallowing
+                        // this leaves nothing to diagnose but a missing UI.
+                        console.error('Failed to initialize the Flow UI, assuming the connection was lost and showing the offline stub.', error);
                         $wnd.Vaadin.connectionState.state = ConnectionState.CONNECTION_LOST;
                         return this.offlineStubAction();
                     }
@@ -243,8 +247,12 @@ export class Flow {
                 this.injectAppIdScript(appId);
                 await this.config.imports();
             }
-            // Load flow-client module
-            const clientMod = await import('./FlowClient');
+            // Load flow-client module. The bare specifier is intentional: the
+            // generated Vite config aliases it to FlowClient.js in jar-resources and
+            // lists it in optimizeDeps, and Vite only redirects bare specifiers to a
+            // pre-bundled dependency. Importing './FlowClient' relatively would make
+            // the dev server serve the ~90 modules of the client engine one by one.
+            const clientMod = await import('vaadin-flow-client');
             await this.flowInitClient(clientMod);
             // hide flow progress indicator
             this.loadingFinished();
@@ -317,16 +325,23 @@ export class Flow {
             $wnd.Vaadin.TypeScript.initial = undefined;
             return Promise.resolve(initial);
         }
+        const browserDetails = await collectBrowserDetails();
         // send a request to the `JavaScriptBootstrapHandler`
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             const httpRequest = xhr;
-            // Collect browser details to send with init request as JSON
-            const browserDetails = this.collectBrowserDetails();
-            const browserDetailsParam = browserDetails
-                ? `&v-browserDetails=${encodeURIComponent(JSON.stringify(browserDetails))}`
+            // Browser details are appended as individual query parameters rather
+            // than as a single JSON-encoded value. A JSON payload in the URL
+            // produces many percent-encoded escape sequences (%7B, %22, %3A, ...)
+            // that some firewalls/WAFs (e.g. Sophos) flag and block, which would
+            // fail the bootstrap on the very first page load. Plain key=value pairs
+            // avoid that pattern entirely.
+            const browserDetailsParams = browserDetails
+                ? Object.entries(browserDetails)
+                    .map(([key, value]) => `&${key}=${encodeURIComponent(value)}`)
+                    .join('')
                 : '';
-            const requestPath = `?v-r=init&location=${this.getFlowRoutePath(location)}&query=${encodeURIComponent(this.getFlowRouteQuery(location))}${browserDetailsParam}`;
+            const requestPath = `?v-r=init&location=${encodeURIComponent(this.getFlowRoutePath(location))}&query=${encodeURIComponent(this.getFlowRouteQuery(location))}${browserDetailsParams}`;
             httpRequest.open('GET', requestPath);
             httpRequest.onerror = () => reject(new FlowUiInitializationError(`Invalid server response when initializing Flow UI.
         ${httpRequest.status}
@@ -342,96 +357,6 @@ export class Flow {
             };
             httpRequest.send();
         });
-    }
-    // Collects browser details parameters
-    collectBrowserDetails() {
-        const params = {};
-        /* Screen height and width */
-        params['v-sh'] = $wnd.screen.height;
-        params['v-sw'] = $wnd.screen.width;
-        /* Browser window dimensions */
-        params['v-wh'] = $wnd.innerHeight;
-        params['v-ww'] = $wnd.innerWidth;
-        /* Body element dimensions */
-        params['v-bh'] = $wnd.document.body.clientHeight;
-        params['v-bw'] = $wnd.document.body.clientWidth;
-        /* Current time */
-        const date = new Date();
-        params['v-curdate'] = date.getTime();
-        /* Current timezone offset (including DST shift) */
-        const tzo1 = date.getTimezoneOffset();
-        /* Compare the current tz offset with the first offset from the end
-           of the year that differs --- if less that, we are in DST, otherwise
-           we are in normal time */
-        let dstDiff = 0;
-        let rawTzo = tzo1;
-        for (let m = 12; m > 0; m -= 1) {
-            date.setUTCMonth(m);
-            const tzo2 = date.getTimezoneOffset();
-            if (tzo1 !== tzo2) {
-                dstDiff = tzo1 > tzo2 ? tzo1 - tzo2 : tzo2 - tzo1;
-                rawTzo = tzo1 > tzo2 ? tzo1 : tzo2;
-                break;
-            }
-        }
-        /* Time zone offset */
-        params['v-tzo'] = tzo1;
-        /* DST difference */
-        params['v-dstd'] = dstDiff;
-        /* Time zone offset without DST */
-        params['v-rtzo'] = rawTzo;
-        /* DST in effect? */
-        params['v-dston'] = tzo1 !== rawTzo;
-        /* Time zone id (if available) */
-        try {
-            params['v-tzid'] = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        }
-        catch (err) {
-            params['v-tzid'] = '';
-        }
-        /* Window name */
-        if ($wnd.name) {
-            params['v-wn'] = $wnd.name;
-        }
-        /* Detect touch device support */
-        let supportsTouch = false;
-        try {
-            $wnd.document.createEvent('TouchEvent');
-            supportsTouch = true;
-        }
-        catch (e) {
-            /* Chrome and IE10 touch detection */
-            supportsTouch = 'ontouchstart' in $wnd || typeof $wnd.navigator.msMaxTouchPoints !== 'undefined';
-        }
-        params['v-td'] = supportsTouch;
-        /* Device Pixel Ratio */
-        params['v-pr'] = $wnd.devicePixelRatio;
-        if ($wnd.navigator.platform) {
-            params['v-np'] = $wnd.navigator.platform;
-        }
-        /* Color scheme from CSS color-scheme property */
-        const colorScheme = getComputedStyle(document.documentElement).colorScheme.trim();
-        // "normal" is the default value and means no color scheme is set
-        params['v-cs'] = colorScheme && colorScheme !== 'normal' ? colorScheme : '';
-        /* Theme name - detect which theme is in use */
-        const computedStyle = getComputedStyle(document.documentElement);
-        let themeName = '';
-        if (computedStyle.getPropertyValue('--vaadin-lumo-theme').trim()) {
-            themeName = 'lumo';
-        }
-        else if (computedStyle.getPropertyValue('--vaadin-aura-theme').trim()) {
-            themeName = 'aura';
-        }
-        params['v-tn'] = themeName;
-        /* Stringify each value (they are parsed on the server side) */
-        const stringParams = {};
-        Object.keys(params).forEach((key) => {
-            const value = params[key];
-            if (typeof value !== 'undefined') {
-                stringParams[key] = value.toString();
-            }
-        });
-        return stringParams;
     }
     // Create shared connection state store and connection indicator
     addConnectionIndicator() {

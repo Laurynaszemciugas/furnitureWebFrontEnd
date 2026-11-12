@@ -2,6 +2,7 @@ package com.example.demo.Services.Products;
 
 import com.example.demo.Common.Logic.HttpCallLogic;
 import com.example.demo.DTOS.Client.CategoryDisplay;
+import com.example.demo.DTOS.Client.ClientCategorys;
 import com.example.demo.DTOS.Client.ProductsClients;
 import com.example.demo.DTOS.Common.GraphDataLongValue;
 import com.example.demo.DTOS.Common.MiniStatHolder;
@@ -147,6 +148,11 @@ public class ProductService {
     @SneakyThrows
     public List<ProductsClients> getSimilarItems(Category category){
         return Arrays.stream(httpCallLogic.HttpCall("product/getSimilarItems", HttpMethod.GET, category , ProductsClients[].class,true)).toList();
+    }
+
+    @SneakyThrows
+    public List<ClientCategorys> getClientCategorysWithCount(){
+        return Arrays.stream(httpCallLogic.HttpCall("product/getClientCategorysWithCount", HttpMethod.GET, null , ClientCategorys[].class,false)).toList();
     }
 
 
