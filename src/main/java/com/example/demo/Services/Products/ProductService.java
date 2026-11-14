@@ -9,6 +9,7 @@ import com.example.demo.DTOS.Common.MiniStatHolder;
 import com.example.demo.DTOS.Error.ErrorResponse;
 import com.example.demo.Entity.Product;
 import com.example.demo.Enums.Category;
+import com.example.demo.FilterDTO.Client.ClientProductsFilter;
 import com.example.demo.FilterDTO.Prodcut.ProductFilterHolder;
 import com.example.demo.DTOS.Orders.OrderAddProducts;
 import com.example.demo.DTOS.Products.ProductFeedModel;
@@ -154,6 +155,29 @@ public class ProductService {
     public List<ClientCategorys> getClientCategorysWithCount(){
         return Arrays.stream(httpCallLogic.HttpCall("product/getClientCategorysWithCount", HttpMethod.GET, null , ClientCategorys[].class,false)).toList();
     }
+
+
+    @SneakyThrows
+    public List<String> findAllAvailableMaterialNames(){
+        return Arrays.stream(httpCallLogic.HttpCall("product/findAllAvailableMaterialNames", HttpMethod.GET, null , String[].class,false)).toList();
+    }
+
+    @SneakyThrows
+    public List<String> findAllAvailableColors(){
+        return Arrays.stream(httpCallLogic.HttpCall("product/findAllAvailableColors", HttpMethod.GET, null , String[].class,false)).toList();
+    }
+
+
+    @SneakyThrows
+    public List<ProductsClients> getProductsAccordingToFilter(ClientProductsFilter filter){
+        return Arrays.stream(httpCallLogic.HttpCall("product/getProductsAccordingToFilter", HttpMethod.POST, filter , ProductsClients[].class,false)).toList();
+    }
+
+
+
+
+
+
 
 
 }

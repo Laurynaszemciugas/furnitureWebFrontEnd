@@ -4,6 +4,7 @@ import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Stock;
 import lombok.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -13,12 +14,12 @@ import java.util.List;
 @ToString
 public class ClientProductsFilter {
 
-    private String prompt;  // Searches names descriptions and the extra detail like width height depth
-    private List<Category> categories;
-    private Double priceFrom;
-    private Double priceTo;
-    private List<Long> materials;
-    private List<String> colors; // searches according to color in the product
-    private Stock stocks;
+    private String prompt = "All";  // Searches names descriptions and the extra detail like width height depth
+    private List<String> categories = Collections.singletonList(Category.ALL.name());
+    private Double priceFrom = 100.0;
+    private Double priceTo = 100000.0;
+    private List<String> materials = Collections.singletonList("All");
+    private String color = "All"; // searches according to color in the product
+    private String stocks = Stock.ALL.toString();
 
 }

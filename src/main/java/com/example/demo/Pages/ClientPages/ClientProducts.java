@@ -6,6 +6,7 @@ import com.example.demo.Common.Paganation;
 import com.example.demo.DTOS.BreadCrums.BreadCrumsDto;
 import com.example.demo.DTOS.Client.ClientCategorys;
 import com.example.demo.Enums.Category;
+import com.example.demo.Enums.Stock;
 import com.example.demo.FilterDTO.Client.ClientProductsFilter;
 import com.example.demo.MainLayouts.Client.ClientMainLayout;
 import com.example.demo.Pages.ClientPages.Components.ProductUI;
@@ -22,6 +23,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.slider.IntegerRangeSlider;
 import com.vaadin.flow.component.slider.IntegerRangeSliderValue;
 import com.vaadin.flow.component.textfield.IntegerField;
@@ -30,8 +32,10 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
+import org.jetbrains.kotlin.it.unimi.dsi.fastutil.ints.P;
 
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -50,6 +54,9 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
     // client pages filters
 
     ClientProductsFilter clientProductsFilter = new ClientProductsFilter();
+
+
+    VerticalLayout productMemory = new VerticalLayout();
 
 
     public ClientProducts(CommonComponents commonComponents, Common common, ProductUI productUI, ProductService productService) {
@@ -128,9 +135,14 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
         right.setPadding(false);
         right.setWidth("1000px");
 
-        right.add(
-                productUI.productDisplay(productService.getProductsClients(10), "250px","250px","250px"),
+        productMemory.removeAll();
+        productMemory.add(
+                productUI.productDisplay(productService.getProductsAccordingToFilter(clientProductsFilter), "250px","250px","250px"),
                 paganation.buttonHolder(10)
+        );
+
+        right.add(
+                productMemory
         );
 
 
@@ -179,11 +191,51 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
         AccordionPanel categoryPanel = accordion.add("Category", categoryFilterBuilder());
         categoryPanel.addThemeVariants(DetailsVariant.REVERSE);
 
+
+        // =====================================================
+        // price selection
+        // =====================================================
+
         Accordion accordion2 = new Accordion();
         accordion2.setWidthFull();
 
         AccordionPanel pricePanel = accordion2.add("Price", RangeSliderBasic());
         pricePanel.addThemeVariants(DetailsVariant.REVERSE);
+
+        // =====================================================
+        // Material selection
+        // =====================================================
+
+        Accordion accordion3 = new Accordion();
+        accordion3.setWidthFull();
+
+        AccordionPanel materialPanel = accordion3.add("Material", materialFilterBuilder());
+        materialPanel.addThemeVariants(DetailsVariant.REVERSE);
+
+
+        // =====================================================
+        // color selection
+        // =====================================================
+
+        Accordion accordion4 = new Accordion();
+        accordion4.setWidthFull();
+
+        AccordionPanel colorPanel = accordion4.add("Colors", colorsFilterBuilder());
+        colorPanel.addThemeVariants(DetailsVariant.REVERSE);
+
+
+
+        // =====================================================
+        // availability selection
+        // =====================================================
+
+        Accordion accordion5 = new Accordion();
+        accordion5.setWidthFull();
+
+        AccordionPanel availabilityPanel = accordion5.add("Availability", stockFilterBuilder());
+        availabilityPanel.addThemeVariants(DetailsVariant.REVERSE);
+
+
 
 
         // Apply filters
@@ -197,6 +249,12 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
             System.out.println(clientProductsFilter);
 
+            productMemory.removeAll();
+            productMemory.add(
+                    productUI.productDisplay(productService.getProductsAccordingToFilter(clientProductsFilter), "250px","250px","250px"),
+                    paganation.buttonHolder(10)
+            );
+
         });
 
         holder.add(
@@ -206,12 +264,136 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
                 commonComponents.lineCrafter("100%"),
                 accordion2,
                 commonComponents.lineCrafter("100%"),
+                accordion3,
+                commonComponents.lineCrafter("100%"),
+                accordion4,
+                commonComponents.lineCrafter("100%"),
+                accordion5,
+                commonComponents.lineCrafter("100%"),
                 applyFilters
 
         );
 
 
         return holder;
+    }
+
+
+
+
+
+
+    public VerticalLayout materialFilterBuilder(){
+
+        VerticalLayout categoryHolder =  new VerticalLayout();
+        categoryHolder.setPadding(false);
+
+        List<String> materialNames = productService.findAllAvailableMaterialNames();
+        // add the last one as All always
+
+        CheckboxGroup<String> checkboxGroup = new CheckboxGroup<>();
+
+
+        checkboxGroup.addValueChangeListener(e->{
+
+
+            if(!e.isFromClient()) return;
+
+            if (e.getValue().contains("All")) {
+                checkboxGroup.clear();
+                checkboxGroup.setValue(Collections.singleton("All"));
+
+
+            }
+
+            Set<String> set = e.getValue();
+
+            clientProductsFilter.setMaterials(set.stream().toList());
+
+        });
+
+        checkboxGroup.setItems(materialNames);
+
+        categoryHolder.add(
+                checkboxGroup
+        );
+
+
+        return categoryHolder;
+
+    }
+
+
+    public VerticalLayout stockFilterBuilder(){
+
+        VerticalLayout categoryHolder =  new VerticalLayout();
+        categoryHolder.setPadding(false);
+
+        RadioButtonGroup<Stock> checkboxGroup = new RadioButtonGroup<>();
+
+        checkboxGroup.setItems(Stock.values());
+
+        checkboxGroup.setItemLabelGenerator(Stock::getDisplayName);
+
+
+        checkboxGroup.addValueChangeListener(e->{
+
+
+            clientProductsFilter.setStocks(e.getValue().toString());
+
+
+        });
+
+
+        categoryHolder.add(
+                checkboxGroup
+        );
+
+
+        return categoryHolder;
+
+    }
+
+
+
+
+
+    public HorizontalLayout colorsFilterBuilder(){
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.addClassName("layout-flex");
+        h.setWidthFull();
+
+        List<String> colors = productService.findAllAvailableColors();
+
+        System.out.println(colors);
+
+        for(var s : colors){
+            VerticalLayout v = new VerticalLayout();
+            v.setWidth("25px");
+            v.setHeight("25px");
+            v.getStyle().setBorderRadius("50%");
+
+            v.getStyle().setBackground(s);
+
+            v.addClassName("island-hover");
+
+            v.addClickListener(e->{
+
+                clientProductsFilter.setColor(s);
+
+            });
+
+
+            h.add(
+                    v
+            );
+
+        }
+
+
+
+        return h;
     }
 
 
@@ -223,9 +405,9 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
         List<ClientCategorys> clientCategorys = productService.getClientCategorysWithCount();
 
-        CheckboxGroup<Category> checkboxGroup = new CheckboxGroup<>();
+        CheckboxGroup<String> checkboxGroup = new CheckboxGroup<>();
 
-        List<Category> categoryList = clientCategorys.stream().map(s -> s.getCategory()).toList();
+        List<String> categoryList = clientCategorys.stream().map(s -> s.getCategory().toString()).toList();
 
         checkboxGroup.setItems(categoryList);
 
@@ -234,10 +416,10 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
             HorizontalLayout h = new HorizontalLayout();
 
 
-            Long count  = clientCategorys.stream().filter(s -> s.getCategory().equals(category)).map(s -> s.getCount()).findFirst().orElse(0L);
+            Long count  = clientCategorys.stream().filter(s -> s.getCategory().toString().equals(category)).map(s -> s.getCount()).findFirst().orElse(0L);
 
             h.add(
-                new Span(category.getDisplayName()),
+                new Span(category),
                     commonComponents.spanCrafterWordNoHide(
                             String.format("(%s)",count),
                             "stat-description"
@@ -252,7 +434,7 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
         checkboxGroup.addValueChangeListener(e->{
 
-            Set<Category> selectedCategories = e.getValue();
+            Set<String> selectedCategories = e.getValue();
 
             clientProductsFilter.setCategories(selectedCategories.stream().toList());
 
@@ -276,7 +458,7 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
             v.setWidthFull();
 
             IntegerRangeSlider rangeSlider = new IntegerRangeSlider(
-                    0, 1000);
+                    100, 10000);
             rangeSlider.setWidth("100%");
             rangeSlider.setValueChangeMode(ValueChangeMode.EAGER);
             rangeSlider.setValue(new IntegerRangeSliderValue(200, 800));
