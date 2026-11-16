@@ -27,6 +27,7 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.slider.IntegerRangeSlider;
 import com.vaadin.flow.component.slider.IntegerRangeSliderValue;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -35,6 +36,7 @@ import com.vaadin.flow.router.Route;
 import org.jetbrains.kotlin.it.unimi.dsi.fastutil.ints.P;
 
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -57,6 +59,7 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
 
     VerticalLayout productMemory = new VerticalLayout();
+
 
 
     public ClientProducts(CommonComponents commonComponents, Common common, ProductUI productUI, ProductService productService) {
@@ -226,6 +229,18 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
 
         // =====================================================
+        // discount selection
+        // =====================================================
+
+        Accordion accordion6 = new Accordion();
+        accordion6.setWidthFull();
+
+        AccordionPanel discountPanel = accordion6.add("Discount", discountFilterBuilder());
+        discountPanel.addThemeVariants(DetailsVariant.REVERSE);
+
+
+
+        // =====================================================
         // availability selection
         // =====================================================
 
@@ -234,6 +249,9 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
         AccordionPanel availabilityPanel = accordion5.add("Availability", stockFilterBuilder());
         availabilityPanel.addThemeVariants(DetailsVariant.REVERSE);
+
+
+
 
 
 
@@ -257,6 +275,13 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
         });
 
+
+        TextField t = new TextField("ZAZAZAZ");
+        t.addValueChangeListener(e->{
+            clientProductsFilter.setPrompt(e.getValue().trim());
+        });
+
+
         holder.add(
                 resetHolder,
                 commonComponents.lineCrafter("100%"),
@@ -268,9 +293,12 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
                 commonComponents.lineCrafter("100%"),
                 accordion4,
                 commonComponents.lineCrafter("100%"),
+                accordion6,
+                commonComponents.lineCrafter("100%"),
                 accordion5,
                 commonComponents.lineCrafter("100%"),
-                applyFilters
+                applyFilters,
+                t
 
         );
 
@@ -356,9 +384,53 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
 
 
+    public VerticalLayout discountFilterBuilder(){
+
+        VerticalLayout categoryHolder =  new VerticalLayout();
+        categoryHolder.setPadding(false);
+
+        RadioButtonGroup<String> checkboxGroup = new RadioButtonGroup<>();
+
+        checkboxGroup.setItems("Discounted","No discount", "All");
+
+        checkboxGroup.addValueChangeListener(e->{
+
+
+            if(e.getValue().equals("Discounted")){
+                clientProductsFilter.setDiscount(Boolean.TRUE);
+            }
+            else if(e.getValue().equals("No discount")){
+                clientProductsFilter.setDiscount(Boolean.FALSE);
+            }
+            else{
+                clientProductsFilter.setDiscount(null);
+            }
+
+
+
+
+
+        });
+
+
+        categoryHolder.add(
+                checkboxGroup
+        );
+
+
+        return categoryHolder;
+
+    }
+
+
+
 
 
     public HorizontalLayout colorsFilterBuilder(){
+
+
+        List<VerticalLayout> allColors = new ArrayList<>();
+        String selectedColor = "";
 
         HorizontalLayout h = new HorizontalLayout();
         h.addClassName("layout-flex");
@@ -379,6 +451,8 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
             v.addClassName("island-hover");
 
             v.addClickListener(e->{
+
+                System.out.println(s);
 
                 clientProductsFilter.setColor(s);
 

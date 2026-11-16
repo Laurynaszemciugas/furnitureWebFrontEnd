@@ -101,7 +101,7 @@ public class ProductUI {
                 String imagesUnSplit = (String) s.getMultiVariantImages();
 
                 if(imagesUnSplit != null) {
-                    multiVariantImages = Arrays.asList(imagesUnSplit.split(", "));
+                    multiVariantImages = Arrays.asList(imagesUnSplit.split(","));
                 }
 
                 // Unpack prices
@@ -109,7 +109,7 @@ public class ProductUI {
                 String pricesUnSplit = (String) s.getMultiVariantPrices();
 
                 if(pricesUnSplit != null){
-                    multiVariantPrices =  Arrays.stream(pricesUnSplit.split(", "))
+                    multiVariantPrices =  Arrays.stream(pricesUnSplit.split(","))
                             .map(Double::parseDouble)
                             .collect(Collectors.toList());
 
@@ -120,7 +120,7 @@ public class ProductUI {
 
                 if(discountUnSplit != null){
 
-                    multiVariantDiscounts = Arrays.stream(discountUnSplit.split(", "))
+                    multiVariantDiscounts = Arrays.stream(discountUnSplit.split(","))
                             .map(Long::parseLong)
                             .collect(Collectors.toList());
 
@@ -133,7 +133,7 @@ public class ProductUI {
 
                 if(colorUnSplit != null){
 
-                    multiVariantColor = Arrays.asList(colorUnSplit.split(", "));
+                    multiVariantColor = Arrays.asList(colorUnSplit.split(","));
 
                 }
 
@@ -232,13 +232,21 @@ public class ProductUI {
 
 
 
+                Span multiPrice = new Span();
+
+                if(multiVariantPrices.size() > 1){
+                    multiPrice = commonComponents.spanCrafterWordNoHide( String.format("from %.2f to %.2f Eur",multiVariantPrices.get(multiVariantPrices.size()-1),multiVariantPrices.get(0)) ,"stat-example");
+                }
+                else{
+                    multiPrice = commonComponents.spanCrafterWordNoHide(String.format("%.2f Eur",multiVariantPrices.get(0)) ,"stat-example");
+                }
 
                 multiVariant.add(
-                        discountBubble(multiVariantDiscounts.get(0),true),
+                        discountBubble(multiVariantDiscounts.get(0),true, multiVariantDiscounts.size()),
                         image,
                         commonComponents.spanCrafterWordNoHide(s.getProductName(),"activityFeed-name"),
                         commonComponents.spanCrafterWordNoHide(s.getCategory().getDisplayName(),"stat-description"),
-                        commonComponents.spanCrafterWordNoHide( String.format("from %.2f to %.2f Eur",multiVariantPrices.get(multiVariantPrices.size()-1),multiVariantPrices.get(0)) ,"stat-example"),
+                        multiPrice,
                         colorHolder);
 
 
@@ -306,7 +314,7 @@ public class ProductUI {
 
                 multiVariant.add(
 
-                        discountBubble(s.getNormalProductDiscount(),false),
+                        discountBubble(s.getNormalProductDiscount(),false, multiVariantDiscounts.size()),
                         image,
                         commonComponents.spanCrafterWordNoHide(s.getProductName(),"activityFeed-name"),
                         commonComponents.spanCrafterWordNoHide(s.getCategory().getDisplayName(),"stat-description"),
@@ -396,13 +404,13 @@ public class ProductUI {
         return button;
     }
 
-    public Span discountBubble(Long discount,boolean selected){
+    public Span discountBubble(Long discount,boolean selected, int size){
 
         Span span = commonComponents.spanCrafter("","stat-value");
 
 
         if(discount > 0) {
-            if (selected) {
+            if (selected && size > 1) {
                 span = commonComponents.spanCrafterWordNoHide(String.format("Up to %d", discount) + "%", "stat-example");
 
             } else {

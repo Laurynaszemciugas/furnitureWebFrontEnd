@@ -313,16 +313,16 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
                 if(s.getId().equals(multiVariantId)){
                 description.setText(s.getDescription());
 
-                for(var img : s.getImages()){
-                    if(img.getImageLogic().equals(ImageLogic.Main)){
-                        mainImage = img.getImageUrl();
+                if(!s.getImages().isEmpty()) {
+                    for (var img : s.getImages()) {
+                        if (img.getImageLogic().equals(ImageLogic.Main)) {
+                            mainImage = img.getImageUrl();
+                        }
                     }
                 }
 
                 // show materials
                 for(var material : s.getMaterials()){
-
-                    System.out.println(material.getMaterials().getImages().size());
 
                     for(var imgs : material.getMaterials().getImages()) {
 
@@ -567,7 +567,7 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
                                   .set("text-decoration", "line-through").setColor("Grey");
 
                           discount.setText("Save " + (long)s.getDiscount() + "%" );
-                          discountPrice.setText(s.getPrice() - (s.getPrice() * s.getDiscount()/100 )+ "Eur");
+                          discountPrice.setText(String.format("%.2f Eur",s.getPrice() - (s.getPrice() * s.getDiscount()/100)));
 
 
                           price.add(
@@ -623,7 +623,7 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
                                     .set("text-decoration", "line-through").setColor("Grey");
 
                             discount.setText("Save " + (long)s.getDiscount() + "%" );
-                            discountPrice.setText(s.getPrice() - (s.getPrice() * s.getDiscount()/100 )+ "Eur");
+                            discountPrice.setText(String.format("%.2f Eur",s.getPrice() - (s.getPrice() * s.getDiscount()/100)));
 
 
                             price.add(
