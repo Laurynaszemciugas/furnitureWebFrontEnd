@@ -1,6 +1,7 @@
 package com.example.demo.Services.Products;
 
 import com.example.demo.Common.Logic.HttpCallLogic;
+import com.example.demo.DTOS.Client.AddNewReviewProduct;
 import com.example.demo.DTOS.Client.CategoryDisplay;
 import com.example.demo.DTOS.Client.ClientCategorys;
 import com.example.demo.DTOS.Client.ProductsClients;
@@ -8,6 +9,7 @@ import com.example.demo.DTOS.Common.GraphDataLongValue;
 import com.example.demo.DTOS.Common.MiniStatHolder;
 import com.example.demo.DTOS.Error.ErrorResponse;
 import com.example.demo.Entity.Product;
+import com.example.demo.Entity.ProductComments;
 import com.example.demo.Enums.Category;
 import com.example.demo.FilterDTO.Client.ClientProductsFilter;
 import com.example.demo.FilterDTO.Prodcut.ProductFilterHolder;
@@ -173,7 +175,11 @@ public class ProductService {
         return Arrays.stream(httpCallLogic.HttpCall("product/getProductsAccordingToFilter", HttpMethod.POST, filter , ProductsClients[].class,false)).toList();
     }
 
-
+    @SneakyThrows
+    public void addNewReview(AddNewReviewProduct productComments){
+        httpCallLogic.checkResponse(
+                httpCallLogic.HttpCall("product/addNewReview", HttpMethod.POST, productComments, ErrorResponse.class,false),null,success,true);
+    }
 
 
 

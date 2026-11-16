@@ -69,7 +69,7 @@ public class ProductsAdd extends VerticalLayout implements BeforeEnterObserver {
 
         this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonService,objectConverter,materialService,aiService,productService);
         this.productEditImage = new ProductEditImage(commonComponents,common);
-        this.reviewCrafter = new ReviewCrafter(commonComponents,common);
+        this.reviewCrafter = new ReviewCrafter(commonComponents,common,productService);
 
         this.productEditRightSideFields.setProductEditImage(this.productEditImage);
 

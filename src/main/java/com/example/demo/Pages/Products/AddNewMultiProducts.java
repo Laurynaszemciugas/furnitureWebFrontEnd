@@ -68,7 +68,7 @@ public class AddNewMultiProducts extends VerticalLayout implements BeforeEnterOb
         this.productService = productService;
         this.productEditRightSideFields = new ProductEditRightSideFields(commonComponents,common,commonService,objectConverter,materialService,aiService,productService);
         this.productEditImage = new ProductEditImage(commonComponents,common);
-        this.reviewCrafter = new ReviewCrafter(commonComponents,common);
+        this.reviewCrafter = new ReviewCrafter(commonComponents,common,productService);
 
         this.multipleProductChoices = new MultipleProductChoices(commonComponents,common,commonService,objectConverter,materialService,aiService,productService);
 

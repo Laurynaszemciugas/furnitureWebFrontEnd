@@ -4,9 +4,8 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.ReviewCrafter;
 import com.example.demo.DTOS.BreadCrums.BreadCrumsDto;
-import com.example.demo.Entity.Materials;
-import com.example.demo.Entity.Orders;
-import com.example.demo.Entity.Product;
+import com.example.demo.DTOS.Client.AddNewReviewProduct;
+import com.example.demo.Entity.*;
 import com.example.demo.Enums.ImageLogic;
 import com.example.demo.Enums.SpecTypes;
 import com.example.demo.MainLayouts.Client.ClientMainLayout;
@@ -78,7 +77,7 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
         this.productUI = productUI;
 
 
-        this.reviewCrafter = new ReviewCrafter(commonComponents,common);
+        this.reviewCrafter = new ReviewCrafter(commonComponents,common,productService);
 
 
         setPadding(false);
@@ -159,6 +158,42 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
     public void specs(){
 
+        // remember the review
+        HorizontalLayout reviewMemory = new HorizontalLayout();
+        reviewMemory.setWidthFull();
+
+        reviewMemory.add(
+                reviewCrafter.allInOneComment(product.getComments())
+        );
+
+        // just to make that success thingy stop throwing that error damn
+        productService.setSuccess(ee->{
+
+        });
+
+        // update the review
+        reviewCrafter.setUpdateReview(e->{
+
+
+            AddNewReviewProduct addNewReviewProduct = new AddNewReviewProduct();
+            addNewReviewProduct.setProductId(productId);
+            addNewReviewProduct.setReview(e.getReview());
+            addNewReviewProduct.setComment(e.getComment());
+
+            productService.addNewReview(addNewReviewProduct);
+
+
+
+
+            product = productService.getProduct(productId);
+
+
+            reviewMemory.removeAll();
+            reviewMemory.add(
+                    reviewCrafter.allInOneComment(product.getComments())
+            );
+        });
+
         descriptionHolder.removeAll();
 
         HorizontalLayout h = new HorizontalLayout();
@@ -170,7 +205,7 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
         tabSheet.add("Specification", specifications());
 
-        tabSheet.add("Reviews", reviewCrafter.commentsHolder(product.getComments()));
+        tabSheet.add("Reviews", reviewMemory);
 
         tabSheet.setWidthFull();
 

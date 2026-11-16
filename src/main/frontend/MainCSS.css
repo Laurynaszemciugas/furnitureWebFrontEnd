@@ -183,6 +183,27 @@ vaadin-button {
 }
 
 
+.icon-hover {
+
+
+    transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        border-color 0.22s ease;
+
+    will-change: transform;
+}
+
+.icon-hover:hover {
+    transform: translateY(-3px);
+    border-color: rgba(59, 130, 246, 0.4);
+
+    box-shadow:
+        0 4px 10px rgba(15, 23, 42, 0.06),
+        0 12px 25px rgba(37, 99, 235, 0.14);
+}
+
+
 .island-hover {
     background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
     border: 1px solid rgba(59, 130, 246, 0.16);

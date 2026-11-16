@@ -85,6 +85,8 @@ public class ProductUI {
 
 
 
+
+
         // UNPACK ALL CONCAT VALUES
         for(var s : productsClients) {
 
@@ -247,14 +249,18 @@ public class ProductUI {
                         commonComponents.spanCrafterWordNoHide(s.getProductName(),"activityFeed-name"),
                         commonComponents.spanCrafterWordNoHide(s.getCategory().getDisplayName(),"stat-description"),
                         multiPrice,
-                        colorHolder);
+                        colorHolder,
+                        expander()
+                );
 
 
 
                 wrapper.add(
 
                         addToWhiteList(false),
-                        multiVariant
+                        multiVariant,
+                        addToCart()
+
                 );
 
                 v.add(
@@ -319,14 +325,16 @@ public class ProductUI {
                         commonComponents.spanCrafterWordNoHide(s.getProductName(),"activityFeed-name"),
                         commonComponents.spanCrafterWordNoHide(s.getCategory().getDisplayName(),"stat-description"),
                         commonComponents.spanCrafterWordNoHide( String.format("%.2f  Eur",s.getNormalProductPrice()) ,"stat-example"),
-                        colorHolder
-                );
+                        colorHolder,
+                        expander()
+                        );
 
 
                 wrapper.add(
 
                         addToWhiteList(false),
-                        multiVariant
+                        multiVariant,
+                        addToCart()
                 );
 
                 v.add(
@@ -360,15 +368,23 @@ public class ProductUI {
     }
 
 
-    public Button addToCart(){
+    public HorizontalLayout addToCart(){
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
         Button button = new Button("Add to cart", VaadinIcon.CART.create());
-        button.setWidth("100%");
+        button.getStyle().setPosition(Style.Position.ABSOLUTE);
+        button.getStyle().setBottom("10px");
+        button.setWidth("90%");
 
         button.addThemeVariants(ButtonVariant.PRIMARY);
 
+        h.add(
+                button
+        );
 
-        return button;
+        return h;
 
     }
 
@@ -436,6 +452,12 @@ public class ProductUI {
 
 
         return span;
+    }
+
+    public Div expander(){
+        Div expander = new Div();
+        expander.setHeight("50px");
+        return expander;
     }
 
     public VerticalLayout colorTemplates(String color){

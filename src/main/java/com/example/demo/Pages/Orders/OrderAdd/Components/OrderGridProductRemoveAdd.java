@@ -178,8 +178,7 @@ public class OrderGridProductRemoveAdd {
             Button button = new Button("", VaadinIcon.TRASH.create());
 
             button.addClickListener(ee->{
-                System.out.println(e.getId());
-                selectedProducts.removeIf(item-> item.getId().equals(e.getId()));
+                selectedProducts.removeIf(item-> item.getUuid().equals(e.getUuid()));
                 updateGrid(orderItems, selectedProducts);
                 calculateTotal(selectedProducts);
 

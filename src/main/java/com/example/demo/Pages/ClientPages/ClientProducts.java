@@ -78,6 +78,12 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
         addClassName("animation-page");
 
+
+        // default settings
+        productMemory.setPadding(false);
+
+
+
     }
 
     @Override
@@ -526,16 +532,19 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
         public VerticalLayout RangeSliderBasic() {
 
+            int minValue = 0;
+            int maxValue = 10000;
+
             VerticalLayout v = new VerticalLayout();
             v.setSpacing(false);
             v.setPadding(false);
             v.setWidthFull();
 
             IntegerRangeSlider rangeSlider = new IntegerRangeSlider(
-                    100, 10000);
+                    minValue, maxValue);
             rangeSlider.setWidth("100%");
             rangeSlider.setValueChangeMode(ValueChangeMode.EAGER);
-            rangeSlider.setValue(new IntegerRangeSliderValue(200, 800));
+            rangeSlider.setValue(new IntegerRangeSliderValue(minValue, maxValue));
             rangeSlider.setAccessibleNameStart("Minimum price");
             rangeSlider.setAccessibleNameEnd("Maximum price");
             add(rangeSlider);
@@ -547,12 +556,37 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
             fieldHolder.setAlignItems(Alignment.CENTER);
 
             IntegerField fromPrice = new IntegerField();
+            fromPrice.setValueChangeMode(ValueChangeMode.EAGER);
             fromPrice.setSuffixComponent(new Span("€"));
             fromPrice.setWidth("100px");
 
             IntegerField toPrice = new IntegerField();
+            toPrice.setValueChangeMode(ValueChangeMode.EAGER);
             toPrice.setSuffixComponent(new Span("€"));
             toPrice.setWidth("100px");
+
+
+            // change the value from the fields
+            fromPrice.addValueChangeListener(e->{
+                if(e.isFromClient()) {
+                    try{
+                        rangeSlider.setValue(new IntegerRangeSliderValue(e.getValue(), toPrice.getValue()));
+                    } catch (IllegalArgumentException ex) {
+                        rangeSlider.setValue(new IntegerRangeSliderValue(minValue, toPrice.getValue()));
+                    }
+                }
+            });
+
+            toPrice.addValueChangeListener(e->{
+                if(e.isFromClient()) {
+
+                        rangeSlider.setValue(new IntegerRangeSliderValue(fromPrice.getValue(), e.getValue()));
+                        if(e.getValue() > maxValue) {
+                            rangeSlider.setValue(new IntegerRangeSliderValue(fromPrice.getValue(), maxValue));
+                        }
+
+                }
+            });
 
             fieldHolder.add(
                     fromPrice,toPrice

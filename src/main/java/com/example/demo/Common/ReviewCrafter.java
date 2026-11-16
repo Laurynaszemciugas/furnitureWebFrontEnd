@@ -1,24 +1,140 @@
 package com.example.demo.Common;
 
+import com.example.demo.DTOS.Client.AddReview;
 import com.example.demo.Entity.ProductComments;
+import com.example.demo.Services.Products.ProductService;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
+import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
+@Setter
 public class ReviewCrafter {
 
 
     CommonComponents commonComponents;
     Common common;
+    ProductService productService;
 
-    public ReviewCrafter(CommonComponents commonComponents, Common common) {
+    Consumer<AddReview> updateReview;
+
+
+    int starsSelected = 0;
+
+    public ReviewCrafter(CommonComponents commonComponents, Common common, ProductService productService) {
         this.commonComponents = commonComponents;
         this.common = common;
+        this.productService = productService;
     }
+
+
+    // method that containts comments holder and the add new comment availability
+    public VerticalLayout allInOneComment(List<ProductComments> comments){
+
+        VerticalLayout v = new VerticalLayout();
+        v.setPadding(false);
+
+
+
+        v.add(
+                commentsHolder(comments),
+                addNewComments()
+        );
+
+
+        return v;
+    }
+
+
+    public VerticalLayout addNewComments(){
+
+        List<Icon> stars = new ArrayList<>();
+
+
+        VerticalLayout v = new VerticalLayout();
+        v.setPadding(false);
+
+        TextArea comment = new TextArea("Review");
+        comment.setWidthFull();
+        comment.setHeight("150px");
+
+        HorizontalLayout starHolder = new HorizontalLayout();
+
+        // spin normal loop for 5 times
+        for(int i = 0; i < 5; i++){
+
+            Icon star =  commonComponents.iconCrafter(VaadinIcon.STAR,"25px","grey");
+            star.addClassName("icon-hover");
+
+            starHolder.add(star);
+
+
+            stars.add(
+                    star
+            );
+
+            int finalI = i+1;
+            star.addClickListener(e->{
+
+                // reset all
+                stars.forEach(ee-> ee.setColor("grey"));
+
+                for(int j = 0; j < finalI; j++){
+                    stars.get(j).setColor("Yellow");
+                }
+
+                starsSelected = finalI;
+
+
+            });
+
+
+
+        }
+
+        HorizontalLayout holder = new HorizontalLayout();
+        holder.setWidthFull();
+        holder.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+
+        Button createReview = new Button("Add a review");
+        createReview.addThemeVariants(ButtonVariant.PRIMARY);
+
+        createReview.addClickListener(e->{
+
+
+            AddReview addReview = new AddReview();
+            addReview.setReview((long) starsSelected);
+            addReview.setComment(comment.getValue());
+
+
+
+
+            updateReview.accept(addReview);
+
+        });
+
+        holder.add(
+                starHolder,
+                createReview
+        );
+
+        v.add(
+                comment,
+                holder
+        );
+
+        return v;
+    }
+
 
     public VerticalLayout commentsHolder(List<ProductComments> comments){
         VerticalLayout h = new VerticalLayout();

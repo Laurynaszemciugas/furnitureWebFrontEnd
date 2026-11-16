@@ -330,10 +330,6 @@ public class OrderAddProductListAddRemove {
                 button.setVisible(orderAddProducts != null);
                 button.addClickListener(ee -> {
 
-                    System.out.println("FUCKING UUID");
-                    System.out.println(orderAddProducts.getUuid());
-
-                    System.out.println(selectedProducts);
 
                     if (selectedProducts.stream().anyMatch(item -> item.getUuid().equals(orderAddProducts.getUuid()))) {
                         commonComponents.showNotification("Product already exists in the list +1 added", 3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_WARNING);
@@ -510,8 +506,6 @@ public class OrderAddProductListAddRemove {
 
             button.addClickListener(ee -> {
 
-                System.out.println("FUCKING UUID");
-                System.out.println(orderAddProducts.getUuid());
 
                 System.out.println(selectedProducts);
 
@@ -557,7 +551,6 @@ public class OrderAddProductListAddRemove {
 
                     }
                     else{
-                        System.out.println("baddddd");
                         orderProducts1.setProduct(product);
                         orderProducts1.setProductMultiple(null);
                     }
