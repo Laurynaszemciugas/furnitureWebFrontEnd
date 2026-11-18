@@ -2,6 +2,8 @@ package com.example.demo.Pages.ClientPages.Components;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.DTOS.Client.Cart;
 import com.example.demo.DTOS.Client.ProductsClients;
 import com.example.demo.Enums.Category;
 import com.example.demo.Services.Products.ProductService;
@@ -16,6 +18,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.dom.Style;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,19 +42,20 @@ public class ProductUI {
     ProductService productService;
     CommonComponents commonComponents;
     Common common;
+    SessionCrafter sessionCrafter;
 
-
+    List<Long> multiVariantIds = new ArrayList<>();
     List<String> multiVariantImages = new ArrayList<>();
     List<Double> multiVariantPrices = new ArrayList<>();
     List<Long> multiVariantDiscounts = new ArrayList<>();
     List<String> multiVariantColor = new ArrayList<>();
 
 
-
     public ProductUI(ProductService productService, CommonComponents commonComponents, Common common) {
         this.productService = productService;
         this.commonComponents = commonComponents;
         this.common = common;
+        this.sessionCrafter = new SessionCrafter();
     }
 
 
@@ -98,6 +103,19 @@ public class ProductUI {
 
 
             if(s.isMultiVariants()){
+
+                // Unpack ids
+                String multiVariantMultiIds = (String) s.getMultiVariantIds();
+
+                if(multiVariantMultiIds != null) {
+                    multiVariantIds = Arrays.stream(multiVariantMultiIds.split(","))
+                            .map(Long::parseLong)
+                            .collect(Collectors.toList());;
+                }
+
+
+
+
 
                 // Unpack images
                 String imagesUnSplit = (String) s.getMultiVariantImages();
@@ -258,10 +276,38 @@ public class ProductUI {
                 wrapper.add(
 
                         addToWhiteList(false),
-                        multiVariant,
-                        addToCart()
+                        multiVariant
+
 
                 );
+
+                // change the add to the cart button according to the item
+                if(multiVariantPrices.size() > 1) {
+                    wrapper.add(expandMultiVariantOption());
+                }
+                // if multi variant is alone so add it to cart insta
+                else{
+
+                    // add to the cart normal product
+                    Button addToCart = addToCart();
+                    addToCart.addClickListener(e->{
+                        Cart cart = new Cart();
+                        cart.setProductId(s.getId());
+                        cart.setMultiVariantId(multiVariantIds.isEmpty() ? null : multiVariantIds.get(0));
+                        cart.setProductName(s.getProductName());
+                        cart.setImageUrl(multiVariantImages.isEmpty() ? null : multiVariantImages.get(0));
+                        cart.setColor(multiVariantColor.get(0));
+                        cart.setCategory(s.getCategory());
+                        cart.setPrice(multiVariantPrices.get(0));
+                        cart.setDiscount(multiVariantDiscounts.get(0));
+                        cart.setAmountSelected(1L);
+
+                        addItemToTheCart(cart);
+                    });
+
+                    wrapper.add(addToCart);
+
+                }
 
                 v.add(
                         wrapper
@@ -330,11 +376,31 @@ public class ProductUI {
                         );
 
 
+                // add to the cart normal product
+                Button addToCart = addToCart();
+                addToCart.addClickListener(e->{
+                    Cart cart = new Cart();
+                    cart.setProductId(s.getId());
+                    cart.setMultiVariantId(null);
+                    cart.setProductName(s.getProductName());
+                    cart.setImageUrl(s.getNonMultiVariantImage());
+                    cart.setColor(s.getProductColor());
+                    cart.setCategory(s.getCategory());
+                    cart.setPrice(s.getNormalProductPrice());
+                    cart.setDiscount(s.getNormalProductDiscount());
+                    IntegerField i = new IntegerField();
+                    i.setValue(1);
+                    cart.setAmountSelected(1L);
+
+
+                    addItemToTheCart(cart);
+                });
+
                 wrapper.add(
 
                         addToWhiteList(false),
                         multiVariant,
-                        addToCart()
+                        addToCart
                 );
 
                 v.add(
@@ -368,12 +434,33 @@ public class ProductUI {
     }
 
 
-    public HorizontalLayout addToCart(){
+    public Button addToCart(){
 
         HorizontalLayout h = new HorizontalLayout();
         h.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
         Button button = new Button("Add to cart", VaadinIcon.CART.create());
+        button.getStyle().setPosition(Style.Position.ABSOLUTE);
+        button.getStyle().setBottom("10px");
+        button.setWidth("90%");
+
+        button.addThemeVariants(ButtonVariant.PRIMARY);
+
+        h.add(
+                button
+        );
+
+        return button;
+
+    }
+
+
+    public HorizontalLayout expandMultiVariantOption(){
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+        Button button = new Button("Options", VaadinIcon.OPTION.create());
         button.getStyle().setPosition(Style.Position.ABSOLUTE);
         button.getStyle().setBottom("10px");
         button.setWidth("90%");
@@ -474,6 +561,32 @@ public class ProductUI {
 
         return v;
 
+    }
+
+    public void addItemToTheCart(Cart cart) {
+
+        List<Cart> selectedItems = sessionCrafter.extractSession("Cart", List.class);
+
+        if (selectedItems == null) {
+            selectedItems = new ArrayList<>();
+            sessionCrafter.createSession("Cart", selectedItems);
+        }
+
+        boolean exists = false;
+        for(var s : selectedItems){
+            if(s.getProductId().equals(cart.getProductId())){
+                s.setAmountSelected(s.getAmountSelected() + cart.getAmountSelected());
+                exists = true;
+            }
+        }
+
+        if(!exists) {
+            selectedItems.add(cart);
+        }
+
+//        System.out.println(selectedItems);
+
+        sessionCrafter.createSession("Cart", selectedItems);
     }
 
 

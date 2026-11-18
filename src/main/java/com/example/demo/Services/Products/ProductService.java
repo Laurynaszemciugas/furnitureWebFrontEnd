@@ -171,8 +171,8 @@ public class ProductService {
 
 
     @SneakyThrows
-    public List<ProductsClients> getProductsAccordingToFilter(ClientProductsFilter filter){
-        return Arrays.stream(httpCallLogic.HttpCall("product/getProductsAccordingToFilter", HttpMethod.POST, filter , ProductsClients[].class,false)).toList();
+    public List<ProductsClients> getProductsAccordingToFilter(ClientProductsFilter filter, String jwt){
+        return Arrays.stream(httpCallLogic.HttpCallWithJwt("product/getProductsAccordingToFilter", HttpMethod.POST, filter , ProductsClients[].class,false,jwt)).toList();
     }
 
     @SneakyThrows

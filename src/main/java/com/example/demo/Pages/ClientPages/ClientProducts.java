@@ -1,10 +1,14 @@
 package com.example.demo.Pages.ClientPages;
 
+import com.example.demo.Common.AI.AiQuestion;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
+import com.example.demo.DTOS.ActionLogs.ActionLogFeed;
 import com.example.demo.DTOS.BreadCrums.BreadCrumsDto;
 import com.example.demo.DTOS.Client.ClientCategorys;
+import com.example.demo.DTOS.Client.ProductsClients;
 import com.example.demo.Enums.Category;
 import com.example.demo.Enums.Stock;
 import com.example.demo.FilterDTO.Client.ClientProductsFilter;
@@ -12,6 +16,7 @@ import com.example.demo.MainLayouts.Client.ClientMainLayout;
 import com.example.demo.Pages.ClientPages.Components.ProductUI;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.accordion.AccordionPanel;
 import com.vaadin.flow.component.button.Button;
@@ -19,17 +24,20 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.component.shared.Tooltip;
 import com.vaadin.flow.component.slider.IntegerRangeSlider;
 import com.vaadin.flow.component.slider.IntegerRangeSliderValue;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
@@ -40,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 @Route(value = "ClientProducts" , layout = ClientMainLayout.class)
 public class ClientProducts extends VerticalLayout implements BeforeEnterObserver {
@@ -48,6 +57,7 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
     CommonComponents commonComponents;
     Common common;
     ProductUI productUI;
+    SessionCrafter sessionCrafter;
 
     ProductService productService;
 
@@ -61,6 +71,9 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
     VerticalLayout productMemory = new VerticalLayout();
 
 
+    // filter memory
+    VerticalLayout filterHolder = new VerticalLayout();
+
 
     public ClientProducts(CommonComponents commonComponents, Common common, ProductUI productUI, ProductService productService) {
         this.commonComponents = commonComponents;
@@ -68,6 +81,7 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
         this.productUI = productUI;
         this.productService = productService;
         this.paganation = new Paganation();
+        this.sessionCrafter = new SessionCrafter();
 
 
         setPadding(false);
@@ -135,8 +149,11 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
         left.addClassName("island");
         left.setWidth("350px");
 
+
+        // add the filters
+        filteringLayout();
         left.add(
-                filteringLayout()
+                filterHolder
         );
 
 
@@ -144,11 +161,8 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
         right.setPadding(false);
         right.setWidth("1000px");
 
-        productMemory.removeAll();
-        productMemory.add(
-                productUI.productDisplay(productService.getProductsAccordingToFilter(clientProductsFilter), "250px","250px","250px"),
-                paganation.buttonHolder(10)
-        );
+        // update products
+        updateProducts();
 
         right.add(
                 productMemory
@@ -162,12 +176,13 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
     }
 
-    public VerticalLayout filteringLayout(){
+    public void filteringLayout(){
 
-        VerticalLayout holder = new VerticalLayout();
-        holder.setSpacing(false);
-        holder.setPadding(false);
-        holder.setPadding(false);
+        // clear all to stop dublicates
+        filterHolder.removeAll();
+
+        filterHolder.setSpacing(false);
+        filterHolder.setPadding(false);
 
 
 
@@ -181,6 +196,17 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
         resetHolder.setWidthFull();
 
         Button resetFilters = new Button("Reset all");
+        resetFilters.addClickListener(e->{
+            // reset filter layout
+            filteringLayout();
+
+            // reset filter
+            clientProductsFilter = new ClientProductsFilter();
+
+            // reload data
+            updateProducts();
+
+        });
 
         resetHolder.add(
                 new HorizontalLayout(
@@ -263,32 +289,21 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
 
         // Apply filters
-
-
         Button applyFilters = new Button("Apply filters");
         applyFilters.setWidthFull();
         applyFilters.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         applyFilters.addClickListener(e->{
 
-            System.out.println(clientProductsFilter);
-
-            productMemory.removeAll();
-            productMemory.add(
-                    productUI.productDisplay(productService.getProductsAccordingToFilter(clientProductsFilter), "250px","250px","250px"),
-                    paganation.buttonHolder(10)
-            );
+            updateProducts();
 
         });
 
 
-        TextField t = new TextField("ZAZAZAZ");
-        t.addValueChangeListener(e->{
-            clientProductsFilter.setPrompt(e.getValue().trim());
-        });
 
 
-        holder.add(
+
+        filterHolder.add(
                 resetHolder,
                 commonComponents.lineCrafter("100%"),
                 accordion,
@@ -303,13 +318,11 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
                 commonComponents.lineCrafter("100%"),
                 accordion5,
                 commonComponents.lineCrafter("100%"),
-                applyFilters,
-                t
+                applyFilters
 
         );
 
 
-        return holder;
     }
 
 
@@ -322,11 +335,17 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
         VerticalLayout categoryHolder =  new VerticalLayout();
         categoryHolder.setPadding(false);
 
-        List<String> materialNames = productService.findAllAvailableMaterialNames();
+        List<String> materialNames = new ArrayList<>(productService.findAllAvailableMaterialNames());
         // add the last one as All always
+        materialNames.add("All");
 
         CheckboxGroup<String> checkboxGroup = new CheckboxGroup<>();
+        checkboxGroup.setItems(materialNames);
 
+
+
+        // default choice
+        checkboxGroup.setValue(Collections.singleton("All"));
 
         checkboxGroup.addValueChangeListener(e->{
 
@@ -338,15 +357,21 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
                 checkboxGroup.setValue(Collections.singleton("All"));
 
 
+                List<String> all = new ArrayList<>();
+                all.add(
+                        Category.ALL.getDisplayName()
+                );
+                clientProductsFilter.setMaterials(all);
+
             }
+            else {
 
-            Set<String> set = e.getValue();
+                Set<String> set = e.getValue();
 
-            clientProductsFilter.setMaterials(set.stream().toList());
-
+                clientProductsFilter.setMaterials(set.stream().toList());
+            }
         });
 
-        checkboxGroup.setItems(materialNames);
 
         categoryHolder.add(
                 checkboxGroup
@@ -369,6 +394,8 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
         checkboxGroup.setItemLabelGenerator(Stock::getDisplayName);
 
+        // default choice
+        checkboxGroup.setValue(Stock.ALL);
 
         checkboxGroup.addValueChangeListener(e->{
 
@@ -398,6 +425,9 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
         RadioButtonGroup<String> checkboxGroup = new RadioButtonGroup<>();
 
         checkboxGroup.setItems("Discounted","No discount", "All");
+
+        // default choice
+        checkboxGroup.setValue("All");
 
         checkboxGroup.addValueChangeListener(e->{
 
@@ -435,19 +465,26 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
     public HorizontalLayout colorsFilterBuilder(){
 
 
-        List<VerticalLayout> allColors = new ArrayList<>();
-        String selectedColor = "";
+        String defaultColor = "#00000000";
+
+        Icon icon = commonComponents.iconCrafter(VaadinIcon.CHECK,"25px","White");
+        Icon allColors = commonComponents.iconCrafter(VaadinIcon.GLOBE,"25px","RoyalBlue");
 
         HorizontalLayout h = new HorizontalLayout();
         h.addClassName("layout-flex");
         h.setWidthFull();
 
-        List<String> colors = productService.findAllAvailableColors();
+        List<String> colors = new ArrayList<>(productService.findAllAvailableColors());
 
-        System.out.println(colors);
+        colors.add(
+                defaultColor
+        );
+
 
         for(var s : colors){
             VerticalLayout v = new VerticalLayout();
+            v.setJustifyContentMode(JustifyContentMode.CENTER);
+            v.setAlignItems(Alignment.CENTER);
             v.setWidth("25px");
             v.setHeight("25px");
             v.getStyle().setBorderRadius("50%");
@@ -456,11 +493,37 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
             v.addClassName("island-hover");
 
+            // All colors indictor
+            if(s.equals(defaultColor)){
+                v.add(
+                        allColors
+                );
+
+                Tooltip.forComponent(v)
+                        .withText("All colors");
+
+            }
+            else{
+                Tooltip.forComponent(v)
+                        .withText("Color hex: " + s);
+            }
+
             v.addClickListener(e->{
 
-                System.out.println(s);
+                if(s.equals(defaultColor)){
+                    icon.setVisible(false);
+                    v.add(icon);
+                    clientProductsFilter.setColor("All");
+                    allColors.setColor("RoyalBlue");
+                }
+                else{
+                    icon.setVisible(true);
+                    v.add(icon);
+                    clientProductsFilter.setColor(s);
+                    allColors.setColor("grey");
+                }
 
-                clientProductsFilter.setColor(s);
+
 
             });
 
@@ -487,16 +550,19 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
         CheckboxGroup<String> checkboxGroup = new CheckboxGroup<>();
 
-        List<String> categoryList = clientCategorys.stream().map(s -> s.getCategory().toString()).toList();
+        List<String> categoryList = clientCategorys.stream().map(s -> s.getCategory().getDisplayName()).toList();
 
         checkboxGroup.setItems(categoryList);
+
+        // default choice
+        checkboxGroup.setValue(Collections.singleton("All"));
 
         checkboxGroup.setRenderer(new ComponentRenderer<>(category ->{
 
             HorizontalLayout h = new HorizontalLayout();
 
 
-            Long count  = clientCategorys.stream().filter(s -> s.getCategory().toString().equals(category)).map(s -> s.getCount()).findFirst().orElse(0L);
+            Long count  = clientCategorys.stream().filter(s -> s.getCategory().getDisplayName().equals(category)).map(s -> s.getCount()).findFirst().orElse(0L);
 
             h.add(
                 new Span(category),
@@ -514,10 +580,27 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
         checkboxGroup.addValueChangeListener(e->{
 
-            Set<String> selectedCategories = e.getValue();
 
-            clientProductsFilter.setCategories(selectedCategories.stream().toList());
 
+            if(!e.isFromClient()) return;
+
+            if (e.getValue().contains("All")) {
+                checkboxGroup.clear();
+                checkboxGroup.setValue(Collections.singleton("All"));
+
+                List<String> all = new ArrayList<>();
+                all.add(
+                        Category.ALL.toString()
+                );
+                clientProductsFilter.setCategories(all);
+
+            }
+            else {
+
+                Set<String> selectedCategories = e.getValue();
+
+                clientProductsFilter.setCategories(selectedCategories.stream().toList());
+            }
         });
 
 
@@ -614,6 +697,40 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
             );
 
             return v;
+
+    }
+
+
+    // update and show loading thingy
+    public void updateProducts(){
+
+        UI ui = UI.getCurrent();
+        String jwt = sessionCrafter.extractSession("JWT", String.class);
+
+        productMemory.removeAll();
+        productMemory.add(
+                commonComponents.shimmer(5)
+        );
+
+        CompletableFuture
+                .supplyAsync(()->{
+
+                    List<ProductsClients> items = productService.getProductsAccordingToFilter(clientProductsFilter,jwt);
+                    common.timer(250);
+                    return items;
+                })
+                .thenAccept(e->{
+                    ui.access(() -> {
+                        productMemory.removeAll();
+
+                        productMemory.add(
+                                productUI.productDisplay(e, "250px","250px","250px"),
+                                paganation.buttonHolder(10)
+                        );
+                    });
+                });
+
+
 
     }
 

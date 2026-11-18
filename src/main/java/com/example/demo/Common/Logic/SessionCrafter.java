@@ -8,6 +8,7 @@ public class SessionCrafter {
     // create session
     public <T> void createSession(String sessionName, T value){
         VaadinSession.getCurrent().setAttribute(sessionName,value);
+
     }
 
     // extract data from session

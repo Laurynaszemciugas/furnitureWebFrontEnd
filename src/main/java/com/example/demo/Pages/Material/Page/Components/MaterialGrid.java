@@ -378,7 +378,7 @@ public class MaterialGrid {
             Button openDialog = new Button("Actions");
 
             openDialog.addClickListener(ee->{
-               dialog.open();
+                dialog.open();
                 openTheDialog = e.getId();
             });
 
