@@ -788,6 +788,7 @@ public class AddNewMultiProduct extends VerticalLayout implements BeforeEnterObs
                 List<ProductFinishSteps> stepsToPrepares = new ArrayList<>();
                 for(var s : listStepsToPrepares){
                     ProductFinishSteps steps = new ProductFinishSteps();
+                    steps.setId(s.getId());
                     steps.setProduct(product);
                     steps.setStepId(s.getStep());
                     steps.setStepName(s.getStepName().getValue());

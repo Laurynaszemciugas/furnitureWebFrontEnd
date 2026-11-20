@@ -10,6 +10,7 @@ import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
@@ -289,6 +290,10 @@ public class ProductUI {
                 else{
 
                     // add to the cart normal product
+                    HorizontalLayout h = new HorizontalLayout();
+                    h.setWidthFull();
+                    h.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
                     Button addToCart = addToCart();
                     addToCart.addClickListener(e->{
                         Cart cart = new Cart();
@@ -305,7 +310,11 @@ public class ProductUI {
                         addItemToTheCart(cart);
                     });
 
-                    wrapper.add(addToCart);
+                    h.add(
+                            addToCart
+                    );
+
+                    wrapper.add(h);
 
                 }
 
@@ -377,6 +386,10 @@ public class ProductUI {
 
 
                 // add to the cart normal product
+                HorizontalLayout h = new HorizontalLayout();
+                h.setWidthFull();
+                h.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
                 Button addToCart = addToCart();
                 addToCart.addClickListener(e->{
                     Cart cart = new Cart();
@@ -396,11 +409,15 @@ public class ProductUI {
                     addItemToTheCart(cart);
                 });
 
+                h.add(
+                        addToCart
+                );
+
                 wrapper.add(
 
                         addToWhiteList(false),
                         multiVariant,
-                        addToCart
+                        h
                 );
 
                 v.add(
@@ -431,6 +448,24 @@ public class ProductUI {
         return v;
 
 
+    }
+
+    public void expandMultiVariantProducts(){
+
+//        List<Long> multiVariantIds = new ArrayList<>();
+//        List<String> multiVariantImages = new ArrayList<>();
+//        List<Double> multiVariantPrices = new ArrayList<>();
+//        List<Long> multiVariantDiscounts = new ArrayList<>();
+//        List<String> multiVariantColor = new ArrayList<>();
+
+        Dialog dialog = new Dialog("Item");
+
+        Button close =  new Button("Close", e-> dialog.close());
+        dialog.getFooter().add(close);
+
+
+
+        dialog.open();
     }
 
 

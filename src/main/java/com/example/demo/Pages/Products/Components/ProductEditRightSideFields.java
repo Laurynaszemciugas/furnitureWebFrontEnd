@@ -1,5 +1,6 @@
 package com.example.demo.Pages.Products.Components;
 
+import com.example.demo.Common.ColorSelector;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.ObjectConverter;
@@ -60,6 +61,7 @@ public class ProductEditRightSideFields {
 
     ObjectConverter objectConverter;
 
+    ColorSelector colorSelector;
 
 
 
@@ -69,6 +71,8 @@ public class ProductEditRightSideFields {
     private TextField productName = new TextField("Product name");
     private TextField sku = new TextField("SKU");
     private TextArea description = new TextArea("Description");
+
+    private TextField productColor = new TextField("Product color");
 
     private NumberField price = new NumberField("Price");
     private NumberField discount = new NumberField("Discount %");
@@ -162,6 +166,8 @@ public class ProductEditRightSideFields {
         this.aiService = aiService;
         this.productAiDto = new ProductAiDto();
         this.productService = productService;
+
+        this.colorSelector = new ColorSelector();
 
         this.multipleProductChoices = new MultipleProductChoices(commonComponents,common,commonService,objectConverter,materialService,aiService,productService);
 
@@ -462,6 +468,8 @@ public class ProductEditRightSideFields {
 
         materialCost.setValue(sumPrice);
 
+        productColor.setValue(productEditDto.getColor()  == null ? "white" : productEditDto.getColor());
+
 
         stockQuantity.setValue(productEditDto.getStockQuantity() != null ? (double) productEditDto.getStockQuantity() : 0.0);
         lowThreshold.setValue(productEditDto.getLowStockThreshold() != null ? (double) productEditDto.getLowStockThreshold() : 0.0);
@@ -550,6 +558,7 @@ public class ProductEditRightSideFields {
             product.setStatus(status.getValue());
             product.setVisibility(visibility.getValue());
             product.setMultipleItems(false);
+            product.setColor(productColor.getValue());
 
             // get tags
             List<ProductTags> productTags = new ArrayList<>();
@@ -630,6 +639,7 @@ public class ProductEditRightSideFields {
                 List<ProductFinishSteps> stepsToPrepares = new ArrayList<>();
                 for(var s : listStepsToPrepares){
                     ProductFinishSteps steps = new ProductFinishSteps();
+                    steps.setId(s.getId());
                     steps.setProduct(product);
                     steps.setStepId(s.getStep());
                     steps.setStepName(s.getStepName().getValue());
@@ -691,8 +701,10 @@ public class ProductEditRightSideFields {
         v.getStyle().set("position","relative");
         FormLayout basicInfo = new FormLayout();
 
-        basicInfo.add(productName, sku, description);
+        basicInfo.add(productName, sku,colorSelector.colorSelector(productColor), description);
+        basicInfo.setColspan(productName,2);
         basicInfo.setColspan(description,2);
+
 
         Button aiButton = commonComponents.buttonThemeAndIconNoNavigate("AI",ButtonVariant.LUMO_PRIMARY, VaadinIcon.MAGIC,"WHITE");
         aiButton.setTooltipText("Generate information with a prompt");

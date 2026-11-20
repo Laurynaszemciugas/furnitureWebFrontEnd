@@ -667,7 +667,7 @@ public class MultipleProductChoices extends VerticalLayout  {
 
             materialCost.setValue(sumPrice);
 
-            productColor.setValue(products.getColor()  == null ? "" : products.getColor());
+            productColor.setValue(products.getColor()  == null ? "white" : products.getColor());
 
 
             stockQuantity.setValue(products.getStockQuantity() != null ? (double) products.getStockQuantity() : 0.0);
@@ -720,6 +720,8 @@ public class MultipleProductChoices extends VerticalLayout  {
 
         if(product.getSteps() != null &&  !product.getSteps().isEmpty()) {
             for(var s : product.getSteps()) {
+
+
 
                 listStepsToPrepares.add(new ListStepsToPrepare(
                         s.getId(),
@@ -779,6 +781,8 @@ public class MultipleProductChoices extends VerticalLayout  {
         if(product.getSteps() != null &&  !product.getSteps().isEmpty()) {
             for(var s : product.getSteps()) {
 
+
+
                 listStepsToPrepares.add(new ListStepsToPrepare(
                         s.getId(),
                         s.getStepId(),
@@ -822,7 +826,11 @@ public class MultipleProductChoices extends VerticalLayout  {
 
             List<ProductFinishSteps> stepsToPrepares = new ArrayList<>();
             for(var s : listStepsToPrepares){
+
+
+
                 ProductFinishSteps steps = new ProductFinishSteps();
+                steps.setId(s.getId());
                 steps.setProduct(product);
                 steps.setStepId(s.getStep());
                 steps.setStepName(s.getStepName().getValue());
@@ -883,6 +891,8 @@ public class MultipleProductChoices extends VerticalLayout  {
 
                 multipleProduct.setStatus(status.getValue());
                 multipleProduct.setVisibility(visibility.getValue());
+
+                multipleProduct.setColor(productColor.getValue());
 
 
 
@@ -1285,6 +1295,8 @@ public class MultipleProductChoices extends VerticalLayout  {
 
 
     public VerticalLayout basicInfo(){
+
+
 
         VerticalLayout v = new VerticalLayout();
 
