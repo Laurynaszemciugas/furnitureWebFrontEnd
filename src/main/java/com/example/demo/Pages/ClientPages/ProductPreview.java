@@ -24,6 +24,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.shared.Tooltip;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.component.tabs.Tabs;
@@ -359,26 +360,31 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
                 // show materials
                 for(var material : s.getMaterials()){
 
+                    String main = "No_picture.png";
+
                     for(var imgs : material.getMaterials().getImages()) {
+
 
                         if(imgs.getImageLogic().equals(ImageLogic.Main)) {
 
+                            main = imgs.getImageUrl();
 
 
-                            VerticalLayout st = new VerticalLayout();
-                            st.setWidth("150px");
-                            st.setAlignItems(Alignment.CENTER);
-                            st.addClassName("island");
-                            st.add(
-                                    commonComponents.imageCrafter(imgs.getImageUrl() == null ? "No_picture.png" : imgs.getImageUrl(), "50px", "50px", "50%"),
-                                    commonComponents.spanCrafterWordNoHide(material.getMaterials().getMaterialName(), "stat-example")
-                            );
-
-                            materialHolder.add(
-                                    st
-                            );
                         }
                     }
+
+                    VerticalLayout st = new VerticalLayout();
+                    st.setWidth("150px");
+                    st.setAlignItems(Alignment.CENTER);
+                    st.addClassName("island");
+                    st.add(
+                            commonComponents.imageCrafter(main, "50px", "50px", "50%"),
+                            commonComponents.spanCrafterWordNoHide(material.getMaterials().getMaterialName(), "stat-example")
+                    );
+
+                    materialHolder.add(
+                            st
+                    );
 
 
 
@@ -402,28 +408,35 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
             // show materials
             for(var material : product.getMaterials()){
 
+                String main = "No_picture.png";
 
                 for(var imgs : material.getMaterials().getImages()) {
+
+
 
                     if(imgs.getImageLogic().equals(ImageLogic.Main)) {
 
 
+                        main = imgs.getImageUrl();
 
-                        VerticalLayout st = new VerticalLayout();
-                        st.setWidth("150px");
-                        st.setAlignItems(Alignment.CENTER);
-                        st.addClassName("island");
-                        st.add(
-                                commonComponents.imageCrafter(imgs.getImageUrl(), "50px", "50px", "50%"),
-                                commonComponents.spanCrafterWordNoHide(material.getMaterials().getMaterialName(), "stat-example")
-                        );
 
-                        materialHolder.add(
-                                st
-                        );
                     }
-                }
 
+                }
+                VerticalLayout st = new VerticalLayout();
+                Tooltip tooltip = Tooltip.forComponent(st);
+                tooltip.setText(material.getMaterials().getDescription());
+                st.setWidth("150px");
+                st.setAlignItems(Alignment.CENTER);
+                st.addClassName("island");
+                st.add(
+                        commonComponents.imageCrafter(main, "50px", "50px", "50%"),
+                        commonComponents.spanCrafterWordNoHide(material.getMaterials().getMaterialName(), "stat-example")
+                );
+
+                materialHolder.add(
+                        st
+                );
 
 
             }
@@ -731,7 +744,7 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
                         .set("text-decoration", "line-through").setColor("Grey");
 
                 discount.setText("Save " + (long)product.getDiscount() + "%" );
-                discountPrice.setText(product.getPrice() - (product.getPrice() * product.getDiscount()/100 )+ "Eur");
+                discountPrice.setText(String.format("%.2f Eur",product.getPrice() - (product.getPrice() * product.getDiscount()/100 )));
 
 
                 price.add(

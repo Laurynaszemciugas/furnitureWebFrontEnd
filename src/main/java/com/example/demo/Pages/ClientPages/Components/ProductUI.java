@@ -5,7 +5,9 @@ import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.DTOS.Client.Cart;
 import com.example.demo.DTOS.Client.ProductsClients;
+import com.example.demo.Entity.Product;
 import com.example.demo.Enums.Category;
+import com.example.demo.Enums.ImageLogic;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -284,7 +286,7 @@ public class ProductUI {
 
                 // change the add to the cart button according to the item
                 if(multiVariantPrices.size() > 1) {
-                    wrapper.add(expandMultiVariantOption());
+                    wrapper.add(expandMultiVariantOption(s));
                 }
                 // if multi variant is alone so add it to cart insta
                 else{
@@ -450,18 +452,117 @@ public class ProductUI {
 
     }
 
-    public void expandMultiVariantProducts(){
+    public void expandMultiVariantProducts(ProductsClients productsClients){
 
-//        List<Long> multiVariantIds = new ArrayList<>();
-//        List<String> multiVariantImages = new ArrayList<>();
-//        List<Double> multiVariantPrices = new ArrayList<>();
-//        List<Long> multiVariantDiscounts = new ArrayList<>();
-//        List<String> multiVariantColor = new ArrayList<>();
+        Product product = productService.getProduct(productsClients.getId());
 
-        Dialog dialog = new Dialog("Item");
+
+        Dialog dialog = new Dialog(product.getProductName());
+        dialog.setWidth("800px");
+
+        VerticalLayout main = new VerticalLayout();
+        main.setPadding(false);
 
         Button close =  new Button("Close", e-> dialog.close());
         dialog.getFooter().add(close);
+
+        for(var s : product.getProductMultiples()){
+            HorizontalLayout layout = new HorizontalLayout();
+            layout.setAlignItems(FlexComponent.Alignment.CENTER);
+            layout.addClassName("island");
+            layout.setWidthFull();
+
+            String mainImage = "No_picture.png";
+
+            if(!s.getImages().isEmpty()){
+                for(var img : s.getImages()){
+                    if(img.getImageLogic().equals(ImageLogic.Main)){
+                        mainImage = img.getImageUrl();
+                    }
+                }
+            }
+
+            Image image = commonComponents.imageCrafter(mainImage,"100px","100px","5px");
+
+            VerticalLayout circle = new VerticalLayout();
+            circle.setWidth("25px");
+            circle.setHeight("25px");
+            circle.getStyle().setBorderRadius("50%");
+            circle.getStyle().setBackgroundColor(s.getColor());
+
+            VerticalLayout nameCategory = new VerticalLayout();
+
+            Span name = commonComponents.spanCrafterWordNoHide(s.getProductName(),"stat-example");
+            Span category = commonComponents.spanCrafterWordNoHide(s.getCategory().getDisplayName(),"stat-description");
+
+
+            // Price
+            VerticalLayout price = new VerticalLayout();
+            price.setAlignItems(FlexComponent.Alignment.CENTER);
+            price.setWidthFull();
+
+            Span productPrice = commonComponents.spanCrafterWordNoHide("","stat-example");
+            Span discountPrice = commonComponents.spanCrafterWordNoHide("","stat-example");
+            Span discount = commonComponents.spanCrafterWordNoHide("","stat-example");
+            discount.addClassNames("stock-badge","stock-out ");
+
+            productPrice.setText(s.getPrice() + "Eur");
+
+
+            if(s.getDiscount() > 0){
+
+                productPrice.getStyle()
+                        .set("text-decoration", "line-through").setColor("Grey");
+
+                discount.setText("Save " + (long)s.getDiscount() + "%" );
+                discountPrice.setText(String.format("%.2f Eur",s.getPrice() - (s.getPrice() * s.getDiscount()/100)));
+
+
+                price.add(
+                        discountPrice,
+                        productPrice,
+                        discount
+                );
+            }
+            else{
+                price.add(
+                        productPrice
+                );
+            }
+
+
+
+            VerticalLayout priceHolder = new VerticalLayout();
+            priceHolder.add(
+                    price
+            );
+
+            nameCategory.add(
+                    name,
+                    category
+            );
+
+
+            Button addToCart = addToCartNormal();
+
+
+            layout.add(
+                    image,
+                    circle,
+                    nameCategory,
+                    priceHolder,
+                    addToCart
+            );
+
+
+
+            main.add(layout);
+
+        }
+
+        dialog.add(
+                main
+        );
 
 
 
@@ -489,8 +590,30 @@ public class ProductUI {
 
     }
 
+    public Button addToCartNormal(){
 
-    public HorizontalLayout expandMultiVariantOption(){
+        HorizontalLayout h = new HorizontalLayout();
+        h.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+        Button button = new Button("Add to cart", VaadinIcon.CART.create());
+        button.getStyle().setBottom("10px");
+
+        button.addThemeVariants(ButtonVariant.PRIMARY);
+
+        h.add(
+                button
+        );
+
+        return button;
+
+    }
+
+
+    public HorizontalLayout expandMultiVariantOption(ProductsClients productsClients){
+
+
+
+
 
         HorizontalLayout h = new HorizontalLayout();
         h.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
@@ -501,6 +624,10 @@ public class ProductUI {
         button.setWidth("90%");
 
         button.addThemeVariants(ButtonVariant.PRIMARY);
+
+        button.addClickListener(e->{
+            expandMultiVariantProducts(productsClients);
+        });
 
         h.add(
                 button

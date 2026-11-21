@@ -1097,10 +1097,38 @@ public class MultipleProductChoices extends VerticalLayout  {
             }
 
 
+            Span productPrice = commonComponents.spanCrafterWordNoHide(String.format("%.2f %s",s.getPrice(),"Eur"),"activityFeed-name");
+            productPrice.getStyle().set("margin-top","10px");
+
+            HorizontalLayout priceHolder = new HorizontalLayout(productPrice);
+
+            if(s.getDiscount() > 0){
+
+                Span discountMark = commonComponents.spanCrafterWordNoHide(String.format("%.0f %s", s.getDiscount(),"%"),"discount-badge");
+                discountMark.getStyle().set("top","20px").set("right","20px").set("position","absolute");
+                priceHolder.add(discountMark);
+
+                productPrice.getStyle()
+                        .set("text-decoration", "line-through");
+
+                Span ss = commonComponents.spanCrafterWordNoHide(String.format("%.2f %s", s.getPrice() - (s.getPrice() * s.getDiscount()/100) , "Eur"),"activityFeed-name");
+                priceHolder.setAlignItems(FlexComponent.Alignment.CENTER);
+                priceHolder.add(ss);
+
+
+            }
+
+
+
+
+
+
+
             v.add(
                     image,
                     commonComponents.spanCrafterWordNoHide(s.getProductName(),"stat-example"),
                     commonComponents.spanCrafterWordNoHide(s.getPrice() + " Eur","stat-example"),
+                    priceHolder,
 
                     commonComponents.doubleValueRow(span,commonComponents.spanCrafterWordNoHide(s.getStockQuantity() + " units","stat-description"))
             );
@@ -1240,6 +1268,10 @@ public class MultipleProductChoices extends VerticalLayout  {
 
 
             });
+
+
+
+
 
             h.add(
                     v
