@@ -1,5 +1,6 @@
 package com.example.demo.Pages.ClientPages;
 
+import com.example.demo.ClientUIUpdater;
 import com.example.demo.Common.AI.AiQuestion;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
@@ -63,6 +64,8 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
     Paganation paganation;
 
+    ClientUIUpdater clientUIUpdater;
+
     // client pages filters
 
     ClientProductsFilter clientProductsFilter = new ClientProductsFilter();
@@ -75,13 +78,14 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
     VerticalLayout filterHolder = new VerticalLayout();
 
 
-    public ClientProducts(CommonComponents commonComponents, Common common, ProductUI productUI, ProductService productService) {
+    public ClientProducts(CommonComponents commonComponents, Common common, ProductUI productUI, ProductService productService,ClientUIUpdater clientUIUpdater) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.productUI = productUI;
         this.productService = productService;
         this.paganation = new Paganation();
         this.sessionCrafter = new SessionCrafter();
+        this.clientUIUpdater = clientUIUpdater;
 
 
         setPadding(false);
@@ -96,7 +100,9 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
         // default settings
         productMemory.setPadding(false);
 
-
+        clientUIUpdater.setUpdateProducts(e->{
+            updateProducts();
+        });
 
     }
 
@@ -104,6 +110,8 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
 
         removeAll();
+
+
 
 
 
@@ -117,6 +125,8 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
 
 
     public VerticalLayout mainLayout() {
+
+
 
 
         VerticalLayout verticalLayout = new VerticalLayout();

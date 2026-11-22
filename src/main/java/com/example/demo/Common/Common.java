@@ -3,7 +3,10 @@ package com.example.demo.Common;
 import com.example.demo.Common.DTOS.PlacesToBreak;
 import com.example.demo.Common.Logic.ErrorDisplay;
 import com.example.demo.Common.Logic.SessionCrafter;
+import com.example.demo.Entity.MaterialImageData;
+import com.example.demo.Entity.ProductImageData;
 import com.example.demo.Entity.UserSettings;
+import com.example.demo.Enums.ImageLogic;
 import com.example.demo.Enums.Warnings;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
@@ -51,6 +54,31 @@ public class Common {
 
 
 
+
+    public String extractMainImage(List<ProductImageData> productImage, List<MaterialImageData> materialImage){
+
+        String mainImage = "No_picture.png";
+
+        if(productImage == null){
+            for(var s : materialImage){
+                if(s.getImageLogic().equals(ImageLogic.Main)){
+                    mainImage = s.getImageUrl();
+                }
+            }
+        }
+        else{
+
+            for(var s : productImage){
+                if(s.getImageLogic().equals(ImageLogic.Main)){
+                    mainImage = s.getImageUrl();
+                }
+            }
+
+        }
+
+        return mainImage;
+
+    }
 
 
 

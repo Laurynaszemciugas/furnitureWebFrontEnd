@@ -214,7 +214,7 @@ public class ClientMainLayout extends AppLayout {
 
             cartMemory.removeAll();
             for (var s : selectedItems) {
-                cartMemory.add(CraftCartItem(s));
+                cartMemory.add(CraftCartItem(s,cart));
             }
         }
 
@@ -238,7 +238,7 @@ public class ClientMainLayout extends AppLayout {
 
     }
 
-    public HorizontalLayout CraftCartItem(Cart cart){
+    public HorizontalLayout CraftCartItem(Cart cart, Dialog dialog){
 
 
         HorizontalLayout h = new HorizontalLayout();
@@ -351,13 +351,18 @@ public class ClientMainLayout extends AppLayout {
            h.removeAll();
 
             totalPrice.setText(calculateTotalPrice());
+
+            commonComponents.showNotification(String.format("%s is removed from your cart", cart.getProductName()),3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
+            if(selectedItems.isEmpty()){
+                dialog.close();
+            }
         });
 
 
         h.add(
                 removeItem,
                 totalPriceOfTheProduct,
-                productUI.addToWhiteList(false),
+                productUI.addToWhiteList(false,true),
                 imageHolder,
                 colorCircle,
                 price,

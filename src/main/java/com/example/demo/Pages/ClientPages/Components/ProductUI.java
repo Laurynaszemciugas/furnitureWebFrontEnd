@@ -1,5 +1,6 @@
 package com.example.demo.Pages.ClientPages.Components;
 
+import com.example.demo.ClientUIUpdater;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.SessionCrafter;
@@ -10,6 +11,8 @@ import com.example.demo.Enums.Category;
 import com.example.demo.Enums.ImageLogic;
 import com.example.demo.Services.Products.ProductService;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.badge.Badge;
+import com.vaadin.flow.component.badge.BadgeVariant;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -18,6 +21,8 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -46,6 +51,7 @@ public class ProductUI {
     CommonComponents commonComponents;
     Common common;
     SessionCrafter sessionCrafter;
+    ClientUIUpdater clientUIUpdater;
 
     List<Long> multiVariantIds = new ArrayList<>();
     List<String> multiVariantImages = new ArrayList<>();
@@ -54,11 +60,12 @@ public class ProductUI {
     List<String> multiVariantColor = new ArrayList<>();
 
 
-    public ProductUI(ProductService productService, CommonComponents commonComponents, Common common) {
+    public ProductUI(ProductService productService, CommonComponents commonComponents, Common common,ClientUIUpdater clientUIUpdater) {
         this.productService = productService;
         this.commonComponents = commonComponents;
         this.common = common;
         this.sessionCrafter = new SessionCrafter();
+        this.clientUIUpdater =  clientUIUpdater;
     }
 
 
@@ -278,7 +285,7 @@ public class ProductUI {
 
                 wrapper.add(
 
-                        addToWhiteList(false),
+                        addToWhiteList(false,false),
                         multiVariant
 
 
@@ -417,7 +424,7 @@ public class ProductUI {
 
                 wrapper.add(
 
-                        addToWhiteList(false),
+                        addToWhiteList(false,false),
                         multiVariant,
                         h
                 );
@@ -472,15 +479,7 @@ public class ProductUI {
             layout.addClassName("island");
             layout.setWidthFull();
 
-            String mainImage = "No_picture.png";
-
-            if(!s.getImages().isEmpty()){
-                for(var img : s.getImages()){
-                    if(img.getImageLogic().equals(ImageLogic.Main)){
-                        mainImage = img.getImageUrl();
-                    }
-                }
-            }
+            String mainImage = common.extractMainImage(s.getImages(),null);
 
             Image image = commonComponents.imageCrafter(mainImage,"100px","100px","5px");
 
@@ -542,8 +541,23 @@ public class ProductUI {
                     category
             );
 
-
             Button addToCart = addToCartNormal();
+            addToCart.addClickListener(e->{
+
+                Cart cart = new Cart();
+                cart.setProductId(product.getId());
+                cart.setMultiVariantId(s.getId());
+                cart.setProductName(s.getProductName());
+                cart.setImageUrl(mainImage);
+                cart.setColor(s.getColor());
+                cart.setCategory(product.getCategory());
+                cart.setPrice(s.getPrice());
+                cart.setDiscount((long) s.getDiscount());
+                cart.setAmountSelected(1L);
+
+                addItemToTheCart(cart);
+
+            });
 
 
             layout.add(
@@ -637,7 +651,7 @@ public class ProductUI {
 
     }
 
-    public VerticalLayout addToWhiteList(boolean selected) {
+    public VerticalLayout addToWhiteList(boolean selected, boolean resetProducts) {
 
         Icon icon = selected
                 ? commonComponents.iconCrafter(VaadinIcon.HEART,"35px","white")
@@ -661,10 +675,20 @@ public class ProductUI {
         button.getStyle().set("align-items", "center");
         button.getStyle().set("justify-content", "center");
 
-        button.getElement()
-                .addEventListener("click", event ->
-                        System.out.println("Heart clicked"))
-                .stopPropagation();
+        boolean[] isSelected = {selected};
+        button.addClickListener(e->{
+            isSelected[0] = !isSelected[0];
+
+            icon.setIcon(isSelected[0] ? VaadinIcon.HEART : VaadinIcon.HEART_O);
+            icon.setColor(isSelected[0] ? "red" : "royalblue");
+
+            if(resetProducts) {
+                clientUIUpdater.updateProducts(true);
+            }
+        });
+
+
+
 
         return button;
     }
@@ -727,6 +751,11 @@ public class ProductUI {
 
     public void addItemToTheCart(Cart cart) {
 
+
+        System.out.println(cart);
+
+
+
         List<Cart> selectedItems = sessionCrafter.extractSession("Cart", List.class);
 
         if (selectedItems == null) {
@@ -735,10 +764,23 @@ public class ProductUI {
         }
 
         boolean exists = false;
+        if(cart.getMultiVariantId() == null){
         for(var s : selectedItems){
             if(s.getProductId().equals(cart.getProductId())){
                 s.setAmountSelected(s.getAmountSelected() + cart.getAmountSelected());
                 exists = true;
+            }
+        }
+        }
+        else{
+            for(var s : selectedItems){
+                if(s.getMultiVariantId() == null){
+                    continue;
+                }
+                if(s.getMultiVariantId().equals(cart.getMultiVariantId())){
+                    s.setAmountSelected(s.getAmountSelected() + cart.getAmountSelected());
+                    exists = true;
+                }
             }
         }
 
@@ -749,6 +791,92 @@ public class ProductUI {
 //        System.out.println(selectedItems);
 
         sessionCrafter.createSession("Cart", selectedItems);
+
+        Notification notification = new Notification();
+        notification.setDuration(10000);
+
+
+
+        Image image = commonComponents.imageCrafter(cart.getImageUrl(),"100px", "100px","5px");
+
+
+        Badge badge = new Badge("");
+
+
+
+
+
+        Button actionButton;
+
+        if(!exists){
+
+            Button removeFromCart = new Button("Remove from cart", VaadinIcon.TRASH.create());
+            removeFromCart.addThemeVariants(ButtonVariant.TERTIARY);
+            removeFromCart.addClickListener(event -> {
+
+                List<Cart> items = sessionCrafter.extractSession("Cart", List.class);
+
+                items.remove(cart);
+
+                sessionCrafter.createSession("Cart", items);
+
+                commonComponents.showNotification(String.format("%s is removed from your cart", cart.getProductName()),3000, Notification.Position.BOTTOM_CENTER, NotificationVariant.LUMO_SUCCESS);
+
+            });
+
+            actionButton = removeFromCart;
+
+            badge.setText("Added to the cart");
+            badge.addThemeVariants(BadgeVariant.SUCCESS);
+        }
+        else{
+
+            Button viewCart = new Button("View cart", VaadinIcon.CART.create());
+            viewCart.addThemeVariants(ButtonVariant.PRIMARY);
+            viewCart.addClickListener(event -> {
+                clientUIUpdater.updateCart(true);
+            });
+
+            actionButton = viewCart;
+
+            badge.setText("Added +1 to the cart");
+            badge.addThemeVariants(BadgeVariant.WARNING);
+        }
+
+        VerticalLayout actionLayout = new VerticalLayout();
+        actionLayout.add(
+                badge,
+                commonComponents.spanCrafterWordNoHide(cart.getProductName(),"stat-example")
+        );
+
+
+        Button closeButton = new Button(new Icon("lumo", "cross"));
+        closeButton.addThemeVariants(ButtonVariant.TERTIARY);
+        closeButton.setAriaLabel("Close");
+        closeButton.addClickListener(event -> {
+            notification.close();
+        });
+
+
+
+
+
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.addToEnd(closeButton);
+        layout.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        layout.add(
+                image,
+                actionLayout,
+                actionButton,
+                closeButton
+
+        );
+
+        notification.add(layout);
+        notification.open();
+
+
     }
 
 

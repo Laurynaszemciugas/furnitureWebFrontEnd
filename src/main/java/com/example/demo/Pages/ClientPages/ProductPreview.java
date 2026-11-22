@@ -360,18 +360,7 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
                 // show materials
                 for(var material : s.getMaterials()){
 
-                    String main = "No_picture.png";
-
-                    for(var imgs : material.getMaterials().getImages()) {
-
-
-                        if(imgs.getImageLogic().equals(ImageLogic.Main)) {
-
-                            main = imgs.getImageUrl();
-
-
-                        }
-                    }
+                    String main = common.extractMainImage(null, material.getMaterials().getImages());
 
                     VerticalLayout st = new VerticalLayout();
                     st.setWidth("150px");

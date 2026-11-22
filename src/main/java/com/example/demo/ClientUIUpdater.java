@@ -13,6 +13,12 @@ public class ClientUIUpdater {
     private Consumer<Boolean> updateCart;
     private Consumer<Boolean> updateWhitelist;
 
+    private Consumer<Boolean> updateProducts;
+
+
+    public void updateProducts(Boolean value){
+        updateProducts.accept(value);
+    }
 
 
     public void updateCart(Boolean value) {
