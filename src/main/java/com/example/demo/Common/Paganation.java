@@ -4,6 +4,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,14 +69,21 @@ public class Paganation {
         horizontalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
 
-        for(int i = 1; i <= totalPages; i++){
-            horizontalLayout.add(buttonCrafter(i));
+        if(size > 1) {
+            for (int i = 1; i <= totalPages; i++) {
+                horizontalLayout.add(buttonCrafter(i));
 
 
+            }
+            paganationButtons();
+
+        }
+        // just add some spacing if buttons are not present
+        else{
+            horizontalLayout.add(new VerticalLayout());
         }
 
 
-        paganationButtons();
 
 
 

@@ -3,16 +3,20 @@ package com.example.demo.Common;
 import com.example.demo.DTOS.Client.AddReview;
 import com.example.demo.Entity.ProductComments;
 import com.example.demo.Services.Products.ProductService;
+import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.dom.Style;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -56,6 +60,8 @@ public class ReviewCrafter {
 
 
     public VerticalLayout addNewComments(){
+
+        starsSelected = 0;
 
         List<Icon> stars = new ArrayList<>();
 
@@ -117,8 +123,8 @@ public class ReviewCrafter {
 
 
 
+                updateReview.accept(addReview);
 
-            updateReview.accept(addReview);
 
         });
 
@@ -158,7 +164,7 @@ public class ReviewCrafter {
 
         for(var s : comments){
 
-                    h.add(commentCrafter(s.getCommenter(),s.getComment(),s.getReview()));
+                    h.add(commentCrafter(s.getCommenter(),s.getComment(),s.getReview(), s.getCreated()));
         }
 
         return h;
@@ -167,7 +173,12 @@ public class ReviewCrafter {
 
 
 
-    public VerticalLayout commentCrafter(String comenter, String comment, double review){
+    public HorizontalLayout commentCrafter(String comenter, String comment, double review, LocalDateTime created){
+
+        HorizontalLayout h = new HorizontalLayout();
+        h.getStyle().setPosition(Style.Position.RELATIVE);
+        h.addClassName("island");
+        h.setWidthFull();
 
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setWidthFull();
@@ -176,10 +187,20 @@ public class ReviewCrafter {
 
         //Button editShortCut = commonComponents.smallIconButtons("1", VaadinIcon.PENCIL,"black");
 
+        Button reportReview = new Button("Report as appropriate",commonComponents.iconCrafter(VaadinIcon.FLAG,"35px","royalblue"));
+        reportReview.setTooltipText("Report this review as appropriate message (ALL reports are anonymous)");
+        reportReview.addThemeVariants(ButtonVariant.TERTIARY);
+        reportReview.getStyle().setPosition(Style.Position.ABSOLUTE).setRight("10px").setTop("10px");
+
+
         if(comenter != null) {
 
-                verticalLayout.addClassName("island");
-                verticalLayout.add(commonComponents.doubleValueRow(commonComponents.spanCrafterWordNoHide(comenter, "activityFeed-name"),starCrafter(review)),
+
+                verticalLayout.add(
+                        reportReview,
+                        commonComponents.spanCrafter(common.dateFormatterLocalDateTime(created,"dd MMM yyyy, HH:mm"), "stat-example"),
+                        commonComponents.doubleValueRow(
+                        commonComponents.spanCrafterWordNoHide(comenter, "activityFeed-name"),starCrafter(review)),
                         commonComponents.spanCrafterWordNoHide(comment,"stat-example")
                 );
             }
@@ -188,7 +209,14 @@ public class ReviewCrafter {
             verticalLayout.add(commonComponents.noDataFound());
         }
 
-        return verticalLayout;
+        Avatar avatar = new Avatar("Client");
+
+        h.add(
+                avatar,
+                verticalLayout
+        );
+
+        return h;
     }
 
     public HorizontalLayout starCrafter(double star){

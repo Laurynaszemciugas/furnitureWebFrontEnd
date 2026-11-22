@@ -167,10 +167,9 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
                 reviewCrafter.allInOneComment(product.getComments())
         );
 
-        // just to make that success thingy stop throwing that error damn
-        productService.setSuccess(ee->{
 
-        });
+
+
 
         // update the review
         reviewCrafter.setUpdateReview(e->{
@@ -186,13 +185,32 @@ public class ProductPreview extends VerticalLayout implements BeforeEnterObserve
 
 
 
-            product = productService.getProduct(productId);
 
 
-            reviewMemory.removeAll();
-            reviewMemory.add(
-                    reviewCrafter.allInOneComment(product.getComments())
-            );
+
+
+
+
+        });
+
+
+        // update only if success
+        productService.setSuccess(ee-> {
+
+
+            if(ee){
+
+                product = productService.getProduct(productId);
+
+                System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+
+                reviewMemory.removeAll();
+                reviewMemory.add(
+                        reviewCrafter.allInOneComment(product.getComments())
+                );
+            }
+
+
         });
 
         descriptionHolder.removeAll();

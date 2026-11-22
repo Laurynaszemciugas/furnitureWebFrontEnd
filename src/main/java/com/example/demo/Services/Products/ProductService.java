@@ -37,6 +37,7 @@ public class ProductService {
 
     HttpCallLogic httpCallLogic;
     Consumer<Boolean> success;
+    Consumer<Boolean> reviewSuccess;
 
     public ProductService(HttpCallLogic httpCallLogic) {
         this.httpCallLogic = httpCallLogic;

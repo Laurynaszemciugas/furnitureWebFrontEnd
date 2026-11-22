@@ -108,7 +108,7 @@ public class ClientMainLayout extends AppLayout {
             UI.getCurrent().navigate("ClientFrontPage");
         });
 
-        Button products = new Button("Products");
+        Button products = new Button("Products",e-> UI.getCurrent().navigate("ClientProducts"));
         products.addClassName("color-button");
         Button categories = new Button("Categories");
         categories.addClassName("color-button");

@@ -78,7 +78,7 @@ public class ProductUI {
 
         h.add(
                 commonComponents.spanCrafterWordNoHide("You may also like","activityFeed-name"),
-                productDisplay(productService.getSimilarItems(category), "500px","500px","250px")
+                productDisplay(productService.getSimilarItems(category), "500px","500px","250px",true)
         );
 
         return h;
@@ -87,7 +87,7 @@ public class ProductUI {
 
 
 
-    public HorizontalLayout productDisplay(List<ProductsClients> productsClients, String first, String second, String third){
+    public HorizontalLayout productDisplay(List<ProductsClients> productsClients, String first, String second, String third, boolean buttons){
 
 
         HorizontalLayout v = new HorizontalLayout();
@@ -177,7 +177,7 @@ public class ProductUI {
 
                 multiVariant.getStyle().setPosition(Style.Position.RELATIVE);
                 multiVariant.setSpacing(false);
-                multiVariant.addClassName("island-hover");
+                multiVariant.addClassName("island-product");
 
 
 
@@ -277,10 +277,14 @@ public class ProductUI {
                         commonComponents.spanCrafterWordNoHide(s.getProductName(),"activityFeed-name"),
                         commonComponents.spanCrafterWordNoHide(s.getCategory().getDisplayName(),"stat-description"),
                         multiPrice,
-                        colorHolder,
-                        expander()
+                        colorHolder
                 );
 
+                if(buttons){
+                    multiVariant.add(
+                            expander()
+                    );
+                }
 
 
                 wrapper.add(
@@ -292,7 +296,7 @@ public class ProductUI {
                 );
 
                 // change the add to the cart button according to the item
-                if(multiVariantPrices.size() > 1) {
+                if(multiVariantPrices.size() > 1 && buttons) {
                     wrapper.add(expandMultiVariantOption(s));
                 }
                 // if multi variant is alone so add it to cart insta
@@ -319,9 +323,11 @@ public class ProductUI {
                         addItemToTheCart(cart);
                     });
 
-                    h.add(
-                            addToCart
-                    );
+                    if(buttons) {
+                        h.add(
+                                addToCart
+                        );
+                    }
 
                     wrapper.add(h);
 
@@ -353,7 +359,7 @@ public class ProductUI {
                 });
 
                 multiVariant.setSpacing(false);
-                multiVariant.addClassName("island-hover");
+                multiVariant.addClassName("island-product");
 
 
 
@@ -389,9 +395,14 @@ public class ProductUI {
                         commonComponents.spanCrafterWordNoHide(s.getProductName(),"activityFeed-name"),
                         commonComponents.spanCrafterWordNoHide(s.getCategory().getDisplayName(),"stat-description"),
                         commonComponents.spanCrafterWordNoHide( String.format("%.2f  Eur",s.getNormalProductPrice()) ,"stat-example"),
-                        colorHolder,
-                        expander()
+                        colorHolder
                         );
+
+                if(buttons){
+                    multiVariant.add(
+                            expander()
+                    );
+                }
 
 
                 // add to the cart normal product
@@ -418,9 +429,11 @@ public class ProductUI {
                     addItemToTheCart(cart);
                 });
 
-                h.add(
-                        addToCart
-                );
+                if(buttons) {
+                    h.add(
+                            addToCart
+                    );
+                }
 
                 wrapper.add(
 
@@ -632,7 +645,7 @@ public class ProductUI {
         HorizontalLayout h = new HorizontalLayout();
         h.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
-        Button button = new Button("Options", VaadinIcon.OPTION.create());
+        Button button = new Button("Options", VaadinIcon.LIST.create());
         button.getStyle().setPosition(Style.Position.ABSOLUTE);
         button.getStyle().setBottom("10px");
         button.setWidth("90%");
@@ -788,12 +801,12 @@ public class ProductUI {
             selectedItems.add(cart);
         }
 
-//        System.out.println(selectedItems);
 
         sessionCrafter.createSession("Cart", selectedItems);
 
         Notification notification = new Notification();
-        notification.setDuration(10000);
+        notification.setPosition(Notification.Position.BOTTOM_END);
+        notification.setDuration(7000);
 
 
 
@@ -827,6 +840,7 @@ public class ProductUI {
             actionButton = removeFromCart;
 
             badge.setText("Added to the cart");
+            badge.setIcon(commonComponents.iconCrafter(VaadinIcon.CHECK,"15px","Green"));
             badge.addThemeVariants(BadgeVariant.SUCCESS);
         }
         else{
@@ -840,7 +854,8 @@ public class ProductUI {
             actionButton = viewCart;
 
             badge.setText("Added +1 to the cart");
-            badge.addThemeVariants(BadgeVariant.WARNING);
+            badge.setIcon(commonComponents.iconCrafter(VaadinIcon.PLUS,"15px","green"));
+            badge.addThemeVariants(BadgeVariant.SUCCESS);
         }
 
         VerticalLayout actionLayout = new VerticalLayout();

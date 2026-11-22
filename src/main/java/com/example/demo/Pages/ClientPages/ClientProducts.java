@@ -734,7 +734,7 @@ public class ClientProducts extends VerticalLayout implements BeforeEnterObserve
                         productMemory.removeAll();
 
                         productMemory.add(
-                                productUI.productDisplay(e, "250px","250px","250px"),
+                                productUI.productDisplay(e, "250px","250px","250px",true),
                                 paganation.buttonHolder(10)
                         );
                     });
