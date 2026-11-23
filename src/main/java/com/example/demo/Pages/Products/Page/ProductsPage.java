@@ -8,6 +8,7 @@ import com.example.demo.FilterDTO.Prodcut.ProductFilterHolder;
 import com.example.demo.DTOS.Products.ProductFeedModel;
 import com.example.demo.MainLayouts.Admin.MainLayout;
 import com.example.demo.Common.Paganation;
+import com.example.demo.Pages.ClientPages.Components.ProductUI;
 import com.example.demo.Pages.Products.Components.ProductPageBriefExplanation;
 import com.example.demo.Pages.Products.Components.ProductPageFilters;
 import com.example.demo.Pages.Products.Components.ProductPageMiniStats;
@@ -36,6 +37,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     ProductService productService;
     Paganation paganation;
     CommonService commonService;
+    ProductUI productUI;
 
 
     // all stuff that make this page
@@ -69,10 +71,12 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
     public ProductsPage(CommonComponents commonComponents,
                         Common common,
                         ProductService productService,
-                        CommonService commonService) {
+                        CommonService commonService,
+                        ProductUI productUI) {
 
         this.sessionCrafter = new SessionCrafter();
 
+        this.productUI = productUI;
 
 
         this.commonComponents = commonComponents;
@@ -81,7 +85,7 @@ public class ProductsPage extends VerticalLayout implements BeforeEnterObserver 
         this.commonService = commonService;
         this.productPageBriefExplanation = new ProductPageBriefExplanation(commonComponents,common);
         this.productPageFilters = new ProductPageFilters(commonComponents,common,commonService);
-        this.productPageProductFeed = new ProductPageProductFeed(commonComponents,common,productService);
+        this.productPageProductFeed = new ProductPageProductFeed(commonComponents,common,productService,productUI);
         this.productPageMiniStat = new ProductPageMiniStats(commonComponents,common);
         this.currentFilterDisplay = new CurrentFilterDisplay(commonComponents,common);
 

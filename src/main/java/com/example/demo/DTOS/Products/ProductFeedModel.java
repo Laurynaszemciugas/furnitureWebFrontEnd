@@ -23,4 +23,9 @@ public class ProductFeedModel {
     private double discount;
     private double discountedPrice;
     private Visibility visibility;
+
+    Object prices;
+    Object discounts;
+    Object stocks;
+
 }

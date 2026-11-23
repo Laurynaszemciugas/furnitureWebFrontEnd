@@ -4,6 +4,7 @@ import com.example.demo.Common.*;
 import com.example.demo.Common.AI.MultiProductAiDto;
 import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.Common.Logic.ProductEditImage;
+import com.example.demo.DTOS.BreadCrums.BreadCrumsDto;
 import com.example.demo.DTOS.Common.CommonImagesData;
 import com.example.demo.DTOS.Common.ListExtraDetailsGrid;
 import com.example.demo.DTOS.Common.ListStepsToPrepare;
@@ -366,7 +367,7 @@ public class MultipleProductChoices extends VerticalLayout  {
 
 
         verticalLayout.add(
-//                commonComponents.breadCrums(new BreadCrumsDto("Products", "Products/1"),new BreadCrumsDto("Add new product", "ProductsAdd")),
+                commonComponents.breadCrums(new BreadCrumsDto("Products", "Products/1"),new BreadCrumsDto(briefExplanation, "null")),
                 briefPageExplanation(briefExplanation),
                 displayCommonData(),
                 multipleProductHolder);
