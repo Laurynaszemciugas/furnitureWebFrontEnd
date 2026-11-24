@@ -943,6 +943,8 @@ public class MultipleProductChoices extends VerticalLayout  {
 
 
 
+
+
                 product.getProductMultiples().add(multipleProduct);
 
 
@@ -1212,6 +1214,7 @@ public class MultipleProductChoices extends VerticalLayout  {
                 s.setStatus(status.getValue());
                 s.setVisibility(visibility.getValue());
                 s.setColor(productColor.getValue());
+                s.setStockCalculatedManually(manualStock.getValue());
 
 
                 displayAllProducts();

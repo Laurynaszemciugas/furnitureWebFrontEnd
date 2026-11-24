@@ -356,7 +356,7 @@ public class ProductInTheOrderUI {
 
 
             h.add(
-                    commonComponents.spanCrafterWordNoHide(e.getStepId().toString(),"stat-example"),
+                    commonComponents.spanCrafterWordNoHide(e.getStepId() == null ? "Step id unknown" : e.getStepId().toString(),"stat-example"),
                     commonComponents.spanCrafterWordNoHide(e.getStepDescription(),"stat-example")
             );
 

@@ -695,7 +695,7 @@ public class ActiveOrderUI {
         stepIdShell.getStyle().set("width","25px").set("height","25px").set("border-radius","50%").setBackgroundColor("rgba(34, 117, 243, 0.15)");
 
         stepIdShell.add(
-                commonComponents.spanCrafter(stepId.toString(),"stat-example")
+                commonComponents.spanCrafter(stepId == null ? "Step id unknown" : stepId.toString(),"stat-example")
         );
 
         Span desc = commonComponents.spanCrafterWordNoHide(stepDesc,"stat-example");
