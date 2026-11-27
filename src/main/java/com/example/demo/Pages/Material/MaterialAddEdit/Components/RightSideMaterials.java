@@ -2,6 +2,8 @@ package com.example.demo.Pages.Material.MaterialAddEdit.Components;
 
 import com.example.demo.Common.*;
 import com.example.demo.Common.AI.MaterialAiDto;
+import com.example.demo.Common.Logic.InternetScraper.DisplayScrapedData;
+import com.example.demo.Common.Logic.InternetScraper.Scraper;
 import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.DTOS.Common.CommonImagesData;
@@ -10,6 +12,7 @@ import com.example.demo.Entity.Materials;
 import com.example.demo.Enums.*;
 import com.example.demo.Common.Logic.ProductEditImage;
 import com.example.demo.Services.AI.AIService;
+import com.example.demo.Services.InternetScraping.ScraperService;
 import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -27,6 +30,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import lombok.Setter;
+import org.jetbrains.kotlin.it.unimi.dsi.fastutil.ints.H;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -45,7 +49,7 @@ public class RightSideMaterials {
     // fields to enter data
     TextField materialName = new TextField("Material name");
     ComboBox<MaterialType> materialType = new ComboBox<>("Material type");
-    TextField materialUrl = new TextField("Material URL");
+    TextField materialUrl = new TextField("Material reference to (Kaina24.lt)");
     ComboBox<ActiveInactive> materialStatus = new ComboBox<>("Material status");
 
     TextArea description = new TextArea("Description");
@@ -87,9 +91,13 @@ public class RightSideMaterials {
     AIService aiService;
 
     SessionCrafter sessionCrafter;
+    ScraperService scraperService;
+    Scraper scraper;
+
+    DisplayScrapedData view;
 
 
-    public RightSideMaterials(CommonComponents commonComponents, Common common, MaterialService materialService, ObjectConverter objectConverter,AIService aiService) {
+    public RightSideMaterials(CommonComponents commonComponents, Common common, MaterialService materialService, ObjectConverter objectConverter,AIService aiService,Scraper scraper,ScraperService scraperService) {
 
         this.commonComponents = commonComponents;
         this.common = common;
@@ -97,6 +105,10 @@ public class RightSideMaterials {
         this.materialService = materialService;
         this.objectConverter = objectConverter;
         this.aiService = aiService;
+
+        this.scraper = scraper;
+        this.scraperService = scraperService;
+        this.view = new DisplayScrapedData(scraper,commonComponents,common,scraperService);
 
         this.sessionCrafter = new SessionCrafter();
 
@@ -318,11 +330,34 @@ public class RightSideMaterials {
 
         });
 
+        HorizontalLayout urlHolder = new HorizontalLayout();
+        urlHolder.setWidthFull();
+        urlHolder.setAlignItems(FlexComponent.Alignment.BASELINE);
+        urlHolder.setSpacing(false);
+
+        Button searchForUrl = new Button(VaadinIcon.SEARCH.create());
+        searchForUrl.setTooltipText("Search for the item on the internet (Kaina24.lt) to track the price and change it automatically (It is really important that you choose the exact product if you dont want this feature to work just keep it empty)");
+        searchForUrl.addThemeVariants(ButtonVariant.PRIMARY);
+        searchForUrl.addClickListener(e->{
+            if(materialName.getValue().isBlank()) {
+                commonComponents.showNotification("Material name must be filled",3000, Notification.Position.BOTTOM_CENTER,NotificationVariant.LUMO_ERROR);
+            }
+            else{
+                view.layout(materialName.getValue(), true, materialUrl);
+
+            }
+        });
+
+        urlHolder.add(
+                materialUrl,
+                searchForUrl
+        );
+
         verticalLayout.add(
                 aiButton,
                 commonComponents.spanCrafterWordNoHide("Basic information","activityFeed-name"),
                 commonComponents.doubleValueRow(materialName,materialType),
-                commonComponents.doubleValueRow(materialUrl,materialStatus),
+                commonComponents.doubleValueRow(urlHolder,materialStatus),
                 description,
                 careInstructions
         );
@@ -462,15 +497,15 @@ public class RightSideMaterials {
                 .asRequired("Material type is required")
                 .bind(v -> null, (v, value) -> {});
 
-        binder.forField(materialUrl)
-                .withValidator(
-                        value -> value == null ||
-                                value.isBlank() ||
-                                value.startsWith("http://") ||
-                                value.startsWith("https://"),
-                        "URL must start with http:// or https://"
-                )
-                .bind(v -> null, (v, value) -> {});
+//        binder.forField(materialUrl)
+//                .withValidator(
+//                        value -> value == null ||
+//                                value.isBlank() ||
+//                                value.startsWith("http://") ||
+//                                value.startsWith("https://"),
+//                        "URL must start with http:// or https://"
+//                )
+//                .bind(v -> null, (v, value) -> {});
 
         binder.forField(materialStatus)
                 .asRequired("Material status is required")

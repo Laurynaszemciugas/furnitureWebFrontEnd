@@ -3,7 +3,7 @@ package com.example.demo.Pages.Material.Page.Components;
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.Logic.InternetScraper.Scraper;
-import com.example.demo.Common.Logic.InternetScraper.View;
+import com.example.demo.Common.Logic.InternetScraper.DisplayScrapedData;
 import com.example.demo.Common.Paganation;
 import com.example.demo.FilterDTO.Material.MaterialViewOnProductUsageFilter;
 import com.example.demo.DTOS.Material.MaterialBriefDto;
@@ -15,8 +15,6 @@ import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.checkbox.CheckboxGroup;
-import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -30,8 +28,6 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.popover.Popover;
-import com.vaadin.flow.component.popover.PopoverPosition;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -50,7 +46,7 @@ public class MaterialGrid {
     MaterialService materialService;
 
 
-    View view;
+    DisplayScrapedData view;
     Scraper scraper;
 
 
@@ -71,7 +67,7 @@ public class MaterialGrid {
     Paganation paganation;
     MaterialViewOnProductUsageFilter filterData = new MaterialViewOnProductUsageFilter();
 
-    public MaterialGrid(CommonComponents commonComponents, Common common,MaterialService materialService,View view,Scraper scraper) {
+    public MaterialGrid(CommonComponents commonComponents, Common common, MaterialService materialService, DisplayScrapedData view, Scraper scraper) {
         this.commonComponents = commonComponents;
         this.common = common;
         this.materialService = materialService;
@@ -481,7 +477,7 @@ public class MaterialGrid {
             searchOnline.setWidthFull();
 
             searchOnline.addClickListener(ee->{
-                view.layout(e.getName());
+                view.layout(e.getName(),false,null);
             });
 
             HorizontalLayout viewRelatedProducts = actions(VaadinIcon.CALENDAR,"View related products","See products using this material","BLUE");

@@ -7,6 +7,7 @@ import com.example.demo.Services.InternetScraping.ScraperService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -24,7 +25,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class View  {
+public class DisplayScrapedData {
 
 
     Scraper scraper;
@@ -42,7 +43,9 @@ public class View  {
 
     SessionCrafter sessionCrafter;
 
-    public View(Scraper scraper,CommonComponents commonComponents,Common common,ScraperService scraperService) {
+    Dialog dialog = new Dialog();
+
+    public DisplayScrapedData(Scraper scraper, CommonComponents commonComponents, Common common, ScraperService scraperService) {
 
         this.scraper = scraper;
         this.commonComponents = commonComponents;
@@ -54,7 +57,7 @@ public class View  {
     }
 
 
-    public void layout(String name){
+    public void layout(String name, boolean selectable, TextField textField){
 
 
 
@@ -72,7 +75,7 @@ public class View  {
 
             try {
 
-                component = items(scraperService.getDataFromInternetScraping(name,jwt));
+                component = items(scraperService.getDataFromInternetScraping(name,jwt),selectable,textField);
 
 
 
@@ -114,7 +117,7 @@ public class View  {
 //            }
 //        });
 
-        Dialog dialog = new Dialog();
+        dialog = new Dialog();
         dialog.setWidth("1100px");
         dialog.setHeight("820px");
 
@@ -173,7 +176,7 @@ public class View  {
 
 
 
-    public VerticalLayout items(List<PriceResult> list){
+    public VerticalLayout items(List<PriceResult> list, boolean selectable, TextField textField){
 
 //        vendors.setItems(
 //                list.stream()
@@ -299,60 +302,83 @@ public class View  {
 
         grid.addComponentColumn(e->{
 
-            VerticalLayout horizontalLayout = new VerticalLayout();
-            horizontalLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-
-            if(e.getSellerCount() == 1){
-                Image image = new Image();
-                image.setWidth("80px"); image.setHeight("40px");
-
-                image.setSrc(e.getVendorImageUrl());
+            VerticalLayout verticalLayout = new VerticalLayout();
+            verticalLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
 
-                Button button = new Button("Go to source");
-                button.setSuffixComponent(VaadinIcon.EXTERNAL_LINK.create());
-                button.addClickListener(s ->{
-                    UI.getCurrent().getPage().open(
-                            e.getVendorUrl(),
-                            "_blank");
+
+
+
+            if(selectable){
+                Button reference = new Button("Select as price reference");
+                reference.addThemeVariants(ButtonVariant.PRIMARY);
+                reference.addClickListener(ee -> {
+                    textField.setValue(e.getProductName());
+                    dialog.close();
 
                 });
-
-                horizontalLayout.add(
-                        image,
-                        button
+                verticalLayout.add(
+                        reference
                 );
+            }
+            else {
 
 
+                if (e.getSellerCount() == 1) {
+                    Image image = new Image();
+                    image.setWidth("80px");
+                    image.setHeight("40px");
+
+                    image.setSrc(e.getVendorImageUrl());
+
+
+                    Button button = new Button("Go to source");
+                    button.setSuffixComponent(VaadinIcon.EXTERNAL_LINK.create());
+                    button.addClickListener(s -> {
+                        UI.getCurrent().getPage().open(
+                                e.getVendorUrl(),
+                                "_blank");
+
+                    });
+
+
+
+                    verticalLayout.add(
+                            image,
+                            button
+
+                    );
+
+
+                } else {
+
+                    Button moreItems = new Button(e.getSellerCount() + " Offers found");
+
+                    Button button = new Button("Go to source");
+                    button.setSuffixComponent(VaadinIcon.EXTERNAL_LINK.create());
+
+                    button.addClickListener(s -> {
+                        UI.getCurrent().getPage().open(
+                                e.getVendorUrl(),
+                                "_blank");
+
+                    });
+
+
+                    popOverData(moreItems, e.getMultipleVendors(), e.getImageUrl(), e.getProductName());
+
+                    verticalLayout.add(
+                            moreItems,
+                            button
+                    );
+
+                }
             }
 
-            else{
 
-                Button moreItems = new Button(e.getSellerCount() + " Offers found");
+            return verticalLayout;
 
-                Button button = new Button("Go to source");
-                button.setSuffixComponent(VaadinIcon.EXTERNAL_LINK.create());
-
-                button.addClickListener(s ->{
-                    UI.getCurrent().getPage().open(
-                            e.getVendorUrl(),
-                            "_blank");
-
-                });
-
-                popOverData(moreItems,e.getMultipleVendors(),e.getImageUrl(),e.getProductName());
-
-                horizontalLayout.add(
-                        moreItems,
-                        button
-                );
-
-            }
-
-
-            return horizontalLayout;
-
-        }).setAutoWidth(true).setHeader("Seller/Source");
+        }).setAutoWidth(true).setHeader("Actions");
 
 
 

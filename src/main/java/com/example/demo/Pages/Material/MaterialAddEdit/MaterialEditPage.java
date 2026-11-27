@@ -3,6 +3,7 @@ package com.example.demo.Pages.Material.MaterialAddEdit;
 
 import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
+import com.example.demo.Common.Logic.InternetScraper.Scraper;
 import com.example.demo.Common.Logic.ObjectConverter;
 import com.example.demo.Common.Logic.ProductEditImage;
 import com.example.demo.DTOS.BreadCrums.BreadCrumsDto;
@@ -10,6 +11,7 @@ import com.example.demo.Entity.Materials;
 import com.example.demo.MainLayouts.Admin.MainLayout;
 import com.example.demo.Pages.Material.MaterialAddEdit.Components.RightSideMaterials;
 import com.example.demo.Services.AI.AIService;
+import com.example.demo.Services.InternetScraping.ScraperService;
 import com.example.demo.Services.Material.MaterialService;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -27,7 +29,8 @@ public class MaterialEditPage extends VerticalLayout implements BeforeEnterObser
     ProductEditImage productEditImage;
     ObjectConverter objectConverter;
     MaterialService materialService;
-
+    Scraper scraper;
+    ScraperService scraperService;
 
 
     // classes for the page
@@ -37,7 +40,7 @@ public class MaterialEditPage extends VerticalLayout implements BeforeEnterObser
     int itemChoice = 0;
     AIService aiService;
 
-    public MaterialEditPage(CommonComponents commonComponents, Common common, ObjectConverter objectConverter, MaterialService materialService,AIService aiService) {
+    public MaterialEditPage(CommonComponents commonComponents, Common common, ObjectConverter objectConverter, MaterialService materialService,AIService aiService, Scraper scraper,ScraperService scraperService) {
         this.commonComponents = commonComponents;
         this.common = common;
 
@@ -47,7 +50,10 @@ public class MaterialEditPage extends VerticalLayout implements BeforeEnterObser
         this.aiService = aiService;
 
         this.productEditImage = new ProductEditImage(commonComponents,common);
-        this.rightSideAddMaterials = new RightSideMaterials(commonComponents,common,materialService,objectConverter,aiService);
+
+        this.scraper = scraper;
+        this.scraperService = scraperService;
+        this.rightSideAddMaterials = new RightSideMaterials(commonComponents,common,materialService,objectConverter,aiService,scraper,scraperService);
 
         this.rightSideAddMaterials.setProductEditImage(productEditImage);
 

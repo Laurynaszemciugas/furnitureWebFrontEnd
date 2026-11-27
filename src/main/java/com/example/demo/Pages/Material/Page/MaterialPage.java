@@ -4,7 +4,7 @@ import com.example.demo.Common.Common;
 import com.example.demo.Common.CommonComponents;
 import com.example.demo.Common.CurrentFilterDisplay;
 import com.example.demo.Common.Logic.InternetScraper.Scraper;
-import com.example.demo.Common.Logic.InternetScraper.View;
+import com.example.demo.Common.Logic.InternetScraper.DisplayScrapedData;
 import com.example.demo.Common.Logic.SessionCrafter;
 import com.example.demo.Common.Paganation;
 import com.example.demo.FilterDTO.Material.MaterialFilterHolder;
@@ -54,7 +54,7 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
     ScraperService scraperService;
 
     Scraper scraper;
-    View view;
+    DisplayScrapedData view;
 
     public MaterialPage(CommonComponents commonComponents, Common common,MaterialService materialService,Scraper scraper,ScraperService scraperService) {
         this.commonComponents = commonComponents;
@@ -67,7 +67,7 @@ public class MaterialPage extends VerticalLayout implements BeforeEnterObserver 
 
 
         this.scraper = scraper;
-        this.view = new View(scraper,commonComponents,common,scraperService);
+        this.view = new DisplayScrapedData(scraper,commonComponents,common,scraperService);
 
         this.materialGrid = new MaterialGrid(commonComponents,common,materialService,view,scraper);
         this.materialBriefExplanations = new MaterialBriefExplanations(commonComponents,common);
